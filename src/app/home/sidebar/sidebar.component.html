@@ -1,6 +1,8 @@
 <div class="sidebar">
   <p-panelMenu #menu [model]="items" [style]="{'width':'10vw','margin-top':'12vh'}" (click)="sidebarColorClick($event)" (mousemove)="sidebarColorMove($event)" (mouseout)="sidebarColorMoveout()"></p-panelMenu>
   <div class="sidebar-menubar" [ngStyle]="{height:slidinghight+'px',top: slidingTop+'px'}"></div>
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '0', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+
 </div>
 <!--<div *ngIf="!loadHidden">-->
   <!--<rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>-->

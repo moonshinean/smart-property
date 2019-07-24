@@ -11,7 +11,8 @@ import {ConfirmationService, MessageService, TreeNode} from 'primeng/api';
 import {MessageModule} from 'primeng/message';
 import {
   ButtonModule,
-  CalendarModule, CheckboxModule,
+  CalendarModule,
+  CheckboxModule,
   ConfirmDialogModule,
   DialogModule,
   DropdownModule,

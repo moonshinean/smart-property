@@ -115,8 +115,8 @@ export class HeaderComponent implements OnInit {
   }
 
   // 头部导航点击事件
-  public spanBarClick(e): void {
-
+  public spanBarClick(e, index): void {
+     this.router.navigate([this.item[index].router]);
     // @ts-ignore
     for (let i = 0; i < this.headerbar.nativeElement.children.length; i++) {
       // @ts-ignore
@@ -179,7 +179,6 @@ export class HeaderComponent implements OnInit {
             }
           }
         );
-        // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
       },
       reject: () => {
       }

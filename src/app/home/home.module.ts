@@ -7,7 +7,7 @@ import { FooterComponent } from './footer/footer.component';
 import {HomeRoutingModule} from './home-routing.module';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import {PanelMenuModule} from 'primeng/panelmenu';
-import {ConfirmationService, ConfirmDialogModule} from 'primeng/primeng';
+import {ConfirmationService, ConfirmDialogModule, MessageModule, MessageService, MessagesModule} from 'primeng/primeng';
 import {LoadingModule} from '../common/components/loading/loading.module';
 
 @NgModule({
@@ -23,8 +23,10 @@ import {LoadingModule} from '../common/components/loading/loading.module';
     HomeRoutingModule,
     PanelMenuModule,
     ConfirmDialogModule,
-    LoadingModule
+    LoadingModule,
+    MessageModule,
+    MessagesModule,
   ],
-  providers: [ConfirmationService]
+  providers: [ConfirmationService, MessageService]
 })
 export class HomeModule { }

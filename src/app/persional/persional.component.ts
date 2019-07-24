@@ -5,6 +5,7 @@ import {LocalStorageService} from '../common/services/local-storage.service';
 import {Router} from '@angular/router';
 import {PersionalService} from '../common/services/persional.service';
 import {Persional} from '../common/model/persional.model';
+import {PublicMethedService} from '../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-persional',
@@ -42,7 +43,8 @@ export class PersionalComponent implements OnInit {
     private localSrv: LocalStorageService,
     private router: Router,
     private persionSrv: PersionalService,
-    private messageService: MessageService,
+    private toolSrv: PublicMethedService,
+
 
   ) { }
 
@@ -70,15 +72,11 @@ export class PersionalComponent implements OnInit {
               }
             );
           } else {
-            this.setToast('error', '请求失败', value.message);
+            this.toolSrv.setToast('error', '请求失败', value.message);
           }
         }
       );
 
-  }
-  // change user info
-  public  changeUserInfoClick(): void {
-    // this.
   }
   // submit user info
   public  changeUserInfoSubmitClick(): void {
@@ -86,9 +84,9 @@ export class PersionalComponent implements OnInit {
       value => {
         console.log(value);
         if (value.status === '1000') {
-          this.setToast('success', '修改成功', '修改成功');
+          this.toolSrv.setToast('success', '修改成功', '修改成功');
         } else {
-          this.setToast('error', '修改失败', value.message);
+          this.toolSrv.setToast('error', '修改失败', value.message);
 
         }
       }
@@ -118,14 +116,6 @@ export class PersionalComponent implements OnInit {
       }
     });
   }
-  // change Pssword
-  public  changePasswordClick(): void {
-    if (this.passwordHidden === true) {
-      this.passwordHidden = false;
-    } else {
-      this.passwordHidden = true;
-    }
-  }
   // back
   public  backClick(): void {
       window.history.back();
@@ -142,7 +132,7 @@ export class PersionalComponent implements OnInit {
           this.persionSrv.updatePasswordInfo(this.changeUserInfo).subscribe(
             value => {
               if (value.status === '1000') {
-                this.setToast('success', '', '修改成功');
+                this.toolSrv.setToast('success', '', '修改成功');
                 this.ChangePassword = {
                   newpsw: '',
                   oldpsw: '',
@@ -152,26 +142,13 @@ export class PersionalComponent implements OnInit {
                 this.btnName = '修改密码';
                 this.passwordHidden = true;
               } else {
-                this.setToast('error', '修改失败', value.message);
+                this.toolSrv.setToast('error', '修改失败', value.message);
               }
             }
           );
         } else {
-          this.setToast('error', '修改失败', '两次密码输入不一致');
+          this.toolSrv.setToast('error', '修改失败', '两次密码输入不一致');
         }
     }
   }
-
-  // set Toast
-  public setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
-  }
-
 }
