@@ -183,6 +183,8 @@ export class BfStaffComponent implements OnInit {
               this.setToast('success',  '操作成功', value.message);
               this.clearData();
               this.staffInitialization();
+            } else {
+              this.setToast('error',  '操作失败', value.message);
             }
           }
         );

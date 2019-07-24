@@ -23,9 +23,6 @@ export class LoginComponent implements OnInit {
     private route: Router,
     private localSessionStorage: LocalStorageService,
     private toolSrv: PublicMethedService,
-    private confirmationService: ConfirmationService
-
-
   ) { }
 
   ngOnInit() {

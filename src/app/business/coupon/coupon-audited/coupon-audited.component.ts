@@ -214,38 +214,38 @@ export class CouponAuditedComponent implements OnInit {
     console.log(e);
   }
 
-  // modify couponAudited
-  public couponAuditedModifyClick(): void {
-    console.log(this.couponAuditedSelect);
-    if (this.couponAuditedSelect === undefined || this.couponAuditedSelect.length === 0) {
-      this.setToast('error', '操作错误', '请选择需要修改的项');
+  // // modify couponAudited
+  // public couponAuditedModifyClick(): void {
+  //   console.log(this.couponAuditedSelect);
+  //   if (this.couponAuditedSelect === undefined || this.couponAuditedSelect.length === 0) {
+  //     this.setToast('error', '操作错误', '请选择需要修改的项');
+  //
+  //   } else if (this.couponAuditedSelect.length === 1) {
+  //     this.couponAuditedModifayDialog = true;
+  //     console.log('这里是修改信息');
+  //   } else {
+  //     this.setToast('error', '操作错误', '只能选择一项进行修改');
+  //
+  //   }
+  // }
 
-    } else if (this.couponAuditedSelect.length === 1) {
-      this.couponAuditedModifayDialog = true;
-      console.log('这里是修改信息');
-    } else {
-      this.setToast('error', '操作错误', '只能选择一项进行修改');
-
-    }
-  }
-
-  // sure modify coupon
-  public couponAuditedModifySureClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要修改吗？`,
-      header: '修改提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        console.log(this.couponAuditedSelect);
-        // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-      },
-      reject: () => {
-        console.log('这里是修改信息');
-
-        // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-      }
-    });
-  }
+  // // sure modify coupon
+  // public couponAuditedModifySureClick(): void {
+  //   this.confirmationService.confirm({
+  //     message: `确认要修改吗？`,
+  //     header: '修改提醒',
+  //     icon: 'pi pi-exclamation-triangle',
+  //     accept: () => {
+  //       console.log(this.couponAuditedSelect);
+  //       // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
+  //     },
+  //     reject: () => {
+  //       console.log('这里是修改信息');
+  //
+  //       // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
+  //     }
+  //   });
+  // }
   // 分页请求
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;

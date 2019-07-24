@@ -3,7 +3,6 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {CouponTotalService} from '../../../common/services/coupon-total.service';
 import {AddCouponTotal, CouponTotal, SearchCoupon} from '../../../common/model/coupon-total.model';
 import {GlobalService} from '../../../common/services/global.service';
-import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-coupon-total',
@@ -69,10 +68,10 @@ export class CouponTotalComponent implements OnInit {
   public auditStatusOption: any[] = [];
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
+    private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private couponTotalSrv: CouponTotalService,
-    private globalSrv: GlobalService,
-    private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService
   ) {
   }
 
@@ -139,7 +138,7 @@ export class CouponTotalComponent implements OnInit {
               this.couponTotalTableContent = value.data.contents;
               this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
             }  else  {
-              this.toolSrv.setToast('error', '请求成功', value.message);
+              this.setToast('error', '请求成功', value.message);
             }
           }
         );
@@ -233,7 +232,7 @@ export class CouponTotalComponent implements OnInit {
   // condition search click
   public couponTotalSearchClick(): void {
     if (this.SearchCoupon.buildingCode === '' && this.SearchCoupon.mobilePhone === undefined) {
-      this.toolSrv.setToast('error', '搜索失败', '搜索信息条件请具体到楼栋');
+      this.setToast('error', '搜索失败', '搜索信息条件请具体到楼栋');
     } else {
       this.SearchCoupon.pageNo = 1;
       this.SearchCoupon.pageSize = 10;
@@ -246,14 +245,14 @@ export class CouponTotalComponent implements OnInit {
           if (value.status === '1000') {
             this.loadingHide = true;
             if (value.data.contents) {
-              this.toolSrv.setToast('success', '搜索成功', value.message);
+              this.setToast('success', '搜索成功', value.message);
 
               this.couponTotalTableContent = value.data.contents;
             } else {
-              this.toolSrv.setToast('success', '搜索成功', '数据为空');
+              this.setToast('success', '搜索成功', '数据为空');
             }
           } else {
-            this.toolSrv.setToast('error', '搜索失败', value.message);
+            this.setToast('error', '搜索失败', value.message);
 
           }
         }
@@ -329,7 +328,7 @@ export class CouponTotalComponent implements OnInit {
         this.couponTotalSrv.addCouponInfo(this.AddcouponTotal).subscribe(
           value => {
             console.log(value);
-            this.toolSrv.setToast('success', '操作成功', value.message);
+            this.setToast('success', '操作成功', value.message);
             this.couponTotalInitialization();
             this.couponTotalAddDialog = false;
             this.clearData();
@@ -396,43 +395,43 @@ export class CouponTotalComponent implements OnInit {
     console.log(e);
   }
 
-  // modify couponTotal
-  public couponTotalModifyClick(): void {
-    console.log(this.couponTotalSelect);
-    if (this.couponTotalSelect === undefined || this.couponTotalSelect.length === 0) {
-      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
+  // // modify couponTotal
+  // public couponTotalModifyClick(): void {
+  //   console.log(this.couponTotalSelect);
+  //   if (this.couponTotalSelect === undefined || this.couponTotalSelect.length === 0) {
+  //     this.setToast('error', '操作错误', '请选择需要修改的项');
+  //
+  //   } else if (this.couponTotalSelect.length === 1) {
+  //     this.couponTotalModifayDialog = true;
+  //     console.log('这里是修改信息');
+  //   } else {
+  //     this.setToast('error', '操作错误', '只能选择一项进行修改');
+  //
+  //   }
+  // }
 
-    } else if (this.couponTotalSelect.length === 1) {
-      this.couponTotalModifayDialog = true;
-      console.log('这里是修改信息');
-    } else {
-      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
-
-    }
-  }
-
-  // sure modify coupon
-  public couponTotalModifySureClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要修改吗？`,
-      header: '修改提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        console.log(this.couponTotalSelect);
-        // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-      },
-      reject: () => {
-        console.log('这里是修改信息');
-
-        // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-      }
-    });
-  }
+  // // sure modify coupon
+  // public couponTotalModifySureClick(): void {
+  //   this.confirmationService.confirm({
+  //     message: `确认要修改吗？`,
+  //     header: '修改提醒',
+  //     icon: 'pi pi-exclamation-triangle',
+  //     accept: () => {
+  //       console.log(this.couponTotalSelect);
+  //       // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
+  //     },
+  //     reject: () => {
+  //       console.log('这里是修改信息');
+  //
+  //       // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
+  //     }
+  //   });
+  // }
 
   // delete coupon
   public couponTotalDeleteClick(): void {
     if (this.couponTotalSelect === undefined || this.couponTotalSelect.length === 0) {
-      this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
+      this.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
       this.confirmationService.confirm({
         message: `确认要删除这${this.couponTotalSelect.length}项吗`,
@@ -447,7 +446,7 @@ export class CouponTotalComponent implements OnInit {
           this.couponTotalSrv.deleteCouponInfo({ids: this.deleteIds.join(',')}).subscribe(
             value => {
               console.log(value);
-              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.setToast('success', '操作成功', value.message);
               this.couponTotalInitialization();
             }
           );
@@ -476,6 +475,17 @@ export class CouponTotalComponent implements OnInit {
       }
     );
     this.couponTotalSelect = [];
+  }
+
+  public  setToast(type, title, message): void {
+    if (this.cleanTimer) {
+      clearTimeout(this.cleanTimer);
+    }
+    this.messageService.clear();
+    this.messageService.add({severity: type, summary: title, detail: message});
+    this.cleanTimer = setTimeout(() => {
+      this.messageService.clear();
+    }, 3000);
   }
   public clearData(): void {
     this.AddcouponTotal = new AddCouponTotal();
