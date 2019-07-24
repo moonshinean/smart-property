@@ -1,0 +1,51 @@
+export class ChargeParkSpaceModel {
+  payerPhone?: any; // 缴费人手机号
+  payerName?: any; // 缴费人姓名
+  paymentType?: any; // 支付类型
+  paymentMethod?: any; // 支付方式
+  villageCode?: any; // 小区编号
+  villageName?: any; // 小区名称
+  regionCode?: any; // 地块编号
+  regionName?: any; // 地块名称
+  buildingCode?: any; // 楼宇编号
+  buildingName?: any; // 楼宇名称
+  unitCode?: any; // 单元编号
+  unitName?: any; // 单元名称
+  userId?: any; // 客户ID
+  surname?: any; // 姓氏
+  mobilePhone?: any; // 客户电话
+  roomCode?: any; // 房间号
+  roomSize?: any; // 住房大小
+  chargeCode?: any; // 项目编号
+  chargeName?: any; // 项目名称
+  chargeType?: any; // 项目名称
+  amountReceivable?: any; // 应收金额
+  actualMoneyCollection?: any; // 实收金额
+  preferentialAmount?: any; // 优惠金额
+  chargeUnit?: any; // 收费单位:物业费
+  chargeStandard?: any; // 收费单价
+  datedif?: any; // 缴费月数
+  discount?: any; // 折扣
+  startTime?: any; // 开始计费时间
+  dueTime?: any; // 结束计费时间
+  remark?: any; // 备注
+  parkingSpaceCode?: any; // 车位编号
+  parkingSpaceNature?: any; // 车位性质
+  parkingSpaceType?: any; // 车位类型
+  parkingSpaceArea?: any; // 车位面积
+  licensePlateNumber?: any; // 车牌号
+  licensePlateColor?: any; // 车辆颜色
+  licensePlateType?: any; // 车辆类型
+  vehicleOriginalType?: any; // 车辆原始类型
+  rentalRenewalStatus?: any; // 续租状态
+}
+export class CalculateCostData {
+  chargeCode?: any; // 收费项目编号
+  chargeName?: any; // 收费项目名称
+  datedif?: any; // 缴费月数
+  chargeType?: any; // 收费项目类型
+  dueTime?: any; // 过期时间
+  rentalRenewalStatus?: any; // 到期时间
+  parkingSpaceNature?: any; // 车位性质
+  parkingSpaceType?: any; // 车位类型
+}

@@ -1,0 +1,116 @@
+.chargeman-payment{
+  //头部按钮
+  .chargeman-payment-header {
+    height: 12vh;
+    .chargeman-payment-header-btn {
+      color: #fff;
+      width: 6vw;
+      margin-top: 4.3vh;
+      border: 0;
+      text-align: center;
+      border-radius: 5px;
+      cursor:pointer;
+    }
+    .chargeman-payment-header-btn-delete{
+      margin-left: 1vw;
+      background: #A84847;
+      .chargeman-payment-header-img-delete{
+        width: 18px;
+        height: 18px;
+        vertical-align: bottom;
+        margin-right: 5px;
+      }
+    }
+    //.chargeman-payment-header-dropdown{
+    //  width: 2vw;
+    //  line-height: 2vh;
+    //}
+    ::ng-deep .ui-dropdown{
+      width: 5% !important;
+      min-width: 8em;
+    }
+    .chargeman-payment-header-btn-delete:hover{
+      background: #743131;
+    }
+    .chargeman-payment-header-search{
+      position: absolute;
+      margin-top: 5.3vh;
+      right: 6vw;
+      .chargeman-payment-header-btn-search{
+        outline: none;
+        border:0;
+        background: #5E6372;
+        width: 6vw;
+        color: #fff;
+        margin-left: 1vw;
+        border-radius: 5px;
+        cursor:pointer;
+      }
+      .chargeman-payment-header-btn-search:hover{
+        background: #4B5062;
+      }
+    }
+  }
+  //表格
+  .chargeman-payment-table{
+    margin-left: 2vw;
+    margin-right: 2vw;
+    //margin-top: 14vh;
+    height: 60vh;
+    //去掉table边框
+    ::ng-deep .ui-table .ui-table-thead>tr >th{
+      border: 0;
+
+    }
+    ::ng-deep .ui-table .ui-table-tbody>tr >td{
+      border: 0;
+    }
+    //隐藏滚动条
+    ::ng-deep .custombar .ui-scrollpanel-bar {
+      background-color: rgba(0, 0, 0, 0);
+      transition: background-color .3s;
+    }
+    ::ng-deep .custombar .ui-scrollpanel-content{
+      padding-right: 0;
+    }
+    ::ng-deep .ui-datatable-scrollable-header-box{
+
+      padding-right: 0 !important;
+      //position: absolute;
+    }
+  }
+
+  //弹框按钮
+  .chargeman-payment-dialog-Btn{
+    width: 6vw;
+    text-align: center;
+    border-radius: 5px;
+    height: 4vh;
+    outline: none;
+    color: #fff;
+    border: 0;
+    //text-align: center;
+  }
+  .chargeman-payment-dialog-Btn-sure{
+    background: #449D44;
+  }
+  .chargeman-payment-dialog-Btn-sure:hover{
+    background: #275D27;
+  }
+  .chargeman-payment-dialog-Btn-false{
+    background: #F0AD4E;
+  }
+  .chargeman-payment-dialog-Btn-false:hover{
+    background: #956A29;
+  }
+}
+::ng-deep .ui-dialog-content{
+  overflow: visible !important;
+}
+//::ng-deep .ui-button {
+//  border: 0 !important;
+//}
+::ng-deep .ui-dialog-titlebar{
+  text-align: center;
+  font-size: 1rem;
+}

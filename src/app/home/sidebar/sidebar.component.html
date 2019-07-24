@@ -1,0 +1,7 @@
+<div class="sidebar">
+  <p-panelMenu #menu [model]="items" [style]="{'width':'10vw','margin-top':'12vh'}" (click)="sidebarColorClick($event)" (mousemove)="sidebarColorMove($event)" (mouseout)="sidebarColorMoveout()"></p-panelMenu>
+  <div class="sidebar-menubar" [ngStyle]="{height:slidinghight+'px',top: slidingTop+'px'}"></div>
+</div>
+<!--<div *ngIf="!loadHidden">-->
+  <!--<rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>-->
+<!--</div>-->

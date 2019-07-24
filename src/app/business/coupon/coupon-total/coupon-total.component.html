@@ -1,0 +1,358 @@
+<div class="coupon-total">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="coupon-total-header">
+    <div class=" ui-g-12">
+      <div class="ui-g-1 coupon-total-header-btn coupon-total-header-btn-add" (click)="couponTotalAddClick()">
+        <img class="coupon-total-header-img-add" src="assets/images/ic_add.png" alt="">
+        <span>增 加</span>
+      </div>
+      <!--<div class="ui-g-1 coupon-total-header-btn coupon-total-header-btn-modify" (click)="couponTotalModifyClick()">-->
+        <!--<img class="coupon-total-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
+        <!--<span>修 改</span>-->
+      <!--</div>-->
+      <div class="ui-g-1 coupon-total-header-btn coupon-total-header-btn-delete" (click)="couponTotalDeleteClick()">
+        <img class="coupon-total-header-img-delete" src="assets/images/ic_delete.png" alt="">
+        <span>删 除</span>
+      </div>
+      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">
+        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>
+        <p-dropdown [options]="SearchOption.village" scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">地块：</label>
+        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>
+        <p-dropdown [options]="SearchOption.building" scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">单元：</label>
+        <p-dropdown [options]="SearchOption.unit"  scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">单元：</label>
+        <p-dropdown [options]="SearchOption.room"  scrollHeight="100px" placeholder="请选择房间..." [(ngModel)]="SearchCoupon.roomCode"></p-dropdown>
+      </div>
+    </div>
+    <!--//搜索-->
+    <div class="ui-inputgroup coupon-total-header-search">
+      <input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="SearchCoupon.mobilePhone">
+      <button id="disabled-btn" class="coupon-total-header-btn-search" type="button"  (click)="couponTotalSearchClick()"  label="搜索">搜索</button>
+    </div>
+  </div>
+  <!--表格-->
+  <div class="coupon-total-table">
+    <p-scrollPanel [style]="{width:'100%',height: '95%'}" styleClass="custombar">
+      <p-table [columns]="couponTotalTableTitle" [value]="couponTotalTableContent"  [(selection)]="couponTotalSelect">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th style="width: 3em"  [ngStyle]="this.couponTotalTableTitleStyle">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th *ngFor="let col of columns"  [ngStyle]="this.couponTotalTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns.slice(0,columns.length-1);" >
+              <span *ngIf="col.field === 'money' ">￥</span>{{rowData[col.field]}} <span *ngIf="col.field === 'effectiveTime' ">天</span>
+            </td>
+            <td>
+              <button class="coupon-total-table-Btn" (click)="couponTotalDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              <span *ngIf="col.field === 'money' ">￥</span>{{rowData[col.field]}} <span *ngIf="col.field === 'effectiveTime' ">天</span>
+            </td>
+            <td >
+              <button class="coupon-total-table-Btn" (click)="couponTotalDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+
+  </div>
+  <!--增加弹窗-->
+  <p-dialog header="优惠卷信息添加" [(visible)]="couponTotalAddDialog" [width]="800">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >小区名称：</label>
+        </div>
+        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
+          <p-dropdown scrollHeight="100px"  [options]="SearchOption.village" placeholder="请选择小区.."  (onChange)="VillageChange($event)"  [(ngModel)]="AddcouponTotal.villageCode"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >地块名称：</label>
+        </div>
+        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
+          <p-dropdown scrollHeight="100px" [options]="SearchOption.region"  placeholder="请选择楼宇.." (onChange)="regionChange($event)"  [(ngModel)]="AddcouponTotal.regionCode"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >楼宇名称：</label>
+        </div>
+        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
+          <p-dropdown scrollHeight="100px"  [options]="SearchOption.building" placeholder="请选择楼宇.."  (onChange)="buildingChange($event)" [(ngModel)]="AddcouponTotal.buildingCode"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >单元名称：</label>
+        </div>
+        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
+          <p-dropdown scrollHeight="100px"  [options]="SearchOption.unit" placeholder="请选择单元.." (onChange)="unitChange($event)" [(ngModel)]="AddcouponTotal.unitCode"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addroomCode">房间编号：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <p-dropdown id="addroomCode"  scrollHeight="100px"  [options]="roonCodeSelectOption" placeholder="请选择房间编号.." [(ngModel)]="AddcouponTotal.roomCode"></p-dropdown>
+          <!--<input id="addroomCode" type="text" pInputText placeholder="请输入房间代码.." [(ngModel)]="AddcouponTotal.roomCode" (blur)="getUserInfo()">-->
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addmobilePhone">客户电话：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addmobilePhone" type="text" pInputText placeholder="请输入客户电话.." [(ngModel)]="AddcouponTotal.mobilePhone" (blur)="getUserInfo()">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addbclientName">客户名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addbclientName" disabled type="text" pInputText placeholder="请输入客户名称.." [(ngModel)]="AddcouponTotal.surname">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >优惠卷：</label>
+        </div>
+        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
+          <p-dropdown scrollHeight="100px"  [options]="couponSelectOption" placeholder="请选择优惠卷.." (onChange)="couponSelectChange($event)" [(ngModel)]="AddcouponTotal.couponCode"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addcouponAmount">优惠金额：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addcouponAmount"  disabled type="text" pInputText placeholder="请输入优惠金额.." [(ngModel)]="couponMoney">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addDeductedPropertyAmount">有效时长：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addDeductedPropertyAmount" disabled type="text" pInputText placeholder="请输入抵扣物业费金额.." [(ngModel)]="couponEffectiveTime">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addbalanceAmount">优惠卷类型：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addbalanceAmount" type="text" disabled pInputText placeholder="请输入转入余额金额..." [(ngModel)]="couponTypeName">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addbalanceAmount">备注：</label>
+        </div>
+        <div class="ui-g-8">
+          <textarea  type="text" pInputText placeholder="备注..." [(ngModel)]="AddcouponTotal.remarks"></textarea>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="coupon-total-dialog-Btn coupon-total-dialog-Btn-sure" (click)="couponTotalAddSureClick()">确认</button>
+        <button class="coupon-total-dialog-Btn coupon-total-dialog-Btn-false" (click)="couponTotalAddDialog=false; clearData();couponTotalInitialization()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+  <!--详情弹窗-->
+  <p-dialog header="详细信息" [(visible)]="couponTotalDetailDialog" [width]="900">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh','text-align':'center'}">
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >组织名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{couponTotalDetail.organizationName}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >小区名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{couponTotalDetail.villageName}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >地块名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{couponTotalDetail.regionName}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >楼宇名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >{{couponTotalDetail.buildingName}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >单元名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{couponTotalDetail.unitName}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >房间代码：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >{{couponTotalDetail.roomCode}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >优惠券名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >{{couponTotalDetail.couponName}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >优惠券类型：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >{{couponTypeName}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >客户名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >{{couponTotalDetail.surname}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >客户电话：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >{{couponTotalDetail.mobilePhone}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label>优惠金额：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >￥{{couponTotalDetail.money}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >有效时间：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >{{couponEffectiveTime}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6" >
+        <div class="ui-g-4">
+          <label >剩余金额：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>￥{{couponTotalDetail.balanceAmount}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >抵扣物业费金额：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >￥{{couponTotalDetail.propertyFee}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6" >
+        <div class="ui-g-4">
+          <label >过期状态：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{couponTotalDetail.pastDue}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6" >
+        <div class="ui-g-4">
+          <label >使用状态：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{couponTotalDetail.usageState}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6" >
+        <div class="ui-g-4">
+          <label >使用状态：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{couponTotalDetail.auditStatus}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >开始时间：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >{{couponTotalDetail.startTime}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >过期时间：</label>
+        </div>
+        <div class="ui-g-8">
+          <span >{{couponTotalDetail.endTime}}</span>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <!--<button class="coupon-total-dialog-Btn coupon-total-dialog-Btn-sure" (click)="couponModifySureClick()">确认</button>-->
+        <button class="coupon-total-dialog-Btn coupon-total-dialog-Btn-false"  (click)="couponTotalDetailDialog=false">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadingHide" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+</div>

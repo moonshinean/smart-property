@@ -1,0 +1,215 @@
+
+<div class="charge-margin">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="charge-margin-header">
+    <div class="ui-g-12">
+      <!--<div class="ui-g-1 charge-margin-header-btn charge-margin-header-btn-add" (click)="ownerAddClick()">-->
+        <!--<img class="charge-margin-header-img-add" src="assets/images/ic_add.png" alt="">-->
+        <!--<span>增 加</span>-->
+      <!--</div>-->
+      <!--<div class="ui-g-1 charge-margin-header-btn charge-margin-header-btn-modify" (click)="ownerModifyClick()">-->
+        <!--<img class="charge-margin-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
+        <!--<span>修 改</span>-->
+      <!--</div>-->
+      <!--<div class="ui-g-1 charge-margin-header-btn charge-margin-header-btn-delete" (click)="ownerDeleteClick()">-->
+        <!--<img class="charge-margin-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+        <!--<span>删 除</span>-->
+      <!--</div>-->
+      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">
+        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>
+        <p-dropdown [options]="SearchOption.village" scrollHeight="100px" placeholder="请选择小区..."></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">地块：</label>
+        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..."></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>
+        <p-dropdown [options]="SearchOption.building" scrollHeight="100px" placeholder="请选择楼栋..."></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">单元：</label>
+        <p-dropdown [options]="SearchOption.unit"  scrollHeight="100px" placeholder="请选择单元..."></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">房间：</label>
+        <p-dropdown [options]="SearchOption.room"  scrollHeight="100px" placeholder="请选择房间..."></p-dropdown>
+      </div>
+    </div>
+    <!--搜索-->
+    <div class="ui-inputgroup charge-margin-header-search">
+      <input type="text" pInputText placeholder="请输入缴费人" #input>
+      <button id="disabled-btn" class="charge-margin-header-btn-search" type="button"  (click)="marginSearchClick($event)"  label="搜索">搜索</button>
+    </div>
+  </div>
+  <!--<button class="charge-margin-dialog-Btn charge-margin-dialog-Btn-sure" style="position: absolute;top: 18.7vh;right: 5vw;z-index: 10000">搜索</button>-->
+  <!--表格-->
+  <div class="charge-margin-table">
+    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+      <p-table [columns]="marginTableTitle" [value]="marginTableContent" selectionMode="multiple"  [(selection)]="marginSelect">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <!--<th style="width: 3em"  [ngStyle]="this.marginTableTitleStyle">-->
+              <!--<p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
+            <!--</th>-->
+            <th *ngFor="let col of columns"  [ngStyle]="this.marginTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-margin-table-Btn charge-margin-table-Btn-detail" (click)="marginDetailClick(rowData)" >详情</button>
+              <button class="charge-margin-table-Btn charge-margin-table-Btn-Refund" (click)="marginRefundClick(rowData)" >退款</button>
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-margin-table-Btn charge-margin-table-Btn-detail" (click)="marginDetailClick(rowData)" >详情</button>
+              <button class="charge-margin-table-Btn charge-margin-table-Btn-Refund" (click)="marginRefundClick(rowData)" >退款</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+  </div>
+  <!--退款弹框-->
+  <p-dialog header="退款" [(visible)]="marginRefundDialog" [width]="600" >
+    <!--Content-->
+    <div class="ui-g ui-fluid">
+      <!--报表显示数据-->
+      <div class="ui-g-12" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-2"></div>
+        <div class="ui-g-3">
+           <span>退款金额:</span>
+        </div>
+        <div class="ui-g-6">
+          <input type="text" pInputText placeholder="请输入退款金额">
+        </div>
+        <div class="ui-g-2"></div>
+      </div>
+      <div class="ui-g-12" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-2"></div>
+        <div class="ui-g-3">
+           <span>抵扣物业费金额:</span>
+        </div>
+        <div class="ui-g-6">
+          <input type="text" pInputText placeholder="请输入抵扣物业费金额">
+        </div>
+        <div class="ui-g-2"></div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="charge-margin-dialog-Btn charge-margin-dialog-Btn-sure" (click)="marginSureClick()">确 认</button>
+        <button class="charge-margin-dialog-Btn charge-margin-dialog-Btn-false" (click)="marginFaleseClick()">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <!--详情弹框-->
+  <p-dialog header="保证金详情" [(visible)]="marginDetailDialog" [width]="600"  >
+    <!--Content-->
+    <div class="ui-g ui-fluid">
+      <!--报表显示数据-->
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>订单编号:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>A234</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>单据编号:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>Aasdas</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>房屋编号:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>A3-2506</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>房屋面积:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>123平米</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>业主:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>李先生</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>业主电话:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>18385076518</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>缴费人:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>张三</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>缴费人电话:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>1233451231</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>实收账单:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>￥2000</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>缴费时间:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>2019-3-4</span>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-4">
+          <span>缴费类型:</span>
+        </div>
+        <div class="ui-g-8">
+          <span>支付宝</span>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="charge-margin-dialog-Btn charge-margin-dialog-Btn-sure" (click)="marginSureClick()">确 认</button>
+        <button class="charge-margin-dialog-Btn charge-margin-dialog-Btn-false" (click)="marginDetailDialog=false">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option"></rbi-paging>
+</div>
+

@@ -1,0 +1,493 @@
+<div class="bf-toll">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="bf-toll-header">
+    <div class=" ui-g-4">
+      <div class="ui-g-1 bf-toll-header-btn bf-toll-header-btn-add" (click)="tollAddClick()">
+        <img class="bf-toll-header-img-add" src="assets/images/ic_add.png" alt="">
+        <span>增 加</span>
+      </div>
+      <div class="ui-g-1 bf-toll-header-btn bf-toll-header-btn-modify" (click)="tollModifyClick()">
+        <img class="bf-toll-header-img-modify" src="assets/images/ic_modify.png" alt="">
+        <span>修 改</span>
+      </div>
+      <div class="ui-g-1 bf-toll-header-btn bf-toll-header-btn-delete" (click)="tollDeleteClick()">
+        <img class="bf-toll-header-img-delete" src="assets/images/ic_delete.png" alt="">
+        <span>删 除</span>
+      </div>
+    </div>
+    <!--搜索-->
+    <div class="ui-inputgroup bf-toll-header-search">
+      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">
+      <button id="disabled-btn" class="bf-toll-header-btn-search" type="button"  (click)="tollSearchClick()"  label="搜索">搜索</button>
+    </div>
+  </div>
+  <!--表格-->
+  <div class="bf-toll-table">
+    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+      <p-table [columns]="tollTableTitle" [value]="tollTableContent"   [(selection)]="tollSelect" (onRowSelect)="tollonRowSelect($event)">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th style="width: 3em"  [ngStyle]="this.tollTableTitleStyle">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th *ngFor="let col of columns"  [ngStyle]="this.tollTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td>
+              <button class="bf-toll-table-Btn" (click)="toolDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td>
+              <button class="bf-toll-table-Btn" (click)="toolDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+
+  </div>
+  <!--增加弹窗-->
+  <p-dialog header="信息添加" [(visible)]="tollAddDialog" [width]="1000" >
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeCode">项目名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addchargeCode" type="text" pInputText placeholder="请输入收费项目名称" [(ngModel)]="tollTitle.chargeName">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeType">项目类型：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-dropdown  id="addchargeType" [options]="optionTollType" scrollHeight="100px" placeholder="请选择项目类型..." [(ngModel)]="tollTitle.chargeType"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeUnit">收费单位：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addchargeUnit" type="text" pInputText placeholder="请输入收费单位" [(ngModel)]="tollTitle.chargeUnit">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeStandard">收费单价：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addchargeStandard" type="text" pInputText placeholder="请输入收费单价" [(ngModel)]="tollTitle.chargeStandard">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >是否可退款：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-dropdown [options]="refundOption" scrollHeight="100px" placeholder="请选择是否可退款" [(ngModel)]="tollTitle.refund"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >启用状态：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-dropdown [options]="enableOption" scrollHeight="100px" placeholder="请选择启用状态" [(ngModel)]="tollTitle.enable"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
+          <p-table [columns]="moreTollMoreTitle" [value]="tollMoreInfo" >
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns;let i = index">
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF'}">
+                <td [ngStyle]="{'text-align': 'center'}">
+                  {{rowIndex+1}}
+                </td>
+                <td  *ngFor="let col of columns.slice(1,columns.length - 1)" >
+                  <div *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' " style="border: 0;background: #FFFFFF; text-align: center">
+                    <p-dropdown [options]="tollAddoption[col.field]" scrollHeight="100px" placeholder="请选择项目类型..." [(ngModel)]="rowData[col.field]"></p-dropdown>
+                    <!--<input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">-->
+                  </div>
+                  <div *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">
+                    <input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">
+                  </div>
+                </td>
+                <td [ngStyle]="{'text-align': 'center'}">
+                  <button class="bf-toll-Modifydialog-Btn"  (click)="deleteTollMoreClick(rowIndex, rowData)">删除</button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-scrollPanel>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <button class="bf-toll-dialog-Btn bf-toll-dialog-Btn-sure" (click)="addMoreTollClick()">添加</button>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="bf-toll-dialog-Btn bf-toll-dialog-Btn-sure" (click)="tollAddSureClick()">确认</button>
+        <button class="bf-toll-dialog-Btn bf-toll-dialog-Btn-false"  (click)="tollAddDialog=false;clearData()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <!--修改弹窗-->
+  <p-dialog header="信息修改" [(visible)]="tollModifyDialog" [width]="1100">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeCode">项目名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <input  type="text" pInputText placeholder="请输入收费项目名称" [(ngModel)]="tollTitle.chargeName">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeType">项目类型：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-dropdown   [options]="optionTollType" scrollHeight="100px" [placeholder]="tollChargeTypeMedify" [(ngModel)]="tollTitle.chargeType"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeUnit">收费单位：</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入收费单位" [(ngModel)]="tollTitle.chargeUnit">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeStandard">收费单价：</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入收费单价" [(ngModel)]="tollTitle.chargeStandard">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >是否可退款：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-dropdown [options]="refundOption" scrollHeight="100px" [placeholder]="tollrefundMedify" [(ngModel)]="tollTitle.refund"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >启用状态：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-dropdown [options]="enableOption" scrollHeight="100px" [placeholder]="tollEnableMedify" [(ngModel)]="tollTitle.enable"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
+          <p-table [columns]="moreTollMoreTitle" [value]="tollMoreInfo" >
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns">
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF'}">
+                <td [ngStyle]="{'text-align': 'center'}">
+                  {{rowIndex+1}}
+                </td>
+                <td  *ngFor="let col of columns.slice(1,columns.length - 1); let i = index" >
+                  <div *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' " style="border: 0;background: #FFFFFF; text-align: center">
+                    <p-dropdown [options]="tollAddoption[col.field]" scrollHeight="100px" [placeholder]="tollModifyDatas[rowIndex][col.field]" [(ngModel)]="rowData[col.field]" (onChange)="changeData(tollMoreInfo)"></p-dropdown>
+                  </div>
+                  <div *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">
+                    <input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">
+                  </div>
+                </td>
+                <td [ngStyle]="{'text-align': 'center'}">
+                  <button class="bf-toll-Modifydialog-Btn"  (click)="deleteTollMoreClick(rowIndex, rowData)">删除</button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-scrollPanel>
+
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <button class="bf-toll-dialog-Btn bf-toll-dialog-Btn-sure" (click)="addMoreTollClick()">添加</button>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="bf-toll-dialog-Btn bf-toll-dialog-Btn-sure" (click)="tollModifySureClick()">确认</button>
+        <button class="bf-toll-dialog-Btn bf-toll-dialog-Btn-false"  (click)="tollModifyDialog=false;clearData()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <!--详情弹框-->
+  <p-dialog header="信息详情" [(visible)]="tollDetailDialog" [width]="800" >
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeCode">项目名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{tollTitle.chargeName}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeType">项目类型：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{tollChargeTypeMedify}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeUnit">收费单位：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{tollTitle.chargeUnit}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addchargeStandard">收费单价：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{tollTitle.chargeStandard}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >是否可退款：</label>
+        </div>
+        <div class="ui-g-8">
+         <span>{{tollrefundMedify}}</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >启用状态：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{tollEnableMedify}}</span>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
+          <p-table [columns]="TollMoreTitleDetail" [value]="tollMoreInfo" >
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns">
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF'}">
+                <td [ngStyle]="{'text-align': 'center'}">
+                  {{rowIndex+1}}
+                </td>
+                <td  *ngFor="let col of columns.slice(1,columns.length);" [ngStyle]="{'text-align': 'center'}">
+                  <div *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' ">
+                    <span>{{tollModifyDatas[rowIndex][col.field]}}</span>
+                  </div>
+                  <div *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">
+                    <span>{{rowData[col.field]}}</span>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-scrollPanel>
+
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <!--<button class="bf-toll-dialog-Btn bf-toll-dialog-Btn-sure" (click)="tollDetailClick()">确认</button>-->
+        <button class="bf-toll-dialog-Btn bf-toll-dialog-Btn-false"  (click)="tollDetailDialog=false;clearData()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+  <!--&lt;!&ndash;项目添加&ndash;&gt;-->
+  <!--<p-dialog header="添加" [(visible)]="tollDialog" [width]="900">-->
+    <!--&lt;!&ndash;Content&ndash;&gt;-->
+    <!--<div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >客户名：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="ownerinfo.surname">-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label>客户性别：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<p-dropdown [options]="sexOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="ownerinfo.sex"></p-dropdown>-->
+
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >客户电话：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone">-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >客户身份：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<p-dropdown [options]="identityOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="ownerinfo.identity"></p-dropdown>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label for="addroomSize">是否正常缴费：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择注销状态..."  [(ngModel)]="ownerinfo.normalPaymentStatus"></p-dropdown>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >物业费开始计费时间：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<p-calendar [(ngModel)]="ownerinfo.startBillingTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >备注：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<textarea  type="text" pInputText placeholder="备注..." [(ngModel)]="ownerinfo.remarks"></textarea>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<p-footer>-->
+      <!--<div class="ui-dialog-buttonpane ui-helper-clearfix">-->
+        <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="owerInfoAddClick()">确认</button>-->
+        <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerDialog=false;">取消</button>-->
+      <!--</div>-->
+    <!--</p-footer>-->
+  <!--</p-dialog>-->
+  <!--<p-dialog header="修改" [(visible)]="ownerModifyDialog" [width]="900">-->
+    <!--&lt;!&ndash;Content&ndash;&gt;-->
+    <!--<div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >客户名：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<input  type="text" pInputText  placeholder="请输入客户名称" [(ngModel)]="ownerinfo.surname">-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label>客户性别：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<p-dropdown [options]="sexOption"  scrollHeight="100px" [placeholder]="ownerinfo.sex"  [(ngModel)]="ownerinfo.sex"></p-dropdown>-->
+
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >客户电话：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<input  type="text" pInputText placeholder="请输入客户电话" [(ngModel)]="ownerinfo.mobilePhone">-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >客户身份：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<p-dropdown [options]="identityOption"  scrollHeight="100px" [placeholder]="ownerinfo.identity"  [(ngModel)]="ownerinfo.identity"></p-dropdown>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label for="addroomSize">是否正常缴费：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+          <!--<p-dropdown [options]="normalChargeOption"  scrollHeight="100px" [placeholder]="ownerinfo.normalPaymentStatus"  [(ngModel)]="ownerinfo.normalPaymentStatus"></p-dropdown>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >物业费开始计费时间：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<p-calendar [(ngModel)]="ownerinfo.startBillingTime" [placeholder]="ownerinfo.startBillingTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<label >备注：</label>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<textarea  type="text" pInputText placeholder="请输入备注" [(ngModel)]="ownerinfo.remarks"></textarea>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<p-footer>-->
+      <!--<div class="ui-dialog-buttonpane ui-helper-clearfix">-->
+        <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="owerInfoModifyClick()">确认</button>-->
+        <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerModifyDialog=false;">取消</button>-->
+      <!--</div>-->
+    <!--</p-footer>-->
+  <!--</p-dialog>-->
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+</div>

@@ -1,0 +1,98 @@
+<div class="set-role">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left':'10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="set-role-header">
+    <div class=" ui-g-4">
+      <!--<div class="ui-g-1 set-role-header-btn set-role-header-btn-add" (click)="roleAddClick()">-->
+        <!--<img class="set-role-header-img-add" src="assets/images/ic_add.png" alt="">-->
+        <!--<span>增 加</span>-->
+      <!--</div>-->
+      <div class="ui-g-1 set-role-header-btn set-role-header-btn-modify" (click)="roleConfigClick()">
+        <img class="set-role-header-img-modify" src="assets/images/ic_modify.png" alt="">
+        <span>配  置</span>
+      </div>
+      <div class="ui-g-1 set-role-header-btn set-role-header-btn-delete" (click)="roleDeleteClick()">
+        <img class="set-role-header-img-delete" src="assets/images/ic_delete.png" alt="">
+        <span>删 除</span>
+      </div>
+    </div>
+    <!--搜索-->
+    <div class="ui-inputgroup set-role-header-btn-search">
+      <input type="text" pInputText placeholder="请输入权限编码" #input>
+      <button   type="button"  (click)="roleSearchClick()"  label="搜索" style="outline: none;border:0;background: #5E6372;width: 6vw;color: #fff;margin-left: 1vw;border-radius: 5px">搜索</button>
+      <!--<span class="ui-inputgroup-addon" (click)="exportSearchClick($event)"><i class="fa fa-search"></i></span>-->
+    </div>
+  </div>
+  <!--表格-->
+  <div class="set-role-table">
+    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+      <p-table [columns]="roleTableTitle" [value]="roleTableContent" [(selection)]="roleSelect">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th style="width: 3em"  [ngStyle]="this.roleTableTitleStyle">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th *ngFor="let col of columns"  [ngStyle]="this.roleTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns" >
+              {{rowData[col.field]}}
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns" >
+              {{rowData[col.field]}}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+
+  </div>
+  <!--增加弹窗-->
+  <p-dialog header="信息添加" [(visible)]="roleAddDialog"  [width]="800" (onHide)="roleAddCloseClick()">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}" >
+      <div class="ui-g-12" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-3">
+          <label>用户名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-dropdown #addSetType [options]="RoleCodeList" scrollHeight="100px" placeholder="请选择设置类型..." (onChange)="setUserTypeChange($event)"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-12" [ngStyle]="{'line-height':'3vh'}">
+        <div class="ui-g-3">
+          <label for="settingName">角色名称：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <div class="ui-g-4" *ngFor="let item of primitList">
+            <p-checkbox  id="settingName" [label]="item.label" [value]="item.value" type="text" [(ngModel)]="roleDatas" ></p-checkbox>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button  class="set-role-dialog-Btn set-role-dialog-Btn-sure" (click)="roleAddSureClick()">确认</button>
+        <button  class="set-role-dialog-Btn set-role-dialog-Btn-false" (click)="roleAddCloseClick()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+</div>

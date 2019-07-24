@@ -1,0 +1,136 @@
+.charge-details{
+  //头部按钮
+  .charge-details-header {
+    height: 12vh;
+    //.charge-details-header-btn {
+    //  color: #fff;
+    //  width: 6vw;
+    //  margin-top: 4vh;
+    //  border: 0;
+    //  text-align: center;
+    //  border-radius: 5px;
+    //}
+    //.charge-details-header-btn-add {
+    //  margin-left: 2vw;
+    //  background: #55AB7F;
+    //  .charge-details-header-img-add{
+    //    width: 18px;
+    //    height: 18px;
+    //    vertical-align: bottom;
+    //    margin-right: 5px;
+    //  }
+    //}
+    //.charge-details-header-btn-modify{
+    //  margin-left: 1vw;
+    //  background: #3A78DA;
+    //  .charge-details-header-img-modify {
+    //    width: 20px;
+    //    height: 20px;
+    //    vertical-align: bottom;
+    //    margin-right: 5px;
+    //  }
+    //}
+    //.charge-details-header-btn-delete{
+    //  margin-left: 1vw;
+    //  background: #A84847;
+    //}
+    //.charge-details-header-btn-delete:hover{
+    //  //margin-left: 1vw;
+    //  background: #A84847;
+    //}
+    ::ng-deep .ui-dropdown{
+      width: 5% !important;
+      min-width: 8em;
+      line-height: 2vh;
+    }
+    .charge-details-header-search{
+      position: absolute;
+      margin-top: 5.3vh;
+      right: 6vw;
+      .charge-details-header-btn-search{
+        outline: none;
+        border:0;
+        background: #5E6372;
+        width: 6vw;
+        color: #fff;
+        margin-left: 1vw;
+        border-radius: 5px;
+        cursor:pointer;
+
+      }
+      .charge-details-header-btn-search:hover{
+        background: #4B5062;
+      }
+    }
+
+  }
+  //表格
+  .charge-details-table{
+    margin-left: 2vw;
+    margin-right: 2vw;
+    //margin-top: 14vh;
+    height: 60vh;
+    //去掉table边框
+    ::ng-deep .ui-table .ui-table-thead>tr >th{
+      border: 0;
+
+    }
+    ::ng-deep .ui-table .ui-table-tbody>tr >td{
+      border: 0;
+    }
+    //隐藏滚动条
+    ::ng-deep .custombar .ui-scrollpanel-bar {
+      background-color: rgba(0, 0, 0, 0);
+      transition: background-color .3s;
+    }
+    ::ng-deep .custombar .ui-scrollpanel-content{
+      padding-right: 0;
+    }
+    .charge-details-table-Btn{
+      width: 6vw;
+      text-align: center;
+      border-radius: 5px;
+      height: 3vh;
+      outline: none;
+      color: #fff;
+      border: 0;
+      background: #6A72A1;
+      cursor:pointer;
+
+      //text-align: center;
+    }
+    .charge-details-table-Btn:hover{
+      background: #50588E;
+    }
+  }
+
+  //弹框按钮
+  .charge-details-dialog-Btn{
+    width: 6vw;
+    text-align: center;
+    border-radius: 5px;
+    height: 4vh;
+    outline: none;
+    color: #fff;
+    border: 0;
+    //text-align: center;
+  }
+  .charge-details-dialog-Btn-sure{
+    //background: #449D44;
+    background: #449D44;
+    cursor:pointer;
+
+  }
+  .charge-details-dialog-Btn-sure:hover{
+    //background: #275D27;
+    background: #275D27;
+  }
+  .charge-details-dialog-Btn-false{
+    background: #F0AD4E;
+    cursor:pointer;
+
+  }
+  .charge-details-dialog-Btn-false:hover{
+    background: #956A29;
+  }
+}

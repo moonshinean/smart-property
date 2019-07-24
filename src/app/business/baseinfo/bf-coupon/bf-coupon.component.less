@@ -1,0 +1,153 @@
+.bf-coupon{
+  //头部按钮
+  .bf-coupon-header {
+    height: 12vh;
+    .bf-coupon-header-btn {
+      color: #fff;
+      width: 6vw;
+      margin-top: 4vh;
+      border: 0;
+      //font-size: 0.875rem;
+      text-align: center;
+      border-radius: 5px;
+      cursor:pointer;
+    }
+    .bf-coupon-header-btn-add {
+      margin-left: 2vw;
+      background: #55AB7F;
+      .bf-coupon-header-img-add{
+        width: 18px;
+        height: 18px;
+        vertical-align: bottom;
+        margin-right: 5px;
+      }
+    }
+    .bf-coupon-header-btn-modify{
+      margin-left: 1vw;
+      background: #3A78DA;
+      .bf-coupon-header-img-modify {
+        width: 20px;
+        height: 20px;
+        vertical-align: bottom;
+        margin-right: 5px;
+      }
+    }
+    .bf-coupon-header-btn-delete{
+      margin-left: 1vw;
+      background: #A84847;
+      .bf-coupon-header-img-delete{
+        width: 18px;
+        height: 18px;
+        vertical-align: bottom;
+        margin-right: 5px;
+      }
+    }
+    ::ng-deep .ui-dropdown{
+      width: 5% !important;
+      min-width: 6em;
+    }
+    .bf-coupon-header-search{
+      position: absolute;
+      margin-top: 5.3vh;
+      right: 6vw;
+      .bf-coupon-header-btn-search{
+        outline: none;
+        border:0;
+        background: #5E6372;
+        width: 5vw;
+        color: #fff;
+        margin-left: 1vw;
+        border-radius: 5px;
+        cursor:pointer;
+      }
+      .bf-coupon-header-btn-search:hover{
+        background: #4B5062;
+      }
+    }
+
+
+  }
+  //表格
+  .bf-coupon-table{
+    margin-left: 2vw;
+    margin-right: 2vw;
+    //margin-top: 14vh;
+    height: 60vh;
+    //去掉table边框
+    ::ng-deep .ui-table .ui-table-thead>tr >th{
+      border: 0;
+
+    }
+    ::ng-deep .ui-table .ui-table-tbody>tr >td{
+      border: 0;
+    }
+    //隐藏滚动条
+    ::ng-deep .custombar .ui-scrollpanel-bar {
+      background-color: rgba(0, 0, 0, 0);
+      transition: background-color .3s;
+    }
+    ::ng-deep .custombar .ui-scrollpanel-content{
+      padding-right: 0;
+    }
+    .bf-coupon-table-Btn{
+      width: 6vw;
+      text-align: center;
+      border-radius: 5px;
+      height: 3.5vh;
+      outline: none;
+      color: #fff;
+      border: 0;
+      background: #6A72A1;
+      //text-align: center;
+      cursor:pointer;
+
+    }
+    .bf-coupon-table-Btn:hover{
+      background: #50588E;
+    }
+  }
+
+  //弹框按钮
+  .bf-coupon-dialog-Btn{
+    width: 4vw;
+    text-align: center;
+    border-radius: 5px;
+    height: 4vh;
+    outline: none;
+    color: #fff;
+    border: 0;
+    cursor:pointer;
+  }
+  .bf-coupon-dialog-Btn-sure{
+    background: #449D44;
+  }
+  .bf-coupon-dialog-Btn-sure:hover{
+    background: #275D27;
+  }
+  .bf-coupon-dialog-Btn-false{
+    background: #F0AD4E;
+  }
+  .bf-coupon-dialog-Btn-false:hover{
+    background: #956A29;
+  }
+  .bf-coupon-bottom-Btn {
+    background: #449D44;
+    right: 6vw;
+    position: absolute;
+    height: 3vh;
+    font-size: 0.7rem;
+    cursor:pointer;
+    //margin-top: 2vh;
+
+  }
+}
+::ng-deep .ui-dialog-titlebar{
+  text-align: center;
+  font-size: 1rem;
+}
+::ng-deep .ui-dialog-content{
+  overflow: visible !important;
+}
+::ng-deep p-button {
+  display: none;
+}

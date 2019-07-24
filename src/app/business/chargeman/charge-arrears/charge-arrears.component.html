@@ -1,0 +1,155 @@
+<div class="charge-arrears">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="charge-arrears-header">
+    <div class="ui-g-12">
+      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">
+        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>
+        <p-dropdown [options]="SearchOption.village" scrollHeight="100px" placeholder="请选择支付类型..."></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">地块：</label>
+        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择支付类型..."></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>
+        <p-dropdown [options]="SearchOption.building" scrollHeight="100px" placeholder="请选择支付类型..."></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">单元：</label>
+        <p-dropdown [options]="SearchOption.unit"  scrollHeight="100px" placeholder="请选择支付类型..."></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">房间：</label>
+        <p-dropdown [options]="SearchOption.room"  scrollHeight="100px" placeholder="请选择支付类型..."></p-dropdown>
+      </div>
+  </div>
+    <!--//搜索-->
+    <div class="ui-inputgroup charge-arrears-header-search">
+      <input type="text" pInputText placeholder="请输入缴费人" #input>
+      <button id="disabled-btn" class="charge-arrears-header-btn-search" type="button"  (click)="arrearsSearchClick($event)"  label="搜索">搜索</button>
+    </div>
+  </div>
+  <!--表格-->
+  <div class="charge-arrears-table">
+    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+      <p-table [columns]="arrearsTableTitle" [value]="arrearsTableContent" selectionMode="multiple"  [(selection)]="arrearsSelect">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th *ngFor="let col of columns"  [ngStyle]="this.arrearsTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-arrears-table-Btn" (click)="arrearsDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-arrears-table-Btn" (click)="arrearsDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+  </div>
+  <!--详情弹框-->
+  <p-dialog header="欠费详情" [(visible)]="arrearsDialog" [width]="800" >
+    <!--Content-->
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>订单编号：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>A3412</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>单据编号：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>A3412</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>房屋编号：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>A3-2015</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>房屋面积：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>123平米</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>业主：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>李先生</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>业主电话：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>12793087234</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>欠费项目：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>物业费</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>欠费月数：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>3个月</span>
+        </div>
+      </div>
+
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>欠费金额：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>￥48</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>欠费时间：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>2019-1-14</span>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="charge-arrears-dialog-Btn charge-arrears-dialog-Btn-sure" (click)="this.arrearsDialog = false">确 认</button>
+        <button class="charge-arrears-dialog-Btn charge-arrears-dialog-Btn-false" (click)="this.arrearsDialog = false">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option"></rbi-paging>
+</div>
+

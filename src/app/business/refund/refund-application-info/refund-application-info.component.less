@@ -1,0 +1,145 @@
+.refund-applicationInfo{
+  //头部按钮
+  .refund-applicationInfo-header {
+    height: 12vh;
+    .refund-applicationInfo-header-btn {
+      color: #fff;
+      width: 6vw;
+      margin-top: 4vh;
+      border: 0;
+      text-align: center;
+      border-radius: 5px;
+    }
+    .refund-applicationInfo-header-btn-add {
+      margin-left: 2vw;
+      background: #55AB7F;
+      .refund-applicationInfo-header-img-add{
+        width: 18px;
+        height: 18px;
+        vertical-align: bottom;
+        margin-right: 5px;
+      }
+    }
+    .refund-applicationInfo-header-btn-modify{
+      margin-left: 2vw;
+      background: #3A78DA;
+      .refund-applicationInfo-header-img-modify {
+        width: 20px;
+        height: 20px;
+        vertical-align: bottom;
+        margin-right: 5px;
+      }
+    }
+    .refund-applicationInfo-header-btn-delete{
+      margin-left: 1vw;
+      background: #A84847;
+      .refund-applicationInfo-header-img-delete{
+        width: 18px;
+        height: 18px;
+        vertical-align: bottom;
+        margin-right: 5px;
+      }
+    }
+    ::ng-deep .ui-dropdown{
+      width: 5% !important;
+      min-width: 6em;
+    }
+    .refund-applicationInfo-header-search{
+      position: absolute;
+      margin-top: 5.3vh;
+      right: 6vw;
+      .refund-applicationInfo-header-btn-search{
+        outline: none;
+        border:0;
+        background: #5E6372;
+        width: 5vw;
+        color: #fff;
+        margin-left: 1vw;
+        border-radius: 5px;
+        cursor:pointer;
+      }
+      .refund-applicationInfo-header-btn-search:hover{
+        background: #4B5062;
+      }
+    }
+
+  }
+  //表格
+  .refund-applicationInfo-table{
+    margin-left: 2vw;
+    margin-right: 2vw;
+    //margin-top: 14vh;
+    height: 60vh;
+    //去掉table边框
+    ::ng-deep .ui-table .ui-table-thead>tr >th{
+      border: 0;
+
+    }
+    ::ng-deep .ui-table .ui-table-tbody>tr >td{
+      border: 0;
+    }
+    //隐藏滚动条
+    ::ng-deep .custombar .ui-scrollpanel-bar {
+      background-color: rgba(0, 0, 0, 0);
+      transition: background-color .3s;
+    }
+    ::ng-deep .custombar .ui-scrollpanel-content{
+      padding-right: 0;
+    }
+    .refund-applicationInfo-table-Btn{
+      width: 6vw;
+      text-align: center;
+      border-radius: 5px;
+      height: 3.5vh;
+      outline: none;
+      color: #fff;
+      border: 0;
+      background: #6A72A1;
+      //text-align: center;
+      cursor:pointer;
+
+    }
+    .refund-applicationInfo-table-Btn:hover{
+      background: #50588E;
+    }
+  }
+  //弹框按钮
+  .refund-applicationInfo-dialog-Btn{
+    width: 4vw;
+    text-align: center;
+    border-radius: 5px;
+    height: 4vh;
+    outline: none;
+    color: #fff;
+    border: 0;
+  }
+  .refund-applicationInfo-dialog-Btn-sure{
+    background: #449D44;
+  }
+  .refund-applicationInfo-dialog-Btn-sure:hover{
+    background: #275D27;
+  }
+  .refund-applicationInfo-dialog-Btn-false{
+    background: #F0AD4E;
+  }
+  .refund-applicationInfo-dialog-Btn-false:hover{
+    background: #956A29;
+  }
+  ::ng-deep .ui-g-6 {
+    padding: 0;
+  }
+}
+::ng-deep .ui-dialog-titlebar{
+  text-align: center;
+  font-size: 1rem;
+}
+::ng-deep .ui-dialog-content{
+  overflow: visible !important;
+}
+::ng-deep p-button {
+  display: none;
+}
+//::ng-deep .ui-dropdown-panel .ui-dropdown-list{
+//  z-index: 999 !important;
+//  overflow: visible !important;
+//}

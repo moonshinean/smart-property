@@ -1,0 +1,86 @@
+.main-statis{
+  margin-top: 4vh;
+  .statis {
+    width: 81vw;
+    color: #DEDEDE;
+    .Payment {
+      width: 25vw;
+      height: 40vh;
+      background: #33353C;
+      position: absolute;
+      border-radius: 10px;
+      h4 {
+        margin-left: 17vw;
+        color: #E6E6E7;
+        font-weight: bold;
+      }
+    }
+    .first {
+      margin-left: 28.1vw;
+      img{
+        width: 20px;
+        height: 20px;
+        margin-left: 1vw;
+        position: absolute;
+        top: 3vh;
+      }
+      .bar_text{
+        margin-left: 2.5vw;
+        position: absolute;
+        top: 3vh;
+        font-size: 14px;
+        color: #3A7ADF;
+      }
+
+    }
+    .second {
+      margin-left: 56vw;
+      img {
+        width: 18px;
+        height: 18px;
+        margin-left: 1vw;
+        position: absolute;
+        top: 3.3vh;
+      }
+      .pie_text{
+        margin-left: 2.5vw;
+        position: absolute;
+        top: 3vh;
+        font-size: 14px;
+        color: #3A7ADF;
+      }
+      h4 {
+        margin-left: 19vw;
+        color: #E6E6E7;
+        font-weight: bold;
+      }
+      .list_event {
+        width: 24vw;
+        height: 32vh;
+        //margin-top: 3vh;
+        //margin-left: 0.5vw;
+        div {
+          background: #646464;
+          border-radius: 10px;
+          width: 24vw;
+          height: 5vh;
+          margin-top: 0.5vh;
+          margin-left: 0.5vw;
+          line-height: 5vh;
+          color: #DEDEDE;
+          .event_text{
+            margin-left: 1vw;
+          }
+        }
+      }
+    }
+  }
+  //隐藏滚动条
+  ::ng-deep .custombar .ui-scrollpanel-bar {
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color .3s;
+  }
+  ::ng-deep .custombar .ui-scrollpanel-content{
+    padding-right: 0;
+  }
+}

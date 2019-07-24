@@ -1,0 +1,53 @@
+export class Vehicle {
+  villageCode?: number; // 小区编号
+  villageName?: string; // 小区名称
+  regionCode?: string; // 地块编号
+  regionName?: string; // 地块名称
+  buildingCode?: string; // 楼宇编号
+  buildingName?: number; // 楼宇名称
+  unitCode?: number; // 单元编号
+  unitName?: number; // 单元名称
+  roomCode?: number; // 房间代码
+  organizationId?: number; // 组织编号
+  organizationName?: number; // 组织名称
+  licensePlateNumber?: number; // 车牌号
+  licensePlateColor?: number; // 车牌颜色
+  licensePlateType?: number; // 车牌类型
+  vehicleOriginalType?: number; // 车辆原始类型
+  idt?: number; // 插入时间
+  udt?: number; // 更新时间
+}
+export class AddVehicle {
+  villageCode?: number; // 小区编号
+  villageName?: string; // 小区名称
+  regionCode?: string; // 地块编号
+  regionName?: string; // 地块名称
+  buildingCode?: string; // 楼宇编号
+  buildingName?: number; // 楼宇名称
+  unitCode?: number; // 单元编号
+  unitName?: number; // 单元名称
+  roomCode?: number; // 房间代码
+  organizationId?: number; // 组织编号
+  organizationName?: number; // 组织名称
+  licensePlateNumber?: number; // 车牌号
+  licensePlateColor?: number; // 车牌颜色
+  licensePlateType?: number; // 车牌类型
+  vehicleOriginalType?: number; // 车辆原始类型
+}
+export class ModifyVehicle {
+  villageCode?: number; // 小区编号
+  villageName?: string; // 小区名称
+  regionCode?: string; // 地块编号
+  regionName?: string; // 地块名称
+  buildingCode?: string; // 楼宇编号
+  buildingName?: number; // 楼宇名称
+  unitCode?: number; // 单元编号
+  unitName?: number; // 单元名称
+  roomCode?: number; // 房间代码
+  organizationId?: number; // 组织编号
+  organizationName?: number; // 组织名称
+  licensePlateNumber?: number; // 车牌号
+  licensePlateColor?: number; // 车牌颜色
+  licensePlateType?: number; // 车牌类型
+  vehicleOriginalType?: number; // 车辆原始类型
+}

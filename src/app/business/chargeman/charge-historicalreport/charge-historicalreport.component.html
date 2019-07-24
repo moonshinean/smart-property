@@ -1,0 +1,175 @@
+<!--退款记录-->
+<div class="charge-historicalport">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="charge-historicalport-header">
+    <!--搜索-->
+    <div class="ui-inputgroup charge-historicalport-header-search">
+      <input type="text" pInputText placeholder="请输入报表类型" #input>
+      <button id="disabled-btn" class="charge-historicalport-header-btn-search" type="button"  (click)="historicalportSearchClick()"  label="搜索">搜索</button>
+      <!--<span class="ui-inputgroup-addon" (click)="historicalportSearchClick($event)"><i class="fa fa-search"></i></span>-->
+    </div>
+  </div>
+  <!--表格-->
+  <div class="charge-historicalport-table">
+    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+      <p-table [columns]="historicalportTableTitle" [value]="historicalportTableContent" selectionMode="multiple"  [(selection)]="historicalportSelect">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th *ngFor="let col of columns"  [ngStyle]="this.historicalportTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-historicalport-table-Btn" (click)="historicalportDetailClick(rowData)">下载</button>
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-historicalport-table-Btn" (click)="historicalportDetailClick(rowData)">下载</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+  </div>
+  <!--详情弹框-->
+  <!--<p-dialog header="表格设置" [(visible)]="historicalportDetailDialog" [width]="800"  >-->
+    <!--&lt;!&ndash;Content&ndash;&gt;-->
+    <!--<div class="ui-g ui-fluid">-->
+      <!--&lt;!&ndash;报表显示数据&ndash;&gt;-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>订单编号：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>A3412</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>订单编号：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>A3412</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>房屋编号：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>A3-2015</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>房屋面积：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>123平米</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>业主：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>李先生</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>业主电话：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>12793087234</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>退款项目：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>保证金</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>退款人：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>小伟</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>退款电话：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>1239234456</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>退款人电话：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>1239234456</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>退款金额：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>￥2000</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>抵扣物业费金额：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>￥0</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>退款方式：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>退换银行卡</span>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="ui-g-6">-->
+        <!--<div class="ui-g-4">-->
+          <!--<span>退款时间：</span>-->
+        <!--</div>-->
+        <!--<div class="ui-g-8">-->
+          <!--<span>2019-3-2</span>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<p-footer>-->
+      <!--<div class="ui-dialog-buttonpane ui-helper-clearfix">-->
+        <!--<button class="charge-historicalport-dialog-Btn charge-historicalport-dialog-Btn-sure" (click)="historicalportSureClick()">确认</button>-->
+        <!--<button class="charge-historicalport-dialog-Btn charge-historicalport-dialog-Btn-false" (click)="historicalportFaleseClick()">取 消</button>-->
+      <!--</div>-->
+    <!--</p-footer>-->
+  <!--</p-dialog>-->
+  <rbi-paging [option]="option"></rbi-paging>
+</div>
+

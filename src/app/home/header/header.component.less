@@ -1,0 +1,83 @@
+.header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 998;
+  height: 8vh;
+  background: #33353C;
+  background: -moz-linear-gradient(-206deg, #33353C 5%, #33353C 100%);
+  background: -webkit-linear-gradient(-206deg, #33353C 5%, #33353C 100%);
+  background: linear-gradient(-206deg, #33353C 5%, #33353C 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#33353C", endColorstr="#33353C",GradientType=1 );
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  cursor:pointer;
+  .header-title{
+    margin-right: 15px;
+    cursor: pointer;
+    color: white;
+    box-shadow:  2px 13px 15px  #25242A;
+  }
+  .header-title-username {
+    float: right;
+    margin-right: 13vw;
+    margin-left: 1vw;
+    margin-top: 1.7vh;
+    span {
+      display: block;
+      height: 3vh;
+      font-size: 12px;
+    }
+  }
+  .header-title-userimg {
+    width: 40px;
+    height: 40px;
+    float: right;
+    margin-top: 1.8vh;
+  }
+  .header-titlebar {
+    width: auto;
+    height:  12vh;
+    margin-right: 24vw;
+    margin-left: 8vw;
+    border-left: 3vh solid transparent;
+    border-right: 14vh solid transparent;
+    border-top:  12vh solid #2F3138;
+    .header-titlebar-titleimg{
+      width: 35px;
+      height: 35px;
+      position: absolute;
+      top: 2vh;
+      vertical-align: middle;
+      margin-left: 2vw;
+    }
+    .header-titlebar-titlename {
+      font-size: 1.2rem;
+      color: white;
+      position: absolute;
+      top: 2.4vh;
+      margin-left: 5vw;
+    }
+    .header-titlebar-bar {
+      color: white;
+      width: 54vw;
+      position: absolute;
+      top: 8vh;
+      margin-left: 3vw;
+      //background: aqua;
+      span{
+        width: 6.6vw;
+        text-align: center;
+        //margin-left: 3.5vw;
+        font-size: 0.875rem;
+        outline: none;
+        display: inline-block;
+      }
+      //span:first-child{
+      //  color: #3A7ADF;
+      //}
+    }
+  }
+}

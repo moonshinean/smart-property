@@ -1,0 +1,181 @@
+<!--退款记录-->
+<div class="charge-prepayment">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="charge-prepayment-header">
+    <div class="ui-g-12">
+      <!--<div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">-->
+        <!--<label style="color: #fff;margin-left: 0.5vw" >小区：</label>-->
+        <!--<p-dropdown [options]="SearchOption.village" scrollHeight="100px" placeholder="请选择小区..."></p-dropdown>-->
+        <!--<label style="color: #fff;margin-left: 0.5vw">地块：</label>-->
+        <!--<p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..."></p-dropdown>-->
+        <!--<label style="color: #fff;margin-left: 0.5vw">楼栋：</label>-->
+        <!--<p-dropdown [options]="SearchOption.building" scrollHeight="100px" placeholder="请选择楼栋..."></p-dropdown>-->
+        <!--<label style="color: #fff;margin-left: 0.5vw">单元：</label>-->
+        <!--<p-dropdown [options]="SearchOption.unit"  scrollHeight="100px" placeholder="请选择单元..."></p-dropdown>-->
+        <!--<label style="color: #fff;margin-left: 0.5vw">房间：</label>-->
+        <!--<p-dropdown [options]="SearchOption.room"  scrollHeight="100px" placeholder="请选择房间..."></p-dropdown>-->
+      <!--</div>-->
+    </div>
+    <div class="ui-inputgroup charge-prepayment-header-search">
+      <input type="text" pInputText placeholder="请输入缴费人" #input>
+      <button id="disabled-btn"class="charge-prepayment-header-btn-search" type="button"  (click)="prepaymentSearchClick($event)"  label="搜索">搜索</button>
+      <!--<span class="ui-inputgroup-addon" (click)="prepaymentSearchClick($event)"><i class="fa fa-search"></i></span>-->
+    </div>
+  </div>
+  <!--表格-->
+  <div class="charge-prepayment-table">
+    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+      <p-table [columns]="prepaymentTableTitle" [value]="prepaymentTableContent" selectionMode="multiple"  [(selection)]="prepaymentSelect">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th *ngFor="let col of columns"  [ngStyle]="this.prepaymentTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-prepayment-table-Btn" (click)="prepaymentDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-prepayment-table-Btn" (click)="prepaymentDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+  </div>
+  <!--详情弹框-->
+  <p-dialog header="预缴详情" [(visible)]="prepaymentDetailDialog" [width]="800"  >
+    <!--Content-->
+    <div class="ui-g ui-fluid">
+      <!--报表显示数据-->
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>订单编号：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>A3412</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>单据编号：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>A3412</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>房屋编号：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>A3-2015</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>房屋面积：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>123平米</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>业主：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>李先生</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>业主电话：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>12793087234</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>预缴项目：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>保证金</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>预缴月数：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>5个月</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>预交方式：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>微信</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>预缴金额：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>￥2000</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>预缴时间：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>2019-3-2</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>缴费人：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>张三</span>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <span>缴费人电话：</span>
+        </div>
+        <div class="ui-g-8">
+          <span>13728373222</span>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="charge-prepayment-dialog-Btn charge-prepayment-dialog-Btn-sure" (click)="prepaymentDetailDialog = false;">确认</button>
+        <button class="charge-prepayment-dialog-Btn charge-prepayment-dialog-Btn-false" (click)="prepaymentDetailDialog = false;">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+</div>
+

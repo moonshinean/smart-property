@@ -1,0 +1,125 @@
+<div class="set-part">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left':'10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="set-part-header">
+    <div class=" ui-g-4">
+      <div class="ui-g-1 set-part-header-btn set-part-header-btn-add" (click)="partAddClick()">
+        <img class="set-part-header-img-add" src="assets/images/ic_add.png" alt="">
+        <span>增 加</span>
+      </div>
+      <div class="ui-g-1 set-part-header-btn set-part-header-btn-modify" (click)="partModifyClick()">
+        <img class="set-part-header-img-modify" src="assets/images/ic_modify.png" alt="">
+        <span>修 改</span>
+      </div>
+      <div class="ui-g-1 set-part-header-btn set-part-header-btn-delete" (click)="partDeleteClick()">
+        <img class="set-part-header-img-delete" src="assets/images/ic_delete.png" alt="">
+        <span>删 除</span>
+      </div>
+    </div>
+    <!--搜索-->
+    <div class="ui-inputgroup set-part-header-btn-search">
+      <input type="text" pInputText placeholder="请输入权限编码" #input>
+      <button   type="button"  (click)="partSearchClick()"  label="搜索" style="outline: none;border:0;background: #5E6372;width: 6vw;color: #fff;margin-left: 1vw;border-radius: 5px">搜索</button>
+      <!--<span class="ui-inputgroup-addon" (click)="exportSearchClick($event)"><i class="fa fa-search"></i></span>-->
+    </div>
+  </div>
+  <!--表格-->
+  <div class="set-part-table">
+    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+      <p-table [columns]="partTableTitle" [value]="partTableContent" [(selection)]="partSelect">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th style="width: 3em"  [ngStyle]="this.partTableTitleStyle">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th *ngFor="let col of columns"  [ngStyle]="this.partTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns" >
+              {{rowData[col.field]}}
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns" >
+              {{rowData[col.field]}}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+
+  </div>
+  <!--增加弹窗-->
+  <p-dialog header="信息添加" [(visible)]="partAddDialog"  [width]="800" (onHide)="partAddCloseClick()">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}" >
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >角色名称：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <input  type="text" pInputText placeholder="请输入角色名称" [(ngModel)]="partAdd.roleName">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >备 注：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <textarea id="remark" pInputTextarea [(ngModel)]="partAdd.remark" [rows]="3" [cols]="30"></textarea>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button  class="set-part-dialog-Btn set-part-dialog-Btn-sure" (click)="partAddSureClick()">确认</button>
+        <button  class="set-part-dialog-Btn set-part-dialog-Btn-false" (click)="partAddCloseClick()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <!--修改弹窗-->
+  <p-dialog header="信息修改" [(visible)]="partModifyDialog" [width]="800">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >角色名称：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <input  type="text" pInputText placeholder="请输入角色名称" [(ngModel)]="partModify.roleName">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >备 注：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <textarea  pInputTextarea [(ngModel)]="partModify.remark" [rows]="3" [cols]="30"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="set-part-dialog-Btn set-part-dialog-Btn-sure" (click)="partModifySureClick()">确认</button>
+        <button  class="set-part-dialog-Btn set-part-dialog-Btn-false"  (click)="partModifyCloseClick()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+
+</div>

@@ -1,0 +1,27 @@
+.main-event {
+    .event_table {
+      background: #36383F;
+      height: 35vh;
+      width: 81vw;
+      border-radius: 5px;
+      //margin-top: 6vh;
+      margin-top: 15vh;
+    }
+    //去掉table边框
+    ::ng-deep .ui-table .ui-table-thead>tr >th{
+       border: 0;
+
+    }
+    ::ng-deep .ui-table .ui-table-tbody>tr >td{
+      border: 0;
+    }
+    //隐藏滚动条
+    ::ng-deep .custombar .ui-scrollpanel-bar {
+      background-color: rgba(0, 0, 0, 0);
+      transition: background-color .3s;
+    }
+    ::ng-deep .custombar .ui-scrollpanel-content{
+      padding-right: 0;
+    }
+}
+

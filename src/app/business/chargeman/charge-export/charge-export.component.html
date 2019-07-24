@@ -1,0 +1,140 @@
+<div class="charge-export">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="charge-export-header">
+    <div class=" ui-g-8">
+      <div class="ui-g-3" style="margin-top: 2.5vh;color: #fff;margin-left: 2vw;height: 2vh" [ngStyle]="{'line-height':'3vh'}">
+        <div class="ui-g-6" style="line-height: 3.5vh">
+          <label >报表类型：</label>
+        </div>
+        <div class="ui-g-6" style="line-height: 2vh">
+          <p-dropdown [options]="exportTypeOption" [ngStyle]="{'width': '2VW'}" scrollHeight="100px" placeholder="请选择报表类型..." [(ngModel)]="exportCode" (onChange)="exportTypeChange($event)"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableSetClick()">
+        <span>表格设置</span>
+      </div>
+      <div style="margin-left: 2vw" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableClick()">
+         <span>报表导出</span>
+      </div>
+    </div>
+    <!--搜索-->
+    <div class="ui-inputgroup charge-export-header-search">
+      <input type="text" pInputText placeholder="请输入缴费人" #input>
+      <button id="disabled-btn" class="charge-export-header-btn-search" type="button"  (click)="exportSearchClick($event)"  label="搜索" >搜索</button>
+      <!--<span class="ui-inputgroup-addon" (click)="exportSearchClick($event)"><i class="fa fa-search"></i></span>-->
+    </div>
+  </div>
+  <!--<button class="charge-export-dialog-Btn charge-export-dialog-Btn-sure" style="position: absolute;top: 18.7vh;right: 5vw;z-index: 10000">搜索</button>-->
+  <!--表格-->
+  <div class="charge-export-table">
+    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+      <p-table [columns]="exportTableTitle" [value]="exportTableContent" selectionMode="multiple"  [(selection)]="exportSelect">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th *ngFor="let col of columns"  [ngStyle]="this.exportTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-export-table-Btn" (click)="exportDialogClick(rowData)">详情</button>
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              {{rowData[col.field]}}
+            </td>
+            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
+              <button class="charge-export-table-Btn" (click)="exportDialogClick(rowData)">详情</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+  </div>
+  <!--详情弹框-->
+  <p-dialog header="表格设置" [(visible)]="exportDialog" [width]="900"  >
+    <!--Content-->
+    <div class="ui-g ui-fluid">
+      <!--报表显示数据-->
+      <div class="ui-g-12">
+        <!--<div class="ui-g-1"></div>-->
+        <div class="ui-g-2">
+          <span style="font-size: 1rem;font-weight: bold ; font-family: '微软雅黑 Light'">选择报表数据</span>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <div class="ui-g-3" *ngFor="let item of tableSet;let i = index">
+          <p-checkbox  [label]="item.title"  [value]="item.title" name="group" (onChange)="exportChange(i)"></p-checkbox>
+        </div>
+      </div>
+      <!--报表搜索条件-->
+      <div class="ui-g-12">
+        <div class="ui-g-3">
+          <span style="font-size: 1rem;font-weight: bold ; font-family: '微软雅黑 Light'">选择报表搜索条件</span>
+        </div>
+      </div>
+        <div class="ui-g-6" *ngFor="let i of tableTimeSet" style="line-height: 3.8vh">
+          <div class="ui-g-4">
+            <label>{{i.title}}：</label>
+          </div>
+          <div class="ui-g-8">
+            <p-calendar [(ngModel)]="i.time" placeholder="请选择{{i.title}}..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy/mm/dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          </div>
+        </div>
+       <div class="ui-g-6" *ngFor="let item of tableSearchData" style="line-height: 3.8vh">
+         <div class="ui-g-5">
+           <span>{{item.name}}：</span>
+         </div>
+         <div class="ui-g-7" style="line-height: 2vh">
+           <p-dropdown [options]="item.option" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择{{item.name}}.."></p-dropdown>
+         </div>
+       </div>
+        <div class="ui-g-4" *ngFor="let item of tableFuzzySearch" style="line-height: 3.8vh">
+          <div class="ui-g-5">
+            <span>{{item.name}}：</span>
+          </div>
+          <div class="ui-g-7">
+            <input type="text" pInputText placeholder="请输入{{item.name}}..." [(ngModel)]="item.value">
+          </div>
+        </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="charge-export-dialog-Btn charge-export-dialog-Btn-sure" (click)="exportSureClick()">确认</button>
+        <button class="charge-export-dialog-Btn charge-export-dialog-Btn-false" (click)="exportFaleseClick()">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <p-dialog header="表格设置" [(visible)]="exportDetailDialog" [width]="900"  >
+    <!--Content-->
+    <div class="ui-g ui-fluid">
+      <!--报表显示数据-->
+      <div class="ui-g-6" *ngFor="let i of exportDetail">
+        <div class="ui-g-4">
+          <span >{{i.title}}:</span>
+        </div>
+        <div class="ui-g-8">
+          <span >{{i.value}}</span>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="charge-export-dialog-Btn charge-export-dialog-Btn-false" (click)="exportDetailDialog = false">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+</div>
+

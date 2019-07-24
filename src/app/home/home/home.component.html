@@ -1,0 +1,12 @@
+<div class="home">
+  <rbi-header (hiddenSidBar)="homeHiddenSidebar($event)" (sidBarData)="homeSetsidebarData($event)" (mainStyle)="homeSetMainStyle($event)"></rbi-header>
+
+  <rbi-sidebar [hidden]="sidbarHidden" [data]="sidbarItem" ></rbi-sidebar>
+
+  <div class="home-main" #mainStyle>
+      <router-outlet></router-outlet>
+    <!--</div>-->
+  </div>
+  <rbi-footer></rbi-footer>
+</div>
+

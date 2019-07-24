@@ -1,0 +1,312 @@
+<div class="refund-audited">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="refund-audited-header">
+    <div class=" ui-g-12">
+      <!--<div class="ui-g-1 refund-audited-header-btn refund-audited-header-btn-add" (click)="refundAuditeAddClick()">-->
+      <!--<img class="refund-audited-header-img-add" src="assets/images/ic_add.png" alt="">-->
+      <!--<span>增 加</span>-->
+      <!--</div>-->
+      <!--&lt;!&ndash;<div class="ui-g-1 refund-audited-header-btn refund-audited-header-btn-modify" (click)="refundAuditeModifyClick()">&ndash;&gt;-->
+      <!--&lt;!&ndash;<img class="refund-audited-header-img-modify" src="assets/images/ic_modify.png" alt="">&ndash;&gt;-->
+      <!--&lt;!&ndash;<span>修 改</span>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--<div class="ui-g-1 refund-audited-header-btn refund-audited-header-btn-delete" (click)="refundAuditeDeleteClick()">-->
+      <!--<img class="refund-audited-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+      <!--<span>删 除</span>-->
+      <!--</div>-->
+      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">
+        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>
+        <p-dropdown [options]="SearchOption.village" scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">地块：</label>
+        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>
+        <p-dropdown [options]="SearchOption.building" scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">单元：</label>
+        <p-dropdown [options]="SearchOption.unit"  scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)"></p-dropdown>
+      </div>
+    </div>
+    <!--//搜索-->
+    <div class="ui-inputgroup refund-audited-header-search">
+      <input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="refundAuditeSeachData">
+      <button id="disabled-btn" class="refund-audited-header-btn-search" type="button"  (click)="refundAuditeSearchClick()"  label="搜索">搜索</button>
+    </div>
+  </div>
+  <!--表格-->
+  <div class="refund-audited-table">
+    <p-scrollPanel [style]="{width:'100%',height: '95%'}" styleClass="custombar">
+      <p-table [columns]="refundAuditeTableTitle" [value]="refundAuditeTableContent"  [(selection)]="refundAuditeSelect">
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th style="width: 3em"  [ngStyle]="this.refundAuditeTableTitleStyle">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th *ngFor="let col of columns"  [ngStyle]="this.refundAuditeTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns.slice(0,columns.length-1);" >
+              <span *ngIf="col.field === 'money' ">￥</span>{{rowData[col.field]}} <span *ngIf="col.field === 'effectiveTime' ">天</span>
+            </td>
+            <td>
+              <button class="refund-audited-table-Btn" (click)="refundAuditeDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
+              <span *ngIf="col.field === 'money' ">￥</span>{{rowData[col.field]}} <span *ngIf="col.field === 'effectiveTime' ">天</span>
+            </td>
+            <td >
+              <button class="refund-audited-table-Btn" (click)="refundAuditeDetailClick(rowData)">详情</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+  </div>
+
+  <p-dialog header="详细信息" [(visible)]="refundAuditeDetailDialog" [width]="800">
+    <!--Content-->
+    <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
+      <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label >组织名称：</label>
+          </div>
+          <div class="ui-g-8">
+            <span>{{refundAuditeDetail.organizationName}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label >小区名称：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.villageName}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>地块名称：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.regionName}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>楼栋：</label>
+          </div>
+          <div class="ui-g-8">
+            <span>{{refundAuditeDetail.buildingName}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>单元名称：</label>
+          </div>
+          <div class="ui-g-8">
+            <span>{{refundAuditeDetail.unitName}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>房屋编号：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.roomCode}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>客户名称：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.surname}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>住房大小：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.roomSize}}平米</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>项目名称：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.chargeName}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>实收金额：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>￥{{refundAuditeDetail.actualMoneyCollection}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>抵扣金额：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>￥{{refundAuditeDetail.mortgageAmount}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>抵扣原因：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.reasonForDeduction}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>可退还金额：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>￥{{refundAuditeDetail.refundableAmount}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>收费单位：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.chargeUnit}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>缴费人手机号：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.payerPhone}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>缴费人姓名：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.payerName}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>支付方式：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.paymentMethod}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>支付类型：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{paymentTypeDetail}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>退款状态：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundStatusDetail}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>开始时间：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.startTime}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>结束日期：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.dueTime}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>延迟时长：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.delayTime}}天</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>延期原因：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.delayReason}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>责任人：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.personLiable}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>责任人电话：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.personLiablePhone}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>负责机构：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.responsibleAgencies}}</span>
+          </div>
+        </div>
+        <div class="ui-g-6">
+          <div class="ui-g-4">
+            <label>申请退款备注：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span>{{refundAuditeDetail.remark}}</span>
+          </div>
+        </div>
+      </div>
+    </p-scrollPanel>
+
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <!--<button class="refund-audited-dialog-Btn refund-audited-dialog-Btn-sure" (click)="couponModifySureClick()">确认</button>-->
+        <button class="refund-audited-dialog-Btn refund-audited-dialog-Btn-false"  (click)="refundAuditeDetailDialog=false">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadingHide" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+</div>

@@ -1,0 +1,58 @@
+.login{
+  //background-image: url('../../assets/images/background.png');
+  //background-repeat: no-repeat;
+  //.deg135 {
+  background-image:linear-gradient(135deg,#27506C 400px,  #393B40 1000px, #27506C 1900px);
+  //}
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  //background-size:100% 100%;
+  .login-box {
+    width: 600px;
+    margin: 0 auto;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 32px;
+    .login-box-title {
+      text-align: center;
+    }
+    .login-box-footer{
+      text-align: center;
+    }
+    .login-box-form{
+      text-align: center;
+      .login-box-form-btn{
+          line-height: 4vh;
+          margin-top: 4vh;
+        .login-box-form-btn-username{
+          margin-right: 0.5vw;
+        }
+      }
+      .login-box-form-forget-password{
+        margin-top: 1vh;
+        font-size: 14px;
+      }
+      .login-box-form-submit{
+        text-align: center;
+        .login-box-form-submit-btn{
+          width: 90%;
+          height: 5vh;
+          margin-left: 2vw;
+          margin-top: 3vh;
+          border-radius: 5px;
+          outline: none;
+          color: #fff;
+          font-size: 1rem;
+          border: 0;
+          background: #2E4D67;
+        }
+        .login-box-form-submit-btn:hover {
+          background: #243B50;
+        }
+      }
+    }
+  }
+}

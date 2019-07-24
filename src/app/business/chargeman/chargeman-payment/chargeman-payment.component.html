@@ -1,0 +1,225 @@
+<div class="chargeman-payment">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="chargeman-payment-header">
+    <div class="ui-g-12">
+      <div class="ui-g-1 chargeman-payment-header-btn chargeman-payment-header-btn-delete"  style="margin-left: 2vw" (click)="paymentClick()">
+        <span>缴 费</span>
+      </div>
+      <div style="margin-top: 4.5vh;font-size: 0.875rem">
+        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>
+        <p-dropdown [options]="SearchOption.village"  scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">地块：</label>
+        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>
+        <p-dropdown [options]="SearchOption.building"  scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">单元：</label>
+        <p-dropdown [options]="SearchOption.unit"   scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)"></p-dropdown>
+        <label style="color: #fff;margin-left: 0.5vw">房间：</label>
+        <p-dropdown [options]="SearchOption.room"   scrollHeight="100px" placeholder="请选择房间..." [(ngModel)]="SearchData.roomCode"></p-dropdown>
+      </div>
+    </div>
+    <!--搜索-->
+    <div class="ui-inputgroup chargeman-payment-header-search">
+      <input type="text" pInputText placeholder="请输入业主手机号.."  [(ngModel)]="SearchData.mobilePhone">
+      <button id="disabled-btn" class="chargeman-payment-header-btn-search" type="button"  (click)="paymentSearchClick()"  label="搜索">搜索</button>
+    </div>
+  </div>
+  <!--表格-->
+  <div class="chargeman-payment-table">
+    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+      <p-table [columns]="paymentTableTitle" [value]="paymentTableContent" [(selection)]="paymentSelect" >
+        <ng-template pTemplate="header" let-columns>
+          <tr >
+            <th style="width: 3em"  [ngStyle]="this.paymentTableTitleStyle">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th *ngFor="let col of columns"  [ngStyle]="this.paymentTableTitleStyle">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td>
+              {{rowIndex+1}}
+            </td>
+            <td  *ngFor="let col of columns.slice(1,columns.length)" >
+              {{rowData[col.field]}}
+            </td>
+          </tr>
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+            <td>
+              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+            </td>
+            <td>
+              {{rowIndex+1}}
+            </td>
+            <td  *ngFor="let col of columns.slice(1,columns.length)" >
+              {{rowData[col.field]}}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-scrollPanel>
+
+  </div>
+  <!--项目弹窗-->
+  <p-dialog header="项目选择" [(visible)]="projectSelectDialog" [width]="500" [focusOnShow]="false" [transitionOptions]="'200ms'" [closable]="false">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+      <div class="ui-g-12" *ngFor="let item of paymentProject;let i = index">
+        <div class="ui-g-6">
+          <p-checkbox  [label]="item.chargeName"  [value]="item.chargeName" name="group" (onChange)="projectChange(i)"></p-checkbox>
+        </div>
+        <div class="ui-g-2" [hidden]="!(item.chargeWay === 1)">
+          <label >月数</label>
+        </div>
+        <div class="ui-g-4" [hidden]="!(item.chargeWay === 1)">
+          <p-spinner size="30" [(ngModel)]="item.datedif" [min]="1" [max]="12"></p-spinner>
+        </div>
+        <div class="ui-g-2" [hidden]="!(item.chargeWay === 2)">
+          <label >张数</label>
+        </div>
+        <div class="ui-g-4" [hidden]="!(item.chargeWay === 2)">
+          <p-spinner size="30" [(ngModel)]="item.datedif" [min]="1" [max]="12"></p-spinner>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" (click)="paymentProjectSureClick()">确认</button>
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false"  (click)="payProjectFalseClick()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <!--缴费弹窗-->
+  <p-dialog header="费用添加" [(visible)]="paymentDialog" [width]="900"  [transitionOptions]="'200ms'"  [closable]="false">
+    <!--Content-->
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <div class="ui-g-4" *ngFor="let item of paymentAddTitle">
+          <div class="ui-g-6" >
+            <label >{{item.name}}:</label>
+          </div>
+          <div class="ui-g-6">
+            <label >{{item.value}}</label>
+          </div>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <p-scrollPanel [style]="{width:'100%',height: '20vh'}" styleClass="custombar">
+          <p-table [columns]="paymentDialogTableTitle" [value]="this.paymentItemData">
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns" >
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
+                <td  *ngFor="let col of columns" >
+                  {{rowData[col.field]}}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-scrollPanel>
+      </div>
+      <div class="ui-g-12">
+        <div class="ui-g-5"> </div>
+        <div class="ui-g-2">
+         <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" [ngStyle]="{'width':'6vw'}" (click)="paymentAddProjectClick()">新增项目</button>
+        </div>
+        <div class="ui-g-5"> </div>
+      </div>
+      <div class="ui-g-12">
+         <div class="ui-g-9">
+         </div>
+        <div class="ui-g-3">
+          <div >总计: <span [ngStyle]="{'font-size':'1.2rem'}">￥{{paymentTotle}}</span></div>
+        </div>
+      </div>
+      <div class="ui-g-12" [ngStyle]="{'line-height':'4vh'}">
+        <div class="ui-g-12">
+          <div class="ui-g-4">
+            <div class="ui-g-5">
+              <label for="payerName">缴费人：</label>
+            </div>
+            <div class="ui-g-7">
+              <input  id="payerName" type="text" pInputText placeholder="请输入缴费人..." [(ngModel)]="paymentOrderAdd.payerName">
+            </div>
+          </div>
+          <div class="ui-g-4">
+            <div class="ui-g-5">
+              <label for="payerPhone">缴费人电话：</label>
+            </div>
+            <div class="ui-g-7">
+              <input  id="payerPhone" type="text" pInputText placeholder="请输入电话..." [(ngModel)]="paymentOrderAdd.payerPhone" [maxlength]="11" (blur)="paymentPhoneChange(paymentOrderAdd.payerPhone)"  >
+              <span style="color: red" [hidden]="phoneErrorToast">手机号格式错误</span>
+            </div>
+          </div>
+          <div class="ui-g-4">
+            <div class="ui-g-6">
+              <label >应收账单：</label>
+            </div>
+            <div class="ui-g-6">
+              <label >￥{{paymentTotle}}</label>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-4">
+            <div class="ui-g-5">
+              <label >实收账单：</label>
+            </div>
+            <div class="ui-g-7">
+              <input  type="text" pInputText (input)="getBalance($event)"  [(ngModel)]="this.paymentMoney">
+            </div>
+          </div>
+          <div class="ui-g-4">
+            <div class="ui-g-5">
+              <label >缴费方式：</label>
+            </div>
+            <div class="ui-g-7" style="line-height: 2vh">
+              <p-dropdown [options]="optonDialog" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择支付方式..." (onChange)="payTypeChage($event)"></p-dropdown>
+            </div>
+          </div>
+          <div class="ui-g-4">
+            <div class="ui-g-6">
+              <label >修正金额：</label>
+            </div>
+            <div class="ui-g-6">
+              <label >￥{{Balance}}</label>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-6">
+            <div class="ui-g-2">
+              <label for="remark">备注:</label>
+            </div>
+            <div class="ui-g-10">
+              <textarea id="remark" pInputTextarea [(ngModel)]="paymentOrderAdd.remark" [rows]="3" [cols]="30"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" (click)="paymentSureClick()">确认收款</button>
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" (click)="paymentFaleseClick()">取消收款</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+</div>

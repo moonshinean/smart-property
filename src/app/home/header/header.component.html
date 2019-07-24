@@ -1,0 +1,26 @@
+<div class="header">
+  <div class="header-title">
+    <div  class="header-title-username">
+      <span>用户名：{{username}}</span>
+      <span (click)="loginOutClick()">退出登陆</span>
+    </div>
+    <img src="assets/images/ic_header.png" class="header-title-userimg" [routerLink]="['/persion']">
+    <!--<img src="http://www.gyrbi.com/SmartProperty/assets/images/ic_header.png" class="header-title-userimg">-->
+  </div>
+  <div class="header-titlebar" #titlebar>
+     <img src="assets/images/cloud.png" class="header-titlebar-titleimg"  (click)="closesidBarClick($event)">
+     <!--<img src="http://www.gyrbi.com/SmartProperty/assets/images/cloud.png" class="header-titlebar-titleimg"  (click)="closesidBarClick($event)">-->
+     <span class="header-titlebar-titlename">物业管理智慧策略系统</span>
+
+     <div class="header-titlebar-bar" #headerbar>
+        <span class="header-titlebar-bar-barspan" *ngFor="let i of item" (click)="spanBarClick($event)" [routerLink]="i.router" [ngStyle]="{'color':i.color}">{{i.title}}</span>
+     </div>
+  </div>
+
+  <!--<span class="title" [routerLink]="['/home/main']" [queryParams]="{name: '首页'}">首页</span>-->
+  <!--<span class="title" [routerLink]="['/home/baseinfo']" [queryParams]="{name: 'toll'}">基础信息</span>-->
+  <!--<div class="title-bar">-->
+  <!--</div>-->
+</div>
+<p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+
