@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {LoginService} from '../common/services/login.service';
 import {Router} from '@angular/router';
 import {LocalStorageService} from '../common/services/local-storage.service';
-import {ConfirmationService, MessageService} from 'primeng/api';
 import {PublicMethedService} from '../common/public/public-methed.service';
+import {FormControl, FormGroup, Validator, Validators} from '@angular/forms';
 
 @Component({
   selector: 'rbi-login',
@@ -12,26 +12,46 @@ import {PublicMethedService} from '../common/public/public-methed.service';
 })
 export class LoginComponent implements OnInit {
 
-  public username: any;
-  public password: any;
   public item: any[] = [];
   public loadHidden = true;
+  // public check: any;
   public cleanTimer: any; // 清除时钟
-
+  public userLogin: FormGroup;
   constructor(
     public loginSrv: LoginService,
     private route: Router,
     private localSessionStorage: LocalStorageService,
     private toolSrv: PublicMethedService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
+    this.userLogin = new FormGroup({
+      username: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
+      // passName: new FormControl('', [Validators.required]),
+      check: new FormControl(false),
+    });
+    if (!(this.isOrTrue('username') && this.isOrTrue('password'))) {
+      this.userLogin.setValue( {check:  this.localSessionStorage.get('check'), username: this.localSessionStorage.get('username'), password: this.localSessionStorage.get('password')});
+    }
   }
 
   // user login
-  public  userLoginClick(): void {
+  public  userLoginClick(user): void {
     // this.loadHidden = false;
-    this.loginSrv.login({username: this.username, password: this.password , module: 'CLOUD_HOUSE_WEB'}).subscribe(
+    console.log(user.value.check[0]);
+    this.loadHidden = false;
+    if (user.value.check[0] === 1) {
+      this.localSessionStorage.set('username', user.value.username);
+      this.localSessionStorage.set('password', user.value.password);
+      this.localSessionStorage.set('check', user.value.check[0]);
+    }
+    this.login(user.value.username, user.value.password);
+  }
+
+  public  login(userName, passWord): void {
+    this.loginSrv.login({username: userName, password: passWord , module: 'CLOUD_HOUSE_WEB'}).subscribe(
       (value) => {
         console.log(value);
         this.loadHidden = true;
@@ -53,15 +73,20 @@ export class LoginComponent implements OnInit {
       }
     );
   }
-  // get username
-  public  getUsername(e): void {
-      // console.log(e.target.value);
-      this.username = e.target.value;
+  public  status(e): void {
+    console.log(e);
+    if (!e) {
+      console.log(e);
+      this.localSessionStorage.remove('check');
+    }
   }
-  // get password
-  public  getPassword(e): void {
-    // console.log(e.target.value +'mima');
-    this.password = e.target.value;
+  // 判断是否存在用户名或密码
+  public  isOrTrue(index): any {
+      if (this.localSessionStorage.get(index)) {
+        return false;
+      } else {
+        return true;
+      }
   }
 
 }

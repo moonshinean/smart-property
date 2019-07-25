@@ -82,7 +82,6 @@ export class BfOwnerComponent implements OnInit {
   public loadHidden = true;
   public deleteId: any[] = [];
   public nowPage = 1;
-  // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -105,7 +104,6 @@ export class BfOwnerComponent implements OnInit {
     this.searchOwerData.regionCode = '';
     this.searchOwerData.buildingCode = '';
     this.searchOwerData.unitCode = '';
-
     this.roomTitle.villageName = '';
     this.roomTitle.roomCode = '';
     this.roomTitle.regionName = '';
@@ -115,9 +113,6 @@ export class BfOwnerComponent implements OnInit {
     this.roomTitle.renovationStatus = '';
     this.roomTitle.roomType = '';
     this.roomTitle.roomSize = '';
-    // this.roomTitle.renovationStartTime = '';
-    // this.roomTitle.renovationStartTime = '';
-    // console.log(this.searchOwerData);
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
        (value) => {
          console.log(value);
@@ -250,28 +245,6 @@ export class BfOwnerComponent implements OnInit {
         this.roomTitle.renovationDeadline = '1999-12-12';
       }
   }
-  // roomType change function
-  // public  roomStatusChange(e): void {
-  //   console.log(e);
-  //   let id;
-  //   console.log(this.roomStatusOption);
-  //   this.roomStatusOption.forEach( v => {
-  //     if (v.label === '空置房') {
-  //       id = v.value;
-  //     }
-  //   });
-  //   console.log(id);
-  //   if (e.value === id) {
-  //     this.showOwnerInfoList = true;
-  //   } else {
-  //     this.ownerAddDialog = false;
-  //     this.showOwnerInfoList = false;
-  //     setTimeout( () => {
-  //       this.ownerAddClick();
-  //     }, 100);
-  //
-  //   }
-  // }
   // show add owner box
   public  ownerAddClick(): void {
     this.roomTitle = new RoomTitle();
@@ -632,10 +605,6 @@ export class BfOwnerComponent implements OnInit {
       reject: () => {
       }
     });
-   //  this.ownerinfo.startBillingTime = this.datePipe.transform(this.ownerinfo.startBillingTime, 'yyyy-MM-dd');
-   //  for (const key in this.ownerList[this.ownerListIndex]) {
-   //   this.ownerList[this.ownerListIndex][key] = this.ownerinfo[key];
-   // }
 
   }
   // sure modify owner

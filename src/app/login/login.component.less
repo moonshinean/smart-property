@@ -1,58 +1,76 @@
 .login{
-  //background-image: url('../../assets/images/background.png');
-  //background-repeat: no-repeat;
-  //.deg135 {
-  background-image:linear-gradient(135deg,#27506C 400px,  #393B40 1000px, #27506C 1900px);
-  //}
+  background: #23232B;
   width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
-  //background-size:100% 100%;
   .login-box {
     width: 600px;
     margin: 0 auto;
+    //height: 45vh;
     border-radius: 5px;
-    background: rgba(255,255,255,0.1);
+    background: #34343C;
+    box-shadow: 4px 3px 2px #23232B;
     color: #fff;
-    padding: 32px;
+    position: relative;
+    .login-box-background {
+      width: 100%;
+      height: 4vh;
+      box-shadow: 0 20px 35px -7px #23232B
+    }
+    .login-box-background-two {
+      top: -21px;
+      position: absolute;
+      z-index: 9999;
+    }
     .login-box-title {
       text-align: center;
+      img {
+        width: 35px;
+        height: 35px;
+        vertical-align: middle;
+        margin-left: 2vw;
+      }
     }
-    .login-box-footer{
-      text-align: center;
-    }
+
     .login-box-form{
+      width: 100%;
+      height: 100%;
       text-align: center;
       .login-box-form-btn{
-          line-height: 4vh;
-          margin-top: 4vh;
-        .login-box-form-btn-username{
-          margin-right: 0.5vw;
-        }
+        line-height: 4vh;
+        margin-top: 1vh;
+        margin-left: 120px;
       }
       .login-box-form-forget-password{
+        height: 3vh;
         margin-top: 1vh;
         font-size: 14px;
+        ::ng-deep .ui-chkbox-box{
+          box-shadow: none;
+        }
       }
       .login-box-form-submit{
-        text-align: center;
         .login-box-form-submit-btn{
-          width: 90%;
-          height: 5vh;
-          margin-left: 2vw;
-          margin-top: 3vh;
+          width: 60%;
+          height: 4vh;
+          margin-top: 1vh;
           border-radius: 5px;
           outline: none;
           color: #fff;
           font-size: 1rem;
           border: 0;
-          background: #2E4D67;
+          background: #3B76DA;
+          margin-bottom: 3vh;
         }
         .login-box-form-submit-btn:hover {
           background: #243B50;
         }
       }
     }
+    //
+    //.login-box-footer{
+    //  text-align: center;
+    //}
   }
 }
