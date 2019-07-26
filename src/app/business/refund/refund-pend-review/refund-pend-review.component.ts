@@ -3,6 +3,7 @@ import {CouponPendingReview} from '../../../common/model/coupon-pending-review.m
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {CouponPendingReviewService} from '../../../common/services/coupon-pending-review.service';
 import {RefundPendReviewService} from '../../../common/services/refund-pend-review.service';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-refund-pend-review',
@@ -10,34 +11,13 @@ import {RefundPendReviewService} from '../../../common/services/refund-pend-revi
   styleUrls: ['./refund-pend-review.component.less']
 })
 export class RefundPendReviewComponent implements OnInit {
-
-
-
-  @ViewChild('input') input: Input;
-  // @ViewChild('file') file: Input;
   public refundPendReviewTableTitle: any;
   public refundPendReviewTableContent: any[];
-  // public refundPendReviewTableContent: any;
   public refundPendReviewTableTitleStyle: any;
   public refundPendReviewSelect: any;
-  // 添加相关
-  public refundPendReviewAddDialog: boolean;
-  // public refundPendReviewAdd: any;
-  // 修改相关
-  public refundPendReviewModifayDialog: boolean;
-  // public refundPendReviewModify: any;
   public refundPendReviewDetailDialog: boolean;
   public refundPendReviewDetail: CouponPendingReview = new CouponPendingReview();
-  public esDate = {
-    firstDayOfWeek: 0,
-    dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesShort: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesMin: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    today: '今天',
-    clear: '清除'
-  };
+  public esDate: any;
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public refundStatusDetail: any;
@@ -58,17 +38,15 @@ export class RefundPendReviewComponent implements OnInit {
   };
   public nowPage = 1;
   public couponTypeName: any;
-  public couponMoney: any;
   public couponEffectiveTime: any;
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    // private ownreService: BfrefundPendReviewService
+    private toolSrv: PublicMethedService,
     private refundPendReviewSrv: RefundPendReviewService
   ) {
   }
 
   ngOnInit() {
+    this.esDate = this.toolSrv.esDate;
     this.refundPendReviewInitialization();
   }
 
@@ -86,44 +64,41 @@ export class RefundPendReviewComponent implements OnInit {
       {field: 'operating', header: '操作'},
     ];
     this.loadingHide = false;
-    this.refundPendReviewSrv.queryRefundStatus({settingType: 'ARREARS_STATUS'}).subscribe(
-      value => {
-        if (value.data.length > 0) {
-          this.refundPendReviewSrv.queryRefundAuditedPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
-            (val) => {
-              console.log(val);
-              this.loadingHide = true;
-              if (val.status === '1000') {
-                val.data.contents.forEach(h => {
-                  value.data.forEach( v => {
-                    if (h.auditStatus.toString() === v.settingCode) {
-                      h.auditStatus = v.settingName;
-                    }
-                  });
+    this.toolSrv.getAdminStatus('ARREARS_STATUS', (data) => {
+      if (data.length > 0) {
+        this.refundPendReviewSrv.queryRefundAuditedPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
+          (val) => {
+            this.loadingHide = true;
+            if (val.status === '1000') {
+              val.data.contents.forEach(h => {
+                 data.forEach( v => {
+                  if (h.auditStatus.toString() === v.settingCode) {
+                    h.auditStatus = v.settingName;
+                  }
                 });
-                this.refundPendReviewTableContent = val.data.contents;
-                this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-              }  else  {
-                this.setToast('error', '请求错误', val.message);
-              }
+              });
+              this.refundPendReviewTableContent = val.data.contents;
+              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+            }  else  {
+              this.toolSrv.setToast('error', '请求错误', val.message);
             }
-          );
-        } else {
-          this.refundPendReviewSrv.queryRefundAuditedPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
-            (val) => {
-              console.log(val);
-              this.loadingHide = true;
-              if (val.status === '1000') {
-                this.refundPendReviewTableContent = val.data.contents;
-                this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-              }  else  {
-                this.setToast('error', '请求错误', val.message);
-              }
+          }
+        );
+      } else {
+        this.refundPendReviewSrv.queryRefundAuditedPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
+          (val) => {
+            console.log(val);
+            this.loadingHide = true;
+            if (val.status === '1000') {
+              this.refundPendReviewTableContent = val.data.contents;
+              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+            }  else  {
+              this.toolSrv.setToast('error', '请求错误', val.message);
             }
-          );
-        }
+          }
+        );
       }
-    );
+    });
     this.refundPendReviewTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
     console.log(this.refundPendReviewSelect);
 
@@ -137,43 +112,34 @@ export class RefundPendReviewComponent implements OnInit {
   public refundPendReviewDetailClick(e): void {
     console.log(e);
     this.refundPendReviewDetail = e;
-    this.refundPendReviewSrv.queryRefundStatus({settingType: 'ARREARS_STATUS'}).subscribe(
-      value => {
-        if (value.data.length > 0) {
-          value.data.forEach( v => {
-            if (this.refundPendReviewDetail.refundStatus.toString() === v.settingCode) {
-              this.refundStatusDetail = v.settingName;
-            }
-          });
-        }
+    this.toolSrv.getAdminStatus('ARREARS_STATUS', (data) => {
+       if (data.length > 0) {
+         this.toolSrv.setDataFormat(data, this.refundPendReviewDetail.refundStatus, (list, dataName) => {
+           this.refundStatusDetail = dataName;
+         });
+       }
+    });
+    this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
+      if (data.length > 0) {
+        this.toolSrv.setDataFormat(data, this.refundPendReviewDetail.refundStatus, (list, dataName) => {
+          this.paymentTypeDetail = dataName;
+        });
       }
-    );
-    this.refundPendReviewSrv.queryRefundStatus({settingType: 'CHARGE_TYPE'}).subscribe(
-      value => {
-        if (value.data.length > 0) {
-          value.data.forEach( v => {
-            if (this.refundPendReviewDetail.paymentType.toString() === v.settingCode) {
-              this.paymentTypeDetail = v.settingName;
-            }
-          });
-        }
-      }
-    );
+    });
     this.refundPendReviewDetailDialog = true;
-
   }
 
 
   // refundPendReview
   public  refundPendReviewClick(): void {
     if (this.refundPendReviewSelect === undefined || this.refundPendReviewSelect.length === 0) {
-      this.setToast('error', '操作错误', '请选择需要审核的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要审核的项');
 
     } else if (this.refundPendReviewSelect.length === 1) {
       this.refundPendReviewDialog = true;
 
     } else {
-      this.setToast('error', '操作错误', '只能选择一项进行审核');
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行审核');
 
     }
   }
@@ -181,7 +147,7 @@ export class RefundPendReviewComponent implements OnInit {
     if (this.reviewStatus === '通过') {
       this.refundPendReviewSrv.paasRefundAuditedInfo({id: this.refundPendReviewSelect[0].id}).subscribe(
         value => {
-          this.setToast('success' , '操作成功', value.message);
+          this.toolSrv.setToast('success' , '操作成功', value.message);
           this.refundPendReviewInitialization();
           this.refundPendReviewDialog = false;
         }
@@ -189,7 +155,7 @@ export class RefundPendReviewComponent implements OnInit {
     }  else {
       this.refundPendReviewSrv.RefundNoPaasAudited({id: this.refundPendReviewSelect[0].id}).subscribe(
         value => {
-          this.setToast('success' , '操作成功', value.message);
+          this.toolSrv.setToast('success' , '操作成功', value.message);
           this.refundPendReviewInitialization();
           this.refundPendReviewDialog = false;
         }
@@ -199,16 +165,6 @@ export class RefundPendReviewComponent implements OnInit {
   // select houseinfo
   public refundPendReviewonRowSelect(e): void {
     // this.refundPendReviewModify = e.data;
-  }
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
   }
   // get refundPendReview Pagination
   public nowpageEventHandle(event: any): void {

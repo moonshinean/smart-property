@@ -3,6 +3,7 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {CouponTotalService} from '../../../common/services/coupon-total.service';
 import {AddCouponTotal, CouponTotal, SearchCoupon} from '../../../common/model/coupon-total.model';
 import {GlobalService} from '../../../common/services/global.service';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-coupon-total',
@@ -25,32 +26,13 @@ export class CouponTotalComponent implements OnInit {
   public couponTotalDetail: CouponTotal = new CouponTotal();
   // 条件查询
   public SearchCoupon: SearchCoupon = new SearchCoupon();
-  // public SearchData: SearchCoupon = new SearchCoupon();
-  // public couponAdd: any;
-  // 修改相关
-  public couponTotalModifayDialog: boolean;
-  // public couponModify: any;
-  public couponTotalDetailDialog: boolean;
-  public esDate = {
-    firstDayOfWeek: 0,
-    dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesShort: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesMin: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    today: '今天',
-    clear: '清除'
-  };
-  // 上传相关
-  // public couponTotalUploadFileDialog: boolean;
-  // public uploadedFiles: any[] = [];
+  public esDate: any;
   // 其他相关
   public deleteIds: any[] = [];
   public cleanTimer: any; // 清除时钟
   public option: any;
   public loadingHide = true;
   // public couponTotalSeachData: any;
-
   public nowPage = 1;
   public SearchOption = {
     village: [],
@@ -68,20 +50,19 @@ export class CouponTotalComponent implements OnInit {
   public auditStatusOption: any[] = [];
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
     private couponTotalSrv: CouponTotalService,
-    private globalSrv: GlobalService
+    private globalSrv: GlobalService,
+    private toolSrv: PublicMethedService
   ) {
   }
 
   ngOnInit() {
     this.couponTotalInitialization();
   }
-
   // initialization houseinfo
   public couponTotalInitialization(): void {
     console.log('这里是信息的初始化');
+    this.esDate = this.toolSrv.esDate;
     this.AddcouponTotal.mobilePhone = null;
     this.AddcouponTotal.roomCode = null;
     this.AddcouponTotal.remarks = null;
@@ -97,31 +78,22 @@ export class CouponTotalComponent implements OnInit {
       {field: 'operating', header: '操作'}
     ];
     this.loadingHide = false;
-    this.couponTotalSrv.queryCouponInfoStatus({settingType: 'PAST_DUE'}).subscribe(
-      value => {
-        console.log(value);
-        value.data.forEach( v => {
-          this.pastDueOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    );
-    this.couponTotalSrv.queryCouponInfoStatus({settingType: 'AUDIT_STATUS'}).subscribe(
-      value => {
-        console.log(value);
-        value.data.forEach( v => {
-          this.auditStatusOption.push({label: v.settingName, value: v.settingCode});
-
-        });
-      }
-    );
-      const page = setInterval(() => {
-        if (this.pastDueOption.length > 0 && this.auditStatusOption.length > 0) {
-
+    this.toolSrv.getAdminStatus('PAST_DUE', (e) => {
+      e.forEach( v => {
+        this.pastDueOption.push({label: v.settingName, value: v.settingCode});
+      });
+    });
+    this.toolSrv.getAdminStatus('AUDIT_STATUS', (e) => {
+      e.forEach( v => {
+        this.auditStatusOption.push({label: v.settingName, value: v.settingCode});
+      });
+    });
+    const page = setInterval(() => {
+      if (this.pastDueOption.length > 0 && this.auditStatusOption.length > 0) {
           this.couponTotalSrv.queryCouponPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
           (value) => {
-            console.log(value);
-            clearInterval(page);
             this.loadingHide = true;
+            clearInterval(page);
             if (value.status === '1000') {
               value.data.contents.forEach( h => {
                 this.pastDueOption.forEach(v => {
@@ -130,7 +102,7 @@ export class CouponTotalComponent implements OnInit {
                   }
                 });
                 this.auditStatusOption.forEach(v => {
-                  if (h.auditStatus.toString() === v.value){
+                  if (h.auditStatus.toString() === v.value) {
                     h.auditStatus = v.label;
                   }
                 });
@@ -138,7 +110,7 @@ export class CouponTotalComponent implements OnInit {
               this.couponTotalTableContent = value.data.contents;
               this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
             }  else  {
-              this.setToast('error', '请求成功', value.message);
+              this.toolSrv.setToast('error', '请求成功', value.message);
             }
           }
         );
@@ -149,23 +121,25 @@ export class CouponTotalComponent implements OnInit {
     this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
         console.log(data);
-        data.data.forEach( v => {
-          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-          // = v.villageName;
-        });
-        // this.villageplaceholder =  this.SearchOption.village[0].label;
+        if (data.status === '1000') {
+          data.data.forEach( v => {
+            this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+          });
+        }
       }
     );
   }
-
+  // query region
   public  VillageChange(e): void {
     this.SearchCoupon.villageCode = '';
     this.SearchCoupon.regionCode = '';
     this.SearchCoupon.buildingCode = '';
     this.SearchCoupon.unitCode = '';
-    this.SearchOption.region = [];
-    this.SearchOption.building = [];
-    this.SearchOption.unit = [];
+    for (const searchOptionKey in this.SearchOption) {
+      if (searchOptionKey !== 'village') {
+        this.SearchOption[searchOptionKey] = [];
+      }
+    }
     // this.SearchCoupon.villageCode = e.value;
     this.AddcouponTotal.villageName = e.originalEvent.target.innerText;
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
@@ -177,6 +151,7 @@ export class CouponTotalComponent implements OnInit {
       }
     );
   }
+  // query building
   public  regionChange(e): void {
     this.SearchCoupon.regionCode = '';
     this.SearchCoupon.buildingCode = '';
@@ -195,12 +170,13 @@ export class CouponTotalComponent implements OnInit {
       }
     );
   }
+  // query unit
   public  buildingChange(e): void {
     this.SearchCoupon.buildingCode = '';
     this.SearchCoupon.unitCode = '';
     this.SearchOption.unit = [];
     this.SearchCoupon.buildingCode = e.value;
-    this.SearchOption.unit = [];
+    this.SearchOption.room = [];
     this.AddcouponTotal.buildingName = e.originalEvent.target.innerText;
     this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
       (value) => {
@@ -211,6 +187,7 @@ export class CouponTotalComponent implements OnInit {
       }
     );
   }
+  // query roomCode
   public  unitChange(e): void {
     this.SearchCoupon.unitCode = '';
     this.SearchCoupon.unitCode = e.value;
@@ -219,7 +196,6 @@ export class CouponTotalComponent implements OnInit {
 
     this.couponTotalSrv.queryRoomCode({unitCode: e.value}).subscribe(
       value => {
-        console.log(value);
         value.data.forEach( v => {
           this.roonCodeSelectOption.push({label: v.roomCode, value: v.roomCode});
           this.SearchOption.room.push({label: v.roomCode, value: v.roomCode});
@@ -228,39 +204,33 @@ export class CouponTotalComponent implements OnInit {
     );
 
   }
-
   // condition search click
   public couponTotalSearchClick(): void {
     if (this.SearchCoupon.buildingCode === '' && this.SearchCoupon.mobilePhone === undefined) {
-      this.setToast('error', '搜索失败', '搜索信息条件请具体到楼栋');
+      this.toolSrv.setToast('error', '搜索失败', '搜索信息条件请具体到楼栋');
     } else {
       this.SearchCoupon.pageNo = 1;
       this.SearchCoupon.pageSize = 10;
       // @ts-ignore
       this.loadHidden = false;
-      console.log(this.SearchCoupon);
       this.couponTotalSrv.queryCouponPageData(this.SearchCoupon).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.loadingHide = true;
             if (value.data.contents) {
-              this.setToast('success', '搜索成功', value.message);
-
+              this.toolSrv.setToast('success', '搜索成功', value.message);
               this.couponTotalTableContent = value.data.contents;
             } else {
-              this.setToast('success', '搜索成功', '数据为空');
+              this.toolSrv.setToast('success', '搜索成功', '数据为空');
             }
           } else {
-            this.setToast('error', '搜索失败', value.message);
+            this.toolSrv.setToast('error', '搜索失败', value.message);
 
           }
         }
       );
     }
-    console.log('这里是条件搜索');
   }
-
   // add coupon
   public couponTotalAddClick(): void {
     this.couponSelectOption = [];
@@ -286,7 +256,7 @@ export class CouponTotalComponent implements OnInit {
          );
       }
   }
-  // 选择优惠卷
+  // Choose a coupon
   public couponSelectChange(e): void {
     this.AddcouponTotal.couponName = e.originalEvent.target.innerText;
     this.couponTotalSrv.queryCouponInfo({couponCode: this.AddcouponTotal.couponCode}).subscribe(
@@ -319,34 +289,23 @@ export class CouponTotalComponent implements OnInit {
   }
   // sure add houseinfo
   public couponTotalAddSureClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要增加吗？`,
-      header: '增加提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        console.log(this.AddcouponTotal);
-        this.couponTotalSrv.addCouponInfo(this.AddcouponTotal).subscribe(
-          value => {
-            console.log(value);
-            this.setToast('success', '操作成功', value.message);
+    this.toolSrv.setConfirmation('增加', '增加', () => {
+      this.couponTotalSrv.addCouponInfo(this.AddcouponTotal).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', value.message);
             this.couponTotalInitialization();
             this.couponTotalAddDialog = false;
             this.clearData();
+          } else {
+            this.toolSrv.setToast('error', '增加失败', value.message);
           }
-        );
-        // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-      },
-      reject: () => {
-        console.log('这里是增加信息');
-
-        // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-      }
+        }
+      );
     });
   }
-
   // detail couponTotalInfo
   public couponTotalDetailClick(e): void {
-    this.couponTotalDetailDialog = true;
     this.couponTotalDetail = e;
     if (e.effectiveTime === 0 ) {
       this.couponEffectiveTime = '无期限';
@@ -362,106 +321,49 @@ export class CouponTotalComponent implements OnInit {
         });
       }
     );
-    this.couponTotalSrv.queryCouponInfoStatus({settingType: 'USE_STATUS'}).subscribe(
-      value => {
-        console.log(value);
-        value.data.forEach( v => {
-          if (e.usageState.toString() === v.settingCode) {
-            this.couponTotalDetail.usageState = v.settingName;
-          }
-        });
-      }
-    );
-    this.couponTotalSrv.queryCouponInfoStatus({settingType: 'PAST_DUE'}).subscribe(
-      value => {
-        console.log(value);
-        value.data.forEach( v => {
-          if (e.pastDue.toString() === v.settingCode) {
-            this.couponTotalDetail.pastDue = v.settingName;
-          }
-        });
-      }
-    );
-    this.couponTotalSrv.queryCouponInfoStatus({settingType: 'AUDIT_STATUS'}).subscribe(
-      value => {
-        console.log(value);
-        value.data.forEach( v => {
-          if (e.auditStatus.toString() === v.settingCode) {
-            this.couponTotalDetail.auditStatus = v.settingName;
-          }
-        });
-      }
-    );
+    this.toolSrv.getAdminStatus('USE_STATUS', (value) => {
+      value.data.forEach( v => {
+        if (e.usageState.toString() === v.settingCode) {
+          this.couponTotalDetail.usageState = v.settingName;
+        }
+      });
+    });
+    this.toolSrv.getAdminStatus('PAST_DUE', (value) => {
+      value.data.forEach( v => {
+        if (e.pastDue.toString() === v.settingCode) {
+          this.couponTotalDetail.pastDue = v.settingName;
+        }
+      });
+    });
+    this.toolSrv.getAdminStatus('AUDIT_STATUS', (value) => {
+      value.data.forEach( v => {
+        if (e.auditStatus.toString() === v.settingCode) {
+          this.couponTotalDetail.auditStatus = v.settingName;
+        }
+      });
+    });
     console.log(e);
   }
-
-  // // modify couponTotal
-  // public couponTotalModifyClick(): void {
-  //   console.log(this.couponTotalSelect);
-  //   if (this.couponTotalSelect === undefined || this.couponTotalSelect.length === 0) {
-  //     this.setToast('error', '操作错误', '请选择需要修改的项');
-  //
-  //   } else if (this.couponTotalSelect.length === 1) {
-  //     this.couponTotalModifayDialog = true;
-  //     console.log('这里是修改信息');
-  //   } else {
-  //     this.setToast('error', '操作错误', '只能选择一项进行修改');
-  //
-  //   }
-  // }
-
-  // // sure modify coupon
-  // public couponTotalModifySureClick(): void {
-  //   this.confirmationService.confirm({
-  //     message: `确认要修改吗？`,
-  //     header: '修改提醒',
-  //     icon: 'pi pi-exclamation-triangle',
-  //     accept: () => {
-  //       console.log(this.couponTotalSelect);
-  //       // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-  //     },
-  //     reject: () => {
-  //       console.log('这里是修改信息');
-  //
-  //       // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-  //     }
-  //   });
-  // }
-
   // delete coupon
   public couponTotalDeleteClick(): void {
     if (this.couponTotalSelect === undefined || this.couponTotalSelect.length === 0) {
-      this.setToast('error', '操作错误', '请选择需要删除的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
-      this.confirmationService.confirm({
-        message: `确认要删除这${this.couponTotalSelect.length}项吗`,
-        header: '删除提醒',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          console.log(this.couponTotalSelect);
-          this.couponTotalSelect.forEach( v => {
-            this.deleteIds.push(v.id);
-          });
-          console.log(this.deleteIds.join(','));
-          this.couponTotalSrv.deleteCouponInfo({ids: this.deleteIds.join(',')}).subscribe(
-            value => {
-              console.log(value);
-              this.setToast('success', '操作成功', value.message);
-              this.couponTotalInitialization();
-            }
-          );
-
-          // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-        },
-        reject: () => {
-          console.log('这里是删除信息');
-
-          // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
+      this.toolSrv.setConfirmation('删除',  '删除这' + this.couponTotalSelect.length + '项', () => {
+        this.couponTotalSelect.forEach( v => {
+          this.deleteIds.push(v.id);
+        });
+        this.couponTotalSrv.deleteCouponInfo({ids: this.deleteIds.join(',')}).subscribe(
+        value => {
+          console.log(value);
+          this.toolSrv.setToast('success', '操作成功', value.message);
+          this.couponTotalInitialization();
         }
+       );
       });
     }
   }
-  // 分页请求
+  // Paging request
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;
     this.nowPage = event;
@@ -471,22 +373,11 @@ export class CouponTotalComponent implements OnInit {
         this.loadingHide = true;
         this.couponTotalTableContent = value.data.contents;
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-
       }
     );
     this.couponTotalSelect = [];
   }
-
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
-  }
+  // clear data
   public clearData(): void {
     this.AddcouponTotal = new AddCouponTotal();
     this.couponTypeName = null;

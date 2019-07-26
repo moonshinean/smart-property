@@ -27,6 +27,7 @@ import { ChargeCouponComponent } from './charge-coupon/charge-coupon.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {LoadingModule} from '../../common/components/loading/loading.module';
 import { ChargeParkspaceComponent } from './charge-parkspace/charge-parkspace.component';
+import {PublicMethedService} from '../../common/public/public-methed.service';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,6 @@ import { ChargeParkspaceComponent } from './charge-parkspace/charge-parkspace.co
     InputTextareaModule,
     LoadingModule
   ],
-  providers: [MessageService, ConfirmationService, DatePipe]
+  providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })
 export class ChargemanModule { }

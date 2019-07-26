@@ -33,6 +33,7 @@ import { BfParkingspaceComponent } from './bf-parkingspace/bf-parkingspace.compo
 import {LoadingModule} from '../../common/components/loading/loading.module';
 import { BfCouponComponent } from './bf-coupon/bf-coupon.component';
 import { BfRoombindChangeitemComponent } from './bf-roombind-changeitem/bf-roombind-changeitem.component';
+import {PublicMethedService} from '../../common/public/public-methed.service';
 // import {PagingModule} from '../../common/components/paging/paging.module';
 // import {PagingComponent} from '../../common/components/paging/paging.component';
 
@@ -77,6 +78,6 @@ import { BfRoombindChangeitemComponent } from './bf-roombind-changeitem/bf-roomb
     LoadingModule,
     TreeModule,
   ],
-  providers: [MessageService, ConfirmationService, DatePipe]
+  providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })
 export class BaseinfoModule { }

@@ -24,6 +24,7 @@ import { RefundReviewComponent } from './refund-review/refund-review.component';
 import { RefundPendReviewComponent } from './refund-pend-review/refund-pend-review.component';
 import { RefundAuditedComponent } from './refund-audited/refund-audited.component';
 import { RefundApplicationInfoComponent } from './refund-application-info/refund-application-info.component';
+import {PublicMethedService} from '../../common/public/public-methed.service';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,6 @@ import { RefundApplicationInfoComponent } from './refund-application-info/refund
     LoadingModule,
     TreeModule,
   ],
-  providers: [MessageService, ConfirmationService, DatePipe]
+  providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })
 export class RefundModule { }

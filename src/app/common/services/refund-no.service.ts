@@ -15,7 +15,4 @@ export class RefundNoService {
   public applicationRefund(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl  + `/refund/application`, pamars);
   }
-  public queryRefundStatus(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/setting/findAdminChoose`, pamars);
-  }
 }

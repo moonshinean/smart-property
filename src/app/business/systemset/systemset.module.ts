@@ -30,6 +30,7 @@ import {SetPermissionComponent} from './set-permission/set-permission.component'
 import {LoadingModule} from '../../common/components/loading/loading.module';
 import { SetRoleComponent } from './set-role/set-role.component';
 import { SetPartComponent } from './set-part/set-part.component';
+import {PublicMethedService} from '../../common/public/public-methed.service';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,6 @@ import { SetPartComponent } from './set-part/set-part.component';
     CheckboxModule,
     TreeModule,
   ],
-  providers: [MessageService, ConfirmationService, DatePipe]
+  providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })
 export class SystemsetModule { }

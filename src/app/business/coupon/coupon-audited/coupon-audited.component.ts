@@ -6,6 +6,7 @@ import {GlobalService} from '../../../common/services/global.service';
 import {CouponAudited} from '../../../common/model/coupon-audited.model';
 import {CouponAuditedService} from '../../../common/services/coupon-audited.service';
 import {C} from '@angular/cdk/typings/esm5/keycodes';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-coupon-audited',
@@ -23,29 +24,15 @@ export class CouponAuditedComponent implements OnInit {
   public couponAuditedTableTitleStyle: any;
   public couponAuditedSelect: any;
   // 添加相关
-  public couponAuditedAddDialog: boolean;
   public couponAuditedDetail: CouponAudited = new CouponAudited();
-
-  // public couponAdd: any;
   // 修改相关
-  public couponAuditedModifayDialog: boolean;
   // public couponModify: any;
   public couponAuditedDetailDialog: boolean;
-  public esDate = {
-    firstDayOfWeek: 0,
-    dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesShort: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesMin: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    today: '今天',
-    clear: '清除'
-  };
+  public esDate: any;
   // 上传相关
   // public couponAuditedUploadFileDialog: boolean;
   // public uploadedFiles: any[] = [];
   // 其他相关
-  public deleteIds: any[] = [];
   public cleanTimer: any; // 清除时钟
   public option: any;
   public loadingHide = true;
@@ -66,14 +53,14 @@ export class CouponAuditedComponent implements OnInit {
   public couponEffectiveTime: any;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
     private couponAuditedSrv: CouponAuditedService,
+    private toolSrv: PublicMethedService,
     private globalSrv: GlobalService
   ) {
   }
 
   ngOnInit() {
+    this.esDate = this.toolSrv.esDate;
     this.couponAuditedInitialization();
   }
 
@@ -112,7 +99,6 @@ export class CouponAuditedComponent implements OnInit {
   }
 
   public  VillageChange(e): void {
-
     this.SearchOption.region = [];
     this.SearchOption.building = [];
     this.SearchOption.unit = [];
@@ -126,10 +112,6 @@ export class CouponAuditedComponent implements OnInit {
     );
   }
   public  regionChange(e): void {
-    // this.SearchCoupon.regionCode = '';
-    // this.SearchCoupon.buildingCode = '';
-    // this.SearchCoupon.unitCode = '';
-    // this.SearchCoupon.regionCode = e.value;
     this.SearchOption.building = [];
     this.SearchOption.unit = [];
     console.log(e.value);
@@ -143,7 +125,6 @@ export class CouponAuditedComponent implements OnInit {
     );
   }
   public  buildingChange(e): void {
-
     this.SearchOption.unit = [];
     this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
       (value) => {
@@ -155,29 +136,11 @@ export class CouponAuditedComponent implements OnInit {
     );
   }
   public  unitChange(e): void {
-    // this.SearchCoupon.unitCode = '';
-    console.log(e);
     this.roonCodeSelectOption = [];
   }
 
   // condition search click
   public couponAuditedSearchClick(): void {
-    // @ts-ignore
-    // if (this.couponSeachData !== undefined ) {
-    //   if (isNaN(this.couponSeachData)) {
-    //     this.chargeCouponSrv.queryConditionalCoupon({}).subscribe(
-    //       (value) => {
-    //         console.log(value);
-    //       }
-    //     );
-    //   } else {
-    //     this.chargeCouponSrv.queryConditionalCoupon({}).subscribe(
-    //       (value) => {
-    //         console.log(value);
-    //       }
-    //     );
-    //   }
-    // }
     console.log('这里是条件搜索');
   }
 
@@ -201,51 +164,15 @@ export class CouponAuditedComponent implements OnInit {
         });
       }
     );
-    this.couponAuditedSrv.queryCouponStatus({settingType: 'PAST_DUE'}).subscribe(
-      value => {
-        console.log(value);
-        value.data.forEach( v => {
-          if (this.couponAuditedDetail.pastDue.toString() === v.settingCode){
-            this.couponAuditedDetail.pastDue = v.settingName;
-          }
-        });
-      }
-    );
+    this.toolSrv.getAdminStatus('PAST_DUE', (data) => {
+      data.forEach( v => {
+        if (this.couponAuditedDetail.pastDue.toString() === v.settingCode){
+          this.couponAuditedDetail.pastDue = v.settingName;
+        }
+      });
+    });
     console.log(e);
   }
-
-  // // modify couponAudited
-  // public couponAuditedModifyClick(): void {
-  //   console.log(this.couponAuditedSelect);
-  //   if (this.couponAuditedSelect === undefined || this.couponAuditedSelect.length === 0) {
-  //     this.setToast('error', '操作错误', '请选择需要修改的项');
-  //
-  //   } else if (this.couponAuditedSelect.length === 1) {
-  //     this.couponAuditedModifayDialog = true;
-  //     console.log('这里是修改信息');
-  //   } else {
-  //     this.setToast('error', '操作错误', '只能选择一项进行修改');
-  //
-  //   }
-  // }
-
-  // // sure modify coupon
-  // public couponAuditedModifySureClick(): void {
-  //   this.confirmationService.confirm({
-  //     message: `确认要修改吗？`,
-  //     header: '修改提醒',
-  //     icon: 'pi pi-exclamation-triangle',
-  //     accept: () => {
-  //       console.log(this.couponAuditedSelect);
-  //       // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-  //     },
-  //     reject: () => {
-  //       console.log('这里是修改信息');
-  //
-  //       // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-  //     }
-  //   });
-  // }
   // 分页请求
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;
@@ -262,16 +189,6 @@ export class CouponAuditedComponent implements OnInit {
     this.couponAuditedSelect = [];
   }
 
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
-  }
   public clearData(): void {
     this.couponTypeName = null;
     this.couponMoney = null;

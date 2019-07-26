@@ -10,24 +10,34 @@ export class GlobalService {
   constructor(
     private http: HttpClient
   ) { }
-  // search villageInfo
+  // query villageInfo
   public  queryVillageInfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/structure/findByOrganizationId`, pamars);
   }
-  // search regioninfo
+  // query regioninfo
   public queryRegionInfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/structure/findByVillageCode`, pamars);
   }
-  // search Builinginfo
+  // query Builinginfo
   public  queryBuilingInfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/structure/findByRegionCode`, pamars);
   }
-  //  search unitinfo
+  //  query unitinfo
   public  queryunitInfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/structure/findByBuildingCode`, pamars);
   }
-  // search roomCode
+  // query roomCode
   public queryRoomCode(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/structure/findByUnitCode `, pamars);
+  }
+
+  // query system status values
+  public queryAdminStatus(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/setting/findAdminChoose`, pamars);
+  }
+
+  // query user configuration status values
+  public queryNativeStatus(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/setting/findNativeChoose`, pamars);
   }
 }

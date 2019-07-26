@@ -9,6 +9,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import {PanelMenuModule} from 'primeng/panelmenu';
 import {ConfirmationService, ConfirmDialogModule, MessageModule, MessageService, MessagesModule} from 'primeng/primeng';
 import {LoadingModule} from '../common/components/loading/loading.module';
+import {PublicMethedService} from '../common/public/public-methed.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,6 @@ import {LoadingModule} from '../common/components/loading/loading.module';
     MessageModule,
     MessagesModule,
   ],
-  providers: [ConfirmationService, MessageService]
+  providers: [ConfirmationService, MessageService, PublicMethedService]
 })
 export class HomeModule { }

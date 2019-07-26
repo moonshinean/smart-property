@@ -38,7 +38,6 @@ export class PersionalComponent implements OnInit {
   };
 
   constructor(
-    private confirmationService: ConfirmationService,
     private loginOutSrv: LoginoutService,
     private localSrv: LocalStorageService,
     private router: Router,
@@ -49,34 +48,27 @@ export class PersionalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+
     this.persionalInit();
     this.passwordHidden = true;
   }
+  // user information initialization
   public persionalInit(): void {
     this.persionSrv.getUserInfo().subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.changeUserInfo = value.data;
-            this.persionSrv.queryStaffStatus({settingType: 'EDUCATIONAL_BACKGROUND'}).subscribe(
-              val => {
-                console.log(val.data.length);
-                if (val.data.length > 0) {
-                  val.data.forEach( v => {
-                    this.educationalOption.push({label: v.settingName, value: v.settingCode});
-                    if (this.changeUserInfo.educationalBackground === v.settingCode) {
-                      this.educationalName = v.settingName;
-                    }
-                  });
-                }
-              }
-            );
+            this.toolSrv.getAdminStatus('EDUCATIONAL_BACKGROUND', (e) => {
+              this.toolSrv.setDataFormat(e, this.changeUserInfo.educationalBackground, (dataList, dataName) => {
+                this.educationalOption = dataList;
+                this.educationalName = dataName;
+              });
+            });
           } else {
             this.toolSrv.setToast('error', '请求失败', value.message);
           }
         }
       );
-
   }
   // submit user info
   public  changeUserInfoSubmitClick(): void {
@@ -92,34 +84,27 @@ export class PersionalComponent implements OnInit {
       }
     );
   }
-  // login out
+  // sign out
   public  loginOutClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要退出登录吗？`,
-      header: '退出提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.loginOutSrv.logout({}).subscribe(
-          (value) => {
-            console.log(value);
-            if (value.status === '1000') {
-              this.localSrv.remove('appkey');
-              this.router.navigate(['/login']);
-            } else {
-              window.alert(value.message);
-            }
+    this.toolSrv.setConfirmation('退出', '退出登录', () => {
+      this.loginOutSrv.logout({}).subscribe(
+        (value) => {
+          console.log(value);
+          if (value.status === '1000') {
+            this.localSrv.remove('appkey');
+            this.router.navigate(['/login']);
+          } else {
+            window.alert(value.message);
           }
-        );
-        // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-      },
-      reject: () => {
-      }
+        }
+      );
     });
   }
-  // back
+  // back to previous
   public  backClick(): void {
       window.history.back();
   }
+  // Change password submission
   public  changePasswordSubmitClick(): void {
     if (this.passwordHidden === true) {
       this.btnColor = { background : '#D9534F'};

@@ -6,6 +6,7 @@ import {LocalStorageService} from '../../common/services/local-storage.service';
 import {ConfirmationService} from 'primeng/api';
 import {LoginoutService} from '../../common/services/loginout.service';
 import {HeaderService} from '../../common/services/header.service';
+import {PublicMethedService} from '../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-header',
@@ -47,76 +48,46 @@ export class HeaderComponent implements OnInit {
     private localSrv: LocalStorageService,
     private confirmationService: ConfirmationService,
     private loginOutSrv: LoginoutService,
-    private headerSrv: HeaderService
+    private headerSrv: HeaderService,
+    private toolSrv: PublicMethedService
   ) {
   }
 
   ngOnInit() {
+    this.item = [];
     this.headerSrv.getUserInfo().subscribe(
       value => {
-        console.log(value);
+
         if (value.status === '1000') {
           this.username = value.data.username;
         }
       }
     );
-    this.localSrv.getObject('item').forEach( v => {
-      // console.log(v);
-      this.items.forEach( data => {
+    this.localSrv.getObject('item').forEach(v => {
+      this.items.forEach(data => {
         if (v.title === data.title) {
           this.item.push(data);
-          // this.item = this.items;
         }
       });
     });
-
-    // console.log(this.sidBarItem);
     this.url = this.location.path().split('/', 3)[2];
     this.UrlActivateStatus(this.url);
-    // 定略获取路由
+    // Slightly get the route
     this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationEnd) {
           // console.log(event);
           this.url = event.url.split('/', 3)[2];
           this.UrlActivateStatus(this.url);
-          /* titleSrv.setTitle(title[event.urlAfterRedirects]);*/
         }
       }
     );
-    // console.log(this.abc);
     this.clickStuts = false;
     this.barHidden = false;
   }
-
-  // 关闭导航
-  public closesidBarClick(e): void {
-    if (this.routeinfo.snapshot.children[0].url[0].path === 'main') {
-      e.path[1].style.marginLeft = '8vw';
-      e.path[1].style.borderLeft = '3vh solid transparent';
-    } else {
-      if (this.clickStuts) {
-        e.path[1].style.marginLeft = '8vw';
-        e.path[1].style.borderLeft = '3vh solid transparent';
-        this.clickStuts = false;
-        this.barHidden = false;
-        this.mainMaginLeft = 9;
-      } else {
-        e.path[1].style.marginLeft = '0vw';
-        e.path[1].style.borderLeft = '0 solid transparent';
-        this.clickStuts = true;
-        this.barHidden = true;
-        this.mainMaginLeft = 0.5;
-      }
-      this.hiddenSidBar.emit(this.barHidden);
-      this.mainStyle.emit(this.mainMaginLeft);
-    }
-
-  }
-
-  // 头部导航点击事件
+  // Head navigation click event
   public spanBarClick(e, index): void {
-     this.router.navigate([this.item[index].router]);
+    this.router.navigate([this.item[index].router]);
     // @ts-ignore
     for (let i = 0; i < this.headerbar.nativeElement.children.length; i++) {
       // @ts-ignore
@@ -137,8 +108,6 @@ export class HeaderComponent implements OnInit {
       this.clickStuts = false;
       this.barHidden = false;
     }
-    // 点击导航  title变回来
-    // @ts-ignore
     this.mainMaginLeft = 9;
     this.sidbarSetData(e.target.innerHTML);
     this.mainStyle.emit(this.mainMaginLeft);
@@ -146,7 +115,7 @@ export class HeaderComponent implements OnInit {
     e.path[0].style.color = '#3A7ADF';
   }
 
-  // 查看路由激活
+  // View route activation
   public UrlActivateStatus(url): void {
     // console.log(url);
     this.item.map((prop) => {
@@ -157,31 +126,26 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  // 设置侧边导航数据
+  // emit sidebar navigation data
   public sidbarSetData(data): void {
     this.sidBarData.emit(data);
   }
-  // login out
+  // sign out
   public  loginOutClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要退出登录吗？`,
-      header: '退出提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.loginOutSrv.logout({}).subscribe(
-          (value) => {
-            console.log(value);
-            if (value.status === '1000') {
-              this.localSrv.remove('appkey');
-              this.router.navigate(['/login']);
-            } else {
-              window.alert(value.message);
-            }
+    console.log(123);
+    this.toolSrv.setConfirmation('退出', '退出登录', () => {
+      this.loginOutSrv.logout({}).subscribe(
+        (value) => {
+          console.log(value);
+          if (value.status === '1000') {
+            this.localSrv.remove('appkey');
+            this.localSrv.remove('item');
+            this.router.navigate(['/login']);
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
           }
-        );
-      },
-      reject: () => {
-      }
+        }
+      );
     });
   }
 

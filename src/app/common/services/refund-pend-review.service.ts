@@ -17,7 +17,4 @@ export class RefundPendReviewService {
   public RefundNoPaasAudited(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl +  `/refund/examineNoPass`, pamars);
   }
-  public queryRefundStatus(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/setting/findAdminChoose`, pamars);
-  }
 }

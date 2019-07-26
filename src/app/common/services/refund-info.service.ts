@@ -30,8 +30,5 @@ export class RefundInfoService {
   public queryRoomCode(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/structure/findByUnitCode `, pamars);
   }
-  public queryRefundStatus(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/setting/findAdminChoose`, pamars);
-  }
 
 }

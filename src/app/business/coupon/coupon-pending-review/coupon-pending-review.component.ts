@@ -4,6 +4,7 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {CouponReviewService} from '../../../common/services/coupon-review.service';
 import {CouponPendingReview} from '../../../common/model/coupon-pending-review.model';
 import {CouponPendingReviewService} from '../../../common/services/coupon-pending-review.service';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-coupon-pending-review',
@@ -18,33 +19,16 @@ export class CouponPendingReviewComponent implements OnInit {
   // @ViewChild('file') file: Input;
   public couponPendingReviewTableTitle: any;
   public couponPendingReviewTableContent: CouponPendingReview[] = [];
-  // public couponPendingReviewTableContent: any;
   public couponPendingReviewTableTitleStyle: any;
   public couponPendingReviewSelect: any;
   // 添加相关
-  public couponPendingReviewAddDialog: boolean;
-  // public couponPendingReviewAdd: any;
-  // 修改相关
-  public couponPendingReviewModifayDialog: boolean;
   // 审核相关
   public couponPendingReviewDialog: boolean;
   public reviewStatus = '通过';
   // public couponPendingReviewModify: any;
   public couponPendingReviewDetailDialog: boolean;
   public couponPendingReviewDetail: CouponPendingReview = new CouponPendingReview();
-  public esDate = {
-    firstDayOfWeek: 0,
-    dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesShort: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesMin: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    today: '今天',
-    clear: '清除'
-  };
-  // 上传相关
-  // public couponPendingReviewUploadFileDialog: boolean;
-  // public uploadedFiles: any[] = [];
+  public esDate: any;
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public option: any;
@@ -59,18 +43,16 @@ export class CouponPendingReviewComponent implements OnInit {
   };
   public nowPage = 1;
   public couponTypeName: any;
-  public couponMoney: any;
   public couponEffectiveTime: any;
-  // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
     // private ownreService: BfcouponPendingReviewService
-    private couponPendingReviewSrv: CouponPendingReviewService
+    private couponPendingReviewSrv: CouponPendingReviewService,
+    private toolSrv: PublicMethedService
   ) {
   }
 
   ngOnInit() {
+    this.esDate = this.toolSrv.esDate;
     this.couponPendingReviewInitialization();
   }
 
@@ -102,22 +84,7 @@ export class CouponPendingReviewComponent implements OnInit {
 
   // condition search click
   public couponPendingReviewSearchClick(): void {
-    // @ts-ignore
-    // if (this.couponPendingReviewSeachData !== undefined ) {
-    //   if (isNaN(this.couponPendingReviewSeachData)) {
-    //     this.chargecouponPendingReviewSrv.queryConditionalcouponPendingReview({}).subscribe(
-    //       (value) => {
-    //         console.log(value);
-    //       }
-    //     );
-    //   } else {
-    //     this.chargecouponPendingReviewSrv.queryConditionalcouponPendingReview({}).subscribe(
-    //       (value) => {
-    //         console.log(value);
-    //       }
-    //     );
-    //   }
-    // }
+ 
     console.log('这里是条件搜索');
   }
   // detail couponPendingReviewInfo
@@ -145,12 +112,12 @@ export class CouponPendingReviewComponent implements OnInit {
   // couponPendingReview
   public  couponPendingReviewClick(): void {
     if (this.couponPendingReviewSelect === undefined || this.couponPendingReviewSelect.length === 0) {
-      this.setToast('error', '操作错误', '请选择需要审核的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要审核的项');
 
     } else if (this.couponPendingReviewSelect.length === 1) {
       this.couponPendingReviewDialog = true;
     } else {
-      this.setToast('error', '操作错误', '只能选择一项进行审核');
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行审核');
 
     }
   }
@@ -159,12 +126,12 @@ export class CouponPendingReviewComponent implements OnInit {
       this.couponPendingReviewSrv.couponPendingReviewPassById({id: this.couponPendingReviewSelect[0].id}).subscribe(
         value => {
           if (value.status === '1000') {
-            this.setToast('success' , '操作成功', value.message);
+            this.toolSrv.setToast('success' , '操作成功', value.message);
             this.couponPendingReviewInitialization();
             this.couponPendingReviewSelect = null;
             this.couponPendingReviewDialog = false;
           } else {
-            this.setToast('error' , '操作失败', value.message);
+            this.toolSrv.setToast('error' , '操作失败', value.message);
 
           }
         }
@@ -173,12 +140,12 @@ export class CouponPendingReviewComponent implements OnInit {
       this.couponPendingReviewSrv.couponPendingReviewNoPassById({id: this.couponPendingReviewSelect[0].id}).subscribe(
         value => {
           if (value.status === '1000') {
-            this.setToast('success' , '操作成功', value.message);
+            this.toolSrv.setToast('success' , '操作成功', value.message);
             this.couponPendingReviewInitialization();
             this.couponPendingReviewSelect = null;
             this.couponPendingReviewDialog = false;
           } else {
-            this.setToast('error' , '操作失败', value.message);
+            this.toolSrv.setToast('error' , '操作失败', value.message);
 
           }
         }
@@ -188,16 +155,6 @@ export class CouponPendingReviewComponent implements OnInit {
   // select houseinfo
   public couponPendingReviewonRowSelect(e): void {
     // this.couponPendingReviewModify = e.data;
-  }
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
   }
   // get couponPendingReview Pagination
   public nowpageEventHandle(event: any): void {

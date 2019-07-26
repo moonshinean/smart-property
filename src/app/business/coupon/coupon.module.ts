@@ -20,6 +20,7 @@ import {
 } from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
 import {FormsModule} from '@angular/forms';
+import {PublicMethedService} from '../../common/public/public-methed.service';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,7 @@ import {FormsModule} from '@angular/forms';
     PagingModule,
     InputTextareaModule,
   ],
-  providers: [MessageService, ConfirmationService]
+  providers: [MessageService, ConfirmationService, PublicMethedService]
 
 })
 export class CouponModule { }

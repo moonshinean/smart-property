@@ -32,22 +32,16 @@
           <div>
             <input  style="width: 60%;" id="password" type="password" pInputText placeholder="请输入密码" formControlName="password">
           </div>
-          <div *ngIf="userLogin.get('password').touched && userLogin.get('password').value.length < 6" style="height: 2vh">
-            <span style="color: red;float: left;margin-left: 120px;">输入长度不得小于6位</span>
+          <div *ngIf="userLogin.get('password').touched && userLogin.get('password').value.length < 3" style="height: 2vh">
+            <span style="color: red;float: left;margin-left: 120px;">输入长度不得小于3位</span>
           </div>
         </div>
-        <div class="login-box-form-forget-password">
-          <span style="float: left;margin-left: 120px;">
-            <p-checkbox  label="记住密码" [value]="1" [formControl]="userLogin.controls['check']"></p-checkbox>
-            <!--<input  pInputText label="记住密码" type="checkbox"  formControlName="password" />-->
-          </span>
-          <!--<a href=""><span style="float: right;margin-right: 115px">忘记密码？</span></a>-->
-        </div>
         <div class="login-box-form-submit">
-          <button class="login-box-form-submit-btn" type="submit" (click)="userLoginClick(userLogin)" (onkey.enter)="userLoginClick(userLogin)" [disabled]="userLogin.invalid">登  陆</button>
+          <button  class="login-box-form-submit-btn"  (click)="userLoginClick(userLogin)" [disabled]="userLogin.invalid">登  陆</button>
         </div>
       </div>
     </div>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
   <p-messages  [closable]="true" [style]="{'position':'fixed','left': '0', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
 </div>
+

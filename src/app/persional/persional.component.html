@@ -26,13 +26,13 @@
           <div class="ui-g-3" style="text-align: right">
             <span>用户名：</span>
           </div>
-          <input  style="text-align: center" type="text" pInputText placeholder="请输入用户名称..." size="50" [(ngModel)]="changeUserInfo.username">
+          <input  type="text" pInputText placeholder="请输入用户名称..." size="50" [(ngModel)]="changeUserInfo.username">
         </div>
         <div class="ui-g-6">
           <div class="ui-g-3" style="text-align: right">
             <span>电话号码：</span>
           </div>
-          <input  style="text-align: center" type="text" pInputText placeholder="请输入电话号码..." size="50" [(ngModel)]="changeUserInfo.mobilePhone">
+          <input  type="text" pInputText placeholder="请输入电话号码..." size="50" [(ngModel)]="changeUserInfo.mobilePhone">
         </div>
         <div class="ui-g-6">
           <div class="ui-g-3" style="text-align: right">
@@ -45,7 +45,7 @@
           <div class="ui-g-3" style="text-align: right">
             <span>身份证号：</span>
           </div>
-            <input  type="text" style="text-align: center" pInputText placeholder="请输入身份证号..." size="50" [(ngModel)]="changeUserInfo.identity">
+            <input  type="text"  pInputText placeholder="请输入身份证号..." size="50" [(ngModel)]="changeUserInfo.identity">
         </div>
         <div class="ui-g-6">
           <div class="ui-g-3" style="text-align: right">
@@ -63,7 +63,7 @@
           <div class="ui-g-3" style="text-align: right">
             <span>地址：</span>
           </div>
-          <input  style="text-align: center" type="text" pInputText placeholder="请输入地址..." size="50" [(ngModel)]="changeUserInfo.address">
+          <input  type="text" pInputText placeholder="请输入地址..." size="50" [(ngModel)]="changeUserInfo.address">
         </div>
         <div class="ui-g-6">
           <div class="ui-g-3" style="text-align: right">
@@ -71,7 +71,7 @@
           </div>
           <textarea   type="text" style="width: 20vw" rows="3" placeholder="请输入客户名称..." [(ngModel)]="changeUserInfo.remarks"></textarea>
         </div>
-        <div class="ui-g-12">
+        <div class="ui-g-12" style="text-align: center">
           <!--<button style="width: 6vw; height: 4vh;background: #66A6BD; border-radius: 5px;outline: none" (click)="changeUserInfoClick()">修改</button>-->
           <button style="margin-left: 1vw;width: 6vw; height: 4vh;border-radius: 5px;background: #D9534F; outline: none" (click)="changeUserInfoSubmitClick()">提交</button>
         </div>
@@ -105,7 +105,7 @@
           <input  type="password" style="text-align: center" pInputText placeholder="请再次输入新密码..." size="50" [(ngModel)]="ChangePassword.surepsw">
         </div>
       </div>
-      <div class="ui-g-12">
+      <div class="ui-g-12" style="text-align: center">
         <button style="width: 6vw; height: 4vh;border-radius: 5px; outline: none" (click)="changePasswordSubmitClick()" [ngStyle]="btnColor">{{btnName}}</button>
         <button style="margin-left: 1vw;width: 6vw; height: 4vh;border-radius: 5px;background: #9E9E9E" (click)="backClick()">返回</button>
       </div>
