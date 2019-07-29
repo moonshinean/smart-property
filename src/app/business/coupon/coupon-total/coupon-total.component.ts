@@ -28,6 +28,7 @@ export class CouponTotalComponent implements OnInit {
   public SearchCoupon: SearchCoupon = new SearchCoupon();
   public esDate: any;
   // 其他相关
+  public couponTotalDetailDialog: any;
   public deleteIds: any[] = [];
   public cleanTimer: any; // 清除时钟
   public option: any;
@@ -343,6 +344,7 @@ export class CouponTotalComponent implements OnInit {
       });
     });
     console.log(e);
+    this.couponTotalDetailDialog = true;
   }
   // delete coupon
   public couponTotalDeleteClick(): void {
