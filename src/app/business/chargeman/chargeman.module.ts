@@ -12,7 +12,7 @@ import {
   ButtonModule, CalendarModule, CheckboxModule, ConfirmationService,
   ConfirmDialogModule,
   DialogModule, DropdownModule, InputTextareaModule,
-  InputTextModule, KeyFilterModule,
+  InputTextModule,
   MessageModule, MessageService,
   MessagesModule, RadioButtonModule,
   ScrollPanelModule, SpinnerModule
@@ -24,7 +24,6 @@ import { ChargePrepaymentComponent } from './charge-prepayment/charge-prepayment
 import { ChargeHistoricalreportComponent } from './charge-historicalreport/charge-historicalreport.component';
 import {PagingModule} from '../../common/components/paging/paging.module';
 import { ChargeCouponComponent } from './charge-coupon/charge-coupon.component';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {LoadingModule} from '../../common/components/loading/loading.module';
 import { ChargeParkspaceComponent } from './charge-parkspace/charge-parkspace.component';
 import {PublicMethedService} from '../../common/public/public-methed.service';

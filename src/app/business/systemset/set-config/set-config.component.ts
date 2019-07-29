@@ -5,6 +5,7 @@ import {Addconfig, Modifyconfig, SetConfig} from '../../../common/model/set-conf
 import {SetConfigService} from '../../../common/services/set-config.service';
 import {isObjectFlagSet} from 'tslint';
 import {Dropdown} from 'primeng/primeng';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-set-config',
@@ -31,13 +32,11 @@ export class SetConfigComponent implements OnInit {
   public option: any;
   public setTypeOption: any[] = [];
   public loadHidden = true;
+  public nowPage = 1;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    // private configService: setConfigService,
     private configService: SetConfigService,
-    private globalService: GlobalService
+    private toolSrv: PublicMethedService,
   ) { }
   ngOnInit() {
     this.configInitialization();
@@ -52,9 +51,8 @@ export class SetConfigComponent implements OnInit {
       {field: 'settingName', header: '设置名称'},
       {field: 'settingType', header: '设置类型'},
     ];
-    this.configService.querySetPage({pageNo: 1, pageSize: 10}).subscribe(
+    this.configService.querySetPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         this.loadHidden = true;
         this.configTableContent = value.data.contents;
         // console.log(this.configTableContent);
@@ -71,63 +69,49 @@ export class SetConfigComponent implements OnInit {
         });
       }
     );
-    console.log('这里是信息的初始化');
 
     this.configTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
 
   }
-  // condition search click
-  public  configSearchClick(): void {
-    // @ts-ignore
-    console.log(this.input.nativeElement.value);
-    console.log('这里是条件搜索');
-  }
-  // add  config
+  // // condition search click
+  // public  configSearchClick(): void {
+  //   // @ts-ignore
+  //   console.log(this.input.nativeElement.value);
+  //   console.log('这里是条件搜索');
+  // }
+  // show add config dialog
   public  configAddClick(): void {
     this.configAddDialog = true;
-    console.log('这里是添加信息');
   }
   // sure add config
   public  configAddSureClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要增加吗？`,
-      header: '增加提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.loadHidden = false;
+    this.toolSrv.setConfirmation('增加', '增加', () => {
+      this.loadHidden = false;
 
-        this.configService.addSet(this.configAdd).subscribe(
-          (value) => {
-            console.log(value);
-            this.loadHidden = true;
-
-            if (value.status === '1000') {
-              this.setToast('success', '操作成功', '添加成功');
-              this.configInitialization();
-              this.configAddDialog = false;
-            } else {
-              this.setToast('error', '操作失败', value.message);
-            }
+      this.configService.addSet(this.configAdd).subscribe(
+        (value) => {
+          this.loadHidden = true;
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', '添加成功');
+            this.configInitialization();
+            this.configAddDialog = false;
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
           }
-        );
-        console.log(this.configAdd);
-      },
-      reject: () => {
-        // console.log('这里是增加信息');
-      }
+        }
+      );
     });
   }
-  // close add config
+  // close add config dialog
   public configAddCloseClick(): void {
       this.initializationData();
       this.configAddDialog = false;
       this.configInitialization();
   }
-  // modify config
+  // show modify config dialog
   public configModifyClick(): void {
-    console.log(this.configSelect);
     if (this.configSelect === undefined || this.configSelect.length === 0 ) {
-      this.setToast('error', '操作错误', '请选择需要修改的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.configSelect.length === 1) {
       this.configModifyDialog = true;
       this.configModify.id = this.configSelect[0].id;
@@ -139,45 +123,34 @@ export class SetConfigComponent implements OnInit {
       this.configModify.status = this.configSelect[0].status;
       this.configModify.idt = this.configSelect[0].idt;
     } else {
-      this.setToast('error', '操作错误', '只能选择一项进行修改');
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
     }
   }
   // sure modify config
   public  configModifySureClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要修改吗？`,
-      header: '修改提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.loadHidden = false;
-        this.setTypeOption.forEach( v => {
-          if (this.configModify.settingType === v.label) {
-            // console.log();
-            this.configModify.settingType = v.value;
+    this.toolSrv.setConfirmation('修改', '修改', () => {
+      this.loadHidden = false;
+      this.setTypeOption.forEach( v => {
+        if (this.configModify.settingType === v.label) {
+          this.configModify.settingType = v.value;
+        }
+      });
+      this.configService.updateSet(this.configModify).subscribe(
+        (value) => {
+          this.loadHidden = true;
+          if (value.status === '1000') {
+            this.configInitialization();
+            this.toolSrv.setToast('success', '操作成功', '修改成功');
+            this.configModifyDialog = false;
+            this.configSelect = [];
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
           }
-        });
-        console.log(this.configModify);
-        this.configService.updateSet(this.configModify).subscribe(
-          (value) => {
-            console.log(value);
-            this.loadHidden = true;
-
-            if (value.status === '1000') {
-              this.configInitialization();
-              this.setToast('success', '操作成功', '修改成功');
-              this.configModifyDialog = false;
-              this.configSelect = [];
-            } else {
-              this.setToast('error', '操作失败', value.message);
-            }
-          }
-        );
-      },
-      reject: () => {
-      }
+        }
+      );
     });
   }
-  // close modify congfig
+  // close modify congfig dialog
   public  configModifyCloseClick(): void {
     this.initializationData();
     this.configModifyDialog = false;
@@ -186,81 +159,48 @@ export class SetConfigComponent implements OnInit {
   // delete config
   public  configDeleteClick(): void {
     if (this.configSelect === undefined || this.configSelect.length === 0) {
-        this.setToast('error', '操作错误', '请选择需要删除的项');
+        this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
-      this.confirmationService.confirm({
-        message: `确认要删除这${this.configSelect.length}项吗`,
-        header: '删除提醒',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          console.log(this.configSelect);
-          this.loadHidden = false;
-
-          if (this.configSelect.length === 1) {
-            this.configService.delectSet({id: this.configSelect[0].id}).subscribe(
-              (value) => {
-                console.log(value);
-                this.loadHidden = true;
-
-                if (value.status === '1000') {
-                  this.configInitialization();
-                  this.setToast('success', '操作成功', '删除成功');
-                  // this.configModifyDialog = false;
-                  this.configSelect = [];
-                } else {
-                  this.setToast('error', '操作失败', value.message);
-                }
+      this.toolSrv.setConfirmation('删除', `删除这${this.configSelect.length}项`, () => {
+        this.loadHidden = false;
+        if (this.configSelect.length === 1) {
+          this.configService.delectSet({id: this.configSelect[0].id}).subscribe(
+            (value) => {
+              this.loadHidden = true;
+              if (value.status === '1000') {
+                this.configInitialization();
+                this.toolSrv.setToast('success', '操作成功', '删除成功');
+                this.configSelect = [];
+              } else {
+                this.toolSrv.setToast('error', '操作失败', value.message);
               }
-            );
-          } else if (this.configSelect.length > 1) {
-            this.loadHidden = false;
-
-            this.configSelect.forEach(v => {
-              this.ids.push({id: v.id});
-            });
-            console.log(this.ids);
-            this.configService.deletemoreSet({data: this.ids}).subscribe(
-              (value) => {
-                console.log(value);
-                this.loadHidden = true;
-
-                if (value.status === '1000') {
-                  this.configInitialization();
-                  this.setToast('success', '操作成功', '删除成功');
-                  // this.configModifyDialog = false;
-                  this.configSelect = [];
-                } else {
-                  this.setToast('error', '操作失败', value.message);
-                }
+            }
+          );
+        } else if (this.configSelect.length > 1) {
+          this.configSelect.forEach(v => {
+            this.ids.push({id: v.id});
+          });
+          this.configService.deletemoreSet({data: this.ids}).subscribe(
+            (value) => {
+              this.loadHidden = true;
+              if (value.status === '1000') {
+                this.configInitialization();
+                this.toolSrv.setToast('success', '操作成功', '删除成功');
+                this.configSelect = [];
+              } else {
+                this.toolSrv.setToast('error', '操作失败', value.message);
               }
-            );
-          }
-        },
-        reject: () => {
-          // this.configSelect = [];
-          // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
+            }
+          );
         }
       });
     }
   }
+  // Select setting type
   public  setTypeChange(e): void {
     this.configAdd.settingType = e.value;
-    // this.configModify.settingType = e.value;
-    console.log(e);
   }
-
-  // Toast
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
-  }
-  // initialization data
+  // Reset data
   public initializationData(): void {
     this.configSelect = [];
     this.configAdd = new Addconfig();
@@ -268,15 +208,14 @@ export class SetConfigComponent implements OnInit {
     this.setTypeOption = [];
     this.addSetType.value = null;
   }
+  // paging query
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
+    this.nowPage = event;
     this.configService.querySetPage({pageNo: event, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         this.loadHidden = true;
-
         this.configTableContent = value.data.contents;
-        // console.log(this.configTableContent);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         // console.log(123);
       }

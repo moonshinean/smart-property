@@ -47,7 +47,6 @@ export class RefundApplicationInfoComponent implements OnInit {
   constructor(
     private applicationInfoSrv: RefundApplicationInfoService,
     private toolSrv: PublicMethedService,
-    private globalSrv: GlobalService,
   ) {
   }
   ngOnInit() {
@@ -100,17 +99,17 @@ export class RefundApplicationInfoComponent implements OnInit {
         );
       }
     });
-    this.globalSrv.queryVillageInfo({}).subscribe(
+ /*   this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
         data.data.forEach(v => {
           this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
         });
       }
-    );
+    );*/
     this.applicationInfoTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
 
   }
-  // query Village
+/*  // query Village
   public VillageChange(e): void {
     this.loadHidden = false;
     this.SearchOption.region = [];
@@ -120,7 +119,6 @@ export class RefundApplicationInfoComponent implements OnInit {
     this.applicationInfoModify.villageName = e.originalEvent.target.innerText;
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach(v => {
           this.loadHidden = true;
           this.SearchOption.region.push({label: v.regionName, value: v.regionCode});
@@ -160,7 +158,7 @@ export class RefundApplicationInfoComponent implements OnInit {
   public unitChange(e): void {
     this.applicationInfoAdd.unitName = e.originalEvent.target.innerText;
 
-  }
+  }*/
   //  applicationInfo detail
   public applicationInfoDetailClick(e): void {
     this.applicationInfoDetail = e;

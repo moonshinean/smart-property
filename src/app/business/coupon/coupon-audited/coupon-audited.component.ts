@@ -66,7 +66,6 @@ export class CouponAuditedComponent implements OnInit {
 
   // initialization houseinfo
   public couponAuditedInitialization(): void {
-    console.log('这里是信息的初始化');
     this.couponAuditedTableTitle = [
       {field: 'roomCode', header: '房间代码'},
       {field: 'couponName', header: '优惠券名称'},
@@ -79,26 +78,24 @@ export class CouponAuditedComponent implements OnInit {
     this.loadingHide = false;
     this.couponAuditedSrv.queryCouponAuditedPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         this.loadingHide = true;
         this.couponAuditedTableContent = value.data.contents;
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );
     this.couponAuditedTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
-    this.globalSrv.queryVillageInfo({}).subscribe(
-      (data) => {
-        console.log(data);
-        data.data.forEach( v => {
-          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-          // = v.villageName;
-        });
-        // this.villageplaceholder =  this.SearchOption.village[0].label;
-      }
-    );
+    // this.globalSrv.queryVillageInfo({}).subscribe(
+    //   (data) => {
+    //     data.data.forEach( v => {
+    //       this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+    //       // = v.villageName;
+    //     });
+    //     // this.villageplaceholder =  this.SearchOption.village[0].label;
+    //   }
+    // );
   }
 
-  public  VillageChange(e): void {
+/*  public  VillageChange(e): void {
     this.SearchOption.region = [];
     this.SearchOption.building = [];
     this.SearchOption.unit = [];
@@ -137,12 +134,12 @@ export class CouponAuditedComponent implements OnInit {
   }
   public  unitChange(e): void {
     this.roonCodeSelectOption = [];
-  }
+  }*/
 
   // condition search click
-  public couponAuditedSearchClick(): void {
-    console.log('这里是条件搜索');
-  }
+  // public couponAuditedSearchClick(): void {
+  //   console.log('这里是条件搜索');
+  // }
 
 
   // detail couponAuditedInfo
@@ -156,7 +153,6 @@ export class CouponAuditedComponent implements OnInit {
     }
     this.couponAuditedSrv.queryCouponType({}).subscribe(
       val => {
-        console.log(val);
         val.data.forEach( v => {
           if (e.couponType === v.settingCode) {
             this.couponTypeName = v.settingName;
@@ -171,7 +167,6 @@ export class CouponAuditedComponent implements OnInit {
         }
       });
     });
-    console.log(e);
   }
   // 分页请求
   public nowpageEventHandle(event: any): void {
@@ -179,7 +174,6 @@ export class CouponAuditedComponent implements OnInit {
     this.nowPage = event;
     this.couponAuditedSrv.queryCouponAuditedPageData({pageNo: event, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         this.loadingHide = true;
         this.couponAuditedTableContent = value.data.contents;
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};

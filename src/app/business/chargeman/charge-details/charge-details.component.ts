@@ -3,6 +3,7 @@ import {ChargeDetailsService} from '../../../common/services/charge-details.serv
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ChargeDetail, ItemDetail} from '../../../common/model/charge-detail.model';
 import {ChargeItemDetail} from '../../../common/model/charge-payment.model';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-charge-details',
@@ -11,19 +12,6 @@ import {ChargeItemDetail} from '../../../common/model/charge-payment.model';
 })
 export class ChargeDetailsComponent implements OnInit {
 
-
-  @ViewChild('input') input: Input;
-  public detailsTableTitle =  [
-    {field: 'orderId', header: '订单编号'},
-    {field: 'villageName', header: '小区名称'},
-    {field: 'roomCode', header: '房间编号'},
-    {field: 'payerName', header: '缴费人'},
-    {field: 'payerPhone', header: '缴费人电话'},
-    {field: 'paymentMethod', header: '支付方式'},
-    {field: 'actualTotalMoneyCollection', header: '缴费金额'},
-    {field: 'idt', header: '缴费时间'},
-    {field: 'operating', header: '操作'}
-  ];
   public ChargedetailTableTitle =  [
     {field: 'orderId', header: '订单编号'},
     {field: 'villageName', header: '小区名称'},
@@ -49,13 +37,13 @@ export class ChargeDetailsComponent implements OnInit {
     {field: 'actualMoneyCollection', header: '实收金额'},
     // {field: 'totle', header: '合计'},
   ];
-  public SearchOption = {
-    village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
-    region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
-    building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
-    unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
-    room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
-  };
+  // public SearchOption = {
+  //   village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
+  //   region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
+  //   building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
+  //   unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
+  //   room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
+  // };
   // 缴费相关
   // public projectSelectDialog: boolean;
   public detailsDialog: boolean;
@@ -75,9 +63,8 @@ export class ChargeDetailsComponent implements OnInit {
 
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private chargeDetailSrv: ChargeDetailsService
+    private chargeDetailSrv: ChargeDetailsService,
+    private toolSrv: PublicMethedService,
   ) { }
   ngOnInit() {
     this.detailsInitialization();
@@ -85,12 +72,10 @@ export class ChargeDetailsComponent implements OnInit {
 
   // initialization details
   public  detailsInitialization(): void {
-    // this.ChargedetailTableTitle =
     this.loadHidden = false;
 
     this.chargeDetailSrv.queryChargeDataPage({pageNo: 1, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         this.loadHidden = true;
         this.detailsTableContent = value.data.contents;
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -98,47 +83,29 @@ export class ChargeDetailsComponent implements OnInit {
     );
     this.detailsTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
-  // condition search click
-  public  detailsSearchClick(e): void {
+ // condition search click
+  public  detailsSearchClick(): void {
     // @ts-ignore
     // console.log(this.input.nativeElement.value);
-    console.log('这里是条件搜索');
+    // console.log('这里是条件搜索');
   }
   // sure modify details
   public  detailsSureClick(): void {
     this.loadHidden = false;
-
     this.chargeDetailSrv.getPayDocument({orderId: this.chargeDetails.orderId, organizationId: this.chargeDetails.organizationId}).subscribe(
       (data) => {
-        console.log(data);
         if (data.data !== '') {
           this.loadHidden = true;
-
-          window.open(data.data);
-
         } else {
-          this.setToast('error', '操作失败', data.message);
+          this.toolSrv.setToast('error', '操作失败', data.message);
         }
       }
     );
   }
-  public  projectChange(i): void {
-
-    if (this.detailsProject[i].check === 0) {
-      this.detailsProject[i].check = 1;
-    } else {
-      this.detailsProject[i].check = 0;
-    }
-  }
-  // add details Project
-  // public  detailsAddProjectClick(): void {
-  //   this.projectSelectDialog = true;
-  //   // this.detailsDialog = true;
-  // }
   public  detailsFaleseClick(): void {
     this.detailsDialog = false;
   }
-  // item detail
+  // charge item detail
   public  detailsDialogClick(e): void {
      this.chargeDetails = e;
      const dataDetail =  JSON.parse(e.detailed);
@@ -156,7 +123,7 @@ export class ChargeDetailsComponent implements OnInit {
      });
      this.detailsProject = dataDetail;
   }
-
+  // paging query
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
 
@@ -167,16 +134,5 @@ export class ChargeDetailsComponent implements OnInit {
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );
-  }
-  // Toast
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
   }
 }

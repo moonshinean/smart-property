@@ -1,6 +1,7 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ChargePrepaymentService} from '../../../common/services/charge-prepayment.service';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-charge-prepayment',
@@ -9,15 +10,10 @@ import {ChargePrepaymentService} from '../../../common/services/charge-prepaymen
 })
 export class ChargePrepaymentComponent implements OnInit {
 
-
-
-  @ViewChild('input') input: Input;
   public prepaymentTableTitle: any;
   public prepaymentTableContent: any;
   public prepaymentTableTitleStyle: any;
   public prepaymentSelect: any;
-  public StartTime: any;
-  public EndTime: any;
   // 缴费相关
   // public projectSelectDialog: boolean;
   public prepaymentDetailDialog: boolean;
@@ -27,18 +23,19 @@ export class ChargePrepaymentComponent implements OnInit {
   public loadHidden = true;
   public nowPage = 1;
 
-  public SearchOption = {
-    village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
-    region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
-    building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
-    unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
-    room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
-  };
+  // public SearchOption = {
+  //   village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
+  //   region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
+  //   building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
+  //   unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
+  //   room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
+  // };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
+    // private messageService: MessageService,
     private prepaymentSrv: ChargePrepaymentService,
-    private confirmationService: ConfirmationService,
+    // private toolSrv: PublicMethedService,
+    // private confirmationService: ConfirmationService,
   ) { }
   ngOnInit() {
     this.prepaymentInitialization();
@@ -46,7 +43,7 @@ export class ChargePrepaymentComponent implements OnInit {
 
   // initialization prepayment
   public  prepaymentInitialization(): void {
-    console.log('这里是信息的初始化');
+    // console.log('这里是信息的初始化');
     this.prepaymentTableTitle = [
       {field: 'id', header: '序号'},
       {field: 'houseCode', header: '房间号'},
@@ -56,8 +53,10 @@ export class ChargePrepaymentComponent implements OnInit {
       {field: 'PrepaymentTime', header: '预缴时间'},
       {field: 'operating', header: '操作'}
     ];
+    this.loadHidden = false;
     this.prepaymentSrv.queryPrepaymentPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
       value => {
+        this.loadHidden = true;
         if (value.status === '1000') {
           if (value.data.contents) {
             this.prepaymentTableContent = value.data.contents;
@@ -75,8 +74,8 @@ export class ChargePrepaymentComponent implements OnInit {
   // condition search click
   public  prepaymentSearchClick(e): void {
     // @ts-ignore
-    console.log(this.input.nativeElement.value);
-    console.log('这里是条件搜索');
+    // console.log(this.input.nativeElement.value);
+    // console.log('这里是条件搜索');
   }
   // sure modify prepayment
   // public  prepaymentSureClick(): void {
@@ -101,18 +100,8 @@ export class ChargePrepaymentComponent implements OnInit {
   public  prepaymentDetailClick(): void {
     this.prepaymentDetailDialog = true;
   }
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
-  }
 
-  // 分页请求
+  // paging query
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;

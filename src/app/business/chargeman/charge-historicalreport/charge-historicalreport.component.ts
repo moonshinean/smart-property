@@ -8,16 +8,10 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 })
 export class ChargeHistoricalreportComponent implements OnInit {
 
-
-
-
-  @ViewChild('input') input: Input;
   public historicalportTableTitle: any;
   public historicalportTableContent: any;
   public historicalportTableTitleStyle: any;
   public historicalportSelect: any;
-  public StartTime: any;
-  public EndTime: any;
   // 缴费相关
   // public projectSelectDialog: boolean;
   public historicalportDetailDialog: boolean;
@@ -26,8 +20,6 @@ export class ChargeHistoricalreportComponent implements OnInit {
   public option: any;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
   ) { }
   ngOnInit() {
     this.historicalportInitialization();

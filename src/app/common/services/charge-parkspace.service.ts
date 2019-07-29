@@ -39,7 +39,4 @@ export class ChargeParkspaceService {
   public queryRefundStatus(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/setting/findAdminChoose`, pamars);
   }
-  public  queryVehicleAllType(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/setting/findNativeChoose', body);
-  }
 }

@@ -12,7 +12,7 @@ export class PublicMethedService {
 
   private cleanTimer: any;
   private dataList: any[] =[];
-  private dataName: any;
+  private dataName = null;
   public esDate = {
     firstDayOfWeek: 0,
     dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
@@ -44,14 +44,13 @@ export class PublicMethedService {
    * @param parameter  (Request parameter)
    * @param callback
    */
-  public  getAdminStatus(parameter, callback: (...args: any[]) => any): any {
+  public  getAdminStatus(parameter, callback: (...args: any[]) => any): void {
     this.globalSrv.queryAdminStatus({settingType: parameter}).subscribe(
       value => {
-        console.log(value);
         if (value.status === '1000') {
-          return callback(value.data);
+          callback(value.data);
         } else {
-          return callback([]);
+           callback([]);
         }
       }
     );
@@ -62,14 +61,13 @@ export class PublicMethedService {
    * @param parameter (Request parameter)
    * @param callback
    */
-  public  getNatiuveStatus(parameter, callback: (...args: any[]) => any): any {
+  public  getNativeStatus(parameter, success: (...args: any[]) => any): void {
     this.globalSrv.queryNativeStatus({settingType: parameter}).subscribe(
       value => {
-        console.log(value);
         if (value.status === '1000') {
-          return callback(value.data);
+          success(value.data);
         } else {
-          return callback(false);
+          success(false);
         }
       }
     );
@@ -85,10 +83,12 @@ export class PublicMethedService {
     this.dataList = [];
     list.forEach( v => {
        this.dataList.push({label: v.settingName, value: v.settingCode});
-        if (status.toString() === v.settingCode) {
-          this.dataName = v.settingName;
-        }
-        if (list.indexOf(v) === list.length - 1) {
+       if (status !== undefined && status !== '') {
+         if (status.toString() === v.settingCode) {
+           this.dataName = v.settingName;
+         }
+       }
+       if (list.indexOf(v) === list.length - 1) {
           callback(this.dataList, this.dataName);
         }
      });

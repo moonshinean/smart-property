@@ -73,7 +73,6 @@ export class RefundInfoComponent implements OnInit {
       {field: 'orderId', header: '订单Id'},
       {field: 'payerName', header: '缴费人姓名'},
       {field: 'paymentMethod', header: '支付方式'},
-      // {field: 'paymentType', header: '支付类型'},
       {field: 'roomCode', header: '房间编号'},
       {field: 'chargeName', header: '项目名称'},
       {field: 'actualMoneyCollection', header: '实收金额'},
@@ -82,7 +81,7 @@ export class RefundInfoComponent implements OnInit {
     ];
     this.esDate = this.toolSrv.esDate;
     this.loadHidden = false;
-    this.toolSrv.getAdminStatus('REFUND_STATUS', (data) =>{
+    this.toolSrv.getAdminStatus('REFUND_STATUS', (data) => {
       if (data.length > 0) {
         this.infoSrv.queryRefundInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
           val => {
@@ -139,7 +138,6 @@ export class RefundInfoComponent implements OnInit {
     this.infoModify.villageName = e.originalEvent.target.innerText;
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach(v => {
           this.loadHidden = true;
           this.SearchOption.region.push({label: v.regionName, value: v.regionCode});
@@ -157,10 +155,8 @@ export class RefundInfoComponent implements OnInit {
     this.searchRefundInfo.buildingCode = '';
     this.searchRefundInfo.unitCode = '';
     this.searchRefundInfo.roomCode = '';
-    console.log(e.value);
     this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach(v => {
           this.SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
         });
@@ -178,7 +174,6 @@ export class RefundInfoComponent implements OnInit {
     this.searchRefundInfo.roomCode = '';
     this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach(v => {
           this.SearchOption.unit.push({label: v.unitName, value: v.unitCode});
         });
@@ -187,13 +182,11 @@ export class RefundInfoComponent implements OnInit {
   }
   // query roomCode
   public unitChange(e): void {
-    console.log(e.value);
     this.infoAdd.unitName = e.originalEvent.target.innerText;
     this.searchRefundInfo.unitCode = e.value;
     this.searchRefundInfo.roomCode = '';
     this.infoSrv.queryRoomCode({unitCode: e.value}).subscribe(
       value => {
-        console.log(value);
         value.data.forEach( v => {
           this.roonCodeSelectOption.push({label: v.roomCode, value: v.roomCode});
           this.SearchOption.room.push({label: v.roomCode, value: v.roomCode});
@@ -213,7 +206,6 @@ export class RefundInfoComponent implements OnInit {
       this.loadHidden = false;
       this.infoSrv.queryRefundInfoPage(this.searchRefundInfo).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.loadHidden = true;
             if (value.data.contents) {
@@ -320,7 +312,6 @@ export class RefundInfoComponent implements OnInit {
   // info select
   public  infoonRowSelect(e): void {
     this.infoModify = e.data;
-    console.log(e.data);
   }
   // modify info
   public infoModifyClick(): void {
@@ -382,7 +373,6 @@ export class RefundInfoComponent implements OnInit {
     this.toolSrv.setConfirmation('修改', '修改', () => {
       this.infoModify.startTime = this.datePipe.transform(this.infoModify.startTime, 'yyyy-MM-dd');
       this.infoModify.dueTime = this.datePipe.transform(this.infoModify.dueTime, 'yyyy-MM-dd');
-      console.log(this.infoModify);
       this.infoSrv.updateRefundInfo(this.infoModify).subscribe(
         value => {
           if (value.status === '1000') {
@@ -432,7 +422,7 @@ export class RefundInfoComponent implements OnInit {
       room: []
     };
   }
-  // 分页请求
+  // paging query
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;

@@ -61,7 +61,6 @@ export class RefundAlreadyComponent implements OnInit {
 
   // initialization already
   public alreadyInitialization(): void {
-    console.log('这里是信息的初始化');
     this.alreadyTableTitle = [
       {field: 'orderId', header: '订单Id'},
       {field: 'payerName', header: '缴费人姓名'},
@@ -108,18 +107,17 @@ export class RefundAlreadyComponent implements OnInit {
         );
       }
     });
-    this.globalSrv.queryVillageInfo({}).subscribe(
+/*    this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
         data.data.forEach(v => {
           this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
         });
       }
-    );
+    );*/
     this.alreadyTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
 
   }
-
-  // village change
+/*  // village change
   public VillageChange(e): void {
     this.loadHidden = false;
     this.SearchOption.region = [];
@@ -165,13 +163,14 @@ export class RefundAlreadyComponent implements OnInit {
   }
   public unitChange(e): void {
     this.alreadyAdd.unitName = e.originalEvent.target.innerText;
-  }
+  }*/
   // condition search click
   public alreadySearchClick(): void {
     // @ts-ignore
-    console.log(this.input.nativeElement.value);
-    console.log('这里是条件搜索');
+    // console.log(this.input.nativeElement.value);
+    // console.log('这里是条件搜索');
   }
+  // Show refunded details dialog
   public alreadyDetailClick(e): void {
     this.alreadyDetail = e;
     this.alreadyDetailDialog = true;
@@ -181,7 +180,7 @@ export class RefundAlreadyComponent implements OnInit {
   public  alreadyonRowSelect(e): void {
     this.alreadyModify = e.data;
   }
-
+  // Reset data
   public clearData(): void {
     this.alreadyAdd = null;
     this.alreadyModify = null;
@@ -193,8 +192,7 @@ export class RefundAlreadyComponent implements OnInit {
     this.alreadyOriginalTypeOption = [];
     this.alreadySelect = [];
   }
-
-  // 分页请求
+  // paging query
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;

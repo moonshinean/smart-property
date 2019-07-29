@@ -4,6 +4,7 @@ import {GlobalService} from '../../../common/services/global.service';
 import {AddSetRole, ModifySetRole, SetRole} from '../../../common/model/set-role.model';
 import {SetRoleService} from '../../../common/services/set-role.service';
 import {isObjectFlagSet} from 'tslint';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-set-role',
@@ -11,9 +12,6 @@ import {isObjectFlagSet} from 'tslint';
   styleUrls: ['./set-role.component.less']
 })
 export class SetRoleComponent implements OnInit {
-
-  // @ViewChild('addSetType') addSetType: Dropdown;
-  @ViewChild('input') input: Input;
   public roleTableTitle: any;
   public roleTableContent: SetRole[];
   public roleTableTitleStyle: any;
@@ -30,17 +28,13 @@ export class SetRoleComponent implements OnInit {
   // 删除相关
   public ids: any[] = [];
   // 其他相关
-  public cleanTimer: any; // 清除时钟
   public option: any;
   public setlimitCodeOption: any[] = [];
   public loadHidden = true;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    // private roleService: setroleService,
     private roleSrv: SetRoleService,
-    private globalService: GlobalService
+    private toolSrv: PublicMethedService
   ) { }
   ngOnInit() {
     this.roleInitialization();
@@ -59,7 +53,6 @@ export class SetRoleComponent implements OnInit {
     ];
     this.roleSrv.queryRoleList({pageNo: 1, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         this.loadHidden = true;
         this.roleTableContent = value.data.contents;
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -68,13 +61,13 @@ export class SetRoleComponent implements OnInit {
     this.roleTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
 
   }
-  // condition search click
-  public  roleSearchClick(): void {
-    // @ts-ignore
-    console.log(this.input.nativeElement.value);
-    console.log('这里是条件搜索');
-  }
-  // add  role
+  // // condition search click
+  // public  roleSearchClick(): void {
+  //   // @ts-ignore
+  //   console.log(this.input.nativeElement.value);
+  //   console.log('这里是条件搜索');
+  // }
+  // showe add  role dialog
   public  roleConfigClick(): void {
     this.primitList = [];
     this.RoleCodeList = [];
@@ -98,124 +91,106 @@ export class SetRoleComponent implements OnInit {
       }
     );
   }
-  // sure add role
+  // add role quest
   public  roleAddSureClick(): void {
-    // console.log(this.roleDatas);
     const flag = [];
 
     if (this.userCode !== undefined && this.roleDatas !== []) {
-      this.confirmationService.confirm({
-        message: `确认要增加吗？`,
-        header: '增加提醒',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.roleData.forEach(v => {
-            this.roleDatas.forEach( item => {
-              if (v === item) {
-                flag.push(v);
-                this.roleDatas.splice( this.roleDatas.indexOf(item), 1);
-              }
-            });
+      this.toolSrv.setConfirmation('增加', '增加', () => {
+        this.roleData.forEach(v => {
+          this.roleDatas.forEach( item => {
+            if (v === item) {
+              flag.push(v);
+              this.roleDatas.splice( this.roleDatas.indexOf(item), 1);
+            }
           });
+        });
 
-          flag.forEach(item => {
-            this.roleData.forEach( v => {
-              if (v === item) {
-                this.roleData.splice(this.roleData.indexOf(v), 1);
-              }
-            });
+        flag.forEach(item => {
+          this.roleData.forEach( v => {
+            if (v === item) {
+              this.roleData.splice(this.roleData.indexOf(v), 1);
+            }
           });
+        });
 
 
-          if (this.roleDatas.length >= 1) {
-            this.roleSrv.addUserRole({userId: this.userCode , roleCodes: this.roleDatas.join(',')}).subscribe(
-              (value ) => {
-                this.setToast('success', '操作成功', '新增成功');
+        if (this.roleDatas.length >= 1) {
+          this.roleSrv.addUserRole({userId: this.userCode , roleCodes: this.roleDatas.join(',')}).subscribe(
+            (value ) => {
+              if (value.status === '1000') {
+                this.toolSrv.setToast('success', '操作成功', '新增成功');
                 this.roleAddDialog = false;
                 this.roleInitialization();
                 this.initializationData();
-                // if (value)
+              } else  {
+                this.toolSrv.setToast('error', '新增失败', value.message);
               }
-            );
-          }
-          if (this.roleData.length >= 1) {
-            this.loadHidden = false;
-            this.roleTableContent.forEach(v => {
-              this.roleData.forEach(item => {
-                if (this.userCode === v.userId) {
-                  if (v.roleCode === item) {
-                    this.ids.push(v.id);
-                  }
+            }
+          );
+        }
+        if (this.roleData.length >= 1) {
+          this.loadHidden = false;
+          this.roleTableContent.forEach(v => {
+            this.roleData.forEach(item => {
+              if (this.userCode === v.userId) {
+                if (v.roleCode === item) {
+                  this.ids.push(v.id);
                 }
-              });
+              }
             });
-            this.roleSrv.deleteUserInfo({ids: this.ids.join(',')}).subscribe(
-              (value) => {
-                if (value.status === '1000') {
-                  this.roleInitialization();
-                  this.setToast('success', '操作成功', '删除成功');
-                  // this.roleModifyDialog = false;
-                  this.roleAddDialog = false;
+          });
+          this.roleSrv.deleteUserInfo({ids: this.ids.join(',')}).subscribe(
+            (value) => {
+              if (value.status === '1000') {
+                this.roleInitialization();
+                this.toolSrv.setToast('success', '操作成功', '删除成功');
+                this.roleAddDialog = false;
 
-                  this.roleSelect = [];
-                } else {
-                  this.setToast('error', '操作失败', value.message);
-                }
+                this.roleSelect = [];
+              } else {
+                this.toolSrv.setToast('error', '操作失败', value.message);
               }
-            );
-          }
-        },
-        reject: () => {
-          // console.log('这里是增加信息');
+            }
+          );
         }
       });
-
     } else {
-      this.setToast('error' , '操作错误', '未选择数据');
+      this.toolSrv.setToast('error' , '操作错误', '未选择数据');
     }
   }
-  // close add role
+  // close add role dialog
   public roleAddCloseClick(): void {
     this.initializationData();
     this.roleAddDialog = false;
     this.RoleCodeList = [];
     this.roleInitialization();
   }
-
-  // delete role
+  // delete role data
   public  roleDeleteClick(): void {
     if (this.roleSelect === undefined || this.roleSelect.length === 0) {
-      this.setToast('error', '操作错误', '请选择需要删除的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
-      this.confirmationService.confirm({
-        message: `确认要删除这${this.roleSelect.length}项吗`,
-        header: '删除提醒',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          // console.log(this.roleSelect);
-            this.roleSelect.forEach(v => {
-            this.ids.push(v.id);
-          });
-            this.roleSrv.deleteUserInfo({ids: this.ids.join(',')}).subscribe(
-              (value) => {
-                if (value.status === '1000') {
-                  this.roleInitialization();
-                  this.setToast('success', '操作成功', '删除成功');
-                  // this.roleModifyDialog = false;
-                  this.roleSelect = [];
-                } else {
-                  this.setToast('error', '操作失败', value.message);
-                }
-              }
-            );
-        },
-        reject: () => {
-          // this.roleSelect = [];
-          // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-        }
+      this.toolSrv.setConfirmation('删除', `删除这${this.roleSelect.length}项`, () => {
+        this.roleSelect.forEach(v => {
+          this.ids.push(v.id);
+        });
+        this.roleSrv.deleteUserInfo({ids: this.ids.join(',')}).subscribe(
+          (value) => {
+            if (value.status === '1000') {
+              this.roleInitialization();
+              this.toolSrv.setToast('success', '操作成功', '删除成功');
+              // this.roleModifyDialog = false;
+              this.roleSelect = [];
+            } else {
+              this.toolSrv.setToast('error', '操作失败', value.message);
+            }
+          }
+        );
       });
     }
   }
+  // Select user type
   public  setUserTypeChange(e): void {
     this.userCode = e.value;
     this.roleSrv.queryRoleInfo({}).subscribe(
@@ -238,7 +213,6 @@ export class SetRoleComponent implements OnInit {
       }
     );
   }
-
   // initialization data
   public initializationData(): void {
     this.roleSelect = [];
@@ -247,6 +221,7 @@ export class SetRoleComponent implements OnInit {
     this.roleDatas = [];
     this.userCode = '';
   }
+  // paging query
   public  nowpageEventHandle(event: any): void {
     this.roleSrv.queryRoleList({pageNo: event, pageSize: 10}).subscribe(
       (value) => {
@@ -258,17 +233,5 @@ export class SetRoleComponent implements OnInit {
       }
     );
     this.roleSelect = [];
-  }
-
-  // Toast
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
   }
 }

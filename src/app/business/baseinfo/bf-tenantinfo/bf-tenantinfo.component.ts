@@ -374,7 +374,7 @@ export class BfTenantinfoComponent implements OnInit {
           delete this.tenantRoomAdd.villageCode;
           this.tenantAdd.push(this.tenantRoomAdd);
           console.log(this.tenantAdd);
-          this.tenantSrv.addTenantInfo({data: this.tenantAdd}).subscribe(
+          this.tenantSrv.addTenantInfo( this.tenantAdd).subscribe(
             value => {
               console.log(value);
               this.loadHidden = true;
@@ -615,7 +615,7 @@ export class BfTenantinfoComponent implements OnInit {
           delete this.tenantRoomAdd.villageCode;
           this.tenantAdd.push(this.tenantRoomAdd);
           console.log(this.tenantAdd);
-          this.tenantSrv.addTenantInfo({data: this.tenantAdd}).subscribe(
+          this.tenantSrv.addTenantInfo(this.tenantAdd).subscribe(
             value => {
               console.log(value);
               this.loadHidden = true;

@@ -26,8 +26,6 @@ export class RefundAuditedComponent implements OnInit {
   public cleanTimer: any; // 清除时钟
   public option: any;
   public loadingHide = true;
-  public refundAuditeSeachData: any;
-  // public SearchCoupon: SearchCoupon = new SearchCoupon();
   public nowPage = 1;
   public SearchOption = {
     village: [],
@@ -41,11 +39,9 @@ export class RefundAuditedComponent implements OnInit {
   public couponTypeName: any;
   public couponMoney: any;
   public couponEffectiveTime: any;
-  // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private refundAuditeSrv: RefundAuditedService,
     private toolSrv: PublicMethedService,
-    private globalSrv: GlobalService
   ) {
   }
 
@@ -56,7 +52,6 @@ export class RefundAuditedComponent implements OnInit {
 
   // initialization houseinfo
   public refundAuditeInitialization(): void {
-    console.log('这里是信息的初始化');
     this.refundAuditeTableTitle = [
       {field: 'roomCode', header: '房间代码'},
       {field: 'surname', header: '客户名称'},
@@ -68,7 +63,6 @@ export class RefundAuditedComponent implements OnInit {
     this.loadingHide = false;
     this.refundAuditeSrv.queryRefundAuditedPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         this.loadingHide = true;
         if (value.status === '1000') {
           this.refundAuditeTableContent = value.data.contents;
@@ -79,26 +73,24 @@ export class RefundAuditedComponent implements OnInit {
       }
     );
     this.refundAuditeTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
-    this.globalSrv.queryVillageInfo({}).subscribe(
+/*    this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
-        console.log(data);
         data.data.forEach( v => {
           this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
           // = v.villageName;
         });
         // this.villageplaceholder =  this.SearchOption.village[0].label;
       }
-    );
+    );*/
   }
 
-  public  VillageChange(e): void {
+/*  public  VillageChange(e): void {
 
     this.SearchOption.region = [];
     this.SearchOption.building = [];
     this.SearchOption.unit = [];
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach( v => {
           this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
         });
@@ -108,10 +100,8 @@ export class RefundAuditedComponent implements OnInit {
   public  regionChange(e): void {
     this.SearchOption.building = [];
     this.SearchOption.unit = [];
-    console.log(e.value);
     this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach( v => {
           this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
         });
@@ -123,7 +113,6 @@ export class RefundAuditedComponent implements OnInit {
     this.SearchOption.unit = [];
     this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach( v => {
           this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
         });
@@ -131,15 +120,13 @@ export class RefundAuditedComponent implements OnInit {
     );
   }
   public  unitChange(e): void {
-    console.log(e);
     this.roonCodeSelectOption = [];
-  }
+  }*/
 
   // condition search click
-  public refundAuditeSearchClick(): void {
-    console.log('这里是条件搜索');
-  }
-
+  // public refundAuditeSearchClick(): void {
+  //   console.log('这里是条件搜索');
+  // }
 
   // detail refundAuditeInfo
   public refundAuditeDetailClick(e): void {
@@ -165,7 +152,7 @@ export class RefundAuditedComponent implements OnInit {
     this.refundAuditeDetailDialog = true;
     console.log(e);
   }
-  // 分页请求
+  // paging query
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;
     this.nowPage = event;
@@ -180,6 +167,7 @@ export class RefundAuditedComponent implements OnInit {
     );
     this.refundAuditeSelect = [];
   }
+  // Reset data
   public clearData(): void {
     this.couponTypeName = null;
     this.couponMoney = null;

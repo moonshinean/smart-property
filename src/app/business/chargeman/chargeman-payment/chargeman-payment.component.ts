@@ -12,6 +12,7 @@ import {
 } from '../../../common/model/charge-payment.model';
 import {environment} from '../../../../environments/environment';
 import {GlobalService} from '../../../common/services/global.service';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-chargeman-payment',
@@ -72,31 +73,7 @@ export class ChargemanPaymentComponent implements OnInit {
     {name: '手机号码', value: '', label: 'mobilePhone'},
     {name: '物业费到期时间', value: '', label: 'dueTime'},
   ];
-  // 查询相关
-  public SearchConditions = {
-    title: [{name: '小区' , option: [
-        {label: '云城商品', value: '1'},
-        {label: '未来城', value: '2'},
-      ]}, {name: '地块',  option: [
-        {label: 'A3', value: '1'},
-        {label: 'A4', value: '2'},
-        {label: 'A5', value: '3'},
-      ]}, {name: '楼栋',  option: [
-        {label: '15栋', value: '1'},
-        {label: '13栋', value: '2'},
-        {label: '14栋', value: '3'},
-      ]}, {name: '单元' , option: [
-        {label: '一单元', value: '1'},
-        {label: '二单元', value: '2'},
-        {label: '三单元', value: '3'},
-      ]}],
-  };
-  public optonDialog = [
-    {label: '微信', value: '微信'},
-    {label: '支付宝', value: '支付宝'},
-    {label: '现金', value: '现金'},
-    {label: '刷卡', value: '刷卡'},
-  ];
+  public optonDialog = [];
   public nowPage = 1;
   public paymentOrderAdd: ChargePaymentAddOrder  = new ChargePaymentAddOrder();
   // 其他相关
@@ -107,10 +84,10 @@ export class ChargemanPaymentComponent implements OnInit {
   // ccRegex: RegExp = /[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
     private paymentSrv: ChargePaymentService,
+    private confirmationService: ConfirmationService,
     private globalSrv: GlobalService,
+    private  toolSrv: PublicMethedService
   ) { }
   ngOnInit() {
 
@@ -119,12 +96,9 @@ export class ChargemanPaymentComponent implements OnInit {
   // initialization payment
   public  paymentInitialization(): void {
     this.loadHidden = false;
-    console.log('这里是信息的初始化');
     this.paymentTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
-    // console.log(this.paymentSelect);
     this.paymentSrv.searchPaymentData({pageNo: this.nowPage , pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         if (value.status === '1000') {
           this.loadHidden = true;
           if (value.data.contents) {
@@ -132,7 +106,7 @@ export class ChargemanPaymentComponent implements OnInit {
           }
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {
-          this.setToast('error', '请求错误', value.message);
+          this.toolSrv.setToast('error', '请求错误', value.message);
         }
       }
     );
@@ -151,30 +125,30 @@ export class ChargemanPaymentComponent implements OnInit {
       this.SearchData.pageSize = 10;
       // @ts-ignore
       this.loadHidden = false;
-      console.log(this.SearchData);
       this.paymentSrv.searchPaymentData(this.SearchData).subscribe(
         value => {
           if (value.status === '1000') {
             this.loadHidden = true;
             if (value.data.contents) {
-              this.setToast('success', '搜索成功', value.message);
+              this.toolSrv.setToast('success', '搜索成功', value.message);
               this.paymentTableContent = value.data.contents;
             } else {
-              this.setToast('success', '搜索成功', '数据为空');
+              this.toolSrv.setToast('success', '搜索成功', '数据为空');
             }
           } else {
-            this.setToast('error', '搜索失败', value.message);
+            this.toolSrv.setToast('error', '搜索失败', value.message);
 
           }
         }
       );
     } else {
-      this.setToast('error', '搜索失败', '搜索信息条件请具体到楼栋');
+      this.toolSrv.setToast('error', '搜索失败', '搜索信息条件请具体到楼栋');
 
     }
 
     console.log('这里是条件搜索');
   }
+  // select village
   public  VillageChange(e): void {
     // console.log(this.test);
     this.SearchOption.building = [];
@@ -191,6 +165,7 @@ export class ChargemanPaymentComponent implements OnInit {
       }
     );
   }
+  // select region
   public  regionChange(e): void {
     this.loadHidden = false;
     this.SearchData.regionCode = '';
@@ -199,10 +174,8 @@ export class ChargemanPaymentComponent implements OnInit {
     this.SearchData.regionCode = e.value;
     this.SearchOption.building = [];
     this.SearchOption.unit = [];
-    console.log(e.value);
     this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach( v => {
           this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
         });
@@ -211,6 +184,7 @@ export class ChargemanPaymentComponent implements OnInit {
       }
     );
   }
+  // select building
   public  buildingChange(e): void {
     this.SearchData.buildingCode = '';
     this.SearchData.unitCode = '';
@@ -218,19 +192,18 @@ export class ChargemanPaymentComponent implements OnInit {
     this.SearchData.buildingCode = e.value;
     this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach( v => {
           this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
         });
       }
     );
   }
+  // select unit
   public  unitChange(e): void {
     this.SearchData.roomCode = '';
     this.SearchData.unitCode = e.value;
     this.globalSrv.queryRoomCode({unitCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach( v => {
           this. SearchOption.room.push({label: v.roomCode, value: v.roomCode});
         });
@@ -253,7 +226,7 @@ export class ChargemanPaymentComponent implements OnInit {
         if (v.chargeWay === 1) {
           // console.log(v.datedif);
           if (v.datedif === '' || v.datedif === null) {
-            this.setToast('error', '操作错误', '请选择月份' );
+            this.toolSrv.setToast('error', '操作错误', '请选择月份' );
             monthStatus = false;
           }
         }
@@ -262,12 +235,17 @@ export class ChargemanPaymentComponent implements OnInit {
 
     if (!monthCheckStatus) {
       this.projectSelectDialog = true;
-      this.setToast('error', '操作错误', '请选择收费项目' );
+      this.toolSrv.setToast('error', '操作错误', '请选择收费项目' );
     } else {
       if (monthStatus) {
         this.loadHidden = false;
         this.paymentDialog = true;
         this.projectSelectDialog = false;
+        this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
+          data.forEach(v => {
+            this.optonDialog.push({label: v.settingName, value: v.settingCode});
+          });
+        });
         // console.log(this.paymentProject);
         this.paymentAddTitle.forEach(item => {
             item.value = this.paymentSelect[0][item.label];
@@ -281,10 +259,8 @@ export class ChargemanPaymentComponent implements OnInit {
             this.payItemDetail.chargeItem.push({chargeCode: value.chargeCode, chargeName: value.chargeName, chargeType: value.chargeType, datedif: value.datedif});
           }
         });
-        console.log(this.payItemDetail);
         this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(
           (value) => {
-            console.log(value);
             if (value.status === '1000') {
               this.paymentItemData = value.data;
               // console.log(this.paymentItemData);
@@ -297,7 +273,7 @@ export class ChargemanPaymentComponent implements OnInit {
               });
               this.paymentMoney = this.paymentTotle;
             } else {
-              this.setToast('error', '操作错误', value.messsage);
+              this.toolSrv.setToast('error', '操作错误', value.messsage);
             }
           }
         );
@@ -308,9 +284,8 @@ export class ChargemanPaymentComponent implements OnInit {
   }
   // sure modify payment
   public  paymentSureClick(): void {
-
     if (this.paymentOrderAdd.paymentMethod === undefined || this.paymentOrderAdd.payerName === undefined || this.paymentOrderAdd.payerPhone === undefined) {
-        this.setToast('error', '填写错误', '有数据没填写或者选择');
+        this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
     } else {
       if (this.phoneErrorToast) {
         this.loadHidden = false;
@@ -335,12 +310,9 @@ export class ChargemanPaymentComponent implements OnInit {
         this.paymentOrderAdd.userId = this.paymentSelect[0].userId;
         this.paymentOrderAdd.chargeItemCostDTO = this.paymentItemData;
         this.paymentOrderAdd.surplus = this.Balance;
-        console.log(this.paymentOrderAdd);
         this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
           (value) => {
-            console.log(value);
             this.loadHidden = true;
-
             if (value.status === '1000') {
               this.confirmationService.confirm({
                 message: `是否打印单据吗？`,
@@ -349,15 +321,12 @@ export class ChargemanPaymentComponent implements OnInit {
                 accept: () => {
                   this.paymentSrv.getPayDocument({orderId: value.data.orderId, organizationId: value.data.organizationId}).subscribe(
                     (data) => {
-                      console.log(data);
                       if (data.data !== '') {
-                        window.open(data.data);
                         this.paymentDialog = false;
                         this.InitializationAllpayData();
-                        // this.setToast('success', '操作成功', data.message);
-
+                        // this.toolSrv.setToast('success', '操作成功', data.message)
                       } else {
-                        this.setToast('error', '操作失败', data.message);
+                        this.toolSrv.setToast('error', '操作失败', data.message);
                       }
                     }
                   );
@@ -368,26 +337,23 @@ export class ChargemanPaymentComponent implements OnInit {
                 }
               });
             } else {
-              this.setToast('error', '请求错误', value.message);
+              this.toolSrv.setToast('error', '请求错误', value.message);
             }
           }
         );
       } else {
-        this.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
+        this.toolSrv.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
       }
     }
   }
   // delete payment
   public  paymentClick(): void {
-
     if (this.paymentSelect === undefined || this.paymentSelect.length === 0 ) {
-      this.setToast('error', '请求错误', '请选择需要缴费的项');
+      this.toolSrv.setToast('error', '请求错误', '请选择需要缴费的项');
     } else if (this.paymentSelect.length === 1) {
       this.loadHidden = false;
-
       this.paymentSrv.searchChargeItem({roomCode: this.paymentSelect[0].roomCode}).subscribe(
         (value) => {
-          console.log(value);
           value.data.forEach( v => {
               let flag = true;
               this.paymentProject.forEach(item => {
@@ -405,7 +371,7 @@ export class ChargemanPaymentComponent implements OnInit {
         }
       );
     } else {
-      this.setToast('error', '请求错误', '只能选择一项进行缴费');
+      this.toolSrv.setToast('error', '请求错误', '只能选择一项进行缴费');
     }
   }
   // select payment
@@ -440,21 +406,24 @@ export class ChargemanPaymentComponent implements OnInit {
     );
     // this.paymentDialog = true;
   }
+  // Cancel payment
   public  paymentFaleseClick(): void {
     this.paymentDialog = false;
     this.InitializationAllpayData();
 
   }
+  // select pay type
   public  payTypeChage(e): void {
       // console.log(e);
       this.paymentOrderAdd.paymentMethod = e.value;
   }
+  // Calculated amount
   public  getBalance(e): void {
-    console.log(e.target.value);
     if (e.target.value >= this.paymentTotle) {
       this.Balance = parseFloat(( e.target.value - this.paymentTotle).toFixed(2));
     }
   }
+  // cancel select charging items
   public  payProjectFalseClick(): void {
     if (this.addPayProject) {
       this.addPayProject = false;
@@ -466,19 +435,7 @@ export class ChargemanPaymentComponent implements OnInit {
       this.projectSelectDialog = false;
     }
   }
-  // Toast
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
-  }
-
-  // 分页请求
+  // paging query
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
@@ -494,16 +451,17 @@ export class ChargemanPaymentComponent implements OnInit {
     );
     this.paymentSelect = [];
   }
+  // Mobile phone number format judgment
   public paymentPhoneChange(e): void {
-      console.log();
       if (e.length !== '' && e.length < 11 || isNaN(e)) {
-        this.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
+        this.toolSrv.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
         this.phoneErrorToast = false;
       } else {
         this.phoneErrorToast = true;
       }
 
   }
+  // Reset data
   public  InitializationAllpayData(): void {
     this.paymentItemData = [];
     // this.paymentDialog = false;

@@ -42,7 +42,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
         // {label: '退款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/record']},
         // {label: '欠款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/arrears']},
         {label: '预缴记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/prepayment']},
-        {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
+        // {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
         {label: '车位管理', icon: 'pi pi-fw ', routerLink: ['/home/charge/parkspace']},
         // {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/charge/coupon']},
       ] },
@@ -123,7 +123,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
             // {label: '退款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/record']},
             // {label: '欠款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/arrears']},
             {label: '预缴记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/prepayment']},
-            {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
+            // {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
             {label: '车位管理', icon: 'pi pi-fw ', routerLink: ['/home/charge/parkspace']},
             // {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/charge/coupon']},
           ] },
@@ -199,10 +199,8 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
       li[i].style.color = '#8F9198';
     }
     if (e.target.className === 'ui-menuitem-text') {
-      // console.log(e.path[1]);
       e.path[1].style.color = '#3A79DD';
     } else {
-      // console.log(e.path[0]);
       e.path[0].style.color = '#3A79DD';
     }
   }
@@ -227,14 +225,9 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
   // View route activation
   public  sidebarRouterStatus(url): void {
     let position = 0;
-    // const setTime = setInterval( () => {
-      // if (this.items.length > 0) {
     this.items.map((prop) => {
           position = position + 1;
-          console.log(prop.routerLink.toString().split('/', 4)[3].indexOf(url));
-          // console.log(prop.routerLink.toString().split("/",4)[3]);
           if (prop.routerLink.toString().split('/', 4)[3].indexOf(url) === 0) {
-            // console.log(prop);
             const li = document.getElementsByClassName('ui-panelmenu-header-link');
             // @ts-ignore
             li[position - 1].style.color = '#3A7ADF';
@@ -246,12 +239,8 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
               // @ts-ignore
               li[i].style.color = '#8F9198';
             }
-            // clearInterval(setTime);
           }
         });
-      // }
-    // }, 500);
-    // console.log(position);
   }
   // Listening to the parent component
   ngOnChanges(changes: SimpleChanges): void {
@@ -261,7 +250,6 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           {label: '租户资料', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/tenantinfo']},
           {label: '收费项目', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/toll']},
           {label: '收费项目配置', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/roomCharge']},
-          // {label: '工作组', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/workgroup']},
           {label: '员工档案', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/staff']},
           {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/coupon']},
           {label: '车位信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/parkingspace']},
@@ -279,7 +267,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           // {label: '退款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/record']},
           // {label: '欠款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/arrears']},
           {label: '预缴记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/prepayment']},
-          {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
+          // {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
           {label: '车位管理', icon: 'pi pi-fw ', routerLink: ['/home/charge/parkspace']},
           // {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/charge/coupon']},
         ] },
@@ -363,10 +351,8 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
     this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationEnd) {
-          // console.log(event);
           this.url = event.url.split('/', 4)[3];
           this.sidebarRouterStatus(this.url);
-          /* titleSrv.setTitle(title[event.urlAfterRedirects]);*/
         }
       }
     );
