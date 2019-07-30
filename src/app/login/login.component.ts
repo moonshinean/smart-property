@@ -41,10 +41,14 @@ export class LoginComponent implements OnInit{
   }
   // user click event
   public  userLoginClick(user): void {
-    this.loadHidden = false;
-    this.localSessionStorage.set('username', user.value.username);
-    this.localSessionStorage.set('password', user.value.password);
-    this.login(user.value.username, user.value.password);
+    if (!this.userLogin.invalid) {
+        this.loadHidden = false;
+        this.localSessionStorage.set('username', user.value.username);
+        this.localSessionStorage.set('password', user.value.password);
+        this.login(user.value.username, user.value.password);
+    } else {
+      this.toolSrv.setToast('error', '登录失败', '用户名或密码不能为空');
+    }
   }
   // Login request
   public  login(userName, passWord): void {

@@ -21,9 +21,6 @@ export class BfStaffService {
   public deleteStaffInfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/user/deleteByIds`, pamars);
   }
-  // public queryStaffAllStatus(pamars): Observable<any> {
-  //   return this.http.post(environment.sysetUrl + `/setting/findAdminChoose`, pamars);
-  // }
   public queryDepartTree(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/department/choosePid2`, pamars);
   }

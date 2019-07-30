@@ -23,7 +23,6 @@ import { ChargeArrearsComponent } from './charge-arrears/charge-arrears.componen
 import { ChargePrepaymentComponent } from './charge-prepayment/charge-prepayment.component';
 import { ChargeHistoricalreportComponent } from './charge-historicalreport/charge-historicalreport.component';
 import {PagingModule} from '../../common/components/paging/paging.module';
-import { ChargeCouponComponent } from './charge-coupon/charge-coupon.component';
 import {LoadingModule} from '../../common/components/loading/loading.module';
 import { ChargeParkspaceComponent } from './charge-parkspace/charge-parkspace.component';
 import {PublicMethedService} from '../../common/public/public-methed.service';
@@ -39,7 +38,6 @@ import {PublicMethedService} from '../../common/public/public-methed.service';
     ChargeArrearsComponent,
     ChargePrepaymentComponent,
     ChargeHistoricalreportComponent,
-    ChargeCouponComponent,
     ChargeParkspaceComponent
   ],
   imports: [

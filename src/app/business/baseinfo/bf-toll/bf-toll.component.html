@@ -68,7 +68,7 @@
 
   </div>
   <!--增加弹窗-->
-  <p-dialog header="信息添加" [(visible)]="tollAddDialog" [width]="1000" >
+  <p-dialog header="信息添加" [(visible)]="tollAddDialog" [width]="1000" (onHide)="clearData()">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
       <div class="ui-g-6">
@@ -165,7 +165,7 @@
     </p-footer>
   </p-dialog>
   <!--修改弹窗-->
-  <p-dialog header="信息修改" [(visible)]="tollModifyDialog" [width]="1100">
+  <p-dialog header="信息修改" [(visible)]="tollModifyDialog" [width]="1100" (onHide)="clearData()">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
       <div class="ui-g-6">
@@ -233,7 +233,7 @@
                 </td>
                 <td  *ngFor="let col of columns.slice(1,columns.length - 1); let i = index" >
                   <div *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' " style="border: 0;background: #FFFFFF; text-align: center">
-                    <p-dropdown [options]="tollAddoption[col.field]" scrollHeight="100px" [placeholder]="tollModifyDatas[rowIndex][col.field]" [(ngModel)]="rowData[col.field]" (onChange)="changeData(tollMoreInfo)"></p-dropdown>
+                    <p-dropdown [options]="tollAddoption[col.field]" scrollHeight="100px" [placeholder]="tollModifyDatas[rowIndex][col.field]" [(ngModel)]="rowData[col.field]"></p-dropdown>
                   </div>
                   <div *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">
                     <input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">

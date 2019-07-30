@@ -68,7 +68,6 @@ export class BfVehicleComponent implements OnInit {
       {field: 'unitName', header: '单元名称'},
       {field: 'roomCode', header: '房间编号'},
       {field: 'licensePlateNumber', header: '车牌号'},
-      {field: 'licensePlateColor', header: '车牌颜色'},
       {field: 'operating', header: '操作'},
     ];
     this.loadHidden = false;
@@ -90,7 +89,6 @@ export class BfVehicleComponent implements OnInit {
     this.vehicleTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
 
   }
-
   // select village
   public VillageChange(e): void {
     // console.log(this.test);

@@ -21,7 +21,6 @@ const routes: Routes = [
       // {path: 'arrears', component: ChargeArrearsComponent},
       {path: 'prepayment', component: ChargePrepaymentComponent},
       {path: 'historicalreport', component: ChargeHistoricalreportComponent},
-      // {path: 'coupon', component: ChargeCouponComponent},
       {path: 'parkspace', component: ChargeParkspaceComponent},
     ]
   }

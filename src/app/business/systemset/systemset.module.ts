@@ -35,9 +35,6 @@ import {PublicMethedService} from '../../common/public/public-methed.service';
 @NgModule({
   declarations: [
     SystemsetComponent,
-    SetCarkindComponent,
-    SetCarbrandComponent,
-    SetNationComponent,
     SetConfigComponent,
     SetPermissionComponent,
     SetRoleComponent,
