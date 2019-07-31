@@ -231,20 +231,17 @@ export class BfOwnerComponent implements OnInit {
   public  ownerAddClick(): void {
     this.roomTitle = new RoomTitle();
     // console.log(this.roomTitle);
-    for (const roomTitleKey in this.roomTitle) {
-      console.log(roomTitleKey);
-    }
-    // this.roomTitle.villageName = '';
-    // this.roomTitle.roomCode = '';
-    // this.roomTitle.regionName = '';
-    // this.roomTitle.unitName = '';
-    // this.roomTitle.buildingName = '';
-    // this.roomTitle.roomStatus = '';
-    // this.roomTitle.renovationStatus = '';
-    // this.roomTitle.roomType = '';
-    // this.roomTitle.roomSize = '';
-    // this.roomTitle.renovationStartTime = '';
-    // this.roomTitle.renovationDeadline = '';
+    this.roomTitle.villageName = '';
+    this.roomTitle.roomCode = '';
+    this.roomTitle.regionName = '';
+    this.roomTitle.unitName = '';
+    this.roomTitle.buildingName = '';
+    this.roomTitle.roomStatus = '';
+    this.roomTitle.renovationStatus = '';
+    this.roomTitle.roomType = '';
+    this.roomTitle.roomSize = '';
+    this.roomTitle.renovationStartTime = '';
+    this.roomTitle.renovationDeadline = '';
     this.owerSrv.queryOwerInfoAllStatus({settingType: 'ROOM_TYPE'}).subscribe(
       value => {
         value.data.forEach( v => {
@@ -313,6 +310,12 @@ export class BfOwnerComponent implements OnInit {
   }
   public  addMoreOwerClick(): void {
     this.ownerinfo = new OwerList();
+    this.ownerinfo.identity = '';
+    this.ownerinfo.startBillingTime = '';
+    this.ownerinfo.mobilePhone = '';
+    this.ownerinfo.sex = '';
+    this.ownerinfo.normalPaymentStatus = '';
+    this.ownerinfo.surname = '';
     this.sexOption = [];
     this.normalChargeOption = [];
     this.identityOption = [];
@@ -343,7 +346,6 @@ export class BfOwnerComponent implements OnInit {
   // submit owner and roomInfo
   public  owerInfoAddClick(): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
-      let flagBole = true;
       this.loadHidden = false;
       if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
         this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
@@ -353,14 +355,15 @@ export class BfOwnerComponent implements OnInit {
       }
       for (const key in this.roomTitle) {
         this.ownerAdd[key] = this.roomTitle[key];
+        // if (this.roomTitle[key] === '') {
+        //   flagBole = false;
+        // }
       }
       for (const key in this.ownerinfo) {
         this.ownerAdd[key] = this.ownerinfo[key];
-      }
-      for (const key in this.ownerinfo) {
-        if (this.ownerinfo[key] === '') {
-          flagBole = false;
-        }
+        // if (this.ownerinfo[key] === '') {
+        //   flagBole = false;
+        // }
       }
       this.ownerAdd.startBillingTime = this.datePipe.transform(this.ownerAdd.startBillingTime, 'yyyy-MM-dd');
       this.ownerAdd.roomCode = this.ownerAdd.roomCode.slice(this.ownerAdd.roomCode.lastIndexOf('-') + 1, this.ownerAdd.roomCode.length);
@@ -368,22 +371,21 @@ export class BfOwnerComponent implements OnInit {
       delete this.ownerAdd.unitCode;
       delete this.ownerAdd.regionCode;
       delete this.ownerAdd.villageCode;
-      if (flagBole) {
-        this.owerSrv.addSingleOwerInfo(this.ownerAdd).subscribe(
-          value => {
-            this.loadHidden = true;
-            if (value.status === '1000') {
-              this.toolSrv.setToast('success', '操作成功', '添加成功');
-              this.selectOwerInfo(value.data);
-              // this.clearData();
-              this.ownerDialog = false;
-            } else {
-              this.toolSrv.setToast('error', '操作失败', value.message);
-            }
-          });
-      } else  {
-        this.toolSrv.setToast('error', '操作错误', '请填写完整的房屋信息');
-      }
+      this.owerSrv.addSingleOwerInfo(this.ownerAdd).subscribe(
+        value => {
+          this.loadHidden = true;
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', '添加成功');
+            this.selectOwerInfo(value.data);
+            this.ownerDialog = false;
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
+          }
+        });
+      // } else  {
+      //   this.loadHidden = true;
+      //   this.toolSrv.setToast('error', '操作错误', '请填写完整的房屋信息或者业主信息');
+      // }
     });
   }
   // detail ownerInfo
@@ -479,6 +481,12 @@ export class BfOwnerComponent implements OnInit {
     }
   }
   public  modifyMoreOwerClick(): void {
+    this.ownerinfo.identity = '';
+    this.ownerinfo.startBillingTime = '';
+    this.ownerinfo.mobilePhone = '';
+    this.ownerinfo.sex = '';
+    this.ownerinfo.normalPaymentStatus = '';
+    this.ownerinfo.surname = '';
     if (this.ownerUserSelect === undefined || this.ownerUserSelect.length === 0 ) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.ownerUserSelect.length === 1) {

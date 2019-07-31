@@ -20,7 +20,7 @@ import {TableModule} from 'primeng/table';
 import { BfTenantinfoComponent } from './bf-tenantinfo/bf-tenantinfo.component';
 import {DataViewModule} from 'primeng/dataview';
 import {PagingModule} from '../../common/components/paging/paging.module';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BfParkingspaceComponent } from './bf-parkingspace/bf-parkingspace.component';
 import {LoadingModule} from '../../common/components/loading/loading.module';
 import { BfCouponComponent } from './bf-coupon/bf-coupon.component';
@@ -59,6 +59,7 @@ import {PublicMethedService} from '../../common/public/public-methed.service';
     CalendarModule,
     LoadingModule,
     TreeModule,
+    ReactiveFormsModule,
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

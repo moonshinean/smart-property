@@ -64,8 +64,6 @@ export class BfTollComponent implements OnInit {
     {field: 'parkingSpaceNature', header: '车位性质'},
     {field: 'parkingSpaceType', header: '车位类型'},
   ];
-  // // 列表添加相关
-  // public tollDialog: boolean;
   // 其他相关
   public esDate: any; // 清除时钟
   public option: any; // 清除时钟
@@ -127,14 +125,24 @@ export class BfTollComponent implements OnInit {
   // add  toll
   public  tollAddClick(): void {
     this.getTollDownLoadInfo('', '', '', '', '', '');
+    this.tollTitle.chargeCode = '';
+    this.tollTitle.enable = '';
+    this.tollTitle.chargeType = '';
+    this.tollTitle.refund = '';
+    this.tollTitle.chargeUnit = '';
+    this.tollTitle.chargeStandard = '';
+    this.tollTitle.chargeName = '';
+    this.tollTitle.id = '';
     this.tollAddDialog = true;
   }
   // sure add toll
   public  tollAddSureClick(): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
       if  (this.tollMoreInfo.length === 0) {
+        console.log(this.tollTitle);
         this.tollSrv.queryTollAdd(this.tollTitle).subscribe(
           value => {
+            console.log(value);
             if (value.status === '1000')  {
               this.toolSrv.setToast('success', '操作成功', value.message);
               this.tollInitialization();

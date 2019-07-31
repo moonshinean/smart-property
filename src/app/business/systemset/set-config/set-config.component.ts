@@ -81,6 +81,9 @@ export class SetConfigComponent implements OnInit {
   // }
   // show add config dialog
   public  configAddClick(): void {
+    this.configAdd.settingCode = '';
+    this.configAdd.settingType = '';
+    this.configAdd.settingName = '';
     this.configAddDialog = true;
   }
   // sure add config
@@ -110,6 +113,9 @@ export class SetConfigComponent implements OnInit {
   }
   // show modify config dialog
   public configModifyClick(): void {
+    this.configAdd.settingCode = '';
+    this.configAdd.settingType = '';
+    this.configAdd.settingName = '';
     if (this.configSelect === undefined || this.configSelect.length === 0 ) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.configSelect.length === 1) {

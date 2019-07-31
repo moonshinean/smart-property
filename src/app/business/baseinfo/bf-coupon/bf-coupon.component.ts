@@ -85,7 +85,6 @@ export class BfCouponComponent implements OnInit {
     this.loadingHide = false;
     this.couponSrv.queryCouponPagination({pageNo: 1, pageSize: 10 }).subscribe(
       (value) => {
-        console.log(value);
         this.loadingHide = true;
         this.couponTableContent = value.data.contents;
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage:  value.data.pageNo};
@@ -113,7 +112,6 @@ export class BfCouponComponent implements OnInit {
     );
     this.couponSrv.queryChargeCode({}).subscribe(
       val => {
-        console.log(val);
         val.data.forEach( v => {
           this.ChargeCodeData.push({label: v.chargeName, value: v.chargeCode});
         });
@@ -123,31 +121,13 @@ export class BfCouponComponent implements OnInit {
   // condition search click
   public  couponSearchClick(): void {
     // @ts-ignore
-    // if (this.couponSeachData !== undefined ) {
-    //   if (isNaN(this.couponSeachData)) {
-    //     this.chargeCouponSrv.queryConditionalCoupon({}).subscribe(
-    //       (value) => {
-    //         console.log(value);
-    //       }
-    //     );
-    //   } else {
-    //     this.chargeCouponSrv.queryConditionalCoupon({}).subscribe(
-    //       (value) => {
-    //         console.log(value);
-    //       }
-    //     );
-    //   }
-    // }
-    console.log('这里是条件搜索');
   }
   // couponType change
   public  couponTypeChange(e): void {
-      console.log(e);
       this.couponAdd.couponType = e.value;
       this.couponModify.couponType = e.value;
   }
   public  chargeCodeChange(e): void {
-    console.log(e);
     this.couponAdd.chargeCode = e.value;
     this.couponModify.chargeCode = e.value;
   }
@@ -157,9 +137,12 @@ export class BfCouponComponent implements OnInit {
   }
   // add coupon
   public  couponAddClick(): void {
+    this.couponAdd.effectiveTime = '';
+    this.couponAdd.chargeCode = '';
+    this.couponAdd.couponType = '';
+    this.couponAdd.money = '';
+    this.couponAdd.couponName = '';
     this.couponAddDialog = true;
-
-    console.log('这里是添加信息');
   }
   // sure add houseinfo
   public  couponAddSureClick(): void {
@@ -195,6 +178,11 @@ export class BfCouponComponent implements OnInit {
   }
   // modify coupon
   public couponModifyClick(): void {
+    this.couponAdd.effectiveTime = '';
+    this.couponAdd.chargeCode = '';
+    this.couponAdd.couponType = '';
+    this.couponAdd.money = '';
+    this.couponAdd.couponName = '';
     if (this.couponSelect === undefined || this.couponSelect.length === 0) {
       this.setToast('error', '操作错误', '请选择需要修改的项');
 
