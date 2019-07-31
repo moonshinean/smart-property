@@ -98,15 +98,20 @@ export class BfTollComponent implements OnInit {
         this.loadHidden = true;
         if (value.data.contents)  {
           value.data.contents.forEach( v => {
-            this.optionTollType.forEach( val => {
-              if (v.chargeType.toString() === val.value) {
+            if (v.chargeType) {
+              this.optionTollType.forEach( val => {
+                if (v.chargeType.toString() === val.value) {
                   v.chargeType = val.label;
-              }
-            });
-            this.enableOption.forEach( val => {
-              if (v.enable.toString() === val.value) {}
-                 v.enable = val.label;
-             });
+                }
+              });
+            }
+            if (v.enable) {
+              this.enableOption.forEach( val => {
+                if (v.enable.toString() === val.value) {
+                  v.enable = val.label;
+                }
+              });
+            }
           });
         }
         this.tollTableContent = value.data.contents;
