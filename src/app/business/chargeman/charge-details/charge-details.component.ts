@@ -96,6 +96,8 @@ export class ChargeDetailsComponent implements OnInit {
       (data) => {
         if (data.data !== '') {
           this.loadHidden = true;
+          window.open(data.data);
+          this.detailsDialog = false;
         } else {
           this.toolSrv.setToast('error', '操作失败', data.message);
         }

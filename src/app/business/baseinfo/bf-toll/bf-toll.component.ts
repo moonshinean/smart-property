@@ -179,36 +179,49 @@ export class BfTollComponent implements OnInit {
     } else if (this.tollSelect.length === 1) {
       this.getTollDownLoadInfo(this.tollTitle.refund, this.tollTitle.chargeType, this.tollTitle.enable, '', '', '');
       const Time = setInterval( () => {
-        if (this.tollAddoption.datedif.length > 0 && this.tollAddoption.parkingSpaceType.length > 0 && this.tollAddoption.parkingSpaceNature.length > 0) {
-            this.tollSrv.queryTollinfoDetail({chargeCode: this.tollSelect[0].chargeCode}).subscribe(
+          clearInterval(Time);
+          this.tollSrv.queryTollinfoDetail({chargeCode: this.tollSelect[0].chargeCode}).subscribe(
             value => {
               this.tollMoreInfo = [];
               this.tollModifyDatas = [];
-              clearInterval(Time);
+              this.ids = [];
               value.data.forEach( v => {
                 this.tollMoreInfo.push({areaMin: v.areaMin, areaMax: v.areaMax, money: v.money, datedif: v.datedif, discount: v.discount, parkingSpaceNature: v.parkingSpaceNature, parkingSpaceType: v.parkingSpaceType});
                 this.ids.push({id: v.id});
-                this.tollAddoption.datedif.forEach( val => {
-                  if (v.datedif.toString() === val.value) {
-                    this.tollModifyData.datedif = val.label;
-                  }
-                });
-                this.tollAddoption.parkingSpaceType.forEach( val => {
-                  if (v.parkingSpaceType.toString() === val.value) {
-                    this.tollModifyData.parkingSpaceType = val.label;
-                  }
-                });
-                this.tollAddoption.parkingSpaceNature.forEach( val => {
-                  if (v.parkingSpaceNature.toString() === val.value) {
-                    this.tollModifyData.parkingSpaceNature = val.label;
-                  }
-                });
+                if (v.datedif !== null)  {
+                  this.tollAddoption.datedif.forEach( val => {
+                    if (v.datedif.toString() === val.value) {
+                      this.tollModifyData.datedif = val.label;
+                    }
+                  });
+                } else {
+                  this.tollModifyData.datedif = '请选择月数';
+                }
+                if (v.parkingSpaceType !== null && v.parkingSpaceType !== undefined && v.parkingSpaceType !== '') {
+                  this.tollAddoption.parkingSpaceType.forEach( val => {
+                    if (v.parkingSpaceType.toString() === val.value) {
+                      this.tollModifyData.parkingSpaceType = val.label;
+                    }
+                  });
+                }else {
+                  this.tollModifyData.parkingSpaceType = '请选择车位性质';
+
+                }
+                if (v.parkingSpaceNature !== null && v.parkingSpaceNature !== undefined && v.parkingSpaceNature !== '') {
+                  this.tollAddoption.parkingSpaceNature.forEach( val => {
+                    if (v.parkingSpaceNature.toString() === val.value) {
+                      this.tollModifyData.parkingSpaceNature = val.label;
+                    }
+                  });
+                } else {
+                  this.tollModifyData.parkingSpaceNature = '请选择车位类型';
+                }
+                console.log(this.tollModifyDatas);
                 this.tollModifyDatas.push(this.tollModifyData);
                 this.tollModifyData = new ModifyTollDrop();
               });
             }
           );
-          }
       }, 100);
       this.tollModifyDialog = true;
     } else {
@@ -232,7 +245,7 @@ export class BfTollComponent implements OnInit {
           }
         );
       } else {
-          this.modifytoll =[];
+          this.modifytoll = [];
           this.tollMoreInfo.forEach( (v, index) => {
           for (const Key in this.tollTitle) {
             this.tollAddinfo[Key] =  this.tollTitle[Key];
@@ -305,7 +318,6 @@ export class BfTollComponent implements OnInit {
     this.tollTitle = e;
     this.getTollDownLoadInfo(e.refund, e.chargeType, e.enable, '', '', '');
     const detailData = setInterval(() => {
-      if (this.tollAddoption.datedif.length > 0 && this.tollAddoption.parkingSpaceNature.length > 0 && this.tollAddoption.parkingSpaceType.length> 0){
         this.tollSrv.queryTollinfoDetail({chargeCode: e.chargeCode}).subscribe(
           value => {
             this.tollMoreInfo = [];
@@ -313,21 +325,21 @@ export class BfTollComponent implements OnInit {
             clearInterval(detailData);
             value.data.forEach( v => {
               this.tollMoreInfo.push({areaMin: v.areaMin, areaMax: v.areaMax, money: v.money, datedif: v.datedif, discount: v.discount, parkingSpaceNature: v.parkingSpaceNature, parkingSpaceType: v.parkingSpaceType});
-              if (v.datedif !== null) {
+              if (v.datedif !== null && v.datedif !== undefined && v.datedif !== '')  {
                 this.tollAddoption.datedif.forEach( val => {
                   if (v.datedif.toString() === val.value) {
                     this.tollModifyData.datedif = val.label;
                   }
                 });
               }
-              if (v.parkingSpaceType !== null) {
+              if (v.parkingSpaceType !== null && v.parkingSpaceType !== undefined && v.parkingSpaceType !== '') {
                 this.tollAddoption.parkingSpaceType.forEach(val => {
                   if (v.parkingSpaceType.toString() === val.value) {
                     this.tollModifyData.parkingSpaceType = val.label;
                   }
                 });
               }
-              if (v.parkingSpaceNature !== null) {
+              if (v.parkingSpaceNature !== null && v.parkingSpaceNature !== undefined && v.parkingSpaceNature !== '') {
                 this.tollAddoption.parkingSpaceNature.forEach(val => {
                   if (v.parkingSpaceNature.toString() === val.value) {
                     this.tollModifyData.parkingSpaceNature = val.label;
@@ -339,7 +351,6 @@ export class BfTollComponent implements OnInit {
             });
           }
         );
-      }
     }, 500);
     this.tollDetailDialog = true;
   }
@@ -370,12 +381,14 @@ export class BfTollComponent implements OnInit {
   // delete moreTollMore
   public deleteTollMoreClick(index, e): void {
     if (index + 1 > this.ids.length) {
+      this.ids.splice(index, 1);
       this.tollMoreInfo.splice(index, 1);
     } else {
       this.tollSrv.deleteTollList({id: this.ids[index].id}).subscribe(
         value => {
           if (value.status === '1000') {
             // console.log();
+            this.ids.splice(index, 1);
             this.tollMoreInfo.splice(index, 1);
           } else {
             this.toolSrv.setToast('error', '删除失败', value.message);
@@ -383,6 +396,7 @@ export class BfTollComponent implements OnInit {
         }
       );
     }
+    console.log(index);
   }
   // paging query
   public  getTollDownLoadInfo(refundId, chargeType, enable, datedif, nature, type): void {

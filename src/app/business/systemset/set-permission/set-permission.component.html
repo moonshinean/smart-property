@@ -79,12 +79,8 @@
           <label >权限名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
-          <p-scrollPanel [style]="{width: '100%', height: '250px'}">
-            <p-tree [value]="primitTree" >
-              <ng-template let-node  pTemplate="default">
-                 <p-checkbox  [label]="node.label" [value]="node.value" type="text" [(ngModel)]="primitDatas" (onChange)="getCheckBox(node.value, node.parentCode)"></p-checkbox>
-              </ng-template>
-            </p-tree>
+          <p-scrollPanel [style]="{width: '100%', height: '300px'}">
+            <p-tree [value]="primitTree" selectionMode="checkbox" [(selection)]="primitDatas"></p-tree>
           </p-scrollPanel>
         </div>
       </div>

@@ -224,7 +224,6 @@ export class ChargemanPaymentComponent implements OnInit {
     this.paymentProject.forEach(v => {
       if (v.check === 1) {
         if (v.chargeWay === 1) {
-          // console.log(v.datedif);
           if (v.datedif === '' || v.datedif === null) {
             this.toolSrv.setToast('error', '操作错误', '请选择月份' );
             monthStatus = false;
@@ -261,6 +260,7 @@ export class ChargemanPaymentComponent implements OnInit {
         });
         this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(
           (value) => {
+            console.log(value);
             if (value.status === '1000') {
               this.paymentItemData = value.data;
               // console.log(this.paymentItemData);
@@ -324,7 +324,7 @@ export class ChargemanPaymentComponent implements OnInit {
                       if (data.data !== '') {
                         this.paymentDialog = false;
                         this.InitializationAllpayData();
-                        // this.toolSrv.setToast('success', '操作成功', data.message)
+                        window.open(data.data);
                       } else {
                         this.toolSrv.setToast('error', '操作失败', data.message);
                       }

@@ -54,9 +54,15 @@ export class SetPermissionComponent implements OnInit {
     ];
     this.permissionSrv.queryPermissionData({pageNo: 1, pageSize: 10}).subscribe(
       (value) => {
-        this.loadHidden = true;
-        this.permissionTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        console.log(value);
+        if (value.status === '1000') {
+          this.loadHidden = true;
+          this.permissionTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询错误', value.message);
+        }
+
       }
     );
     this.permissionTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
@@ -92,28 +98,16 @@ export class SetPermissionComponent implements OnInit {
   }
   // sure add permission
   public  permissionAddSureClick(): void {
-    if (this.RoleCode !== undefined && this.primitDatas !== []) {
-      const flag = [];
-      this.primitData.forEach(v => {
-        this.primitDatas.forEach( item => {
-          if (v === item) {
-            flag.push(v);
-            this.primitDatas.splice( this.primitDatas.indexOf(item), 1);
-          }
-        });
-      });
-
-      flag.forEach(item => {
-        this.primitData.forEach( v => {
-          if (v === item) {
-            this.primitData.splice(this.primitData.indexOf(v), 1);
-          }
-        });
+    
+    if (this.primitDatas.length > 0) {
+      this.primitData = [];
+      this.primitDatas.forEach( v => {
+        this.primitData.push(v.value);
       });
       this.toolSrv.setConfirmation('增加', '增加', () => {
         if (this.primitDatas.length >= 1) {
           this.loadHidden = false;
-          this.permissionSrv.addRolePerimit({roleCode: this.RoleCode, permisCodes: this.primitDatas.join(',')}).subscribe(
+          this.permissionSrv.addRolePerimit({roleCode: this.RoleCode, permisCodes: this.primitData.join(',')}).subscribe(
             (data) => {
               this.loadHidden = true;
               this.toolSrv.setToast('success', '操作成功', data.message);
@@ -209,17 +203,17 @@ export class SetPermissionComponent implements OnInit {
     this.RoleCode = '';
   }
   // get  selected data
-  public  getCheckBox(e, fa): void {
-      let flagfa = true;
-      this.primitDatas.forEach(v => {
-        if (v === fa) {
-          flagfa = false;
-        }
-      });
-      if (flagfa) {
-        this.primitDatas.push(fa);
-      }
-  }
+  // public  getCheckBox(e, fa): void {
+  //     let flagfa = true;
+  //     this.primitDatas.forEach(v => {
+  //       if (v === fa) {
+  //         flagfa = false;
+  //       }
+  //     });
+  //     if (flagfa) {
+  //       this.primitDatas.push(fa);
+  //     }
+  // }
   // paging query
   public  nowpageEventHandle(event: any): void {
     this.permissionSrv.queryPermissionData({pageNo: event, pageSize: 10}).subscribe(
