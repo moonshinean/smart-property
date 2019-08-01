@@ -4,6 +4,8 @@ import {DatePipe} from '@angular/common';
 import {GlobalService} from '../../../common/services/global.service';
 import {AddTenant, ModifyTenant, OwerList, RoomTitle, SearchTenant, Tenant} from '../../../common/model/bf-tenant.model';
 import {BfTenantinfoService} from '../../../common/services/bf-tenantinfo.service';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {isObjectFlagSet} from 'tslint';
 
 
 @Component({
@@ -52,7 +54,7 @@ export class BfTenantinfoComponent implements OnInit {
     {field: 'startBillingTime', header: '物业费开始既费时间'},
     {field: 'remarks', header: '备注'},
   ];
-  // 业主信息相关
+  // 租客信息相关
   public tenantinfo: OwerList = new OwerList();
   public tenantDialog: boolean;
   // 租客信息弹框选择
@@ -75,7 +77,6 @@ export class BfTenantinfoComponent implements OnInit {
   public tenantUploadFileDialog: boolean;
   public uploadedFiles: any[] = [];
   // 其他相关
-  public cleanTimer: any; // 清除时钟
   public option: any;
   public esDate: any;
   public loadHidden = true;
@@ -83,9 +84,9 @@ export class BfTenantinfoComponent implements OnInit {
   public nowPage = 1;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private tenantSrv: BfTenantinfoService,
+    private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private datePipe: DatePipe,
   ) { }
@@ -112,7 +113,7 @@ export class BfTenantinfoComponent implements OnInit {
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else  {
           this.loadHidden = true;
-          this.setToast('error', '查询失败', value.message);
+          this.toolSrv.setToast('error', '查询失败', value.message);
         }
       }
     );
@@ -162,7 +163,6 @@ export class BfTenantinfoComponent implements OnInit {
 
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach( v => {
           this.loadHidden = true;
           this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
@@ -198,7 +198,6 @@ export class BfTenantinfoComponent implements OnInit {
 
     this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach( v => {
           this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
         });
@@ -224,7 +223,7 @@ export class BfTenantinfoComponent implements OnInit {
         }
       );
     } else {
-      this.setToast('error', '操作错误', '请选择或输入搜索条件');
+      this.toolSrv.setToast('error', '操作错误', '请选择或输入搜索条件');
     }
   }
   // roomStatus Change
@@ -274,48 +273,37 @@ export class BfTenantinfoComponent implements OnInit {
   }
   // sure add tenant
   public  tenantAddSureClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要增加吗？`,
-      header: '增加提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        if (this.tenantList.length === 0 ) {
-          this.tenantSrv.addRoomCodeInfo(this.roomTitle).subscribe(
-            value => {
-              console.log(value);
-              if (value.status === '1000') {
-                this.setToast('success', '操作成功', value.message);
-                this.tenantAddDialog = false;
-                this.clearData();
-                this.tenantInitialization();
-              } else  {
-                this.setToast('error', '操作失败', value.message);
-              }
+    this.toolSrv.setConfirmation('增加', '增加', () => {
+      if (this.tenantList.length === 0 ) {
+        this.tenantSrv.addRoomCodeInfo(this.roomTitle).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.tenantAddDialog = false;
+              this.clearData();
+              this.tenantInitialization();
+            } else  {
+              this.toolSrv.setToast('error', '操作失败', value.message);
             }
-          );
-        } else {
-          this.tenantAddDialog = false;
-          this.clearData();
-          this.tenantInitialization();
-          this.setToast('success', '操作成功', '操作成功');
-        }
-      },
-      reject: () => {
+          }
+        );
+      } else {
+        this.tenantAddDialog = false;
+        this.clearData();
+        this.tenantInitialization();
+        this.toolSrv.setToast('success', '操作成功', '操作成功');
       }
     });
   }
-
   // delete Tenant
   public  deleteTenantMoreClick(e): void {
-    console.log(e.userId);
     this.tenantSrv.deleteTenantInfo({roomCode: e.roomCode, userId: e.userId}).subscribe(
       value => {
-        console.log(value);
         if (value.status === '1000') {
-          this.setToast('success', '请求成功', value.message);
+          this.toolSrv.setToast('success', '请求成功', value.message);
           this.queryTenantInfo(e.roomCode);
         } else {
-          this.setToast('error', '请求失败', value.message);
+          this.toolSrv.setToast('error', '请求失败', value.message);
         }
       }
     );
@@ -349,52 +337,45 @@ export class BfTenantinfoComponent implements OnInit {
     this.tenantDialog = true;
   }
   public  tenantInfoAddClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要增加吗？`,
-      header: '增加提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.loadHidden = false;
-        this.tenantAdd = [];
-        const list = ['buildingCode', 'unitCode', 'regionCode', 'villageCode'];
-        if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
-          this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
-        }
-        if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
-          this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
-        }
-        for (const key in this.roomTitle) {
-          this.tenantRoomAdd[key] = this.roomTitle[key];
-        }
-        this.tenantinfo.identity = 3;
-        for (const key in this.tenantinfo) {
-          this.tenantRoomAdd[key] = this.tenantinfo[key];
-        }
-        if (this.tenantRoomAdd.startBillingTime !== ''){
-          this.tenantRoomAdd.startBillingTime = this.datePipe.transform(this.tenantRoomAdd.startBillingTime, 'yyyy-MM-dd');
-        }
-        this.tenantRoomAdd.roomCode = this.tenantRoomAdd.roomCode.slice(this.tenantRoomAdd.roomCode.lastIndexOf('-') + 1, this.tenantRoomAdd.roomCode.length);
-        list.forEach(v => {
-          delete this.tenantRoomAdd[v];
-        });
-        // this.tenantAdd.push(this.tenantRoomAdd);
-        // console.log(this.tenantRoomAdd);
-        this.tenantSrv.addTenantInfo(this.tenantRoomAdd).subscribe(
-          value => {
-            // console.log(value);
-            this.loadHidden = true;
-            if (value.status === '1000') {
-              this.setToast('success', '操作成功', '添加成功');
-              this.queryTenantInfo(value.data);
-              // this.clearData();
-              this.tenantDialog = false;
-            } else {
-              this.setToast('error', '操作失败', value.message);
-            }
-          });
-      },
-      reject: () => {
+    this.toolSrv.setConfirmation('增加', '增加', () => {
+      this.loadHidden = false;
+      this.tenantAdd = [];
+      const list = ['buildingCode', 'unitCode', 'regionCode', 'villageCode'];
+      if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
+        this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
       }
+      if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
+        this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
+      }
+      for (const key in this.roomTitle) {
+        this.tenantRoomAdd[key] = this.roomTitle[key];
+      }
+      this.tenantinfo.identity = 3;
+      for (const key in this.tenantinfo) {
+        this.tenantRoomAdd[key] = this.tenantinfo[key];
+      }
+      if (this.tenantRoomAdd.startBillingTime !== ''){
+        this.tenantRoomAdd.startBillingTime = this.datePipe.transform(this.tenantRoomAdd.startBillingTime, 'yyyy-MM-dd');
+      }
+      this.tenantRoomAdd.roomCode = this.tenantRoomAdd.roomCode.slice(this.tenantRoomAdd.roomCode.lastIndexOf('-') + 1, this.tenantRoomAdd.roomCode.length);
+      list.forEach(v => {
+        delete this.tenantRoomAdd[v];
+      });
+      // this.tenantAdd.push(this.tenantRoomAdd);
+      // console.log(this.tenantRoomAdd);
+      this.tenantSrv.addTenantInfo(this.tenantRoomAdd).subscribe(
+        value => {
+          // console.log(value);
+          this.loadHidden = true;
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', '添加成功');
+            this.queryTenantInfo(value.data);
+            // this.clearData();
+            this.tenantDialog = false;
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
+          }
+        });
     });
   }
   // detail tenantInfo
@@ -436,15 +417,12 @@ export class BfTenantinfoComponent implements OnInit {
       }
     );
     this.queryTenantInfo(this.roomTitle.roomCode);
-    // if (this.renovationStatusName === '未装修') {
-    //
-    // }
     this.tenantDetailDialog = true;
   }
   // modify tenant
   public  tenantModifyClick(): void {
     if (this.tenantSelect === undefined || this.tenantSelect.length === 0 ) {
-      this.setToast('error', '操作错误', '请选择需要修改的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.tenantSelect.length === 1) {
       this.tenantSrv.queryTenantInfoAllStatus({settingType: 'ROOM_TYPE'}).subscribe(
         value => {
@@ -504,7 +482,6 @@ export class BfTenantinfoComponent implements OnInit {
         if (this.sexOption.length > 0 && this.normalChargeOption.length && this.normalChargeOption.length > 0){
           this.tenantSrv.queryTenantInfoDetail({roomCode: this.roomTitle.roomCode}).subscribe(
             value => {
-              console.log(value);
               this.tenantList = [];
               if (value.status === '1000') {
                 value.data.forEach( v => {
@@ -544,178 +521,130 @@ export class BfTenantinfoComponent implements OnInit {
       this.tenantModifayDialog = true;
       console.log(this.tenantModify);
     } else {
-      if (this.cleanTimer) {
-        clearTimeout(this.cleanTimer);
-      }
-      this.messageService.clear();
-      this.messageService.add({severity: 'error', summary: '操作错误', detail: '只能选择一项进行修改'});
-      this.cleanTimer = setTimeout(() => {
-        this.messageService.clear();
-      }, 3000);
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
     }
   }
   public  modifyMoreOwerClick(): void {
-    this.tenantinfo.identity = '';
-    this.tenantinfo.startBillingTime = '';
-    this.tenantinfo.mobilePhone = '';
-    this.tenantinfo.sex = '';
-    this.tenantinfo.normalPaymentStatus = '';
-    this.tenantinfo.surname = '';
+    for (const tenantinfoKey in this.tenantinfo) {
+        if(this.tenantinfo[tenantinfoKey] === null) {
+          this.tenantinfo[tenantinfoKey] = '';
+        }
+    }
     if (this.tenantUserSelect === undefined || this.tenantUserSelect.length === 0 ) {
-      this.setToast('error', '操作错误', '请选择需要修改的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.tenantUserSelect.length === 1) {
       this.tenantinfo =   this.tenantUserSelect[0];
       this.tenantListIndex = this.tenantList.indexOf(this.tenantinfo);
       this.tenantModifyDialog = true;
     } else {
-      this.setToast('error', '操作错误', '只能选择一项进行修改的项');
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改的项');
     }
   }
   // ower modify
   public  owerInfoModifyClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要修改吗？`,
-      header: '增加提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        let flagBole = true;
-        for (const key in this.roomTitle) {
-          if (this.roomTitle[key] === '') {
-            flagBole = false;
-          }
-        }
-        if (flagBole) {
-          this.loadHidden = false;
-          this.tenantAdd = [];
-          if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
-            this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
-          }
-          if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
-            this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
-          }
-          for (const key in this.roomTitle) {
-            this.tenantRoomAdd[key] = this.roomTitle[key];
-          }
-          if (this.tenantinfo.sex != null ) {
-            this.sexOption.forEach(val => {
-              if (this.tenantinfo.sex === val.label) {
-                this.tenantinfo.sex = val.value;
-              }
-            });
-          }
-          if (this.tenantinfo.normalPaymentStatus != null)  {
-            this.normalChargeOption.forEach(val => {
-              if (this.tenantinfo.normalPaymentStatus=== val.label) {
-                this.tenantinfo.normalPaymentStatus = val.value;
-              }
-            });
-          }
-          this.tenantinfo.identity = 3;
-          for (const key in this.tenantinfo) {
-            this.tenantRoomAdd[key] = this.tenantinfo[key];
-          }
-          this.tenantRoomAdd.startBillingTime = this.datePipe.transform(this.tenantRoomAdd.startBillingTime, 'yyyy-MM-dd');
-          this.tenantRoomAdd.roomCode = this.tenantRoomAdd.roomCode.slice(this.tenantRoomAdd.roomCode.lastIndexOf('-') + 1, this.tenantRoomAdd.roomCode.length);
-          delete this.tenantRoomAdd.buildingCode;
-          delete this.tenantRoomAdd.unitCode;
-          delete this.tenantRoomAdd.regionCode;
-          delete this.tenantRoomAdd.villageCode;
-          this.tenantAdd.push(this.tenantRoomAdd);
-          console.log(this.tenantAdd);
-          this.tenantSrv.addTenantInfo(this.tenantAdd).subscribe(
-            value => {
-              console.log(value);
-              this.loadHidden = true;
-              if (value.status === '1000') {
-                this.setToast('success', '操作成功', '添加成功');
-                this.queryTenantInfo(value.data);
-                this.tenantUserSelect = [];
-                this.tenantModifyDialog = false;
-              } else {
-                this.setToast('error', '操作失败', value.message);
-              }
-            });
-        } else  {
-          this.setToast('error', '操作错误', '请填写完整的房屋信息');
-        }
-      },
-      reject: () => {
+    this.toolSrv.setConfirmation('修改', '修改', () => {
+      this.loadHidden = false;
+      this.tenantAdd = [];
+      if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
+        this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
       }
+      if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
+        this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
+      }
+      for (const key in this.roomTitle) {
+        this.tenantRoomAdd[key] = this.roomTitle[key];
+      }
+      if (this.tenantinfo.sex != null ) {
+        this.sexOption.forEach(val => {
+          if (this.tenantinfo.sex === val.label) {
+            this.tenantinfo.sex = val.value;
+          }
+        });
+      }
+      if (this.tenantinfo.normalPaymentStatus != null)  {
+        this.normalChargeOption.forEach(val => {
+          if (this.tenantinfo.normalPaymentStatus === val.label) {
+            this.tenantinfo.normalPaymentStatus = val.value;
+          }
+        });
+      }
+      this.tenantinfo.identity = 3;
+      for (const key in this.tenantinfo) {
+        this.tenantRoomAdd[key] = this.tenantinfo[key];
+      }
+      this.tenantRoomAdd.startBillingTime = this.datePipe.transform(this.tenantRoomAdd.startBillingTime, 'yyyy-MM-dd');
+      this.tenantRoomAdd.roomCode = this.tenantRoomAdd.roomCode.slice(this.tenantRoomAdd.roomCode.lastIndexOf('-') + 1, this.tenantRoomAdd.roomCode.length);
+      delete this.tenantRoomAdd.buildingCode;
+      delete this.tenantRoomAdd.unitCode;
+      delete this.tenantRoomAdd.regionCode;
+      delete this.tenantRoomAdd.villageCode;
+      this.tenantAdd.push(this.tenantRoomAdd);
+      this.tenantSrv.addTenantInfo(this.tenantAdd).subscribe(
+        value => {
+          this.loadHidden = true;
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', '添加成功');
+            this.queryTenantInfo(value.data);
+            this.tenantUserSelect = [];
+            this.tenantModifyDialog = false;
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
+          }
+        });
     });
-
   }
   // sure modify tenant
   public  tenantModifySureClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要修改吗？`,
-      header: '增加提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        if (this.tenantList.length === 0 ) {
-          this.roomTitle.roomCode = this.roomTitle.roomCode.slice(this.roomTitle.roomCode.lastIndexOf('-') + 1, this.roomTitle.roomCode.length);
-          this.tenantSrv.addRoomCodeInfo(this.roomTitle).subscribe(
-            value => {
-              console.log(value);
-              if (value.status === '1000') {
-                this.setToast('success', '操作成功', value.message);
-                this.tenantModifayDialog = false;
-                this.clearData();
-                this.tenantInitialization();
-              } else  {
-                this.setToast('error', '操作失败', value.message);
-              }
+    this.toolSrv.setConfirmation('修改', '修改', () => {
+      if (this.tenantList.length === 0 ) {
+        this.roomTitle.roomCode = this.roomTitle.roomCode.slice(this.roomTitle.roomCode.lastIndexOf('-') + 1, this.roomTitle.roomCode.length);
+        this.tenantSrv.addRoomCodeInfo(this.roomTitle).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.tenantModifayDialog = false;
+              this.clearData();
+              this.tenantInitialization();
+            } else  {
+              this.toolSrv.setToast('error', '操作失败', value.message);
             }
-          );
-        } else {
-          this.tenantModifayDialog = false;
-          this.clearData();
-          this.tenantInitialization();
-          this.setToast('success', '操作成功', '操作成功');
-        }
-      },
-      reject: () => {
+          }
+        );
+      } else {
+        this.tenantModifayDialog = false;
+        this.clearData();
+        this.tenantInitialization();
+        this.toolSrv.setToast('success', '操作成功', '操作成功');
       }
     });
   }
   // delete tenant
   public  tenantDeleteClick(): void {
     if (this.tenantSelect === undefined || this.tenantSelect.length === 0) {
-      this.setToast('error', '操作错误', '请选择需要删除的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
-      this.confirmationService.confirm({
-        message: `确认要删除这${this.tenantSelect.length}项吗`,
-        header: '删除提醒',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.loadHidden = false;
-          this.tenantSelect.forEach( v => {
-            this.deleteId.push({roomCode: v.roomCode});
-          });
-          this.tenantSrv.deleteRoomInfo({data: this.deleteId}).subscribe(
-            value => {
-              this.loadHidden = true;
-              if (value.status === '1000') {
-                this.setToast('success', '操作成功', value.message);
-                this.tenantInitialization();
-                this.clearData();
-              }
-              console.log(value);
+      this.toolSrv.setConfirmation('删除', `删除这${this.tenantSelect.length}项`, () => {
+        this.loadHidden = false;
+        this.tenantSelect.forEach( v => {
+          this.deleteId.push({roomCode: v.roomCode});
+        });
+        this.tenantSrv.deleteRoomInfo({data: this.deleteId}).subscribe(
+          value => {
+            this.loadHidden = true;
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.tenantInitialization();
+              this.clearData();
             }
-          );
-          // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-        },
-        reject: () => {
-          console.log('这里是删除信息');
-
-          // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-        }
+            console.log(value);
+          }
+        );
       });
     }
   }
   // select houseinfo
   public  tenantonRowSelect(e): void {
     this.roomTitle = e.data;
-    console.log(this.roomTitle);
   }
   // add more info Dialog
   public  AddMoreClick(): void {
@@ -728,7 +657,6 @@ export class BfTenantinfoComponent implements OnInit {
     this.uploadedFiles.forEach(v => {
       fileData.append('file', v);
     });
-    console.log(fileData.getAll('file'));
     this.confirmationService.confirm({
       message: `确认要上传吗？`,
       header: '上传提醒',
@@ -736,12 +664,15 @@ export class BfTenantinfoComponent implements OnInit {
       accept: () => {
         this.tenantSrv.uploadTenantInfoFile(fileData).subscribe(
           (value) => {
-            console.log(value);
-            this.loadHidden = false;
-            this.loadHidden = true;
-            this.uploadedFiles = [];
-            this.setToast('success', '上传成功', value.message);
-            this.tenantInitialization();
+            if (value.status === '1000') {
+              this.loadHidden = false;
+              this.loadHidden = true;
+              this.uploadedFiles = [];
+              this.toolSrv.setToast('success', '上传成功', value.message);
+              this.tenantInitialization();
+            } else {
+              this.toolSrv.setToast('error', '上传失败', value.message);
+            }
           }
         );
       },
@@ -751,17 +682,6 @@ export class BfTenantinfoComponent implements OnInit {
         // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
       }
     });
-  }
-  // toast
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
   }
   public  queryTenantInfo(code): void {
     this.identityOption = [];
@@ -844,7 +764,7 @@ export class BfTenantinfoComponent implements OnInit {
               clearInterval(setTime);
             } else {
               clearInterval(setTime);
-              this.setToast('error', '操作错误', '用户信息数据错误');
+              this.toolSrv.setToast('error', '操作错误', '用户信息数据错误');
             }
           }
         );
@@ -902,7 +822,7 @@ export class BfTenantinfoComponent implements OnInit {
             }
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
           } else {
-            this.setToast('error', '操作错误', value.message);
+            this.toolSrv.setToast('error', '操作错误', value.message);
           }
         }
       );

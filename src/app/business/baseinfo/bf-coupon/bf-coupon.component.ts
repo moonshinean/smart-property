@@ -5,6 +5,7 @@ import {ChargeCouponService} from '../../../common/services/charge-coupon.servic
 import {BfCouponService} from '../../../common/services/bf-coupon.service';
 import {AddBfCoupon, ModifyBfCoupon} from '../../../common/model/bf-coupon.model';
 import {Dropdown} from 'primeng/primeng';
+import {PublicMethedService} from '../../../common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-bf-coupon',
@@ -65,7 +66,7 @@ export class BfCouponComponent implements OnInit {
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    // private ownreService: BfcouponService
+    private toolSrv: PublicMethedService,
     private couponSrv: BfCouponService
   ) { }
   ngOnInit() {
@@ -86,8 +87,12 @@ export class BfCouponComponent implements OnInit {
     this.couponSrv.queryCouponPagination({pageNo: 1, pageSize: 10 }).subscribe(
       (value) => {
         this.loadingHide = true;
-        this.couponTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage:  value.data.pageNo};
+        if (value.status === '1000') {
+          this.couponTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage:  value.data.pageNo};
+        }else {
+          this.toolSrv.setToast('error', '查询失败', value.message);
+        }
       }
     );
     this.couponTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
@@ -146,29 +151,17 @@ export class BfCouponComponent implements OnInit {
   }
   // sure add houseinfo
   public  couponAddSureClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要增加吗？`,
-      header: '增加提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        console.log(this.couponAdd);
+    this.toolSrv.setConfirmation('增加', '增加', () => {
 
-        this.couponSrv.addCoupon(this.couponAdd).subscribe(
+      this.couponSrv.addCoupon(this.couponAdd).subscribe(
         value => {
-          this.setToast('success', '操作成功', value.message);
+          this.toolSrv.setToast('success', '操作成功', value.message);
           this.couponAdd = new AddBfCoupon();
           this.couponInitialization();
           this.couponAddDialog = false;
           this.clearData();
         }
       );
-        // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-      },
-      reject: () => {
-        console.log('这里是增加信息');
-
-        // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-      }
     });
   }
   // detail couponInfo
@@ -184,13 +177,10 @@ export class BfCouponComponent implements OnInit {
     this.couponAdd.money = '';
     this.couponAdd.couponName = '';
     if (this.couponSelect === undefined || this.couponSelect.length === 0) {
-      this.setToast('error', '操作错误', '请选择需要修改的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
 
     } else if (this.couponSelect.length === 1) {
       this.couponModify = this.couponSelect[0];
-      console.log(this.couponModify);
-      console.log(this.EffectiveTime);
-
       this.ChargeCodeData.forEach(v => {
         if (this.couponModify.chargeCode === v.value) {
           this.modifyChargeName = v.label;
@@ -199,7 +189,6 @@ export class BfCouponComponent implements OnInit {
       this.EffectiveTime.forEach(v => {
         if (Number(this.couponModify.effectiveTime) === Number(v.value)) {
           this.modifyEffectiveTime = v.label;
-          console.log(v.label);
         }
       });
       this.couponTypeData.forEach(v => {
@@ -209,66 +198,46 @@ export class BfCouponComponent implements OnInit {
       });
       this.couponModifayDialog = true;
     } else {
-      this.setToast('error', '操作错误', '只能选择一项进行修改');
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
     }
   }
   // sure modify coupon
   public  couponModifySureClick(): void {
-    this.confirmationService.confirm({
-      message: `确认要修改吗？`,
-      header: '修改提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        console.log(this.couponSelect);
-        this.couponSrv.updateCoupon(this.couponModify).subscribe(
-          value => {
-             // console.log(value);
-            this.setToast('success', '操作成功', value.message);
+    this.toolSrv.setConfirmation('修改', '修改', () => {
+      this.couponSrv.updateCoupon(this.couponModify).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', value.message);
             this.couponInitialization();
             this.couponModifayDialog = false;
             this.clearData();
-
+          } else {
+            this.toolSrv.setToast('error', '修改失败', value.message);
           }
-        );
-        // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-      },
-      reject: () => {
-        console.log('这里是修改信息');
-
-        // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-      }
+        }
+      );
     });
   }
   // delete coupon
   public  couponDeleteClick(): void {
     if (this.couponSelect === undefined || this.couponSelect.length === 0) {
-      this.setToast('error', '操作错误', '请选择需要删除的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
-      this.confirmationService.confirm({
-        message: `确认要删除这${this.couponSelect.length}项吗`,
-        header: '删除提醒',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.couponSelect.forEach( v => {
-            this.deleteIds.push({id: v.id});
-          });
-          console.log(this.couponSelect);
-          this.couponSrv.deleteCoupon({data: this.deleteIds}).subscribe(
-            (val) => {
-              console.log(val);
-              this.setToast('success', '操作成功', '删除成功');
+      this.toolSrv.setConfirmation('删除', `删除这${this.couponSelect.length}项`, () => {
+        this.couponSelect.forEach( v => {
+          this.deleteIds.push({id: v.id});
+        });
+        this.couponSrv.deleteCoupon({data: this.deleteIds}).subscribe(
+          (val) => {
+            if (val.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', '删除成功');
               this.couponInitialization();
               this.clearData();
+            } else {
+              this.toolSrv.setToast('error', '删除失败', val.message);
             }
-          );
-
-          // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-        },
-        reject: () => {
-          console.log('这里是删除信息');
-
-          // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-        }
+          }
+        );
       });
     }
   }
@@ -279,27 +248,17 @@ export class BfCouponComponent implements OnInit {
 
     this.couponSrv.queryCouponPagination({pageNo: event, pageSize: 10 }).subscribe(
       (value) => {
-        console.log(value);
-        this.loadingHide = true;
-        this.couponTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage:  value.data.pageNo};
+        if (value.status === '1000') {
+          this.loadingHide = true;
+          this.couponTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage:  value.data.pageNo};
+        } else {
+           this.toolSrv.setToast('error', '查询错误', value.message);
+        }
+
       }
     );
     this.couponSelect = [];
-  }
-  // add more info Dialog
-  // public  AddMoreClick(): void {
-  //   // this.couponUploadFileDialog = true;
-  // }
-  public  setToast(type, title, message): void {
-    if (this.cleanTimer) {
-      clearTimeout(this.cleanTimer);
-    }
-    this.messageService.clear();
-    this.messageService.add({severity: type, summary: title, detail: message});
-    this.cleanTimer = setTimeout(() => {
-      this.messageService.clear();
-    }, 3000);
   }
   public  clearData(): void {
     this.couponSelect = [];

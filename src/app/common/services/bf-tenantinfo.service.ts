@@ -28,9 +28,6 @@ export class BfTenantinfoService {
   public  queryTenantInfoAllStatus(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/setting/findAdminChoose', body);
   }
-  public  updateTenantInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/updateOwner', body);
-  }
   // delete owerInfo
   public  deleteTenantInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/logout', body);

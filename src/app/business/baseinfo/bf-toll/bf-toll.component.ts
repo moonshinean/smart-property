@@ -125,14 +125,7 @@ export class BfTollComponent implements OnInit {
   // add  toll
   public  tollAddClick(): void {
     this.getTollDownLoadInfo('', '', '', '', '', '');
-    this.tollTitle.chargeCode = '';
-    this.tollTitle.enable = '';
-    this.tollTitle.chargeType = '';
-    this.tollTitle.refund = '';
-    this.tollTitle.chargeUnit = '';
-    this.tollTitle.chargeStandard = '';
-    this.tollTitle.chargeName = '';
-    this.tollTitle.id = '';
+    this.settollTitleData();
     this.tollAddDialog = true;
   }
   // sure add toll
@@ -432,6 +425,17 @@ export class BfTollComponent implements OnInit {
         });
       }
     });
+  }
+  // set tollTitledata
+  public  settollTitleData(): void {
+    this.tollTitle.chargeCode = '';
+    this.tollTitle.enable = '';
+    this.tollTitle.chargeType = '';
+    this.tollTitle.refund = '';
+    this.tollTitle.chargeUnit = '';
+    this.tollTitle.chargeStandard = '';
+    this.tollTitle.chargeName = '';
+    this.tollTitle.id = '';
   }
   // paging query
   public nowpageEventHandle(event: any): void {

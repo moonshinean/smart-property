@@ -286,7 +286,7 @@
           <label >装修情况：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" [placeholder]="renovationStatusName" [(ngModel)]="roomTitle.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
+          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" [placeholder]="renovationName" [(ngModel)]="roomTitle.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6"  [hidden]="timeHide">
@@ -421,7 +421,7 @@
           <label >装修情况：</label>
         </div>
         <div class="ui-g-8">
-          <span>{{renovationStatusName}}</span>
+          <span>{{renovationName}}</span>
         </div>
       </div>
       <div class="ui-g-6" [hidden]="ownerTimeDetailHide">
