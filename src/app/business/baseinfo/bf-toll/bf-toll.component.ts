@@ -125,7 +125,7 @@ export class BfTollComponent implements OnInit {
   // add  toll
   public  tollAddClick(): void {
     this.getTollDownLoadInfo('', '', '', '', '', '');
-    this.settollTitleData();
+    // this.settollTitleData();
     this.tollAddDialog = true;
   }
   // sure add toll
@@ -313,21 +313,27 @@ export class BfTollComponent implements OnInit {
             clearInterval(detailData);
             value.data.forEach( v => {
               this.tollMoreInfo.push({areaMin: v.areaMin, areaMax: v.areaMax, money: v.money, datedif: v.datedif, discount: v.discount, parkingSpaceNature: v.parkingSpaceNature, parkingSpaceType: v.parkingSpaceType});
-              this.tollAddoption.datedif.forEach( val => {
-                if (v.datedif.toString() === val.value) {
-                  this.tollModifyData.datedif = val.label;
-                }
-              });
-              this.tollAddoption.parkingSpaceType.forEach( val => {
-                if (v.parkingSpaceType.toString() === val.value) {
-                  this.tollModifyData.parkingSpaceType = val.label;
-                }
-              });
-              this.tollAddoption.parkingSpaceNature.forEach( val => {
-                if (v.parkingSpaceNature.toString() === val.value) {
-                  this.tollModifyData.parkingSpaceNature = val.label;
-                }
-              });
+              if (v.datedif !== null) {
+                this.tollAddoption.datedif.forEach( val => {
+                  if (v.datedif.toString() === val.value) {
+                    this.tollModifyData.datedif = val.label;
+                  }
+                });
+              }
+              if (v.parkingSpaceType !== null) {
+                this.tollAddoption.parkingSpaceType.forEach(val => {
+                  if (v.parkingSpaceType.toString() === val.value) {
+                    this.tollModifyData.parkingSpaceType = val.label;
+                  }
+                });
+              }
+              if (v.parkingSpaceNature !== null) {
+                this.tollAddoption.parkingSpaceNature.forEach(val => {
+                  if (v.parkingSpaceNature.toString() === val.value) {
+                    this.tollModifyData.parkingSpaceNature = val.label;
+                  }
+                });
+              }
               this.tollModifyDatas.push(this.tollModifyData);
               this.tollModifyData = new ModifyTollDrop();
             });
