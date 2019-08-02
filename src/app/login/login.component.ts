@@ -5,6 +5,7 @@ import {LocalStorageService} from '../common/services/local-storage.service';
 import {PublicMethedService} from '../common/public/public-methed.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {EventManager} from '@angular/platform-browser';
+import {C} from '@angular/cdk/typings/keycodes';
 
 @Component({
   selector: 'rbi-login',
@@ -36,6 +37,7 @@ export class LoginComponent implements OnInit{
     }
     // Monitor keyboard enter event
     this.eventManager.addGlobalEventListener('body', 'keydown.enter', () => {
+      console.log(this.userLogin);
       this.userLoginClick(this.userLogin);
     });
   }
@@ -66,7 +68,8 @@ export class LoginComponent implements OnInit{
           this.localSessionStorage.setObject('sidebarItem', 1);
 
           this.route.navigate(['/home/main']);
-          // console.log(this.localSessionStorage.get('appkey'));
+          this.userLogin.removeControl('username');
+          this.userLogin.removeControl('password');
         } else {
           this.toolSrv.setToast('error', '登录失败', value.message);
         }
