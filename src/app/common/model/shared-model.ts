@@ -8,6 +8,7 @@ export class TreeNode {
   parentCode?: any;
   check?: any;
   color?: any;
+  partialSelected?: any;
   remark?: any;
   idt?: any;
   udt?: any;

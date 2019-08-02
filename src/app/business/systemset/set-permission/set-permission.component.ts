@@ -53,6 +53,7 @@ export class SetPermissionComponent implements OnInit {
     ];
     this.permissionSrv.queryPermissionData({pageNo: 1, pageSize: 10}).subscribe(
       (value) => {
+        console.log(value);
         if (value.status === '1000') {
           this.loadHidden = true;
           this.permissionTableContent = value.data.contents;
@@ -94,6 +95,7 @@ export class SetPermissionComponent implements OnInit {
       this.primitData = [];
       this.toolSrv.setConfirmation('增加', '增加', () => {
         if (this.permissionTableContent.length <= this.primitDatas.length) {
+          console.log(1123);
           if (this.permissionTableContent.length === 0) {
               this.primitDatas.forEach(v => {
                 this.primitData.push(v.value);
@@ -188,13 +190,13 @@ export class SetPermissionComponent implements OnInit {
   // Privilege name selection
   public  setRoleNameChange(e): void {
     this.RoleCode = e.value;
+    this.primitDatasList = [];
     this.permissionSrv.queryRolePermit({roleCode: e.value}).subscribe(
       (value) => {
         value.data.forEach( v => {
           this.primitDatasList.push(v.permisCode);
         });
         this.checkNode(this.primitTree, this.primitDatasList);
-        // this.primitDatas = this.initializeTree(value.data);
       }
     );
   }
