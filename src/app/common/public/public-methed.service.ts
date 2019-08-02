@@ -83,10 +83,13 @@ export class PublicMethedService {
     this.dataList = [];
     list.forEach( v => {
        this.dataList.push({label: v.settingName, value: v.settingCode});
-       if (status !== undefined && status !== '') {
+       if (status !== '') {
          if (status.toString() === v.settingCode) {
            this.dataName = v.settingName;
          }
+       }else {
+         this.dataName = '';
+
        }
        if (list.indexOf(v) === list.length - 1) {
           callback(this.dataList, this.dataName);

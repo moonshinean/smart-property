@@ -328,6 +328,12 @@ export class BfOwnerComponent implements OnInit {
     this.sexOption = [];
     this.normalChargeOption = [];
     this.roomTitle = e;
+    for (let roomTitleKey in this.roomTitle) {
+      if (this.roomTitle[roomTitleKey] === null) {
+         this.roomTitle[roomTitleKey] = '';
+      }
+    }
+    console.log(e);
     this.getRoomDropdownData(this.roomTitle.roomType, this.roomTitle.roomStatus, this.roomTitle.renovationStatus);
     this.selectOwerInfo(this.roomTitle.roomCode);
     this.ownerDetailDialog = true;
@@ -348,6 +354,9 @@ export class BfOwnerComponent implements OnInit {
           this.toolSrv.setDataFormat(data, this.roomTitle.roomType, (list, label) => {
             this.roomTypeOption = list;
             this.roomTypeName = label;
+            if (this.roomTypeName === '') {
+              this.roomTypeName = '请选择房屋类型';
+            }
           });
         }
       });
@@ -356,36 +365,27 @@ export class BfOwnerComponent implements OnInit {
           this.toolSrv.setDataFormat(data,  this.roomTitle.roomStatus, (list, label) => {
             this.roomStatusOption = list;
             this.roomStatusName = label;
+            if (this.roomStatusName === '') {
+              this.roomStatusName = '请选择房屋状态';
+            }
           });
         }
       });
       this.toolSrv.getAdminStatus('RENOVATION_STATUS', (data) => {
         if (data.length > 0) {
-          if (this.roomTitle.renovationStatus !== '') {
             this.toolSrv.setDataFormat(data, this.roomTitle.renovationStatus, (list, labelname) => {
               this.renovationStatusOption = list;
               this.renovationName = labelname;
-              if ( this.renovationName !== '未装修' ) {
-                this.timeHide = false;
-              } else {
+              if ( this.renovationName === '') {
+                this.renovationName = '请选择装修状态';
                 this.timeHide = true;
-              }
-            });
-          } else {
-            this.toolSrv.setDataFormat(data, this.roomTitle.renovationStatus, (list, labelname) => {
-              this.renovationStatusOption = list;
-              this.renovationName = '请选择装修情况';
-              if ( this.renovationName === '请选择装修情况' ) {
-                this.timeHide = true;
-                // this.timeHide = false;
-              } else {
+              } else if(this.renovationName === '已装修') {
                 this.timeHide = false;
-                // this.timeHide = true;
-                console.log(123);
+              }else {
+                this.timeHide = true;
               }
             });
           }
-        }
       });
       this.selectOwerInfo(this.roomTitle.roomCode);
       this.ownerModifayDialog = true;
@@ -630,6 +630,7 @@ export class BfOwnerComponent implements OnInit {
       if (data.length > 0) {
         this.toolSrv.setDataFormat(data, renovation, (list, labelname) => {
           this.renovationStatusOption = list;
+          console.log(labelname);
           this.renovationName = labelname;
         });
       }

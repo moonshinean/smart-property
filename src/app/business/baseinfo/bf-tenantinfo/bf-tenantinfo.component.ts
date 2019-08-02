@@ -124,16 +124,7 @@ export class BfTenantinfoComponent implements OnInit {
         });
       }
     );
-    this.esDate = {
-      firstDayOfWeek: 0,
-      dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-      dayNamesShort: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-      dayNamesMin: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-      monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-      monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-      today: '今天',
-      clear: '清除'
-    };
+    this.esDate = this.toolSrv.esDate;
 
     this.tenantTableTitle = [
       {field: 'villageName', header: '小区名称'},
@@ -354,7 +345,7 @@ export class BfTenantinfoComponent implements OnInit {
       for (const key in this.tenantinfo) {
         this.tenantRoomAdd[key] = this.tenantinfo[key];
       }
-      if (this.tenantRoomAdd.startBillingTime !== ''){
+      if (this.tenantRoomAdd.startBillingTime !== '') {
         this.tenantRoomAdd.startBillingTime = this.datePipe.transform(this.tenantRoomAdd.startBillingTime, 'yyyy-MM-dd');
       }
       this.tenantRoomAdd.roomCode = this.tenantRoomAdd.roomCode.slice(this.tenantRoomAdd.roomCode.lastIndexOf('-') + 1, this.tenantRoomAdd.roomCode.length);
@@ -428,8 +419,10 @@ export class BfTenantinfoComponent implements OnInit {
         value => {
           value.data.forEach( v => {
             this.roomTypeOption.push({label: v.settingName, value: v.settingCode});
-            if (this.roomTitle.roomType.toString() === v.settingCode) {
-              this.roomTypeName = v.settingName;
+            if (this.roomTitle.roomType !== null)  {
+              if (this.roomTitle.roomType.toString() === v.settingCode) {
+                this.roomTypeName = v.settingName;
+              }
             }
           });
         }
@@ -438,9 +431,10 @@ export class BfTenantinfoComponent implements OnInit {
         value => {
           value.data.forEach( v => {
             this.roomStatusOption.push({label: v.settingName, value: v.settingCode});
-
-            if (this.roomTitle.roomStatus.toString() === v.settingCode) {
-              this.roomStatusName = v.settingName;
+            if (this.roomTitle.roomStatus !==  null) {
+              if (this.roomTitle.roomStatus.toString() === v.settingCode) {
+                this.roomStatusName = v.settingName;
+              }
             }
           });
         }
@@ -449,9 +443,10 @@ export class BfTenantinfoComponent implements OnInit {
         value => {
           value.data.forEach( v => {
             this.renovationStatusOption.push({label: v.settingName, value: v.settingCode});
-
-            if (this.roomTitle.renovationStatus.toString() === v.settingCode) {
-              this.renovationStatusName = v.settingName;
+            if (this.roomTitle.renovationStatus !== null) {
+              if (this.roomTitle.renovationStatus.toString() === v.settingCode) {
+                this.renovationStatusName = v.settingName;
+              }
             }
           });
         }
@@ -479,7 +474,6 @@ export class BfTenantinfoComponent implements OnInit {
         }
       );
       let setTime = setInterval(() => {
-        if (this.sexOption.length > 0 && this.normalChargeOption.length && this.normalChargeOption.length > 0){
           this.tenantSrv.queryTenantInfoDetail({roomCode: this.roomTitle.roomCode}).subscribe(
             value => {
               this.tenantList = [];
@@ -488,7 +482,7 @@ export class BfTenantinfoComponent implements OnInit {
                   for (const key in  v) {
                     this.tenantinfo[key] =  v[key];
                   }
-                  if (this.tenantinfo.sex != null){
+                  if (this.tenantinfo.sex != null) {
                     this.sexOption.forEach( val => {
                       if (this.tenantinfo.sex.toString() === val.value) {
                         this.tenantinfo.sex = val.label;
@@ -516,7 +510,6 @@ export class BfTenantinfoComponent implements OnInit {
               }
             }
           );
-        }
       }, 400);
       this.tenantModifayDialog = true;
       console.log(this.tenantModify);
