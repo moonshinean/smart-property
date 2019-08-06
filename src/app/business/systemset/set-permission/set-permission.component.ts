@@ -71,20 +71,23 @@ export class SetPermissionComponent implements OnInit {
   public  permissionConfigClick(): void {
     this.primitTree = [];
     this.RoleCodeList = [];
-    this.loadHidden = false;
-    this.permissionSrv.queryRoleCodeCodeList({}).subscribe(
-      (value) => {
-        value.data.forEach( v => {
-          this.RoleCodeList.push({label: v.roleName, value: v.roleCode});
-        });
-        // console.log(this.RoleCodeList);
-        this.permissionAddDialog = true;
-      }
-    );
+    // this.permissionSrv.queryRoleCodeCodeList({}).subscribe(
+    //   (value) => {
+    //     value.data.forEach( v => {
+    //       this.RoleCodeList.push({label: v.roleName, value: v.roleCode});
+    //     });
+    //     // console.log(this.RoleCodeList);
+    //     this.permissionAddDialog = true;
+    //   }
+    // );
     this.permissionSrv.queryPerimitList({}).subscribe(
       (value) => {
-        this.loadHidden = true;
-        this.primitTree = this.initializeTree(value.data);
+        if (value.status === '1000') {
+          this.primitTree = this.initializeTree(value.data);
+        } else {
+          this.toolSrv.setToast('error', '请求失败', value.message);
+        }
+
       }
     );
   }
@@ -95,7 +98,6 @@ export class SetPermissionComponent implements OnInit {
       this.primitData = [];
       this.toolSrv.setConfirmation('增加', '增加', () => {
         if (this.permissionTableContent.length <= this.primitDatas.length) {
-          console.log(1123);
           if (this.permissionTableContent.length === 0) {
               this.primitDatas.forEach(v => {
                 this.primitData.push(v.value);
@@ -117,10 +119,14 @@ export class SetPermissionComponent implements OnInit {
             this.permissionSrv.addRolePerimit({roleCode: this.RoleCode, permisCodes: this.primitData.join(',')}).subscribe(
               (data) => {
                 this.loadHidden = true;
-                this.toolSrv.setToast('success', '操作成功', data.message);
-                this.permissionAddDialog = false;
-                this.permissionInitialization();
-                this.initializationData();
+                if (data.status === '1000') {
+                  this.toolSrv.setToast('success', '操作成功', data.message);
+                  this.permissionAddDialog = false;
+                  this.permissionInitialization();
+                  this.initializationData();
+                } else {
+                  this.toolSrv.setToast('error', '操作失败', data.message);
+                }
               }
             );
           }
@@ -242,9 +248,9 @@ export class SetPermissionComponent implements OnInit {
   public  checkNode(nodes: TreeNode[], str: any[]): any {
     for (let i = 0 ; i < nodes.length ; i++) {
       if (!nodes[i].check) {
-        for(let j = 0 ; j < nodes[i].children.length ; j++) {
-          if(str.includes(nodes[i].children[j].value)) {
-            if(!this.primitDatas.includes(nodes[i].children[j])) {
+        for (let j = 0 ; j < nodes[i].children.length ; j++) {
+          if (str.includes(nodes[i].children[j].value)) {
+            if (!this.primitDatas.includes(nodes[i].children[j])) {
               this.primitDatas.push(nodes[i].children[j]);
             }
           }

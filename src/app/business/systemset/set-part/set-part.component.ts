@@ -52,8 +52,12 @@ export class SetPartComponent implements OnInit {
     this.partSrv.queryPartPageData({pageNo: 1, pageSize: 10}).subscribe(
       (value) => {
         this.loadHidden = true;
-        this.partTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        if (value.status === '1000') {
+          this.partTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        }  else {
+          this.toolSrv.setToast('error', '查询错误', value.message);
+        }
       }
     );
     this.partTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
@@ -181,8 +185,12 @@ export class SetPartComponent implements OnInit {
     this.partSrv.queryPartPageData({pageNo: event, pageSize: 10}).subscribe(
       (value) => {
         this.loadHidden = true;
-        this.partTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        if (value.status === '1000') {
+          this.partTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else  {
+          this.toolSrv.setToast('error', '查询失败', value.message);
+        }
       });
     this.partSelect = [];
   }

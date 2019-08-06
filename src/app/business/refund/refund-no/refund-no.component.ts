@@ -74,8 +74,12 @@ export class RefundNoComponent implements OnInit {
     this.refundNoSrv.queryRefundNoInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
       value => {
         this.loadHidden = true;
-        this.refundNoTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        if (value.status === '1000') {
+          this.refundNoTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询失败', value.message);
+        }
       }
     );
   /*  this.globalSrv.queryVillageInfo({}).subscribe(

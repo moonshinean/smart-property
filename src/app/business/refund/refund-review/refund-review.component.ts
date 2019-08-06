@@ -154,7 +154,7 @@ export class RefundReviewComponent implements OnInit {
           this.refundReviewSelect = null;
         }
       );
-    }else {
+    } else {
       this.refundReviewSrv.RefundNoPassStatus({id: this.refundReviewSelect[0].id}).subscribe(
         value => {
           this.toolSrv.setToast('success' , '操作成功', value.message);

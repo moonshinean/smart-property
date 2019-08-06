@@ -237,14 +237,12 @@ export class CouponTotalComponent implements OnInit {
     this.couponSelectOption = [];
     this.couponTotalSrv.queryCouponList({}).subscribe(
       value => {
-        console.log(value);
         value.data.forEach( val => {
           this.couponSelectOption.push({label: val.couponName, value: val.couponCode});
         });
       }
     );
     this.couponTotalAddDialog = true;
-    console.log('这里是添加信息');
   }
   // search userInfo
   public getUserInfo(): void {
@@ -262,7 +260,6 @@ export class CouponTotalComponent implements OnInit {
     this.AddcouponTotal.couponName = e.originalEvent.target.innerText;
     this.couponTotalSrv.queryCouponInfo({couponCode: this.AddcouponTotal.couponCode}).subscribe(
       value => {
-        console.log(value);
         this.AddcouponTotal.effectiveTime = value.data.effectiveTime;
         this.AddcouponTotal.money = value.data.money;
         this.couponMoney = '￥' + this.AddcouponTotal.money;
@@ -276,7 +273,6 @@ export class CouponTotalComponent implements OnInit {
         this.AddcouponTotal.couponType = value.data.couponType;
         this.couponTotalSrv.queryCouponType({}).subscribe(
           val => {
-            console.log(val);
             val.data.forEach( v => {
               if (this.AddcouponTotal.couponType === v.settingCode) {
                 this.couponTypeName = v.settingName;
@@ -286,7 +282,6 @@ export class CouponTotalComponent implements OnInit {
         );
       }
     );
-    console.log(this.AddcouponTotal.couponName);
   }
   // sure add houseinfo
   public couponTotalAddSureClick(): void {
@@ -343,7 +338,6 @@ export class CouponTotalComponent implements OnInit {
         }
       });
     });
-    console.log(e);
     this.couponTotalDetailDialog = true;
   }
   // delete coupon
@@ -357,9 +351,12 @@ export class CouponTotalComponent implements OnInit {
         });
         this.couponTotalSrv.deleteCouponInfo({ids: this.deleteIds.join(',')}).subscribe(
         value => {
-          console.log(value);
-          this.toolSrv.setToast('success', '操作成功', value.message);
-          this.couponTotalInitialization();
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', value.message);
+            this.couponTotalInitialization();
+          }else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
+          }
         }
        );
       });
@@ -371,10 +368,13 @@ export class CouponTotalComponent implements OnInit {
     this.nowPage = event;
     this.couponTotalSrv.queryCouponPageData({pageNo: event, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         this.loadingHide = true;
-        this.couponTotalTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        if (value.status === '1000') {
+          this.couponTotalTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '操作失败', value.message);
+        }
       }
     );
     this.couponTotalSelect = [];

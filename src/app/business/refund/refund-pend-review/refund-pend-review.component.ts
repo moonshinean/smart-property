@@ -4,6 +4,7 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {CouponPendingReviewService} from '../../../common/services/coupon-pending-review.service';
 import {RefundPendReviewService} from '../../../common/services/refund-pend-review.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {el} from '@angular/platform-browser/testing/src/browser_util';
 
 @Component({
   selector: 'rbi-refund-pend-review',
@@ -142,19 +143,31 @@ export class RefundPendReviewComponent implements OnInit {
   // Review request
   public  refundPendReviewSureClick(): void {
     if (this.reviewStatus === '通过') {
+      this.loadingHide = false;
       this.refundPendReviewSrv.paasRefundAuditedInfo({id: this.refundPendReviewSelect[0].id}).subscribe(
         value => {
-          this.toolSrv.setToast('success' , '操作成功', value.message);
-          this.refundPendReviewInitialization();
-          this.refundPendReviewDialog = false;
+          this.loadingHide = true;
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success' , '操作成功', value.message);
+            this.refundPendReviewInitialization();
+            this.refundPendReviewDialog = false;
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
+          }
         }
       );
     }  else {
+      this.loadingHide = false;
       this.refundPendReviewSrv.RefundNoPaasAudited({id: this.refundPendReviewSelect[0].id}).subscribe(
         value => {
-          this.toolSrv.setToast('success' , '操作成功', value.message);
-          this.refundPendReviewInitialization();
-          this.refundPendReviewDialog = false;
+          this.loadingHide = true;
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', value.message);
+            this.refundPendReviewInitialization();
+            this.refundPendReviewDialog = false;
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
+          }
         }
       );
     }
@@ -170,9 +183,12 @@ export class RefundPendReviewComponent implements OnInit {
     this.refundPendReviewSrv.queryRefundAuditedPageInfo({pageNo: event, pageSize: 10}).subscribe(
       (value) => {
         this.loadingHide = true;
-        this.refundPendReviewTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-
+        if (value.status === '1000') {
+          this.refundPendReviewTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询失败', value.message);
+        }
       }
     );
     this.refundPendReviewSelect = [];

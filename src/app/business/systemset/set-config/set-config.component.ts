@@ -54,10 +54,13 @@ export class SetConfigComponent implements OnInit {
     this.configService.querySetPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
       (value) => {
         this.loadHidden = true;
-        this.configTableContent = value.data.contents;
-        // console.log(this.configTableContent);
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        // console.log(123);
+        if (value.status === '1000') {
+          this.configTableContent = value.data.contents;
+          // console.log(this.configTableContent);
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询失败', value.message);
+        }
       }
     );
     this.configService.getSetType({}).subscribe(
@@ -221,8 +224,12 @@ export class SetConfigComponent implements OnInit {
     this.configService.querySetPage({pageNo: event, pageSize: 10}).subscribe(
       (value) => {
         this.loadHidden = true;
-        this.configTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        if (value.status === '1000') {
+          this.configTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '操作失败', value.message);
+        }
         // console.log(123);
       }
     );

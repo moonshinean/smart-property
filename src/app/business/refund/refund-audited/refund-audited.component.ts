@@ -150,7 +150,6 @@ export class RefundAuditedComponent implements OnInit {
       }
     });
     this.refundAuditeDetailDialog = true;
-    console.log(e);
   }
   // paging query
   public nowpageEventHandle(event: any): void {
@@ -158,11 +157,13 @@ export class RefundAuditedComponent implements OnInit {
     this.nowPage = event;
     this.refundAuditeSrv.queryRefundAuditedPageInfo({pageNo: event, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         this.loadingHide = true;
-        this.refundAuditeTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-
+        if (value.status === '1000') {
+          this.refundAuditeTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询失败', value.message);
+        }
       }
     );
     this.refundAuditeSelect = [];

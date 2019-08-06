@@ -31,13 +31,13 @@ export class CouponReviewComponent implements OnInit {
   public option: any;
   public loadingHide = true;
   public couponReviewSeachData: any;
-  public SearchOption = {
-    village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
-    region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
-    building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
-    unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
-    room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
-  };
+  // public SearchOption = {
+  //   village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
+  //   region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
+  //   building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
+  //   unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
+  //   room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
+  // };
   public nowPage = 1;
   public couponTypeName: any;
   public couponEffectiveTime: any;
@@ -69,8 +69,12 @@ export class CouponReviewComponent implements OnInit {
       (value) => {
         console.log(value);
         this.loadingHide = true;
-        this.couponReviewTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        if (value.status === '1000') {
+          this.couponReviewTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '请求失败', value.message);
+        }
       }
     );
     this.couponReviewTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};

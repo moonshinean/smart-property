@@ -279,15 +279,20 @@ export class RefundInfoComponent implements OnInit {
   // sure add info
   public infoAddSureClick(): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
+      this.loadHidden = false;
       this.infoAdd.startTime = this.datePipe.transform(this.infoAdd.startTime, 'yyyy-MM-dd');
       this.infoAdd.dueTime = this.datePipe.transform(this.infoAdd.dueTime, 'yyyy-MM-dd');
       this.infoSrv.addRefundInfo(this.infoAdd).subscribe(
         value => {
+          this.loadHidden = true;
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', value.message);
             this.clearData();
             this.infoAddDialog = false;
             this.infoInitialization();
+          } else  {
+            this.toolSrv.setToast('error', '操作失败', value.message);
+
           }
         }
       );
@@ -380,6 +385,9 @@ export class RefundInfoComponent implements OnInit {
             this.infoModifayDialog = false;
             this.clearData();
             this.infoInitialization();
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
+
           }
         }
       );
@@ -400,6 +408,9 @@ export class RefundInfoComponent implements OnInit {
               this.toolSrv.setToast('success', '操作成功', value.message);
               this.clearData();
               this.infoInitialization();
+            } else {
+              this.toolSrv.setToast('error', '操作失败', value.message);
+
             }
           }
         );
