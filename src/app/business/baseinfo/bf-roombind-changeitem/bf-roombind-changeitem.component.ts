@@ -57,20 +57,37 @@ export class BfRoombindChangeitemComponent implements OnInit {
       {field: 'buildingName', header: '楼栋名称'},
       {field: 'unitName', header: '单元名称'},
       {field: 'roomCode', header: '房间编号'},
+      {field: 'chargeCode', header: '缴费项目'},
       {field: 'operating', header: '操作'}
     ];
     this.loadHidden = false;
-    this.roomBindChargeSrv.queryRoomChangeInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadHidden = true;
-        if (value.status === '1000') {
-          this.roombindTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        } else {
-          this.toolSrv.setToast('error', '请求错误', value.message);
-        }
+    this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
+      value => {
+        value.data.forEach( v => {
+          this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
+        });
+        this.roomBindChargeSrv.queryRoomChangeInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
+          (val) => {
+            console.log(val);
+            this.loadHidden = true;
+            if (val.status === '1000') {
+              val.data.contents.forEach( v => {
+                this.chargeItemOption.forEach( data =>{
+                  if (v.chargeCode === data.value) {
+                    v.chargeCode = data.label;
+                  }
+                });
+              });
+              this.roombindTableContent = val.data.contents;
+              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+            } else {
+              this.toolSrv.setToast('error', '请求错误', val.message);
+            }
+          }
+        );
       }
     );
+
     this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
         data.data.forEach( v => {
@@ -96,10 +113,10 @@ export class BfRoombindChangeitemComponent implements OnInit {
 
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
       (value) => {
+        this.loadHidden = true;
         if (value.status === '1000') {
           if (value.data.length !== 0) {
             value.data.forEach( v => {
-              this.loadHidden = true;
               this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
             });
           } else {
@@ -212,16 +229,7 @@ export class BfRoombindChangeitemComponent implements OnInit {
   // detail roombindInfo
   public  roombindDetailClick(e): void {
     this.roombindDetail = e;
-    this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
-      value => {
-        value.data.forEach( v => {
-          this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
-          if (this.roombindDetail.chargeCode === v.chargeCode) {
-            this.chargeItemName = v.chargeName;
-          }
-        });
-      }
-    );
+    this.chargeItemName = this.roombindDetail.chargeCode;
     this.roombindDetailDialog = true;
   }
   // modify roombind
@@ -230,6 +238,7 @@ export class BfRoombindChangeitemComponent implements OnInit {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.roombindSelect.length === 1) {
       this.SearchOption.village = [];
+      this.chargeItemName = this.roombindModify.chargeCode;
       this.globalSrv.queryVillageInfo({}).subscribe(
         (data) => {
           data.data.forEach( v => {
@@ -237,16 +246,16 @@ export class BfRoombindChangeitemComponent implements OnInit {
           });
         }
       );
-      this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
-        value => {
-          value.data.forEach( v => {
-            this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
-            if (this.roombindModify.chargeCode === v.chargeCode) {
-              this.chargeItemName = v.chargeName;
-            }
-          });
-        }
-      );
+      // this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
+      //   value => {
+      //     value.data.forEach( v => {
+      //       this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
+      //       if (this.roombindModify.chargeCode === v.chargeCode) {
+      //         this.chargeItemName = v.chargeName;
+      //       }
+      //     });
+      //   }
+      // );
       this.globalSrv.queryRegionInfo({villageCode: this.roombindModify.villageCode}).subscribe(
         (value) => {
           value.data.forEach( v => {
