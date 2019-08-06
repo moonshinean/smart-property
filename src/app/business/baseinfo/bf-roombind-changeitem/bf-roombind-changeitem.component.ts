@@ -63,12 +63,12 @@ export class BfRoombindChangeitemComponent implements OnInit {
     this.loadHidden = false;
     this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
       value => {
+        console.log(value);
         value.data.forEach( v => {
           this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
         });
         this.roomBindChargeSrv.queryRoomChangeInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
           (val) => {
-            console.log(val);
             this.loadHidden = true;
             if (val.status === '1000') {
               val.data.contents.forEach( v => {
@@ -199,13 +199,13 @@ export class BfRoombindChangeitemComponent implements OnInit {
         });
       }
     );
-    this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
-      value => {
-        value.data.forEach( v => {
-          this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
-        });
-      }
-    );
+    // this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
+    //   value => {
+    //     value.data.forEach( v => {
+    //       this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
+    //     });
+    //   }
+    // );
     this.roombindAddDialog = true;
   }
   // sure add houseinfo
