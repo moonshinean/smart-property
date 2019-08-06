@@ -37,16 +37,7 @@ export class BfCouponComponent implements OnInit {
   // public couponModify: any;
   public couponDetailDialog: boolean;
   public couponDetail: ModifyBfCoupon = new ModifyBfCoupon();
-  public esDate = {
-    firstDayOfWeek: 0,
-    dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesShort: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-    dayNamesMin: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    monthNamesShort: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-    today: '今天',
-    clear: '清除'
-  };
+  // public esDate: any;
   // 上传相关
   // public couponUploadFileDialog: boolean;
   // public uploadedFiles: any[] = [];
@@ -70,6 +61,7 @@ export class BfCouponComponent implements OnInit {
     private couponSrv: BfCouponService
   ) { }
   ngOnInit() {
+    // this.esDate = this.toolSrv.esDate;
     this.couponInitialization();
   }
 

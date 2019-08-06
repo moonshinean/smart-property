@@ -128,7 +128,7 @@ export class BfTollComponent implements OnInit {
   // add  toll
   public  tollAddClick(): void {
     this.getTollDownLoadInfo('', '', '', '', '', '');
-    // this.settollTitleData();
+    this.settollTitleData();
     this.tollAddDialog = true;
   }
   // sure add toll
