@@ -145,8 +145,6 @@ export class ChargemanPaymentComponent implements OnInit {
       this.toolSrv.setToast('error', '搜索失败', '搜索信息条件请具体到楼栋');
 
     }
-
-    console.log('这里是条件搜索');
   }
   // select village
   public  VillageChange(e): void {
@@ -260,7 +258,6 @@ export class ChargemanPaymentComponent implements OnInit {
         });
         this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(
           (value) => {
-            console.log(value);
             if (value.status === '1000') {
               this.paymentItemData = value.data;
               // console.log(this.paymentItemData);
@@ -273,14 +270,13 @@ export class ChargemanPaymentComponent implements OnInit {
               });
               this.paymentMoney = this.paymentTotle;
             } else {
-              this.toolSrv.setToast('error', '操作错误', value.messsage);
+              this.toolSrv.setToast('error', '操作错误', value.message);
             }
           }
         );
 
       }
     }
-    console.log(this.paymentSelect[0]);
   }
   // sure modify payment
   public  paymentSureClick(): void {
