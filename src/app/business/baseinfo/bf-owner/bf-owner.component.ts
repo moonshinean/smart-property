@@ -759,7 +759,7 @@ export class BfOwnerComponent implements OnInit {
       this.owerSrv.queryUploadDetail({logCode: id}).subscribe(
         value => {
           this.uploadOption = {
-            width: '100%',
+            width: '102%',
             tableHeader: {
               data: [
                 {field: 'roomCode', header: '房间编号'},

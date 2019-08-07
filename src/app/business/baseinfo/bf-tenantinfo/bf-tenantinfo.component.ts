@@ -835,7 +835,7 @@ export class BfTenantinfoComponent implements OnInit {
       value => {
         if (value.status === '1000') {
           this.uploadOption = {
-            width: '100%',
+            width: '102%',
             tableHeader: {
               data: [
                 {field: 'roomCode', header: '房间编号'},
