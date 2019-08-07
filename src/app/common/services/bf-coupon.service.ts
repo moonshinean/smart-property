@@ -31,4 +31,7 @@ export class BfCouponService {
   public  deleteCoupon(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/coupon/deleteByIds`, pamars);
   }
+  public  queryCouponStatus(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/setting/findAdminChoose', body);
+  }
 }

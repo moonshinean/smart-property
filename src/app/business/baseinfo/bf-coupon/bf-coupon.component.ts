@@ -34,6 +34,8 @@ export class BfCouponComponent implements OnInit {
   // 修改相关
   public couponModifayDialog: boolean;
   public couponModify: ModifyBfCoupon = new ModifyBfCoupon();
+  public optionEnable: any[] = [];
+  public modifyEnable: any;
   // public couponModify: any;
   public couponDetailDialog: boolean;
   public couponDetail: ModifyBfCoupon = new ModifyBfCoupon();
@@ -173,6 +175,15 @@ export class BfCouponComponent implements OnInit {
 
     } else if (this.couponSelect.length === 1) {
       this.couponModify = this.couponSelect[0];
+      this.toolSrv.getAdminStatus('ENABLE', (data) => {
+        console.log(data);
+          if (data.length > 0) {
+            this.toolSrv.setDataFormat(data, this.couponModify.enable , (list, label) => {
+              this.optionEnable = list;
+              this.modifyEnable = label;
+            });
+          }
+      });
       this.ChargeCodeData.forEach(v => {
         if (this.couponModify.chargeCode === v.value) {
           this.modifyChargeName = v.label;
