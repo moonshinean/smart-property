@@ -74,6 +74,8 @@ export class BfOwnerComponent implements OnInit {
   // 上传相关
   public ownerUploadFileDialog: boolean;
   public uploadedFiles: any[] = [];
+  public ownerInfoDialog: any;
+  public uploadOption: any;
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public option: any;
@@ -106,7 +108,6 @@ export class BfOwnerComponent implements OnInit {
 
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
        (value) => {
-         console.log(value);
          this.loadHidden = true;
          this.ownerTableContent = value.data.contents;
          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -114,7 +115,6 @@ export class BfOwnerComponent implements OnInit {
      );
     this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
-        console.log(data);
         data.data.forEach( v => {
           this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
         });
@@ -151,7 +151,6 @@ export class BfOwnerComponent implements OnInit {
 
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
         (value) => {
-          console.log(value);
           this.loadHidden = true;
           value.data.forEach( v => {
             this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
@@ -170,7 +169,6 @@ export class BfOwnerComponent implements OnInit {
     this.SearchOption.unit = [];
     this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
       (value) => {
-        console.log(value);
         value.data.forEach( v => {
           this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
         });
@@ -333,7 +331,6 @@ export class BfOwnerComponent implements OnInit {
          this.roomTitle[roomTitleKey] = '';
       }
     }
-    console.log(e);
     this.getRoomDropdownData(this.roomTitle.roomType, this.roomTitle.roomStatus, this.roomTitle.renovationStatus);
     this.selectOwerInfo(this.roomTitle.roomCode);
     this.ownerDetailDialog = true;
@@ -538,12 +535,13 @@ export class BfOwnerComponent implements OnInit {
       header: '上传提醒',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
+        this.loadHidden = false;
         this.owerSrv.uploadOwerInfoFile(fileData).subscribe(
           (value) => {
             if (value.status === '1000') {
-              this.loadHidden = false;
               this.loadHidden = true;
               this.uploadedFiles = [];
+              this.getUploadSuccessInfo(value.data);
               this.toolSrv.setToast('success', '上传成功', value.message);
               this.ownerInitialization();
             } else {
@@ -661,7 +659,7 @@ export class BfOwnerComponent implements OnInit {
       }
     });
   }
-  //set roomtilt
+  // set roomtilt
   public  setRoomTitleData(): void {
     this.roomTitle.villageName = '';
     this.roomTitle.roomCode = '';
@@ -755,5 +753,35 @@ export class BfOwnerComponent implements OnInit {
         );
       }
     }, 400);
+  }
+
+  public getUploadSuccessInfo(id): void {
+      this.owerSrv.queryUploadDetail({logCode: id}).subscribe(
+        value => {
+          this.uploadOption = {
+            width: '100%',
+            tableHeader: {
+              data: [
+                {field: 'roomCode', header: '房间编号'},
+                {field: 'surname', header: '客户姓氏'},
+                {field: 'phone', header: '客户电话'},
+                {field: 'result', header: '结果'},
+              ],
+              style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+            },
+            tableContent: {
+              data: value.data,
+              styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+              styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+            }
+          };
+          if (value.status === '1000') {
+            this.ownerInfoDialog = true;
+            this.ownerUploadFileDialog = false;
+          } else {
+            this.toolSrv.setToast('error', '查询上传信息失败', value.message);
+          }
+        }
+      );
   }
 }

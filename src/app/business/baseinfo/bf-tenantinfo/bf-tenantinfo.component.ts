@@ -76,6 +76,8 @@ export class BfTenantinfoComponent implements OnInit {
   // 上传相关
   public tenantUploadFileDialog: boolean;
   public uploadedFiles: any[] = [];
+  public tenantInfoDialog: any;
+  public uploadOption: any;
   // 其他相关
   public option: any;
   public esDate: any;
@@ -661,6 +663,7 @@ export class BfTenantinfoComponent implements OnInit {
               this.loadHidden = false;
               this.loadHidden = true;
               this.uploadedFiles = [];
+              this.getUploadSuccessInfo(value.data);
               this.toolSrv.setToast('success', '上传成功', value.message);
               this.tenantInitialization();
             } else {
@@ -670,9 +673,6 @@ export class BfTenantinfoComponent implements OnInit {
         );
       },
       reject: () => {
-        console.log('这里是上传信息');
-
-        // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
       }
     });
   }
@@ -828,5 +828,35 @@ export class BfTenantinfoComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  public getUploadSuccessInfo(id): void {
+    this.tenantSrv.queryUploadDetail({logCode: id}).subscribe(
+      value => {
+        if (value.status === '1000') {
+          this.uploadOption = {
+            width: '100%',
+            tableHeader: {
+              data: [
+                {field: 'roomCode', header: '房间编号'},
+                {field: 'surname', header: '客户姓氏'},
+                {field: 'phone', header: '客户电话'},
+                {field: 'result', header: '结果'},
+              ],
+              style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+            },
+            tableContent: {
+              data: value.data,
+              styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+              styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+            }
+          };
+          this.tenantInfoDialog = true;
+          this.tenantUploadFileDialog = false;
+        } else {
+          this.toolSrv.setToast('error', '查询上传信息失败', value.message);
+        }
+      }
+    );
   }
 }

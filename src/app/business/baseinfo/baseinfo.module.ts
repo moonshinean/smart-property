@@ -26,6 +26,7 @@ import {LoadingModule} from '../../common/components/loading/loading.module';
 import { BfCouponComponent } from './bf-coupon/bf-coupon.component';
 import { BfRoombindChangeitemComponent } from './bf-roombind-changeitem/bf-roombind-changeitem.component';
 import {PublicMethedService} from '../../common/public/public-methed.service';
+import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import {PublicMethedService} from '../../common/public/public-methed.service';
     LoadingModule,
     TreeModule,
     ReactiveFormsModule,
+    BasicTableModule
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

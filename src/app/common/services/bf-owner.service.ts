@@ -49,4 +49,7 @@ export class BfOwnerService {
   public  addRoomCodeInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/addRoom', body);
   }
+  public  queryUploadDetail(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/excel/findLog', body);
+  }
 }

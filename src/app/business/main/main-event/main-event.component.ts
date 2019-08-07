@@ -11,6 +11,7 @@ export class MainEventComponent implements OnInit {
   public cols: any;
   public eventdata: any;
   public styleHeader: any;
+  public option: any;
   constructor() {
 
   }
@@ -40,6 +41,18 @@ export class MainEventComponent implements OnInit {
       {eventId: 14, eventName: '异常事件', eventContent: '报警内容', eventType: '报警', eventOperator: '张山', eventDate: '2019-5-5'},
       {eventId: 15, eventName: '异常事件', eventContent: '报警内容', eventType: '报警', eventOperator: '张山', eventDate: '2019-5-5'},
     ];
-    this.styleHeader = { background: '#33353C', color: '#DEDEDE', height: '6vh'};
+    // this.styleHeader = { background: '#33353C', color: '#DEDEDE', height: '6vh'};
+    this.option = {
+      width: '85.5vw',
+      tableHeader: {
+        data: this.cols,
+        style: { background: '#33353C', color: '#DEDEDE', height: '6vh'},
+      },
+      tableContent: {
+        data: this.eventdata,
+        styleone: { background: '#55545A', color: '#DEDEDE', height: '2vw', textAlign: 'center'},
+        styletwo: { background: '#646464', color: '#DEDEDE', height: '2vw', textAlign: 'center'}
+      }
+    };
   }
 }

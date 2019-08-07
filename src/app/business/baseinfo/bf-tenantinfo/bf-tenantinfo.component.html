@@ -610,12 +610,7 @@
     <!--Content-->
     <div class="ui-g ui-fluid" >
       <div class="ui-g-12">
-        <p-fileUpload multiple="multiple"  maxFileSize="10000000000"  [files]="uploadedFiles" >
-          <!--<ng-template pTemplate="content" >-->
-          <!--&lt;!&ndash;<ul *ngIf="uploadedFiles.length">&ndash;&gt;-->
-          <!--&lt;!&ndash;<li *ngFor="let file of uploadedFiles" >{{file.name}} - {{file.size}} bytes</li>&ndash;&gt;-->
-          <!--&lt;!&ndash;</ul>&ndash;&gt;-->
-          <!--</ng-template>-->
+        <p-fileUpload multiple="multiple"  maxFileSize="10000000000"  [files]="uploadedFiles" chooseLabel="选择文件">
         </p-fileUpload>
       </div>
     </div>
@@ -623,6 +618,36 @@
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
         <button class="bf-tenant-dialog-Btn bf-tenant-dialog-Btn-sure" (click)="tenantUploadSureClick()">确认</button>
         <button class="bf-tenant-dialog-Btn bf-tenant-dialog-Btn-false"  (click)="tenantUploadFileDialog=false">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <p-dialog header="导入成功信息" [(visible)]="tenantInfoDialog" [width]="900">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
+      <div class="ui-g-6" style="text-align: center; font-size: 1rem; font-weight: bold">
+        <div class="ui-g-4">
+          <label >插入总条数:</label>
+        </div>
+        <div class="ui-g-8">
+          <label >{{uploadOption?.tableContent?.data[0]?.totalNumber}}</label>
+        </div>
+      </div>
+      <div class="ui-g-6" style="text-align: center; font-size: 1rem; font-weight: bold">
+        <div class="ui-g-4">
+          <label >插入成功条数:</label>
+        </div>
+        <div class="ui-g-8">
+          <label >{{uploadOption?.tableContent?.data[0]?.realNumber}}</label>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <rbi-bf-table [option]="uploadOption"></rbi-bf-table>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="bf-tenant-dialog-Btn bf-tenant-dialog-Btn-sure" (click)="tenantInfoDialog=false">确认</button>
+        <button class="bf-tenant-dialog-Btn bf-tenant-dialog-Btn-false" (click)="tenantInfoDialog=false">取消</button>
       </div>
     </p-footer>
   </p-dialog>

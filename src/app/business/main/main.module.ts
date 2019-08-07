@@ -8,6 +8,7 @@ import {EchartsBarModule} from '../../common/components/echarts-bar/echarts-bar.
 import {EchartsPieModule} from '../../common/components/echarts-pie/echarts-pie.module';
 import {TableModule} from 'primeng/table';
 import {ScrollPanelModule} from 'primeng/primeng';
+import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import {ScrollPanelModule} from 'primeng/primeng';
     EchartsPieModule,
     TableModule,
     ScrollPanelModule,
+    BasicTableModule
   ]
 })
 export class MainModule { }
