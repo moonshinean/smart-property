@@ -27,6 +27,7 @@ export class RefundInfoComponent implements OnInit {
   public paymentSelectOption: any[] = [];
   public ChargetOption: any[] = [];
   public ChargetTypeName: any;
+  // public Statusoption: any;
   // 修改相关
   public infoModifayDialog: boolean;
   public infoModify: ModifyRefundInfo = new ModifyRefundInfo();
@@ -89,7 +90,7 @@ export class RefundInfoComponent implements OnInit {
             if (val.status === '1000') {
               val.data.contents.forEach( h => {
                 data.forEach(v => {
-                  if (h .refundStatus.toString() === v.settingCode) {
+                  if (h.refundStatus.toString() === v.settingCode) {
                     h.refundStatus = v.settingName;
                   }
                 });
@@ -323,7 +324,7 @@ export class RefundInfoComponent implements OnInit {
     if (this.infoSelect === undefined || this.infoSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.infoSelect.length === 1) {
-      if (this.infoModify.refundStatus === 0){
+      if (this.infoModify.refundStatus === '未退') {
         this.infoSrv.quertyChargeInfo({}).subscribe(
           value => {
             if (value.data.length !== 0) {
