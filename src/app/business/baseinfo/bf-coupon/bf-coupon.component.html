@@ -136,7 +136,7 @@
           <label > 优惠卷类型：</label>
         </div>
         <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #modifycouponType  [options]="couponTypeData" [placeholder]="modifyCouponType"></p-dropdown>
+          <p-dropdown scrollHeight="100px" #modifycouponType  [options]="couponTypeData" [placeholder]="modifyCouponType" [(ngModel)]="couponModify.couponType"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -144,7 +144,7 @@
           <label >收费项目：</label>
         </div>
         <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #modifyChargeCode [options]="ChargeCodeData" [placeholder]="modifyChargeName" ></p-dropdown>
+          <p-dropdown scrollHeight="100px" #modifyChargeCode [options]="ChargeCodeData" [placeholder]="modifyChargeName" [(ngModel)]="couponModify.chargeCode"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -152,7 +152,7 @@
           <label for="addroomCode">有效时长：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #modifyeffectiveTime [options]="EffectiveTime"  [placeholder]="modifyEffectiveTime"></p-dropdown>
+          <p-dropdown scrollHeight="100px" #modifyeffectiveTime [options]="EffectiveTime"  [placeholder]="modifyEffectiveTime" [(ngModel)]="couponModify.effectiveTime"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -160,7 +160,7 @@
           <label for="addroomCode">是否可用：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #modifyeffectiveTime [options]="optionEnable"  [placeholder]="modifyEnable"></p-dropdown>
+          <p-dropdown scrollHeight="100px" #modifyeffectiveTime [options]="optionEnable"  [placeholder]="modifyEnable" [(ngModel)]="couponModify.enable"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -228,8 +228,7 @@
           <label >是否可用：</label>
         </div>
         <div class="ui-g-8">
-          <span *ngIf="couponDetail.enable === 0">可用</span>
-          <span *ngIf="couponDetail.enable === 1">不可用</span>
+          <span >{{couponDetail.enable}}</span>
         </div>
       </div>
       <div class="ui-g-6">

@@ -79,7 +79,7 @@ export class BfTollComponent implements OnInit {
   }
 
   // initialization toll
-  public  tollInitialization(): void {
+  public async tollInitialization(): void {
     this.tollTableTitle = [
       {field: 'chargeCode', header: '项目编号'},
       {field: 'chargeName', header: '项目名称'},
@@ -90,35 +90,35 @@ export class BfTollComponent implements OnInit {
       {field: 'operating', header: '操作'},
     ];
     this.esDate = this.toolSrv.esDate;
-    this.getTollDownLoadInfo('', '', '', '', '', '');
+    await this.getTollDownLoadInfo('', '', '', '', '', '');
     this.tollSrv.queryBfTollPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
       value => {
-        console.log(value);
         if (value.status === '1000') {
           this.loadHidden = true;
           if (value.data.contents)  {
-            value.data.contents.forEach( v => {
-              if (v.chargeType) {
-                this.optionTollType.forEach( val => {
-                  if (v.chargeType.toString() === val.value) {
-                    v.chargeType = val.label;
-                  }
-                });
-              }
-              if (v.enable) {
-                this.enableOption.forEach( val => {
-                  if (v.enable.toString() === val.value) {
-                    v.enable = val.label;
-                  }
-                });
-              }
-            });
+              value.data.contents.forEach( v => {
+                if (v.chargeType) {
+                  this.optionTollType.forEach( val => {
+                    if (v.chargeType.toString() === val.value) {
+                      v.chargeType = val.label;
+                    }
+                  });
+                }
+                if (v.enable !== null) {
+                  this.enableOption.forEach( val => {
+                    if (v.enable.toString() === val.value) {
+                      v.enable = val.label;
+                    }
+                  });
+                }
+              });
           }
           this.tollTableContent = value.data.contents;
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         }
       }
     );
+    this.settollTitleData();
     this.tollTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
   // condition search click
@@ -128,7 +128,6 @@ export class BfTollComponent implements OnInit {
   // add  toll
   public  tollAddClick(): void {
     this.getTollDownLoadInfo('', '', '', '', '', '');
-    this.settollTitleData();
     this.tollAddDialog = true;
   }
   // sure add toll
@@ -174,13 +173,25 @@ export class BfTollComponent implements OnInit {
     });
   }
   // modify toll
-  public tollModifyClick(): void {
+  public async tollModifyClick(): void {
     if (this.tollSelect === undefined || this.tollSelect.length === 0 ) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.tollSelect.length === 1) {
       this.tollChargeTypeMedify = this.tollTitle.chargeType;
       this.tollEnableMedify = this.tollTitle.enable;
-      this.getTollDownLoadInfo(this.tollTitle.refund, '', '', '', '', '');
+      this.toolSrv.getAdminStatus('REFUND', (data) => {
+        if (data) {
+          this.toolSrv.setDataFormat(data,this.tollTitle.refund, (list, label) => {
+            this.refundOption = list;
+            if ( label === null) {
+              this.tollrefundMedify = '请选择是否可退款';
+            } else {
+              this.tollrefundMedify = label;
+            }
+          });
+        }
+      });
+      await this.getTollDownLoadInfo( '', '', '', '', '');
       const Time = setInterval( () => {
           clearInterval(Time);
           this.tollSrv.queryTollinfoDetail({chargeCode: this.tollSelect[0].chargeCode}).subscribe(
@@ -232,6 +243,16 @@ export class BfTollComponent implements OnInit {
   }
   // sure modify toll
   public  tollModifySureClick(): void {
+    this.optionTollType.forEach( val => {
+      if (this.tollTitle.chargeType.toString() === val.label) {
+        this.tollTitle.chargeType = val.value;
+      }
+    });
+    this.enableOption.forEach( val => {
+      if (this.tollTitle.enable.toString() === val.label) {
+        this.tollTitle.enable = val.value;
+      }
+    });
     this.toolSrv.setConfirmation('修改', '修改', () => {
       if (this.tollMoreInfo.length === 0) {
         this.tollSrv.updateTollInfo(this.tollTitle).subscribe(
@@ -318,21 +339,14 @@ export class BfTollComponent implements OnInit {
   // show Detail Dialog
   public  toolDetailClick(e): void {
     this.tollTitle = e;
-    // if (e.chargeType) {
-    //   this.optionTollType.forEach( val => {
-    //     if (e.chargeType.toString() === val.label) {
-    //          e.chargeType = val.value;
-    //     }
-    //   });
-    // }
-    // if (e.enable) {
-    //   this.enableOption.forEach( val => {
-    //     if (e.enable.toString() === val.label) {
-    //       e.enable = val.value;
-    //     }
-    //   });
-    // }
-    this.getTollDownLoadInfo(e.refund, e.chargeType, e.enable, '', '', '');
+    this.toolSrv.getAdminStatus('REFUND', (data) => {
+      if (data) {
+        this.toolSrv.setDataFormat(data, e.refund, (list, label) => {
+          this.tollrefundMedify = label;
+        });
+      }
+    });
+    this.getTollDownLoadInfo( e.chargeType, e.enable, '', '', '');
     const detailData = setInterval(() => {
         this.tollSrv.queryTollinfoDetail({chargeCode: e.chargeCode}).subscribe(
           value => {
@@ -414,15 +428,8 @@ export class BfTollComponent implements OnInit {
     }
   }
   // paging query
-  public  getTollDownLoadInfo(refundId, chargeType, enable, datedif, nature, type): void {
-    this.toolSrv.getAdminStatus('REFUND', (data) => {
-      if (data) {
-        this.toolSrv.setDataFormat(data, refundId, (list, label) => {
-          this.refundOption = list;
-          this.tollrefundMedify = label;
-        });
-      }
-    });
+  public  getTollDownLoadInfo( chargeType, enable, datedif, nature, type): void {
+
     this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
       if (data) {
         this.toolSrv.setDataFormat(data, chargeType, (list, label) => {

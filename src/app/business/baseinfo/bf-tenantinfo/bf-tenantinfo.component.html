@@ -88,7 +88,7 @@
           <label >小区名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入小区名称..." [(ngModel)]="roomTitle.villageName">
+          <p-dropdown [options]="villageOption"  scrollHeight="100px" placeholder="请选择小区..."  [(ngModel)]="roomTitle.villageName"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">

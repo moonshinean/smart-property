@@ -80,6 +80,7 @@ export class BfCouponComponent implements OnInit {
     this.loadingHide = false;
     this.couponSrv.queryCouponPagination({pageNo: 1, pageSize: 10 }).subscribe(
       (value) => {
+        console.log(value);
         this.loadingHide = true;
         if (value.status === '1000') {
           this.couponTableContent = value.data.contents;
@@ -116,6 +117,13 @@ export class BfCouponComponent implements OnInit {
         });
       }
     );
+    this.toolSrv.getAdminStatus('ENABLED', (data) => {
+      if (data.length > 0) {
+        this.toolSrv.setDataFormat(data, '' , (list, label) => {
+          this.optionEnable = list;
+        });
+      }
+    });
   }
   // condition search click
   public  couponSearchClick(): void {
@@ -160,12 +168,18 @@ export class BfCouponComponent implements OnInit {
   }
   // detail couponInfo
   public  couponDetailClick(e): void {
-    this.couponDetailDialog = true;
     this.couponDetail = e;
+    this.optionEnable.forEach( value => {
+      if (this.couponDetail.enable.toString() === value.value) {
+        this.couponDetail.enable  = value.label;
+      }
+    });
+    this.couponDetailDialog = true;
+
   }
   // modify coupon
   public couponModifyClick(): void {
-    this.couponAdd.effectiveTime = '';
+    this.couponModify.effectiveTime = '';
     this.couponAdd.chargeCode = '';
     this.couponAdd.couponType = '';
     this.couponAdd.money = '';
@@ -175,30 +189,34 @@ export class BfCouponComponent implements OnInit {
 
     } else if (this.couponSelect.length === 1) {
       this.couponModify = this.couponSelect[0];
-      this.toolSrv.getAdminStatus('ENABLE', (data) => {
-        console.log(data);
-          if (data.length > 0) {
-            this.toolSrv.setDataFormat(data, this.couponModify.enable , (list, label) => {
-              this.optionEnable = list;
-              this.modifyEnable = label;
-            });
-          }
+      this.optionEnable.forEach( value => {
+        if (this.couponModify.enable === value.value) {
+          this.modifyEnable  = value.label;
+        }
       });
       this.ChargeCodeData.forEach(v => {
         if (this.couponModify.chargeCode === v.value) {
           this.modifyChargeName = v.label;
+        } else {
+          this.modifyChargeName = '请选择收费项目';
         }
       });
       this.EffectiveTime.forEach(v => {
         if (Number(this.couponModify.effectiveTime) === Number(v.value)) {
           this.modifyEffectiveTime = v.label;
+        } else {
+          this.modifyEffectiveTime = '请选择有效时长';
         }
       });
       this.couponTypeData.forEach(v => {
         if (this.couponModify.couponType === v.value) {
           this.modifyCouponType = v.label;
+        } else {
+          this.modifyEffectiveTime = '请选择优惠券类型';
         }
       });
+      console.log(this.modifyChargeName);
+
       this.couponModifayDialog = true;
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
@@ -206,6 +224,7 @@ export class BfCouponComponent implements OnInit {
   }
   // sure modify coupon
   public  couponModifySureClick(): void {
+      console.log(this.couponModify);
     this.toolSrv.setConfirmation('修改', '修改', () => {
       this.couponSrv.updateCoupon(this.couponModify).subscribe(
         value => {

@@ -73,6 +73,7 @@ export class BfTenantinfoComponent implements OnInit {
   // 业主修改相关
   public tenantModifyDialog: any;
   public tenantListIndex: any;
+  public villageOption: any[] = [];
   // 上传相关
   public tenantUploadFileDialog: boolean;
   public uploadedFiles: any[] = [];
@@ -123,6 +124,7 @@ export class BfTenantinfoComponent implements OnInit {
       (data) => {
         data.data.forEach( v => {
           this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+          this.villageOption.push({label: v.villageName, value: v.villageName});
         });
       }
     );

@@ -88,8 +88,7 @@ export class PublicMethedService {
            this.dataName = v.settingName;
          }
        } else {
-         this.dataName = '';
-
+         this.dataName = null;
        }
        if (list.indexOf(v) === list.length - 1) {
           callback(this.dataList, this.dataName);

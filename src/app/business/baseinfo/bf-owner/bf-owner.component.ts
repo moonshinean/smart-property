@@ -31,6 +31,7 @@ export class BfOwnerComponent implements OnInit {
   public ownerTimeDetailHide = true;
 
   public roomTypeOption: any[] = [];
+  public villageOption: any[] = [];
   public roomStatusOption: any[] = [];
   public renovationStatusOption: any[] = [];
   public sexOption: any[] = [];
@@ -117,6 +118,7 @@ export class BfOwnerComponent implements OnInit {
       (data) => {
         data.data.forEach( v => {
           this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+          this.villageOption.push({label: v.villageName, value: v.villageName});
         });
       }
     );
@@ -628,7 +630,6 @@ export class BfOwnerComponent implements OnInit {
       if (data.length > 0) {
         this.toolSrv.setDataFormat(data, renovation, (list, labelname) => {
           this.renovationStatusOption = list;
-          console.log(labelname);
           this.renovationName = labelname;
         });
       }

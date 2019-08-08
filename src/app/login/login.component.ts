@@ -36,10 +36,10 @@ export class LoginComponent implements OnInit{
       this.userLogin.setValue( {username: this.localSessionStorage.get('username'), password: this.localSessionStorage.get('password')});
     }
     // Monitor keyboard enter event
-    this.eventManager.addGlobalEventListener('body', 'keydown.enter', () => {
-      console.log(this.userLogin);
-      this.userLoginClick(this.userLogin);
-    });
+    // this.eventManager.addGlobalEventListener('body', 'keydown.enter', () => {
+    //   console.log(this.userLogin);
+    //   this.userLoginClick(this.userLogin);
+    // });
   }
   // user click event
   public  userLoginClick(user): void {
@@ -68,8 +68,8 @@ export class LoginComponent implements OnInit{
           this.localSessionStorage.setObject('sidebarItem', 1);
 
           this.route.navigate(['/home/main']);
-          this.userLogin.removeControl('username');
-          this.userLogin.removeControl('password');
+          // this.userLogin.removeControl('username');
+          // this.userLogin.removeControl('password');
         } else {
           this.toolSrv.setToast('error', '登录失败', value.message);
         }
