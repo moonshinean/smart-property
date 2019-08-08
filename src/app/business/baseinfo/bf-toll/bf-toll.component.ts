@@ -4,6 +4,7 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {AddToll, BfTollTitle, ModifyToll, ModifyTollDrop, Toll, TollMoreInfo} from '../../../common/model/bf-toll.model';
 import {validate} from 'codelyzer/walkerFactory/walkerFn';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {defer} from 'rxjs';
 
 @Component({
   selector: 'rbi-bf-toll',
@@ -91,33 +92,40 @@ export class BfTollComponent implements OnInit {
     ];
     this.esDate = this.toolSrv.esDate;
     this.getTollDownLoadInfo('', '', '', '', '');
-    this.tollSrv.queryBfTollPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      value => {
-        if (value.status === '1000') {
-          this.loadHidden = true;
-          if (value.data.contents)  {
-              value.data.contents.forEach( v => {
-                if (v.chargeType) {
-                  this.optionTollType.forEach( val => {
-                    if (v.chargeType.toString() === val.value) {
-                      v.chargeType = val.label;
-                    }
-                  });
-                }
-                if (v.enable !== null) {
-                  this.enableOption.forEach( val => {
-                    if (v.enable.toString() === val.value) {
-                      v.enable = val.label;
-                    }
-                  });
-                }
-              });
+    const queryData = setInterval(() => {
+      this.loadHidden = false;
+      if (this.optionTollType.length > 0 && this.enableOption.length > 0) {
+        this.tollSrv.queryBfTollPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
+          value => {
+            clearInterval(queryData);
+            if (value.status === '1000') {
+              this.loadHidden = true;
+              if (value.data.contents)  {
+                value.data.contents.forEach( v => {
+                  if (v.chargeType) {
+                    this.optionTollType.forEach( val => {
+                      if (v.chargeType.toString() === val.value) {
+                        v.chargeType = val.label;
+                      }
+                    });
+                  }
+                  if (v.enable !== null) {
+                    this.enableOption.forEach( val => {
+                      if (v.enable.toString() === val.value) {
+                        v.enable = val.label;
+                      }
+                    });
+                  }
+                });
+              }
+              this.tollTableContent = value.data.contents;
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+            }
           }
-          this.tollTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        }
+        );
       }
-    );
+    }, 600);
+
     this.settollTitleData();
     this.tollTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
