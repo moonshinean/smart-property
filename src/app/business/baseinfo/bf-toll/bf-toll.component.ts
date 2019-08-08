@@ -97,6 +97,7 @@ export class BfTollComponent implements OnInit {
       if (this.optionTollType.length > 0 && this.enableOption.length > 0) {
         this.tollSrv.queryBfTollPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
           value => {
+            console.log(value);
             clearInterval(queryData);
             if (value.status === '1000') {
               this.loadHidden = true;
@@ -256,6 +257,7 @@ export class BfTollComponent implements OnInit {
         this.tollTitle.chargeType = val.value;
       }
     });
+    console.log(this.tollTitle);
     this.enableOption.forEach( val => {
       if (this.tollTitle.enable.toString() === val.label) {
         this.tollTitle.enable = val.value;
@@ -281,15 +283,6 @@ export class BfTollComponent implements OnInit {
           for (const Key in this.tollTitle) {
             this.tollAddinfo[Key] =  this.tollTitle[Key];
            }
-          this.optionTollType.forEach( val => {
-            if (this.tollAddinfo.chargeType === val.label) {
-              this.tollAddinfo.chargeType = val.value;
-            }
-          });
-          this.enableOption.forEach( val => {
-            if (this.tollAddinfo.enable === val.label) {}
-            this.tollAddinfo.enable = val.value;
-          });
           for (const vKey in v) {
             this.tollAddinfo[vKey] = v[vKey];
           }
