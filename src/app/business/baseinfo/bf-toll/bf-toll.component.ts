@@ -79,7 +79,7 @@ export class BfTollComponent implements OnInit {
   }
 
   // initialization toll
-  public async tollInitialization(): void {
+  public  tollInitialization(): void {
     this.tollTableTitle = [
       {field: 'chargeCode', header: '项目编号'},
       {field: 'chargeName', header: '项目名称'},
@@ -90,7 +90,7 @@ export class BfTollComponent implements OnInit {
       {field: 'operating', header: '操作'},
     ];
     this.esDate = this.toolSrv.esDate;
-    await this.getTollDownLoadInfo('', '', '', '', '', '');
+    this.getTollDownLoadInfo('', '', '', '', '');
     this.tollSrv.queryBfTollPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
       value => {
         if (value.status === '1000') {
@@ -127,7 +127,7 @@ export class BfTollComponent implements OnInit {
   }
   // add  toll
   public  tollAddClick(): void {
-    this.getTollDownLoadInfo('', '', '', '', '', '');
+    this.getTollDownLoadInfo('', '', '', '', '');
     this.tollAddDialog = true;
   }
   // sure add toll
@@ -173,7 +173,7 @@ export class BfTollComponent implements OnInit {
     });
   }
   // modify toll
-  public async tollModifyClick(): void {
+  public  tollModifyClick(): void {
     if (this.tollSelect === undefined || this.tollSelect.length === 0 ) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.tollSelect.length === 1) {
@@ -191,7 +191,7 @@ export class BfTollComponent implements OnInit {
           });
         }
       });
-      await this.getTollDownLoadInfo( '', '', '', '', '');
+      this.getTollDownLoadInfo( '', '', '', '', '');
       const Time = setInterval( () => {
           clearInterval(Time);
           this.tollSrv.queryTollinfoDetail({chargeCode: this.tollSelect[0].chargeCode}).subscribe(
@@ -428,7 +428,7 @@ export class BfTollComponent implements OnInit {
     }
   }
   // paging query
-  public  getTollDownLoadInfo( chargeType, enable, datedif, nature, type): void {
+  public  getTollDownLoadInfo(chargeType, enable, datedif, nature, type): void {
 
     this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
       if (data) {
