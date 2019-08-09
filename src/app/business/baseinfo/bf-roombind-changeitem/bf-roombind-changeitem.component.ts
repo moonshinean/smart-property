@@ -356,18 +356,30 @@ export class BfRoombindChangeitemComponent implements OnInit {
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.roomBindChargeSrv.queryRoomChangeInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-        (value) => {
-         if (value.status === '1000') {
-           this.loadHidden = true;
-           if (value.data.contents) {
-             this.roombindTableContent = value.data.contents;
-           }
-           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-         } else {
-           this.toolSrv.setToast('error', '请求失败', value.message);
-         }
-        }
-      );
+    this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
+      value => {
+        value.data.forEach( v => {
+          this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
+        });
+        this.roomBindChargeSrv.queryRoomChangeInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
+          (val) => {
+            this.loadHidden = true;
+            if (val.status === '1000') {
+              val.data.contents.forEach( v => {
+                this.chargeItemOption.forEach( data =>{
+                  if (v.chargeCode === data.value) {
+                    v.chargeCode = data.label;
+                  }
+                });
+              });
+              this.roombindTableContent = val.data.contents;
+              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+            } else {
+              this.toolSrv.setToast('error', '请求错误', val.message);
+            }
+          }
+        );
+      }
+    );
     }
 }

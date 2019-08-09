@@ -107,18 +107,18 @@
         <div class="ui-g-4">
           <label >是否可退款：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown [options]="refundOption" scrollHeight="100px" placeholder="请选择是否可退款" [(ngModel)]="tollTitle.refund"></p-dropdown>
         </div>
       </div>
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >启用状态：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<p-dropdown [options]="enableOption" scrollHeight="100px" placeholder="请选择启用状态" [(ngModel)]="tollTitle.enable"></p-dropdown>-->
-        <!--</div>-->
-      <!--</div>-->
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >是否必缴：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="mustPayOption" scrollHeight="100px" placeholder="请选择是否必缴" [(ngModel)]="tollTitle.mustpay"></p-dropdown>
+        </div>
+      </div>
       <div class="ui-g-12">
         <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
           <p-table [columns]="moreTollMoreTitle" [value]="tollMoreInfo" >
@@ -204,7 +204,7 @@
         <div class="ui-g-4">
           <label >是否可退款：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown [options]="refundOption"  scrollHeight="100px"  [placeholder]="tollrefundMedify" [(ngModel)]="tollTitle.refund"></p-dropdown>
         </div>
       </div>
@@ -212,8 +212,16 @@
         <div class="ui-g-4">
           <label >启用状态：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown [options]="enableOption" scrollHeight="100px" [placeholder]="tollEnableMedify" [(ngModel)]="tollTitle.enable"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >是否必缴：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="mustPayOption" scrollHeight="100px" [placeholder]="tollmustpayMedify" [(ngModel)]="tollTitle.mustpay"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-12">
@@ -313,6 +321,14 @@
           <span>{{tollTitle.enable}}</span>
         </div>
       </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >启用状态：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{tollmustpayMedify}}</span>
+        </div>
+      </div>
       <div class="ui-g-12">
         <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
           <p-table [columns]="TollMoreTitleDetail" [value]="tollMoreInfo" >
@@ -351,143 +367,6 @@
     </p-footer>
   </p-dialog>
 
-  <!--&lt;!&ndash;项目添加&ndash;&gt;-->
-  <!--<p-dialog header="添加" [(visible)]="tollDialog" [width]="900">-->
-    <!--&lt;!&ndash;Content&ndash;&gt;-->
-    <!--<div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >客户名：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="ownerinfo.surname">-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label>客户性别：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<p-dropdown [options]="sexOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="ownerinfo.sex"></p-dropdown>-->
-
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >客户电话：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone">-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >客户身份：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<p-dropdown [options]="identityOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="ownerinfo.identity"></p-dropdown>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="addroomSize">是否正常缴费：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择注销状态..."  [(ngModel)]="ownerinfo.normalPaymentStatus"></p-dropdown>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >物业费开始计费时间：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<p-calendar [(ngModel)]="ownerinfo.startBillingTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >备注：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<textarea  type="text" pInputText placeholder="备注..." [(ngModel)]="ownerinfo.remarks"></textarea>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<p-footer>-->
-      <!--<div class="ui-dialog-buttonpane ui-helper-clearfix">-->
-        <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="owerInfoAddClick()">确认</button>-->
-        <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerDialog=false;">取消</button>-->
-      <!--</div>-->
-    <!--</p-footer>-->
-  <!--</p-dialog>-->
-  <!--<p-dialog header="修改" [(visible)]="ownerModifyDialog" [width]="900">-->
-    <!--&lt;!&ndash;Content&ndash;&gt;-->
-    <!--<div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >客户名：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<input  type="text" pInputText  placeholder="请输入客户名称" [(ngModel)]="ownerinfo.surname">-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label>客户性别：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<p-dropdown [options]="sexOption"  scrollHeight="100px" [placeholder]="ownerinfo.sex"  [(ngModel)]="ownerinfo.sex"></p-dropdown>-->
-
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >客户电话：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<input  type="text" pInputText placeholder="请输入客户电话" [(ngModel)]="ownerinfo.mobilePhone">-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >客户身份：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<p-dropdown [options]="identityOption"  scrollHeight="100px" [placeholder]="ownerinfo.identity"  [(ngModel)]="ownerinfo.identity"></p-dropdown>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="addroomSize">是否正常缴费：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-          <!--<p-dropdown [options]="normalChargeOption"  scrollHeight="100px" [placeholder]="ownerinfo.normalPaymentStatus"  [(ngModel)]="ownerinfo.normalPaymentStatus"></p-dropdown>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >物业费开始计费时间：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<p-calendar [(ngModel)]="ownerinfo.startBillingTime" [placeholder]="ownerinfo.startBillingTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >备注：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<textarea  type="text" pInputText placeholder="请输入备注" [(ngModel)]="ownerinfo.remarks"></textarea>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<p-footer>-->
-      <!--<div class="ui-dialog-buttonpane ui-helper-clearfix">-->
-        <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="owerInfoModifyClick()">确认</button>-->
-        <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerModifyDialog=false;">取消</button>-->
-      <!--</div>-->
-    <!--</p-footer>-->
-  <!--</p-dialog>-->
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

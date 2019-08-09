@@ -46,7 +46,9 @@ export class ChargeDetailsComponent implements OnInit {
   // };
   // 缴费相关
   // public projectSelectDialog: boolean;
+  public chargeStatusoption: any[] = [];
   public detailsDialog: boolean;
+  public nowPage = 1;
   // 初始化项目
   public detailsProject: any;
   public detailsAddTitle =  [
@@ -73,14 +75,37 @@ export class ChargeDetailsComponent implements OnInit {
   // initialization details
   public  detailsInitialization(): void {
     this.loadHidden = false;
-
-    this.chargeDetailSrv.queryChargeDataPage({pageNo: 1, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadHidden = true;
-        this.detailsTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+    this.toolSrv.getAdminStatus('PAYMENT_METHOD' , (data) => {
+      if (data.length > 0) {
+        data.forEach( v =>  {
+          this.chargeStatusoption.push({label: v.settingName, value: v.settingCode}) ;
+        });
       }
-    );
+    });
+    const set = setInterval(() => {
+      if(this.chargeStatusoption.length > 0) {
+        this.chargeDetailSrv.queryChargeDataPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
+          (value) => {
+            console.log(value);
+            clearInterval(set);
+            this.loadHidden = true;
+            if (value.status === '1000') {
+              if (value.data.contents) {
+                value.data.contents.forEach( val => {
+                  this.chargeStatusoption.forEach( v => {
+                    if (val.paymentMethod === v.value) {
+                         val.paymentMethod = v.label;
+                    }
+                  });
+                });
+              }
+              this.detailsTableContent = value.data.contents;
+            }
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          }
+        );
+      }
+    }, 500);
     this.detailsTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
  // condition search click
@@ -128,13 +153,28 @@ export class ChargeDetailsComponent implements OnInit {
   // paging query
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
+    this.nowPage = event;
+    const set = setInterval(() => {
+      this.chargeDetailSrv.queryChargeDataPage({pageNo: event, pageSize: 10}).subscribe(
+        (value) => {
+          clearInterval(set);
+          this.loadHidden = true;
+          if (value.status === '1000') {
+            if(value.data.contents) {
+              value.data.contents.forEach( val => {
+                this.chargeStatusoption.forEach( v => {
+                  if (val.paymentMethod === v.value) {
+                    v.paymentMethod = v.label;
+                  }
+                });
+              });
+            }
+          }
+          this.detailsTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        }
+      );
+    }, 500);
 
-    this.chargeDetailSrv.queryChargeDataPage({pageNo: event, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadHidden = true;
-        this.detailsTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-      }
-    );
   }
 }

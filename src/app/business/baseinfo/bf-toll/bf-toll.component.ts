@@ -42,6 +42,7 @@ export class BfTollComponent implements OnInit {
   };
   public enableOption: any[] = [];
   public refundOption: any[] = [];
+  public mustPayOption: any[] = [];
   public optionTollType: any[] = [];
   // 修改相关
   public tollModifyDialog: boolean;
@@ -51,6 +52,7 @@ export class BfTollComponent implements OnInit {
   public tollModifyDatas: ModifyTollDrop[] = [];
   public tollEnableMedify: any;
   public tollrefundMedify: any;
+  public tollmustpayMedify: any;
   public tollChargeTypeMedify: any;
   public ids: any[] = [];
   // 详情相关
@@ -91,6 +93,20 @@ export class BfTollComponent implements OnInit {
       {field: 'operating', header: '操作'},
     ];
     this.esDate = this.toolSrv.esDate;
+    this.toolSrv.getAdminStatus('MUST_PAY' , (data) => {
+      if (data) {
+        data.forEach( v => {
+          this.mustPayOption.push({label: v.settingName, value: v.settingCode});
+        });
+      }
+    });
+    this.toolSrv.getAdminStatus('REFUND', (data) => {
+      if (data) {
+        data.forEach( v => {
+          this.refundOption.push({label: v.settingName, value: v.settingCode});
+        });
+      }
+    });
     this.getTollDownLoadInfo('', '', '', '', '');
     const queryData = setInterval(() => {
       this.loadHidden = false;
@@ -158,11 +174,11 @@ export class BfTollComponent implements OnInit {
       } else {
         this.tollMoreInfo.forEach( v => {
           for (const Key in this.tollTitle) {
-            let name = Key;
+            const name = Key;
             this.tollAddinfo[name] =  this.tollTitle[Key];
           }
-          for (let vKey in v) {
-            let vName = vKey;
+          for (const vKey in v) {
+            const vName = vKey;
             this.tollAddinfo[vName] = v[vKey];
           }
           this.tollAdd.push(this.tollAddinfo);
@@ -188,6 +204,11 @@ export class BfTollComponent implements OnInit {
     } else if (this.tollSelect.length === 1) {
       this.tollChargeTypeMedify = this.tollTitle.chargeType;
       this.tollEnableMedify = this.tollTitle.enable;
+      this.mustPayOption.forEach(value => {
+        if (this.tollTitle.mustpay === value.value) {
+          this.tollmustpayMedify = value.label;
+        }
+      });
       this.toolSrv.getAdminStatus('REFUND', (data) => {
         if (data) {
           this.toolSrv.setDataFormat(data,this.tollTitle.refund, (list, label) => {
@@ -257,7 +278,6 @@ export class BfTollComponent implements OnInit {
         this.tollTitle.chargeType = val.value;
       }
     });
-    console.log(this.tollTitle);
     this.enableOption.forEach( val => {
       if (this.tollTitle.enable.toString() === val.label) {
         this.tollTitle.enable = val.value;
@@ -340,6 +360,11 @@ export class BfTollComponent implements OnInit {
   // show Detail Dialog
   public  toolDetailClick(e): void {
     this.tollTitle = e;
+    this.mustPayOption.forEach(value => {
+      if (this.tollTitle.mustpay === value.value) {
+        this.tollmustpayMedify = value.label;
+      }
+    });
     this.toolSrv.getAdminStatus('REFUND', (data) => {
       if (data) {
         this.toolSrv.setDataFormat(data, e.refund, (list, label) => {
@@ -482,12 +507,40 @@ export class BfTollComponent implements OnInit {
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.tollSrv.queryBfTollPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      value => {
-        this.loadHidden = true;
-        this.tollTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+    this.getTollDownLoadInfo('', '', '', '', '');
+    const queryData = setInterval(() => {
+      this.loadHidden = false;
+      if (this.optionTollType.length > 0 && this.enableOption.length > 0) {
+        this.tollSrv.queryBfTollPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
+          value => {
+            console.log(value);
+            clearInterval(queryData);
+            if (value.status === '1000') {
+              this.loadHidden = true;
+              if (value.data.contents)  {
+                value.data.contents.forEach( v => {
+                  if (v.chargeType) {
+                    this.optionTollType.forEach( val => {
+                      if (v.chargeType.toString() === val.value) {
+                        v.chargeType = val.label;
+                      }
+                    });
+                  }
+                  if (v.enable !== null) {
+                    this.enableOption.forEach( val => {
+                      if (v.enable.toString() === val.value) {
+                        v.enable = val.label;
+                      }
+                    });
+                  }
+                });
+              }
+              this.tollTableContent = value.data.contents;
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+            }
+          }
+        );
       }
-    );
+    }, 600);
   }
 }

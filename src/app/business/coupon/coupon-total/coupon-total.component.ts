@@ -366,17 +366,34 @@ export class CouponTotalComponent implements OnInit {
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;
     this.nowPage = event;
-    this.couponTotalSrv.queryCouponPageData({pageNo: event, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadingHide = true;
-        if (value.status === '1000') {
-          this.couponTotalTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        } else {
-          this.toolSrv.setToast('error', '操作失败', value.message);
-        }
+    const page = setInterval(() => {
+      if (this.pastDueOption.length > 0 && this.auditStatusOption.length > 0) {
+        this.couponTotalSrv.queryCouponPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
+          (value) => {
+            this.loadingHide = true;
+            clearInterval(page);
+            if (value.status === '1000') {
+              value.data.contents.forEach( h => {
+                this.pastDueOption.forEach(v => {
+                  if (h.pastDue.toString() === v.value) {
+                    h.pastDue = v.label;
+                  }
+                });
+                this.auditStatusOption.forEach(v => {
+                  if (h.auditStatus.toString() === v.value) {
+                    h.auditStatus = v.label;
+                  }
+                });
+              });
+              this.couponTotalTableContent = value.data.contents;
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+            }  else  {
+              this.toolSrv.setToast('error', '请求成功', value.message);
+            }
+          }
+        );
       }
-    );
+    }, 100);
     this.couponTotalSelect = [];
   }
   // clear data

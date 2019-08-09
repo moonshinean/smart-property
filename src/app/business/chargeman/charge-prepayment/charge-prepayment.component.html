@@ -61,113 +61,20 @@
   <!--详情弹框-->
   <p-dialog header="预缴详情" [(visible)]="prepaymentDetailDialog" [width]="800"  >
     <!--Content-->
-    <div class="ui-g ui-fluid">
-      <!--报表显示数据-->
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>订单编号：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>A3412</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>单据编号：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>A3412</span>
+    <p-scrollPanel [style]="{width:'100%',height: '50vh'}" styleClass="custombar">
+      <div class="ui-g ui-fluid">
+        <!--报表显示数据-->
+        <div class="ui-g-6" *ngFor="let item of detailData">
+          <div class="ui-g-4">
+            <span>{{item.header}}：</span>
+          </div>
+          <div class="ui-g-8">
+            <span>{{prepaymentDetail[item.field]}}</span>
+          </div>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>房屋编号：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>A3-2015</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>房屋面积：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>123平米</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>业主：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>李先生</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>业主电话：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>12793087234</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>预缴项目：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>保证金</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>预缴月数：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>5个月</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>预交方式：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>微信</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>预缴金额：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>￥2000</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>预缴时间：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>2019-3-2</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>缴费人：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>张三</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <span>缴费人电话：</span>
-        </div>
-        <div class="ui-g-8">
-          <span>13728373222</span>
-        </div>
-      </div>
-    </div>
+    </p-scrollPanel>
+
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
         <button class="charge-prepayment-dialog-Btn charge-prepayment-dialog-Btn-sure" (click)="prepaymentDetailDialog = false;">确认</button>
