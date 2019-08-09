@@ -56,7 +56,7 @@ export class BfTollTitle {
   chargeStandard?: any; // 收费单价
   refund?: any; // 	是否可退款
   enable ?: any; // 	是否可用
-  mustpay ?: any; // 	是否必缴
+  mustPay ?: any; // 	是否必缴
 }
 export class TollMoreInfo {
   id?: any;

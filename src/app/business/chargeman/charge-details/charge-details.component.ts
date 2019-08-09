@@ -83,7 +83,7 @@ export class ChargeDetailsComponent implements OnInit {
       }
     });
     const set = setInterval(() => {
-      if(this.chargeStatusoption.length > 0) {
+      if (this.chargeStatusoption.length > 0) {
         this.chargeDetailSrv.queryChargeDataPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
           (value) => {
             console.log(value);
@@ -160,7 +160,7 @@ export class ChargeDetailsComponent implements OnInit {
           clearInterval(set);
           this.loadHidden = true;
           if (value.status === '1000') {
-            if(value.data.contents) {
+            if (value.data.contents) {
               value.data.contents.forEach( val => {
                 this.chargeStatusoption.forEach( v => {
                   if (val.paymentMethod === v.value) {

@@ -93,20 +93,7 @@ export class BfTollComponent implements OnInit {
       {field: 'operating', header: '操作'},
     ];
     this.esDate = this.toolSrv.esDate;
-    this.toolSrv.getAdminStatus('MUST_PAY' , (data) => {
-      if (data) {
-        data.forEach( v => {
-          this.mustPayOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus('REFUND', (data) => {
-      if (data) {
-        data.forEach( v => {
-          this.refundOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    });
+    this.getStatus();
     this.getTollDownLoadInfo('', '', '', '', '');
     const queryData = setInterval(() => {
       this.loadHidden = false;
@@ -142,7 +129,6 @@ export class BfTollComponent implements OnInit {
         );
       }
     }, 600);
-
     this.settollTitleData();
     this.tollTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
@@ -152,13 +138,16 @@ export class BfTollComponent implements OnInit {
   }
   // add  toll
   public  tollAddClick(): void {
+    this.getStatus();
     this.getTollDownLoadInfo('', '', '', '', '');
     this.tollAddDialog = true;
   }
   // sure add toll
   public  tollAddSureClick(): void {
+    console.log(this.tollTitle);
     this.toolSrv.setConfirmation('增加', '增加', () => {
       if  (this.tollMoreInfo.length === 0) {
+        console.log(this.tollTitle);
         this.tollSrv.queryTollAdd(this.tollTitle).subscribe(
           value => {
             if (value.status === '1000')  {
@@ -202,13 +191,21 @@ export class BfTollComponent implements OnInit {
     if (this.tollSelect === undefined || this.tollSelect.length === 0 ) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.tollSelect.length === 1) {
+      this.getStatus();
       this.tollChargeTypeMedify = this.tollTitle.chargeType;
       this.tollEnableMedify = this.tollTitle.enable;
-      this.mustPayOption.forEach(value => {
-        if (this.tollTitle.mustpay === value.value) {
-          this.tollmustpayMedify = value.label;
+      const setInter = setInterval(() => {
+        if (this.mustPayOption.length > 0) {
+          clearInterval(setInter);
+          if (this.tollTitle.mustPay !== null)  {
+            this.mustPayOption.forEach(value => {
+              if (this.tollTitle.mustPay.toString() === value.value) {
+                this.tollmustpayMedify = value.label;
+              }
+            });
+          }
         }
-      });
+      }, 500);
       this.toolSrv.getAdminStatus('REFUND', (data) => {
         if (data) {
           this.toolSrv.setDataFormat(data,this.tollTitle.refund, (list, label) => {
@@ -283,6 +280,7 @@ export class BfTollComponent implements OnInit {
         this.tollTitle.enable = val.value;
       }
     });
+    console.log(this.tollTitle);
     this.toolSrv.setConfirmation('修改', '修改', () => {
       if (this.tollMoreInfo.length === 0) {
         this.tollSrv.updateTollInfo(this.tollTitle).subscribe(
@@ -360,11 +358,15 @@ export class BfTollComponent implements OnInit {
   // show Detail Dialog
   public  toolDetailClick(e): void {
     this.tollTitle = e;
-    this.mustPayOption.forEach(value => {
-      if (this.tollTitle.mustpay === value.value) {
-        this.tollmustpayMedify = value.label;
-      }
-    });
+    console.log(this.tollTitle.mustPay);
+    if (this.tollTitle.mustPay !== null ) {
+      console.log(this.mustPayOption);
+      this.mustPayOption.forEach(value => {
+        if (this.tollTitle.mustPay.toString() === value.value) {
+          this.tollmustpayMedify = value.label;
+        }
+      });
+    }
     this.toolSrv.getAdminStatus('REFUND', (data) => {
       if (data) {
         this.toolSrv.setDataFormat(data, e.refund, (list, label) => {
@@ -422,9 +424,10 @@ export class BfTollComponent implements OnInit {
       this.modifytoll = [];
       this.ids = [];
       this.tollAddoption = {parkingSpaceNature: [], parkingSpaceType: [], datedif: []};
-      this.enableOption = [];
-      this.refundOption = [];
-      this.optionTollType = [];
+      this.tollmustpayMedify = null;
+      this.tollrefundMedify = null;
+      this.tollEnableMedify = null;
+      this.tollChargeTypeMedify = null;
   }
   // Add a piece of data
   public  addMoreTollClick(): void {
@@ -455,7 +458,8 @@ export class BfTollComponent implements OnInit {
   }
   // paging query
   public  getTollDownLoadInfo(chargeType, enable, datedif, nature, type): void {
-
+    this.enableOption = [];
+    this.optionTollType = [];
     this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
       if (data) {
         this.toolSrv.setDataFormat(data, chargeType, (list, label) => {
@@ -542,5 +546,23 @@ export class BfTollComponent implements OnInit {
         );
       }
     }, 600);
+  }
+  public  getStatus(): void {
+    this.mustPayOption = [];
+    this.refundOption = [];
+    this.toolSrv.getAdminStatus('MUST_PAY' , (data) => {
+      if (data) {
+        data.forEach( v => {
+          this.mustPayOption.push({label: v.settingName, value: v.settingCode});
+        });
+      }
+    });
+    this.toolSrv.getAdminStatus('REFUND', (data) => {
+      if (data) {
+        data.forEach( v => {
+          this.refundOption.push({label: v.settingName, value: v.settingCode});
+        });
+      }
+    });
   }
 }

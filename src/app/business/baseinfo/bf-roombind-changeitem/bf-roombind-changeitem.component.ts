@@ -1,7 +1,5 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ConfirmationService, MessageService} from 'primeng/api';
 import {GlobalService} from '../../../common/services/global.service';
-import {DatePipe} from '@angular/common';
 import {AddRoomBindChargeItem, ModifyRoomBindChargeItem} from '../../../common/model/bf-roomBindChargeItem.model';
 import {BfRoomBindChargeitemService} from '../../../common/services/bf-room-bind-chargeitem.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
