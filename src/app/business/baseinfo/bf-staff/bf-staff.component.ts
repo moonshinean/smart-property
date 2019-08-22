@@ -60,25 +60,32 @@ export class BfStaffComponent implements OnInit {
   // initialization staff
   public  staffInitialization(): void {
     this.staffTableTitle = [
-      {field: 'userId', header: '用户ID'},
+      {field: 'username', header: '用户名'},
       {field: 'realName', header: '员工姓名'},
       {field: 'sex', header: '性别'},
       {field: 'mobilePhone', header: '手机号码'},
-      {field: 'organizationName', header: '组织/机构名称'},
+      // {field: 'organizationName', header: '组织/机构名称'},
       {field: 'departmentName', header: '部门名称'},
+      {field: 'enabled', header: '可用状态'},
       {field: 'operating', header: '操作'},
     ];
     this.esDate = this.toolSrv.esDate;
     this.loadHidden = false;
-    this.staffSrv.queryStaffInfoPage({pageNo: this.nowPage, pageSize: 10 }).subscribe(
-      value => {
-        this.loadHidden = true;
-        this.staffTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+    this.toolSrv.getAdminStatus('ENABLED', (data) => {
+      if (data.length > 0 ) {
+        this.staffSrv.queryStaffInfoPage({pageNo: this.nowPage, pageSize: 10 }).subscribe(
+          value => {
+            this.loadHidden = true;
+            value.data.contents.forEach( v => {
+              v.enabled = this.setDataName(data, v.enabled);
+            });
+            this.staffTableContent = value.data.contents;
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          }
+        );
       }
-    );
+    });
     this.staffTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
-    // console.log(this.staffSelect);
   }
   // condition search click
   public  staffSearchClick(): void {
@@ -269,5 +276,13 @@ export class BfStaffComponent implements OnInit {
       }
     );
     this.staffTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
+  }
+  public  setDataName(option , label): any {
+    option.forEach( v => {
+      if ( label.toString()  === v.settingCode) {
+        label = v.settingName;
+      }
+    });
+    return label;
   }
 }

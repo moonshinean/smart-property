@@ -110,6 +110,7 @@ export class BfOwnerComponent implements OnInit {
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
        (value) => {
          this.loadHidden = true;
+         console.log(value);
          this.ownerTableContent = value.data.contents;
          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
        }
@@ -328,7 +329,7 @@ export class BfOwnerComponent implements OnInit {
     this.sexOption = [];
     this.normalChargeOption = [];
     this.roomTitle = e;
-    for (let roomTitleKey in this.roomTitle) {
+    for (const roomTitleKey in this.roomTitle) {
       if (this.roomTitle[roomTitleKey] === null) {
          this.roomTitle[roomTitleKey] = '';
       }
@@ -457,6 +458,7 @@ export class BfOwnerComponent implements OnInit {
         this.owerSrv.addSingleOwerInfo(this.ownerAdd).subscribe(
           value => {
             this.loadHidden = true;
+            console.log(value);
             if (value.status === '1000') {
               this.toolSrv.setToast('success', '操作成功', '添加成功');
               this.selectOwerInfo(value.data);
@@ -715,6 +717,7 @@ export class BfOwnerComponent implements OnInit {
       if (this.sexOption.length > 0 && this.normalChargeOption.length && this.normalChargeOption.length > 0){
         this.owerSrv.queryOwerInfoDetail({roomCode: code}).subscribe(
           value => {
+            console.log(value);
             this.ownerList = [];
             clearInterval(setTime);
 

@@ -62,7 +62,11 @@
    <!--详情弹框-->
     <p-dialog header="费用详情" [(visible)]="detailsDialog" [width]="800" >
       <!--Content-->
-      <div class="ui-g ui-fluid">
+      <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
+         <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+          <h3>业主信息</h3>
+        </div>
         <div class="ui-g-12">
           <div class="ui-g-6" *ngFor="let item of detailsAddTitle">
             <div class="ui-g-6" >
@@ -72,10 +76,35 @@
               <label >{{item.value}}<span *ngIf="item.name ==='客户名称'">先生</span> <span *ngIf="item.name ==='建筑面积'">平米</span></label>
             </div>
           </div>
-
+        </div>
+        <div class="ui-g-12" [hidden]="liquidatedDamagesContent=== null">
+          <h3>违约金信息</h3>
+        </div>
+        <div class="ui-g-12" [hidden]="liquidatedDamagesContent=== null">
+          <p-scrollPanel [style]="liquidatedDamagesStyle" styleClass="custombar">
+            <p-table [columns]="liquidatedDamagesTitle" [value]="liquidatedDamagesContent">
+              <ng-template pTemplate="header" let-columns>
+                <tr >
+                  <th *ngFor="let col of columns" >
+                    {{col.header}}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr [pSelectableRow]="rowData"  [ngStyle]="{'text-align':'center'}">
+                  <td  *ngFor="let col of columns" >
+                    <span *ngIf="col.header === '应收金额' || col.header === '实收金额'">￥</span>{{rowData[col.field]}}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-scrollPanel>
         </div>
         <div class="ui-g-12">
-          <p-scrollPanel [style]="{width:'100%',height: '20vh'}" styleClass="custombar">
+          <h3>缴费信息</h3>
+        </div>
+        <div class="ui-g-12">
+          <p-scrollPanel [style]="detailsProjectStyle" styleClass="custombar">
             <p-table [columns]="detailsDialogTableTitle" [value]="detailsProject">
               <ng-template pTemplate="header" let-columns>
                 <tr >
@@ -93,6 +122,9 @@
               </ng-template>
             </p-table>
           </p-scrollPanel>
+        </div>
+        <div class="ui-g-12">
+         <h3>收费信息</h3>
         </div>
         <div class="ui-g-12" [ngStyle]="{'line-height':'3vh'}">
           <div class="ui-g-4">
@@ -137,6 +169,7 @@
           </div>
         </div>
       </div>
+      </p-scrollPanel>
       <p-footer>
         <div class="ui-dialog-buttonpane ui-helper-clearfix">
           <button class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" (click)="detailsSureClick()">打印单据</button>

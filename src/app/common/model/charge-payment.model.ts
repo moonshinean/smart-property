@@ -1,8 +1,8 @@
 export class Patyment {
   organizationId?: any; // 组织id
-  organizationName?: any; // 组织id
-  villageCode?: any; // 组织id
-  villageName?: any; // 组织id
+  organizationName?: any; // 组织名称
+  villageCode?: any; // 小区编号
+  villageName?: any; // 小区名称
   regionCode?: any; // 组织id
   regionName?: any; // 组织id
   buildingCode?: any; // 组织id
@@ -11,6 +11,7 @@ export class Patyment {
   unitName?: any; // 组织id
   roomCode?: any; // 组织id
   roomSize?: any; // 组织id
+  minMonth?: any; // 最小月份
   userId?: any; // 组织id
   mobilePhone?: any; // 组织id
   surname?: any; // 组织id
@@ -24,12 +25,15 @@ export class ChargeItem {
   chargeWay?: any; // 项目类型
   datedif?: any; // 项目类型
   check?: any; // 选中状态
+  minMonth?: any; // 最小月数
 }
 // 项目选择提交
 export class ChargeItemData {
   roomSize?: any; // 房间面积
   dueTime?: any; // 物业费到期时间
+  roomCode?: any; // 房屋编号
   chargeItem?: ChargeItems[] = [];
+
 }
 // 项目选则
 export class ChargeItems {
@@ -64,6 +68,7 @@ export class ChargePaymentAddOrder {
   surplus?: any; // 修正金额
   remark?: any; // 备注
   chargeItemCostDTO?: ChargeItemDetail[] = []; // 项目收费明细
+  liquidatedDamages?: LiquidatedDamages[] = []; // 项目收费明细
 }
 // 项 目 收 费 详 情
 export class ChargeItemDetail {
@@ -83,11 +88,17 @@ export class ChargeItemDetail {
   currentReadings?: any; // 当前读数
   lastReading?: any; // 上次读数
 }
+export class LiquidatedDamages {
+  dueTimeFront?: any;
+  dueTimeAfter?: any;
+  days?: any;
+  amountMoney?: any;
+}
 export  class SearchData {
-  villageCode: any;
-  unitCode: any;
-  regionCode: any;
-  buildingCode: any;
+  // villageCode: any;
+  // unitCode: any;
+  // regionCode: any;
+  // buildingCode: any;
   roomCode: any;
   pageNo: any;
   pageSize: any;

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {forEach} from '@angular/router/src/utils/collection';
 import {ChargePaymentService} from '../../../common/services/charge-payment.service';
@@ -7,12 +7,13 @@ import {
   ChargeItemData,
   ChargeItemDetail,
   ChargeItems,
-  ChargePaymentAddOrder,
+  ChargePaymentAddOrder, LiquidatedDamages,
   Patyment, SearchData
 } from '../../../common/model/charge-payment.model';
 import {environment} from '../../../../environments/environment';
 import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {ScrollPanel} from 'primeng/primeng';
 
 @Component({
   selector: 'rbi-chargeman-payment',
@@ -22,6 +23,7 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
 export class ChargemanPaymentComponent implements OnInit {
 
   @ViewChild('input') input: Input;
+  @ViewChild('scrollpanel') scrollpanel: ElementRef;
   public paymentTableTitle = [
     {field: 'id', header: '序号'},
     {field: 'roomCode', header: '房间号'},
@@ -42,18 +44,30 @@ export class ChargemanPaymentComponent implements OnInit {
     {field: 'actualMoneyCollection', header: '实收金额'},
     // {field: 'totle', header: '合计'},
   ];
+  // 违约金信息列表
+  public liquidatedDamagesTitle = [
+    {field: 'dueTimeFront', header: '季度初'},
+    {field: 'dueTimeAfter', header: '季度末'},
+    {field: 'days', header: '欠费天数'},
+    {field: 'amountMoney', header: '金额'},
+  ];
+  // 违约金信息列表内容
+  public liquidatedDamagesData: any;
+  public liquidatedDamagesStatus: any;
+  public liquidatedDamagesStyle: any;
   public addPayProject = false;
   public paymentSelect: Patyment[];
   // 收费项目选择确认查找详细数据
   public payItemDetail: ChargeItemData = new ChargeItemData();
   // public payItem: ChargeItems[] = [];
-  public  SearchOption = {
-    village: [],
-    region: [],
-    building: [],
-    unit: [],
-    room: [],
-  };
+  // public  SearchOption = {
+  //   village: [],
+  //   region: [],
+  //   building: [],
+  //   unit: [],
+  //   room: [],
+  // };
+  public chargeScrollPanelStyle: any;
   public SearchData: SearchData = new SearchData();
   // 缴费相关
   public projectSelectDialog: boolean;
@@ -73,6 +87,12 @@ export class ChargemanPaymentComponent implements OnInit {
     {name: '手机号码', value: '', label: 'mobilePhone'},
     {name: '物业费到期时间', value: '', label: 'dueTime'},
   ];
+  public searchOption = [
+    {label: '手机号', value: '1'},
+    {label: '房间号', value: '2'},
+  ];
+  public searchType: any;
+  public searchData: any;
   public optonDialog = [];
   public nowPage = 1;
   public paymentOrderAdd: ChargePaymentAddOrder  = new ChargePaymentAddOrder();
@@ -110,19 +130,24 @@ export class ChargemanPaymentComponent implements OnInit {
         }
       }
     );
-    this.globalSrv.queryVillageInfo({}).subscribe(
-      (data) => {
-        data.data.forEach( v => {
-          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-        });
-      }
-    );
+    // this.globalSrv.queryVillageInfo({}).subscribe(
+    //   (data) => {
+    //     data.data.forEach( v => {
+    //       this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+    //     });
+    //   }
+    // );
   }
   // condition search click
   public  paymentSearchClick(): void {
-    if (this.SearchData.buildingCode !== '') {
+    if (this.searchType === undefined) {
+      this.searchType = '1';
+    }
+    if (this.searchType === '1') {
       this.SearchData.pageNo = 1;
       this.SearchData.pageSize = 10;
+      this.SearchData.roomCode = '';
+      this.SearchData.mobilePhone = this.searchData;
       // @ts-ignore
       this.loadHidden = false;
       this.paymentSrv.searchPaymentData(this.SearchData).subscribe(
@@ -142,72 +167,92 @@ export class ChargemanPaymentComponent implements OnInit {
         }
       );
     } else {
-      this.toolSrv.setToast('error', '搜索失败', '搜索信息条件请具体到楼栋');
+      this.SearchData.pageNo = 1;
+      this.SearchData.pageSize = 10;
+      this.SearchData.roomCode = this.searchData;
+      this.SearchData.mobilePhone = '';
+      // @ts-ignore
+      this.loadHidden = false;
+      this.paymentSrv.searchPaymentData(this.SearchData).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.loadHidden = true;
+            if (value.data.contents) {
+              this.toolSrv.setToast('success', '搜索成功', value.message);
+              this.paymentTableContent = value.data.contents;
+            } else {
+              this.toolSrv.setToast('success', '搜索成功', '数据为空');
+            }
+          } else {
+            this.toolSrv.setToast('error', '搜索失败', value.message);
 
+          }
+        }
+      );
     }
   }
-  // select village
-  public  VillageChange(e): void {
-    // console.log(this.test);
-    this.SearchOption.building = [];
-    this.SearchOption.unit = [];
-    this.SearchOption.region = [];
-    this.SearchData.villageCode = e.value;
-    this.loadHidden = false;
-    this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach( v => {
-          this.loadHidden = true;
-          this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
-        });
-      }
-    );
-  }
-  // select region
-  public  regionChange(e): void {
-    this.loadHidden = false;
-    this.SearchData.regionCode = '';
-    this.SearchData.buildingCode = '';
-    this.SearchData.unitCode = '';
-    this.SearchData.regionCode = e.value;
-    this.SearchOption.building = [];
-    this.SearchOption.unit = [];
-    this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach( v => {
-          this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
-        });
-        this.loadHidden = true;
-
-      }
-    );
-  }
-  // select building
-  public  buildingChange(e): void {
-    this.SearchData.buildingCode = '';
-    this.SearchData.unitCode = '';
-    this.SearchOption.unit = [];
-    this.SearchData.buildingCode = e.value;
-    this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach( v => {
-          this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
-        });
-      }
-    );
-  }
-  // select unit
-  public  unitChange(e): void {
-    this.SearchData.roomCode = '';
-    this.SearchData.unitCode = e.value;
-    this.globalSrv.queryRoomCode({unitCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach( v => {
-          this. SearchOption.room.push({label: v.roomCode, value: v.roomCode});
-        });
-      }
-    );
-  }
+  // // select village
+  // public  VillageChange(e): void {
+  //   // console.log(this.test);
+  //   this.SearchOption.building = [];
+  //   this.SearchOption.unit = [];
+  //   this.SearchOption.region = [];
+  //   this.SearchData.villageCode = e.value;
+  //   this.loadHidden = false;
+  //   this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
+  //     (value) => {
+  //       value.data.forEach( v => {
+  //         this.loadHidden = true;
+  //         this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
+  //       });
+  //     }
+  //   );
+  // }
+  // // select region
+  // public  regionChange(e): void {
+  //   this.loadHidden = false;
+  //   this.SearchData.regionCode = '';
+  //   this.SearchData.buildingCode = '';
+  //   this.SearchData.unitCode = '';
+  //   this.SearchData.regionCode = e.value;
+  //   this.SearchOption.building = [];
+  //   this.SearchOption.unit = [];
+  //   this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
+  //     (value) => {
+  //       value.data.forEach( v => {
+  //         this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
+  //       });
+  //       this.loadHidden = true;
+  //
+  //     }
+  //   );
+  // }
+  // // select building
+  // public  buildingChange(e): void {
+  //   this.SearchData.buildingCode = '';
+  //   this.SearchData.unitCode = '';
+  //   this.SearchOption.unit = [];
+  //   this.SearchData.buildingCode = e.value;
+  //   this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
+  //     (value) => {
+  //       value.data.forEach( v => {
+  //         this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
+  //       });
+  //     }
+  //   );
+  // }
+  // // select unit
+  // public  unitChange(e): void {
+  //   this.SearchData.roomCode = '';
+  //   this.SearchData.unitCode = e.value;
+  //   this.globalSrv.queryRoomCode({unitCode: e.value}).subscribe(
+  //     (value) => {
+  //       value.data.forEach( v => {
+  //         this. SearchOption.room.push({label: v.roomCode, value: v.roomCode});
+  //       });
+  //     }
+  //   );
+  // }
   // sure selectPreject payment
   public  paymentProjectSureClick(): void {
     let monthStatus = true;
@@ -236,8 +281,6 @@ export class ChargemanPaymentComponent implements OnInit {
     } else {
       if (monthStatus) {
         this.loadHidden = false;
-        this.paymentDialog = true;
-        this.projectSelectDialog = false;
         this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
           data.forEach(v => {
             this.optonDialog.push({label: v.settingName, value: v.settingCode});
@@ -250,6 +293,8 @@ export class ChargemanPaymentComponent implements OnInit {
         );
         this.payItemDetail.dueTime = this.paymentSelect[0].dueTime;
         this.payItemDetail.roomSize = this.paymentSelect[0].roomSize;
+        this.payItemDetail.roomCode = this.paymentSelect[0].roomCode;
+        // this.payItemDetail.liquidatedDamages = this.liquidatedDamagesData;
         this.payItemDetail.chargeItem = [];
         this.paymentProject.forEach(value => {
           if (value.check === 1) {
@@ -258,11 +303,24 @@ export class ChargemanPaymentComponent implements OnInit {
         });
         this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(
           (value) => {
+            console.log(value);
             if (value.status === '1000') {
-              this.paymentItemData = value.data;
-              // console.log(this.paymentItemData);
+              this.paymentItemData = value.data.cost;
+              if (value.data.cost.length > 4) {
+                this.chargeScrollPanelStyle = {width: '100%', height: '20vh'};
+              } else  {
+                this.chargeScrollPanelStyle = {width: '100%'};
+              }
+              this.liquidatedDamagesStatus = value.data.lateFeeStatus;
+              if (value.data.lateFeeStatus === 1) {
+                if (value.data.lateFeeStatus > 4) {
+                  this.liquidatedDamagesStyle = {width: '100%', height: '20vh'};
+                } else {
+                  this.chargeScrollPanelStyle = {width: '100%'};
+                }
+                this.liquidatedDamagesData = value.data.lateFee;
+              }
               this.loadHidden = true;
-
               this.paymentTotle = 0;
               this.paymentItemData.forEach( v => {
                 this.paymentTotle = this.paymentTotle + v.actualMoneyCollection;
@@ -274,7 +332,8 @@ export class ChargemanPaymentComponent implements OnInit {
             }
           }
         );
-
+        this.paymentDialog = true;
+        this.projectSelectDialog = false;
       }
     }
   }
@@ -306,6 +365,9 @@ export class ChargemanPaymentComponent implements OnInit {
         this.paymentOrderAdd.userId = this.paymentSelect[0].userId;
         this.paymentOrderAdd.chargeItemCostDTO = this.paymentItemData;
         this.paymentOrderAdd.surplus = this.Balance;
+        this.paymentOrderAdd.surplus = this.Balance;
+        this.paymentOrderAdd.liquidatedDamages = this.liquidatedDamagesData;
+        console.log(this.paymentOrderAdd);
         this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
           (value) => {
             this.loadHidden = true;
@@ -358,7 +420,11 @@ export class ChargemanPaymentComponent implements OnInit {
                 }
               });
               if (flag) {
-                this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: '', chargeWay: v.chargeWay, check: 0});
+                if ( v.chargeType === '1' || v.chargeType === '2' || v.chargeType === '3') {
+                  this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: this.paymentSelect[0].minMonth, chargeWay: v.chargeWay, check: 0, minMonth: this.paymentSelect[0].minMonth });
+                } else {
+                  this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 0, minMonth: 1});
+                }
               }
             }
           );
@@ -393,7 +459,11 @@ export class ChargemanPaymentComponent implements OnInit {
               }
           });
           if (flag) {
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: '', chargeWay: v.chargeWay, check: 0});
+            if ( v.chargeType === '1' || v.chargeType === '2' || v.chargeType === '3') {
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: this.paymentSelect[0].minMonth, chargeWay: v.chargeWay, check: 0, minMonth: this.paymentSelect[0].minMonth });
+            } else {
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 0, minMonth: 1});
+            }
           }
           this.loadHidden = true;
         }

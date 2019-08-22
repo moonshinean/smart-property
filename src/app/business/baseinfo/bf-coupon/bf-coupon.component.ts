@@ -70,39 +70,14 @@ export class BfCouponComponent implements OnInit {
   // initialization houseinfo
   public  couponInitialization(): void {
     this.couponTableTitle = [
-      {field: 'chargeCode', header: '收费项目编号'},
-      {field: 'couponCode', header: '优惠券编号'},
+      {field: 'chargeCode', header: '收费项目名称'},
+      // {field: 'couponCode', header: '优惠券编号'},
       {field: 'couponName', header: '优惠券名称'},
       {field: 'effectiveTime', header: '有效时长'},
       {field: 'money', header: '金额'},
       {field: 'operating', header: '操作'}
     ];
     this.loadingHide = false;
-    this.couponSrv.queryCouponPagination({pageNo: 1, pageSize: 10 }).subscribe(
-      (value) => {
-        console.log(value);
-        this.loadingHide = true;
-        if (value.status === '1000') {
-          this.couponTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage:  value.data.pageNo};
-        }else {
-          this.toolSrv.setToast('error', '查询失败', value.message);
-        }
-      }
-    );
-    this.couponTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
-
-    this.couponSrv.queryEffectiveTime({}).subscribe(
-      value => {
-        value.data.forEach( v => {
-          if (v.settingName === '0') {
-            this.EffectiveTime.push({label: '无限期', value: v.settingName});
-          } else {
-            this.EffectiveTime.push({label:  v.settingName + '天', value: v.settingName});
-          }
-        });
-      }
-    );
     this.couponSrv.queryCouponType({}).subscribe(
       value => {
         value.data.forEach( v => {
@@ -117,6 +92,41 @@ export class BfCouponComponent implements OnInit {
         });
       }
     );
+    const queryData = setInterval(() => {
+      if (this.couponTypeData.length > 0 && this.ChargeCodeData.length > 0) {
+        clearInterval(queryData);
+        this.couponSrv.queryCouponPagination({pageNo: 1, pageSize: 10 }).subscribe(
+          (value) => {
+            this.loadingHide = true;
+            if (value.status === '1000') {
+              value.data.contents.forEach( item => {
+                item.couponType  = this.setDataName(this.couponTypeData, item.couponType);
+                item.chargeCode = this.setDataName(this.ChargeCodeData, item.chargeCode);
+              });
+              this.couponTableContent = value.data.contents;
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage:  value.data.pageNo};
+            } else {
+              this.toolSrv.setToast('error', '查询失败', value.message);
+            }
+          }
+        );
+      }
+    }, 500);
+
+    this.couponTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
+
+    this.couponSrv.queryEffectiveTime({}).subscribe(
+      value => {
+        value.data.forEach( v => {
+          if (v.settingName === '0') {
+            this.EffectiveTime.push({label: '无限期', value: v.settingName});
+          } else {
+            this.EffectiveTime.push({label:  v.settingName + '天', value: v.settingName});
+          }
+        });
+      }
+    );
+
     this.toolSrv.getAdminStatus('ENABLED', (data) => {
       if (data.length > 0) {
         this.toolSrv.setDataFormat(data, '' , (list, label) => {
@@ -189,18 +199,19 @@ export class BfCouponComponent implements OnInit {
 
     } else if (this.couponSelect.length === 1) {
       this.couponModify = this.couponSelect[0];
+      console.log(this.couponModify);
       this.optionEnable.forEach( value => {
         if (this.couponModify.enable === value.value) {
           this.modifyEnable  = value.label;
         }
       });
-      this.ChargeCodeData.forEach(v => {
-        if (this.couponModify.chargeCode === v.value) {
-          this.modifyChargeName = v.label;
-        } else {
-          this.modifyChargeName = '请选择收费项目';
-        }
-      });
+      // this.ChargeCodeData.forEach(v => {
+      //   if (this.couponModify.chargeCode === v.value) {
+      //     this.modifyChargeName = v.label;
+      //   } else {
+      //     this.modifyChargeName = '请选择收费项目';
+      //   }
+      // });
       this.EffectiveTime.forEach(v => {
         if (Number(this.couponModify.effectiveTime) === Number(v.value)) {
           this.modifyEffectiveTime = v.label;
@@ -208,14 +219,14 @@ export class BfCouponComponent implements OnInit {
           this.modifyEffectiveTime = '请选择有效时长';
         }
       });
-      this.couponTypeData.forEach(v => {
-        if (this.couponModify.couponType === v.value) {
-          this.modifyCouponType = v.label;
-        } else {
-          this.modifyEffectiveTime = '请选择优惠券类型';
-        }
-      });
-      console.log(this.modifyChargeName);
+      // this.couponTypeData.forEach(v => {
+      //   if (this.couponModify.couponType === v.value) {
+      //     this.modifyCouponType = v.label;
+      //   } else {
+      //     this.modifyEffectiveTime = '请选择优惠券类型';
+      //   }
+      // });
+      // console.log(this.modifyChargeName);
 
       this.couponModifayDialog = true;
     } else {
@@ -224,7 +235,15 @@ export class BfCouponComponent implements OnInit {
   }
   // sure modify coupon
   public  couponModifySureClick(): void {
-      console.log(this.couponModify);
+    console.log(this.couponModify);
+    // if ()
+    // console.log();
+    if  (this.isChinese(this.couponModify.couponType)) {
+      this.couponModify.couponType = this.setDataValue(this.couponTypeData, this.couponModify.couponType);
+    }
+    if (this.isChinese(this.couponModify.chargeCode)) {
+      this.couponModify.chargeCode = this.setDataValue(this.ChargeCodeData, this.couponModify.chargeCode);
+    }
     this.toolSrv.setConfirmation('修改', '修改', () => {
       this.couponSrv.updateCoupon(this.couponModify).subscribe(
         value => {
@@ -295,5 +314,28 @@ export class BfCouponComponent implements OnInit {
     this.modifycouponType.selectedOption = null;
     this.modifychargeCode.selectedOption = null;
     this.modifyeffectiveTime.selectedOption = null;
+  }
+  public setDataName(list, label): any {
+      list.forEach( v => {
+        if ( label === v.value ) {
+          label = v.label;
+        }
+      });
+      return label;
+  }
+  public setDataValue(list, label): any {
+    list.forEach( v => {
+      if ( label === v.name ) {
+        label = v.value;
+      }
+    });
+    return label;
+  }
+  public  isChinese(s): any {
+   if (s[0] >= '\u4e00' && s[0] <= '\u9fa5') {
+     return true;
+   } else {
+     return false;
+   }
   }
 }

@@ -37,7 +37,16 @@ export class ChargeDetailsComponent implements OnInit {
     {field: 'actualMoneyCollection', header: '实收金额'},
     // {field: 'totle', header: '合计'},
   ];
+  public liquidatedDamagesTitle = [
+    {field: 'dueTimeFront', header: '季度初'},
+    {field: 'dueTimeAfter', header: '季度末'},
+    {field: 'days', header: '欠费天数'},
+    {field: 'amountMoney', header: '金额'},
+  ];
+  public liquidatedDamagesContent: any[] = [];
+  public liquidatedDamagesStyle: any;
   // public SearchOption = {
+
   //   village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
   //   region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
   //   building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
@@ -51,6 +60,7 @@ export class ChargeDetailsComponent implements OnInit {
   public nowPage = 1;
   // 初始化项目
   public detailsProject: any;
+  public detailsProjectStyle: any;
   public detailsAddTitle =  [
     {name: '房间号码', value: 'A3-34'},
     {name: '建筑面积', value: '123平米'},
@@ -135,7 +145,8 @@ export class ChargeDetailsComponent implements OnInit {
   // charge item detail
   public  detailsDialogClick(e): void {
      this.chargeDetails = e;
-     const dataDetail =  JSON.parse(e.detailed);
+     this.detailsProject =  JSON.parse(e.detailed);
+     this.liquidatedDamagesContent  =  JSON.parse(e.liquidatedDamages);
      this.detailsDialog = true;
      this.detailsAddTitle.forEach( v => {
        if (v.name === '房间编号') {
@@ -148,7 +159,17 @@ export class ChargeDetailsComponent implements OnInit {
          v.value = e.mobilePhone;
        }
      });
-     this.detailsProject = dataDetail;
+     if (this.liquidatedDamagesContent !== null && this.liquidatedDamagesContent.length <= 4) {
+       this.liquidatedDamagesStyle = {width: '100%'};
+     } else {
+       this.liquidatedDamagesStyle = {width: '100%', height: '20vh'};
+
+     }
+    if (this.detailsProject.length <= 4) {
+      this.detailsProjectStyle = {width: '100%'};
+    } else {
+      this.detailsProjectStyle = {width: '100%', height: '20vh'};
+    }
   }
   // paging query
   public  nowpageEventHandle(event: any): void {

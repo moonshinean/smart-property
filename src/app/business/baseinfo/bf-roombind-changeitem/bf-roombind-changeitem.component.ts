@@ -67,6 +67,7 @@ export class BfRoombindChangeitemComponent implements OnInit {
         });
         this.roomBindChargeSrv.queryRoomChangeInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
           (val) => {
+            console.log(val);
             this.loadHidden = true;
             if (val.status === '1000') {
               val.data.contents.forEach( v => {
