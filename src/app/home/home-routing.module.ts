@@ -16,6 +16,7 @@ const routes: Routes = [
       {path: 'system', loadChildren: '../business/systemset/systemset.module#SystemsetModule'},
       {path: 'coupon', loadChildren: '../business/coupon/coupon.module#CouponModule'},
       {path: 'refund', loadChildren: '../business/refund/refund.module#RefundModule'},
+      {path: 'latepayment', loadChildren: '../business/latepayment/latepayment.module#LatepaymentModule'},
      ]
   }
 ];

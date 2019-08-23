@@ -458,7 +458,6 @@ export class BfOwnerComponent implements OnInit {
         this.owerSrv.addSingleOwerInfo(this.ownerAdd).subscribe(
           value => {
             this.loadHidden = true;
-            console.log(value);
             if (value.status === '1000') {
               this.toolSrv.setToast('success', '操作成功', '添加成功');
               this.selectOwerInfo(value.data);

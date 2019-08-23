@@ -8,7 +8,7 @@ import {Component, Input, OnInit} from '@angular/core';
 export class BfTableComponent implements OnInit {
   @Input()
   public option: {
-    width:any;
+    width: any;
     tableHeader: {
       data: any;
       style: any;

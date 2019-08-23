@@ -1,9 +1,8 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {GlobalService} from '../../../common/services/global.service';
-import {RefundAuditedService} from '../../../common/services/refund-audited.service';
+
 import {ModifyRefundInfo} from '../../../common/model/refund-info.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {RefundService} from '../../../common/services/refund.service';
 
 @Component({
   selector: 'rbi-refund-audited',
@@ -40,7 +39,7 @@ export class RefundAuditedComponent implements OnInit {
   public couponMoney: any;
   public couponEffectiveTime: any;
   constructor(
-    private refundAuditeSrv: RefundAuditedService,
+    private refundAuditeSrv: RefundService,
     private toolSrv: PublicMethedService,
   ) {
   }

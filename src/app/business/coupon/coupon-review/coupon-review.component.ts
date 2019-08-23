@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {CouponReviewService} from '../../../common/services/coupon-review.service';
 import {CouponReview} from '../../../common/model/coupon-review.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {CouponService} from '../../../common/services/coupon.service';
 
 @Component({
   selector: 'rbi-coupon-review',
@@ -43,7 +43,7 @@ export class CouponReviewComponent implements OnInit {
   public couponEffectiveTime: any;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private couponReviewSrv: CouponReviewService,
+    private couponReviewSrv: CouponService,
     private toolSrv: PublicMethedService
   ) {
   }

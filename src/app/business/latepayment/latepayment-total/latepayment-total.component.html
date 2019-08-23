@@ -1,0 +1,56 @@
+<div class="late-paymenttotle">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left':'10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="late-paymenttotle-header">
+    <div class=" ui-g-6">
+      <div class="ui-g-1 late-paymenttotle-header-btn late-paymenttotle-header-btn-add" (click)="latetotleConfigClick()">
+        <img class="late-paymenttotle-header-img-add" src="assets/images/ic_add.png" alt="">
+        <span>增 加</span>
+      </div>
+      <div class="ui-g-1 late-paymenttotle-header-btn late-paymenttotle-header-btn-modify" (click)="latetotleConfigClick()">
+        <img class="late-paymenttotle-header-img-modify" src="assets/images/ic_modify.png" alt="">
+        <span>修 改</span>
+      </div>
+      <div class="ui-g-1 late-paymenttotle-header-btn late-paymenttotle-header-btn-delete" (click)="latetotleDeleteClick()">
+        <img class="late-paymenttotle-header-img-delete" src="assets/images/ic_delete.png" alt="">
+        <span>删 除</span>
+      </div>
+      <div class="ui-g-1 late-paymenttotle-header-btn late-paymenttotle-header-btn-add" (click)="uploadFileClick()">
+        <!--<img class="late-paymenttotle-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+        <span>上 传</span>
+      </div>
+    </div>
+    <!--搜索-->
+    <!--<div class="ui-inputgroup late-paymenttotle-header-btn-search">-->
+    <!--<input type="text" pInputText placeholder="请输入权限编码" #input>-->
+    <!--<button   type="button"  (click)="latetotleSearchClick()"  label="搜索" style="outline: none;border:0;background: #5E6372;width: 6vw;color: #fff;margin-left: 1vw;border-radius: 5px">搜索</button>-->
+    <!--&lt;!&ndash;<span class="ui-inputgroup-addon" (click)="exportSearchClick($event)"><i class="fa fa-search"></i></span>&ndash;&gt;-->
+    <!--</div>-->
+  </div>
+  <!--表格-->
+  <div class="late-paymenttotle-table">
+    <rbi-check-table-btn [option]="optionTable"  [select]="latetotleSelect"  (detail)="detailClick($event)"></rbi-check-table-btn>
+  </div>
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
+  <p-dialog header="信息上传" [(visible)]="UploadFileDialog" [width]="800">
+    <!--Content-->
+    <div class="ui-g ui-fluid" >
+      <div class="ui-g-12">
+        <p-fileUpload multiple="multiple"  maxFileSize="10000000000"  [files]="uploadedFiles" chooseLabel="选择文件">
+        </p-fileUpload>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="late-paymenttotle-dialog-Btn late-paymenttotle-dialog-Btn-sure" (click)="UploadSureClick()">确认</button>
+        <button class="late-paymenttotle-dialog-Btn late-paymenttotle-dialog-Btn-false"  (click)="UploadFileDialog=false">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <!--增加弹窗-->
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+</div>

@@ -4,9 +4,9 @@ import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {Location} from '@angular/common';
 import {LocalStorageService} from '../../common/services/local-storage.service';
 import {ConfirmationService} from 'primeng/api';
-import {LoginoutService} from '../../common/services/loginout.service';
 import {HeaderService} from '../../common/services/header.service';
 import {PublicMethedService} from '../../common/public/public-methed.service';
+import {LoginService} from '../../common/services/login.service';
 
 @Component({
   selector: 'rbi-header',
@@ -38,6 +38,7 @@ export class HeaderComponent implements OnInit {
     {router: '/home/coupon/total', title: '优惠券', color: '#fff'},
     {router: '/home/refund/info', title: '退款', color: '#fff'},
     {router: '/home/system/config', title: '系统设置', color: '#fff'},
+    {router: '/home/latepayment/latepaytotle', title: '违约金', color: '#fff'},
   ];
 
   constructor(
@@ -47,7 +48,7 @@ export class HeaderComponent implements OnInit {
     private location: Location,
     private localSrv: LocalStorageService,
     private confirmationService: ConfirmationService,
-    private loginOutSrv: LoginoutService,
+    private loginOutSrv: LoginService,
     private headerSrv: HeaderService,
     private toolSrv: PublicMethedService
   ) {

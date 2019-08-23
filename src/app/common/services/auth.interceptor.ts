@@ -5,7 +5,6 @@ import {EMPTY, Observable, of} from 'rxjs';
 import {catchError, mergeMap, tap} from 'rxjs/operators';
 import {GlobalService} from './global.service';
 import {Router} from '@angular/router';
-import {LoginoutService} from './loginout.service';
 import {LocalStorageService} from './local-storage.service';
 
 @Injectable()
@@ -25,16 +24,17 @@ export class AuthInterceptor implements HttpInterceptor {
     }
   }
   public debug_http(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // console.log('挤进来哦了');
+
+    console.log(req.url);
     if (req.url === environment.loginUrl + '/login') {
       this.clonedRequest = req.clone({
         url: req.url,
         headers: req.headers
         .set('Content-type', 'application/json; charset=UTF-8')
         // .set('Content-type', 'application/x-www-form-urlencoded')
-        // .set('appkey', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJBUFAiLCJpc3MiOiJTZXJ2aWNlIiwiZXhwIjoxNTU5MDU1NDQ0LCJ1c2VySWQiOiIxNTU4NDkyMzY0NDMzNTUiLCJpYXQiOjE1NTkwMTIyNDR9.uF14iNrkqX61cIBVxSq7wJ-GUwQAOUvpTSWdXiB_MGY')
-      });
-    } else if (req.url === environment.sysetUrl + '/excel/readExcel') {
+    });
+    } else if (req.url === environment.sysetUrl + '/excel/readExcel'
+      || req.url === environment.chargeUrl + '/liquidated/damages/batch/processing') {
       this.clonedRequest = req.clone({
         url: req.url,
         headers: req.headers
@@ -55,15 +55,6 @@ export class AuthInterceptor implements HttpInterceptor {
         if (event.status === 200) {
           // if (event.body.status === '1000') {
               return of(event);
-          // } else {
-          //   this.router.navigate(['/error'], {
-          //     queryParams: {
-          //       msg: event.body.message,
-          //       btn: '请重试',
-          //       status: event.body.status,
-          //     }
-          //   });
-          // }
         }
         return EMPTY;
       },
@@ -87,7 +78,8 @@ export class AuthInterceptor implements HttpInterceptor {
            .set('Content-type', 'application/json; charset=UTF-8')
          // .set('Content-type', 'application/x-www-form-urlencoded')
        });
-     } else if (req.url === environment.sysetUrl + '/excel/readExcel') {
+     } else if (req.url === environment.sysetUrl + '/excel/readExcel'
+       || req.url === environment.chargeUrl + '/liquidated/damages/batch/processing') {
        this.clonedRequest = req.clone({
          url: req.url,
          headers: req.headers
@@ -121,9 +113,9 @@ export class AuthInterceptor implements HttpInterceptor {
            if (err.status === 403) {
              this.router.navigate(['/error'], {
                queryParams: {
-                 msg: 'token认证失败，请重新登陆！',
-                 url: `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxbacad0ba65a80a3d&redirect_uri=http://1785s28l17.iask.in/moyaoView&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`,
-                 btn: '点击登陆'
+                 msg: '连接服务器失败，请检查网络！',
+                 url: null,
+                 btn: '请重试',
                }});
            }
            if (err.status === 400) {

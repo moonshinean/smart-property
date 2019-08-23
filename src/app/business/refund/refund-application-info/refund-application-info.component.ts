@@ -1,10 +1,8 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {RefundInfoService} from '../../../common/services/refund-info.service';
-import {GlobalService} from '../../../common/services/global.service';
-import {RefundApplicationInfoService} from '../../../common/services/refund-application-info.service';
+
 import {RefundApplicationInfo} from '../../../common/model/refund-applicationInfo.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {RefundService} from '../../../common/services/refund.service';
 
 @Component({
   selector: 'rbi-refund-application-info',
@@ -45,7 +43,7 @@ export class RefundApplicationInfoComponent implements OnInit {
   public roonCodeSelectOption: any[] = [];
 
   constructor(
-    private applicationInfoSrv: RefundApplicationInfoService,
+    private applicationInfoSrv: RefundService,
     private toolSrv: PublicMethedService,
   ) {
   }

@@ -1,10 +1,8 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {CouponPendingReview} from '../../../common/model/coupon-pending-review.model';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {CouponPendingReviewService} from '../../../common/services/coupon-pending-review.service';
-import {RefundPendReviewService} from '../../../common/services/refund-pend-review.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
-import {el} from '@angular/platform-browser/testing/src/browser_util';
+
+import {RefundService} from '../../../common/services/refund.service';
 
 @Component({
   selector: 'rbi-refund-pend-review',
@@ -42,7 +40,7 @@ export class RefundPendReviewComponent implements OnInit {
   public couponEffectiveTime: any;
   constructor(
     private toolSrv: PublicMethedService,
-    private refundPendReviewSrv: RefundPendReviewService
+    private refundPendReviewSrv: RefundService
   ) {
   }
 

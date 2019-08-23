@@ -1,10 +1,7 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {CouponReview} from '../../../common/model/coupon-review.model';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {CouponReviewService} from '../../../common/services/coupon-review.service';
 import {CouponPendingReview} from '../../../common/model/coupon-pending-review.model';
-import {CouponPendingReviewService} from '../../../common/services/coupon-pending-review.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {CouponService} from '../../../common/services/coupon.service';
 
 @Component({
   selector: 'rbi-coupon-pending-review',
@@ -46,7 +43,7 @@ export class CouponPendingReviewComponent implements OnInit {
   public couponEffectiveTime: any;
   constructor(
     // private ownreService: BfcouponPendingReviewService
-    private couponPendingReviewSrv: CouponPendingReviewService,
+    private couponPendingReviewSrv: CouponService,
     private toolSrv: PublicMethedService
   ) {
   }
@@ -84,7 +81,6 @@ export class CouponPendingReviewComponent implements OnInit {
 
   // condition search click
   public couponPendingReviewSearchClick(): void {
- 
     console.log('这里是条件搜索');
   }
   // detail couponPendingReviewInfo

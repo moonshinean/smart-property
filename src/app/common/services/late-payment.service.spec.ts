@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RefundInfoService } from './refund-info.service';
+import { LatePaymentService } from './late-payment.service';
 
-describe('RefundInfoService', () => {
+describe('LatePaymentService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: RefundInfoService = TestBed.get(RefundInfoService);
+    const service: LatePaymentService = TestBed.get(LatePaymentService);
     expect(service).toBeTruthy();
   });
 });

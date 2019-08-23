@@ -1,8 +1,6 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {RefundAlreadyService} from '../../../common/services/refund-already.service';
-import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {RefundService} from '../../../common/services/refund.service';
 
 @Component({
   selector: 'rbi-refund-already',
@@ -45,7 +43,7 @@ export class RefundAlreadyComponent implements OnInit {
 
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private alreadySrv: RefundAlreadyService,
+    private alreadySrv: RefundService,
     private toolSrv: PublicMethedService
   ) {
   }
@@ -69,17 +67,17 @@ export class RefundAlreadyComponent implements OnInit {
     this.loadHidden = false;
     this.getAllStatus();
     this.queryData(this.nowPage);
-    // this.alreadySrv.queryRefundAlreadyPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
-    //   val => {
-    //     if (val.status === '1000') {
-    //       this.loadHidden = true;
-    //       this.alreadyTableContent = val.data.contents;
-    //       this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-    //     }  else {
-    //       this.toolSrv.setToast('error', '请求失败', val.message);
-    //     }
-    //   }
-    // );
+    this.alreadySrv.queryRefundAlreadyPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
+      val => {
+        if (val.status === '1000') {
+          this.loadHidden = true;
+          this.alreadyTableContent = val.data.contents;
+          this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+        }  else {
+          this.toolSrv.setToast('error', '请求失败', val.message);
+        }
+      }
+    );
     this.alreadyTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
 
   }

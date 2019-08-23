@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {TableOption} from '../table.model';
+import { TableeBtn} from '../table.model';
 
 @Component({
   selector: 'rbi-check-table-btn',
@@ -8,7 +8,20 @@ import {TableOption} from '../table.model';
 })
 export class CheckTableBtnComponent implements OnInit, OnChanges {
   @Input()
-  public option: TableOption;
+  public option: {
+      width: any;
+      header: {
+        data: any;
+        style: any;
+      };
+      Content: {
+        data: any;
+        styleone: any;
+        styletwo: any;
+      };
+      btnHidden?: any;
+      tableList?: TableeBtn[];
+  };
   @Output()
   public detail = new EventEmitter<number>();
   @Output()
@@ -21,11 +34,12 @@ export class CheckTableBtnComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.option) {
-      console.log(this.option);
-    }
+    // if (this.option) {
+    //   console.log(this.option);
+    // }
   }
   public  DetailClick(e): void {
+      // console.log(e);
       this.detail.emit(e);
   }
   // select Data

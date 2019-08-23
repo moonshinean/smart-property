@@ -1,12 +1,8 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {AddCouponTotal, CouponTotal} from '../../../common/model/coupon-total.model';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {CouponTotalService} from '../../../common/services/coupon-total.service';
 import {GlobalService} from '../../../common/services/global.service';
 import {CouponAudited} from '../../../common/model/coupon-audited.model';
-import {CouponAuditedService} from '../../../common/services/coupon-audited.service';
-import {C} from '@angular/cdk/typings/esm5/keycodes';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {CouponService} from '../../../common/services/coupon.service';
 
 @Component({
   selector: 'rbi-coupon-audited',
@@ -53,7 +49,7 @@ export class CouponAuditedComponent implements OnInit {
   public couponEffectiveTime: any;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private couponAuditedSrv: CouponAuditedService,
+    private couponAuditedSrv: CouponService,
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService
   ) {
@@ -162,7 +158,7 @@ export class CouponAuditedComponent implements OnInit {
     );
     this.toolSrv.getAdminStatus('PAST_DUE', (data) => {
       data.forEach( v => {
-        if (this.couponAuditedDetail.pastDue.toString() === v.settingCode){
+        if (this.couponAuditedDetail.pastDue.toString() === v.settingCode) {
           this.couponAuditedDetail.pastDue = v.settingName;
         }
       });

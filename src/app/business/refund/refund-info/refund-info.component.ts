@@ -3,11 +3,11 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 // import {BfinfoService} from '../../../common/services/bf-info.service';
 import {GlobalService} from '../../../common/services/global.service';
-import {RefundInfoService} from '../../../common/services/refund-info.service';
 import {AddressInfo} from 'dgram';
 import {AddRefundInfo, ModifyRefundInfo, RefundInfo, SearchRefundInfo} from '../../../common/model/refund-info.model';
 import {DatePipe} from '@angular/common';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {RefundService} from '../../../common/services/refund.service';
 
 @Component({
   selector: 'rbi-refund-info',
@@ -56,7 +56,7 @@ export class RefundInfoComponent implements OnInit {
 
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private infoSrv: RefundInfoService,
+    private infoSrv: RefundService,
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private datePipe: DatePipe,

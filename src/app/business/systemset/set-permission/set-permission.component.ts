@@ -71,15 +71,15 @@ export class SetPermissionComponent implements OnInit {
   public  permissionConfigClick(): void {
     this.primitTree = [];
     this.RoleCodeList = [];
-    // this.permissionSrv.queryRoleCodeCodeList({}).subscribe(
-    //   (value) => {
-    //     value.data.forEach( v => {
-    //       this.RoleCodeList.push({label: v.roleName, value: v.roleCode});
-    //     });
-    //     // console.log(this.RoleCodeList);
-    //     this.permissionAddDialog = true;
-    //   }
-    // );
+    this.permissionSrv.queryRoleCodeCodeList({}).subscribe(
+      (value) => {
+        value.data.forEach( v => {
+          this.RoleCodeList.push({label: v.roleName, value: v.roleCode});
+        });
+        // console.log(this.RoleCodeList);
+        this.permissionAddDialog = true;
+      }
+    );
     this.permissionSrv.queryPerimitList({}).subscribe(
       (value) => {
         if (value.status === '1000') {
@@ -90,6 +90,7 @@ export class SetPermissionComponent implements OnInit {
 
       }
     );
+    // this.permissionAddDialog = true;
   }
   // sure add permission
   public  permissionAddSureClick(): void {

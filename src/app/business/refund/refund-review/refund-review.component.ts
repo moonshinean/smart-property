@@ -1,10 +1,8 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {CouponReview} from '../../../common/model/coupon-review.model';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {CouponReviewService} from '../../../common/services/coupon-review.service';
-import {RefundReviewService} from '../../../common/services/refund-review.service';
+
 import {ModifyRefundInfo} from '../../../common/model/refund-info.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {RefundService} from '../../../common/services/refund.service';
 
 @Component({
   selector: 'rbi-refund-review',
@@ -40,7 +38,7 @@ export class RefundReviewComponent implements OnInit {
   public couponTypeName: any;
   public couponEffectiveTime: any;
   constructor(
-    private refundReviewSrv: RefundReviewService,
+    private refundReviewSrv: RefundService,
     private toolSrv: PublicMethedService,
   ) {
   }

@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {LoginoutService} from '../common/services/loginout.service';
 import {LocalStorageService} from '../common/services/local-storage.service';
 import {Router} from '@angular/router';
 import {PersionalService} from '../common/services/persional.service';
 import {Persional} from '../common/model/persional.model';
 import {PublicMethedService} from '../common/public/public-methed.service';
+import {LoginService} from '../common/services/login.service';
 
 @Component({
   selector: 'rbi-persional',
@@ -38,7 +37,7 @@ export class PersionalComponent implements OnInit {
   };
 
   constructor(
-    private loginOutSrv: LoginoutService,
+    private loginOutSrv: LoginService,
     private localSrv: LocalStorageService,
     private router: Router,
     private persionSrv: PersionalService,

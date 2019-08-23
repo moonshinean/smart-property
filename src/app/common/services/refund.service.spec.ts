@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RefundReviewService } from './refund-review.service';
+import { RefundService } from './refund.service';
 
-describe('RefundReviewService', () => {
+describe('RefundService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: RefundReviewService = TestBed.get(RefundReviewService);
+    const service: RefundService = TestBed.get(RefundService);
     expect(service).toBeTruthy();
   });
 });

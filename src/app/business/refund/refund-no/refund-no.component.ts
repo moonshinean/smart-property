@@ -1,10 +1,8 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {RefundNoService} from '../../../common/services/refund-No.service';
-import {GlobalService} from '../../../common/services/global.service';
 import {ApplicationRefund} from '../../../common/model/refund-no.model';
 import {ModifyRefundInfo} from '../../../common/model/refund-info.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {RefundService} from '../../../common/services/refund.service';
 
 @Component({
   selector: 'rbi-refund-no',
@@ -49,7 +47,7 @@ export class RefundNoComponent implements OnInit {
   public nowPage = 1;
   public roonCodeSelectOption: any[] = [];
   constructor(
-    private refundNoSrv: RefundNoService,
+    private refundNoSrv: RefundService,
     private toolSrv: PublicMethedService,
   ) {
   }

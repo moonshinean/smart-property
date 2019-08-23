@@ -62,18 +62,12 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
         {label: '角色权限配置', icon: 'pi pi-fw ', routerLink: ['/home/system/permission']},
       ]},
     { title: '优惠券', item: [],  routingItem : [
-        // {label: '车辆种类', icon: 'pi pi-fw ', routerLink: ['/home/system/carkind']},
-        // {label: '车辆品牌', icon: 'pi pi-fw ', routerLink: ['/home/system/carbrand']},
-        // {label: '民族管理', icon: 'pi pi-fw ', routerLink: ['/home/system/nation']},
         {label: '优惠券信息', icon: 'pi pi-fw ', routerLink: ['/home/coupon/total']},
         {label: '优惠券初审', icon: 'pi pi-fw ', routerLink: ['/home/coupon/review']},
         {label: '优惠券复审', icon: 'pi pi-fw ', routerLink: ['/home/coupon/pandingreview']},
         {label: '已审核', icon: 'pi pi-fw ', routerLink: ['/home/coupon/audited']},
       ] },
     { title: '退款', item: [],  routingItem: [
-        // {label: '车辆种类', icon: 'pi pi-fw ', routerLink: ['/home/system/carkind']},
-        // {label: '车辆品牌', icon: 'pi pi-fw ', routerLink: ['/home/system/carbrand']},
-        // {label: '民族管理', icon: 'pi pi-fw ', routerLink: ['/home/system/nation']},
         {label: '退款信息', icon: 'pi pi-fw ', routerLink: ['/home/refund/info']},
         {label: '未退款', icon: 'pi pi-fw ', routerLink: ['/home/refund/no']},
         {label: '已退款', icon: 'pi pi-fw ', routerLink: ['/home/refund/already']},
@@ -81,6 +75,9 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
         {label: '退款初审', icon: 'pi pi-fw ', routerLink: ['/home/refund/review']},
         {label: '退款复审', icon: 'pi pi-fw ', routerLink: ['/home/refund/pendreview']},
         {label: '退款已审核', icon: 'pi pi-fw ', routerLink: ['/home/refund/audited']},
+      ] },
+    { title: '违约金', item: [],  routingItem: [
+        {label: '违约金信息', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/latepaytotle']},
       ] }
     ];
   public flag: boolean;
@@ -162,6 +159,9 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
             {label: '退款初审', icon: 'pi pi-fw ', routerLink: ['/home/refund/review']},
             {label: '退款复审', icon: 'pi pi-fw ', routerLink: ['/home/refund/pendreview']},
             {label: '退款已审核', icon: 'pi pi-fw ', routerLink: ['/home/refund/audited']},
+          ] },
+        { title: '违约金', item: [],  routingItem: [
+            {label: '违约金信息', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/latepaytotle']},
           ] }
       ];
       this.localSrv.getObject('item').forEach(v => {
@@ -306,6 +306,9 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           {label: '退款初审', icon: 'pi pi-fw ', routerLink: ['/home/refund/review']},
           {label: '退款复审', icon: 'pi pi-fw ', routerLink: ['/home/refund/pendreview']},
           {label: '退款已审核', icon: 'pi pi-fw ', routerLink: ['/home/refund/audited']},
+        ] },
+      { title: '违约金', item: [],  routingItem: [
+          {label: '违约金信息', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/latepaytotle']},
         ] }
     ];
     if (this.localSrv.getObject('sidebarItem') === 1 || this.localSrv.getObject('sidebarItem') === null ) {

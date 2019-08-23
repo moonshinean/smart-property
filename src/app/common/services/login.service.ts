@@ -14,4 +14,7 @@ export class LoginService {
   public  login(pamars): Observable<any> {
     return this.http.post( environment.loginUrl + `/login`, pamars);
   }
+  public  logout(pamars): Observable<any> {
+    return this.http.post( environment.loginUrl + `/logout`, pamars);
+  }
 }

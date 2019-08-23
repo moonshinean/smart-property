@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { RefundAuditedService } from './refund-audited.service';
+import { CouponService } from './coupon.service';
 
-describe('RefundAuditedService', () => {
+describe('CouponService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: RefundAuditedService = TestBed.get(RefundAuditedService);
+    const service: CouponService = TestBed.get(CouponService);
     expect(service).toBeTruthy();
   });
 });
