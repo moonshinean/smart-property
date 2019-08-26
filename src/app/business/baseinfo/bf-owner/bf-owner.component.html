@@ -33,7 +33,7 @@
     </div>
     <!--//搜索-->
     <div class="ui-inputgroup bf-owner-header-search">
-      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">
+      <input type="text" pInputText placeholder="请输入手机号" style="width: 7vw" [(ngModel)]="mobileNumber">
       <button id="disabled-btn" class="bf-owner-header-btn-search" type="button"  (click)="ownerSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>

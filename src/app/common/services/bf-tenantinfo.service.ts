@@ -44,4 +44,7 @@ export class BfTenantinfoService {
   public  queryUploadDetail(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/excel/findLog', body);
   }
+  public  queryByMobileNumber(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/roomInfo/findByPhone', body);
+  }
 }

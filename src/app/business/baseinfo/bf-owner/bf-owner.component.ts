@@ -83,6 +83,7 @@ export class BfOwnerComponent implements OnInit {
   public esDate: any;
   public loadHidden = true;
   public deleteId: any[] = [];
+  public mobileNumber = '';
   public nowPage = 1;
   constructor(
     private owerSrv: BfOwnerService,
@@ -200,19 +201,34 @@ export class BfOwnerComponent implements OnInit {
   }
   // condition search click
   public  ownerSearchClick(): void {
-    // @ts-ignore
-    if ( (this.input.nativeElement.value !== undefined && this.input.nativeElement.value !== '') || this.searchOwerData.villageCode !== '' ) {
-      this.loadHidden = false;
-      this.searchOwerData.pageNo = 1;
-      this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
-        (value) => {
-          this.loadHidden = true;
-          this.ownerTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+    console.log(this.mobileNumber === '');
+
+    if (this.mobileNumber !== '') {
+      this.owerSrv.queryByMobileNumber({pageNo: 1, pageSize: 10, mobilePhone: this.mobileNumber}).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.loadHidden = true;
+            this.ownerTableContent = value.data.contents;
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          }else {
+            this.toolSrv.setToast('error', '请求错误', value.message);
+          }
         }
       );
     } else {
-      this.toolSrv.setToast('error', '操作错误', '请选择或输入搜索条件');
+      if ( this.searchOwerData.villageCode !== '' ) {
+        this.loadHidden = false;
+        this.searchOwerData.pageNo = 1;
+        this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
+          (value) => {
+            this.loadHidden = true;
+            this.ownerTableContent = value.data.contents;
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          }
+        );
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '请选择或输入搜索条件');
+      }
     }
   }
   // renovation change function

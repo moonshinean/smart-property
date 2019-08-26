@@ -35,22 +35,23 @@
     <rbi-check-table-btn [option]="optionTable"  [select]="latetotleSelect"  (detail)="detailClick($event)"></rbi-check-table-btn>
   </div>
   <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
-  <p-dialog header="信息上传" [(visible)]="UploadFileDialog" [width]="800">
-    <!--Content-->
-    <div class="ui-g ui-fluid" >
-      <div class="ui-g-12">
-        <p-fileUpload multiple="multiple"  maxFileSize="10000000000"  [files]="uploadedFiles" chooseLabel="选择文件">
-        </p-fileUpload>
-      </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="late-paymenttotle-dialog-Btn late-paymenttotle-dialog-Btn-sure" (click)="UploadSureClick()">确认</button>
-        <button class="late-paymenttotle-dialog-Btn late-paymenttotle-dialog-Btn-false"  (click)="UploadFileDialog=false">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+  <!--<p-dialog header="信息上传" [(visible)]="UploadFileDialog" [width]="800">-->
+    <!--&lt;!&ndash;Content&ndash;&gt;-->
+    <!--<div class="ui-g ui-fluid" >-->
+      <!--<div class="ui-g-12">-->
+        <!--<p-fileUpload multiple="multiple"  maxFileSize="10000000000"  [files]="uploadedFiles" chooseLabel="选择文件">-->
+        <!--</p-fileUpload>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<p-footer>-->
+      <!--<div class="ui-dialog-buttonpane ui-helper-clearfix">-->
+        <!--<button class="late-paymenttotle-dialog-Btn late-paymenttotle-dialog-Btn-sure" (click)="UploadSureClick()">确认</button>-->
+        <!--<button class="late-paymenttotle-dialog-Btn late-paymenttotle-dialog-Btn-false"  (click)="UploadFileDialog=false">取消</button>-->
+      <!--</div>-->
+    <!--</p-footer>-->
+  <!--</p-dialog>-->
   <!--增加弹窗-->
-  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-paging [option]="pageOption" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-file-pop [UploadFileOption]="UploadFileOption" (event)="UploadSureClick($event)"></rbi-file-pop>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

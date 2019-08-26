@@ -15,3 +15,9 @@ export class TableOption {
     styletwo: any;
   };
 }
+
+export class FileOption {
+  dialog?: boolean;
+  files?: any;
+  width?: any;
+}

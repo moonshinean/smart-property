@@ -14,8 +14,6 @@ import {isObjectFlagSet} from 'tslint';
   styleUrls: ['./bf-tenantinfo.component.less']
 })
 export class BfTenantinfoComponent implements OnInit {
-  @ViewChild('input') input: Input;
-  // @ViewChild('file') file: Input;
   public tenantTableTitle: any;
   public tenantTableContent: Tenant[];
   public tenantTableTitleStyle: any;
@@ -84,6 +82,7 @@ export class BfTenantinfoComponent implements OnInit {
   public esDate: any;
   public loadHidden = true;
   public deleteId: any[] = [];
+  public mobileNumber = '';
   public nowPage = 1;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
@@ -207,18 +206,33 @@ export class BfTenantinfoComponent implements OnInit {
   // condition search click
   public  tenantSearchClick(): void {
     // @ts-ignore
-    if ( (this.input.nativeElement.value !== undefined && this.input.nativeElement.value !== '') || this.searchTenantData.villageCode !== '' ) {
+    if (this.mobileNumber !== '') {
       this.loadHidden = false;
-      this.searchTenantData.pageNo = 1;
-      this.tenantSrv.queryTenantInfoList(this.searchTenantData).subscribe(
-        (value) => {
-          this.loadHidden = true;
-          this.tenantTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+      this.tenantSrv.queryByMobileNumber({pageNo: 1, pageSize: 10, mobileNumber: this.mobileNumber}).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.loadHidden = true;
+            this.tenantTableContent = value.data.contents;
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          } else {
+            this.toolSrv.setToast('error', '请求错误', value.message);
+          }
         }
       );
     } else {
-      this.toolSrv.setToast('error', '操作错误', '请选择或输入搜索条件');
+      if ( this.searchTenantData.villageCode !== '' ) {
+        this.loadHidden = false;
+        this.searchTenantData.pageNo = 1;
+        this.tenantSrv.queryTenantInfoList(this.searchTenantData).subscribe(
+          (value) => {
+            this.loadHidden = true;
+            this.tenantTableContent = value.data.contents;
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          }
+        );
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '请选择或输入搜索条件');
+      }
     }
   }
   // roomStatus Change

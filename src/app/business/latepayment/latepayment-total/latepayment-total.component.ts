@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {LatePaymentService} from '../../../common/services/late-payment.service';
 import {LatePaymentQueryData} from '../../../common/model/latepayment.model';
+import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 
 @Component({
   selector: 'rbi-latepayment-total',
@@ -15,7 +16,7 @@ export class LatepaymentTotalComponent implements OnInit {
   public latetotleSelect: any;
   public SearchData: LatePaymentQueryData = new LatePaymentQueryData();
   // 上传相关
-  public UploadFileDialog: boolean;
+  public UploadFileOption: FileOption = new FileOption();
   public uploadedFiles: any[] = [];
   // 详情相关
   public dialogOption: any;
@@ -39,17 +40,18 @@ export class LatepaymentTotalComponent implements OnInit {
     {field: 'reviserId', header: '修订人'},
     {field: 'auditId', header: '审核人'},
     {field: 'retrialId', header: '复核人'},
-    {field: 'startTime', header: '物业费计费开始时间'},
-    {field: 'dueTime', header: '物业费计费结束时间'},
     {field: 'propertyActualMoneyCollection', header: '物业费金额'},
     {field: 'month', header: '缴费月数'},
+    {field: 'liquidatedDamageDueTime', header: '违约金到期时间'},
+    {field: 'startTime', header: '物业费计费开始时间'},
+    {field: 'dueTime', header: '物业费计费结束时间'},
     {field: 'remark', header: '备注'},
 
   ];
   // 删除相关
   public ids: any[] = [];
   // 其他相关
-  public option: any;
+  public pageOption: any;
   public loadHidden = true;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
@@ -63,18 +65,7 @@ export class LatepaymentTotalComponent implements OnInit {
   public  latetotleInitialization(): void {
     this.SearchData.pageNo = 1;
     this.SearchData.pageSize = 10;
-    this.loadHidden = false;
-    this.lateSrv.queryLatePaymentPageData(this.SearchData).subscribe(
-      value => {
-        this.loadHidden = true;
-        if (value.status === '1000') {
-          console.log(value);
-          this.setTableOption(value.data.contents);
-        } else {
-          this.toolSrv.setToast('error', '请求失败', value.message);
-        }
-      }
-    );
+    this.queryData(this.SearchData);
   }
 
   // show add latetotle dialog
@@ -114,30 +105,35 @@ export class LatepaymentTotalComponent implements OnInit {
   }
   // paging query
   public  nowpageEventHandle(event: any): void {
+    this.SearchData.pageNo = event;
+    // this.SearchData.pageNo = 10;
+    console.log(this.SearchData);
+    this.queryData(this.SearchData);
   }
+  // show upload file dialog
   public uploadFileClick(): void {
-      this.UploadFileDialog = true;
+      this.UploadFileOption.dialog = true;
+      this.UploadFileOption.files = this.uploadedFiles;
+      this.UploadFileOption.width = '800';
   }
   // sure upload file
-  public  UploadSureClick(): void {
-    this.loadHidden = false;
-    const fileData = new FormData();
-    this.uploadedFiles.forEach(v => {
-      fileData.append('file', v);
-    });
-    this.lateSrv.uploadFile(fileData).subscribe(
+  public  UploadSureClick(e): void {
+    this.lateSrv.uploadFile(e).subscribe(
       (value) => {
         this.loadHidden = true;
         if (value.status === '1000') {
          this.toolSrv.setToast('success', '请求成功', '上传成功');
-         this.UploadFileDialog = false;
+         // this.UploadFileDialog = false;
+          this.UploadFileOption.files = [];
+
         }
         console.log(value);
       });
   }
+  // set table data
   public  setTableOption(data): void {
     this.optionTable = {
-      width: '79vw',
+      width: '80vw',
       header: {
         data:  [
           {field: 'orderId', header: '订单编号'},
@@ -162,20 +158,20 @@ export class LatepaymentTotalComponent implements OnInit {
       tableList:  [{label: '详情', color: '#6A72A1'}]
     };
   }
+  // set detail dialog data
   public  detailClick(e): void {
-      console.log(JSON.parse(e.liquidatedDamages));
       if (e.liquidatedDamages) {
         this.dialogOption = {
           dialog: true,
           tableHidden: true,
-          width: '800',
+          width: '1000',
           title: '详情',
           poplist: {
             popContent: e,
             popTitle: this.detailTitle,
           },
           tablelist: {
-            width: '100%',
+            width: '104%',
             title: '违约金信息',
             tableHeader: {
               data: [
@@ -193,19 +189,34 @@ export class LatepaymentTotalComponent implements OnInit {
             },
           }
         };
-
       } else {
         this.dialogOption = {
           dialog: true,
           tableHidden: false,
-          width: '800',
+          width: '1000',
           title: '详情',
           poplist: {
             popContent: e,
             popTitle:  this.detailTitle,
           }
         };
-
       }
+  }
+  // query data
+  public  queryData(data): void {
+    // this.SearchData.pageSize = 10;
+    this.loadHidden = false;
+    this.lateSrv.queryLatePaymentPageData(data).subscribe(
+      value => {
+        console.log(value);
+        this.loadHidden = true;
+        if (value.status === '1000') {
+          this.setTableOption(value.data.contents);
+          this.pageOption = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '请求失败', value.message);
+        }
+      }
+    );
   }
 }

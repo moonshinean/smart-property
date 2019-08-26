@@ -52,7 +52,7 @@ export class BfOwnerService {
   public  queryUploadDetail(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/excel/findLog', body);
   }
-  public  queryVillage(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/structure/findByOrganizationId', body);
+  public  queryByMobileNumber(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/roomInfo/findByPhone', body);
   }
 }
