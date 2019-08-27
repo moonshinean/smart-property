@@ -1,0 +1,41 @@
+<div class="latepayment-no-pass">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left':'10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="latepayment-no-pass-header">
+    <!--&lt;!&ndash;<div class=" ui-g-6">&ndash;&gt;-->
+      <!--&lt;!&ndash;<div class="ui-g-1 latepayment-no-pass-header-btn latepayment-no-pass-header-btn-add" (click)="latetotleConfigClick()">&ndash;&gt;-->
+      <!--&lt;!&ndash;<img class="latepayment-no-pass-header-img-add" src="assets/images/ic_add.png" alt="">&ndash;&gt;-->
+      <!--&lt;!&ndash;<span>增 加</span>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--&lt;!&ndash;<div class="ui-g-1 latepayment-no-pass-header-btn latepayment-no-pass-header-btn-modify" (click)="latetotleConfigClick()">&ndash;&gt;-->
+      <!--&lt;!&ndash;<img class="latepayment-no-pass-header-img-modify" src="assets/images/ic_modify.png" alt="">&ndash;&gt;-->
+      <!--&lt;!&ndash;<span>修 改</span>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--&lt;!&ndash;<div class="ui-g-1 latepayment-no-pass-header-btn latepayment-no-pass-header-btn-delete" (click)="latetotleDeleteClick()">&ndash;&gt;-->
+      <!--&lt;!&ndash;<img class="latepayment-no-pass-header-img-delete" src="assets/images/ic_delete.png" alt="">&ndash;&gt;-->
+      <!--&lt;!&ndash;<span>删 除</span>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--&lt;!&ndash;<div class="ui-g-1 latepayment-no-pass-header-btn latepayment-no-pass-header-btn-add" (click)="uploadFileClick()">&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;<img class="latepayment-no-pass-header-img-delete" src="" alt="">&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;<span>审  核</span>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--&lt;!&ndash;搜索&ndash;&gt;-->
+    <!--&lt;!&ndash;<div class="ui-inputgroup latepayment-no-pass-header-btn-search">&ndash;&gt;-->
+    <!--&lt;!&ndash;<input type="text" pInputText placeholder="请输入权限编码" >&ndash;&gt;-->
+    <!--&lt;!&ndash;<button   type="button"  (click)="latetotleSearchClick()"  label="搜索" style="outline: none;border:0;background: #5E6372;width: 6vw;color: #fff;margin-left: 1vw;border-radius: 5px">搜索</button>&ndash;&gt;-->
+    <!--&lt;!&ndash;&lt;!&ndash;<span class="ui-inputgroup-addon" (click)="exportSearchClick($event)"><i class="fa fa-search"></i></span>&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+  </div>
+  <!--表格-->
+  <div class="latepayment-no-pass-table">
+    <rbi-check-table-btn [option]="optionTable" (detail)="detailClick($event)"></rbi-check-table-btn>
+  </div>
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
+  <!--增加弹窗-->
+  <rbi-paging [option]="pageOption" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
+</div>

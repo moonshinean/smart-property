@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {LatePaymentService} from '../../../common/services/late-payment.service';
-import {LatePaymentQueryData} from '../../../common/model/latepayment.model';
+import {LatePaymentQueryData, ModifyLatePayment} from '../../../common/model/latepayment.model';
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
+import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
+import {FormGroup} from '@angular/forms';
+import {BtnOption} from '../../../common/components/header-btn/headerData.model';
 
 @Component({
   selector: 'rbi-latepayment-total',
@@ -12,12 +15,15 @@ import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.m
 export class LatepaymentTotalComponent implements OnInit {
 
   public optionTable: any;
-  public latetotleAddDialog: any;
-  public latetotleSelect: any;
+  public latetotleSelect = [];
+  // 基础按钮相关
+  public btnOption: BtnOption = new BtnOption();
   public SearchData: LatePaymentQueryData = new LatePaymentQueryData();
   // 上传相关
   public UploadFileOption: FileOption = new FileOption();
   public uploadedFiles: any[] = [];
+  // 上传详情记录相关
+  public fileRecordoption: any;
   // 详情相关
   public dialogOption: any;
   public detailTitle = [
@@ -28,7 +34,6 @@ export class LatepaymentTotalComponent implements OnInit {
     {field: 'unitName', header: '单元名称'},
     {field: 'roomCode', header: '房间号'},
     {field: 'roomSize', header: '房间大小'},
-    {field: 'userId', header: '客户ID'},
     {field: 'surname', header: '客户姓'},
     {field: 'mobilePhone', header: '手机号'},
     {field: 'amountTotalReceivable', header: '应收总金额'},
@@ -36,7 +41,6 @@ export class LatepaymentTotalComponent implements OnInit {
     {field: 'surplusTotal', header: '减免金额'},
     {field: 'surplusReason', header: '减免原因'},
     {field: 'auditStatus', header: '审核状态'},
-    {field: 'tollCollectorId', header: '操作人ID'},
     {field: 'reviserId', header: '修订人'},
     {field: 'auditId', header: '审核人'},
     {field: 'retrialId', header: '复核人'},
@@ -45,12 +49,25 @@ export class LatepaymentTotalComponent implements OnInit {
     {field: 'liquidatedDamageDueTime', header: '违约金到期时间'},
     {field: 'startTime', header: '物业费计费开始时间'},
     {field: 'dueTime', header: '物业费计费结束时间'},
-    {field: 'remark', header: '备注'},
+    {field: 'oneMonthPropertyFeeAmount', header: '单月物业费'},
+    {field: 'tollCollectorName', header: '操作人姓名'},
+    {field: 'superfluousAmount', header: '超额物业费'},
+    {field: 'reviserName', header: '修订人姓名'},
+    {field: 'auditName', header: '审核人姓名'},
+    {field: 'retrialName', header: '复审人姓名'},
+    {field: 'quarterlyCycleTime', header: '季度周期循环时间'},
+    {field: 'remarks', header: '备注'},
 
   ];
+  // 修改相关
+  public modifyLatePayment: ModifyLatePayment = new ModifyLatePayment();
   // 删除相关
   public ids: any[] = [];
   // 其他相关
+  public form: FormValue[] = [];
+  public formgroup: FormGroup;
+  public formdata: any[];
+  public optionDialog: DialogModel = new DialogModel();
   public pageOption: any;
   public loadHidden = true;
   // public msgs: Message[] = []; // 消息弹窗
@@ -59,6 +76,13 @@ export class LatepaymentTotalComponent implements OnInit {
     private lateSrv: LatePaymentService
   ) { }
   ngOnInit() {
+    this.btnOption.btnlist = [
+      {label: '新增', src: 'assets/images/ic_add.png', style: {background: '#55AB7F', marginLeft: '2vw'} },
+      {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '1vw'} },
+      {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#A84847', marginLeft: '1vw'} },
+      {label: '上传', src: '', style: {background: '#55AB7F', marginLeft: '1vw'} },
+    ];
+    this.btnOption.searchHidden = false;
     this.latetotleInitialization();
   }
   // Initialize latetotle data
@@ -69,17 +93,51 @@ export class LatepaymentTotalComponent implements OnInit {
   }
 
   // show add latetotle dialog
-  public  latetotleConfigClick(): void {
+  public  latetotleModifyClick(): void {
+     if (this.latetotleSelect.length === undefined || this.latetotleSelect.length === 0 ) {
+       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
+     }  else if (this.latetotleSelect.length === 1) {
+       this.optionDialog = {
+         type: 'add',
+         title: '修改信息',
+         width: '800',
+         dialog: true
+       };
+       const list = ['id', 'liquidatedDamageDueTime', 'remarks'];
+       list.forEach(val => {
+         if (val === 'remarks') {
+           this.form.push({key: val, disabled: false, required: false, value: ''});
+         } else {
+           this.form.push({key: val, disabled: false, required: true, value: this.latetotleSelect[0][val]});
+         }
+       });
+       this.formgroup = this.toolSrv.setFormGroup(this.form);
+       this.formdata = [
+         {label: '违约金到期时间', type: 'input', name: 'liquidatedDamageDueTime', option: '', placeholder: '请输入时间(必填项),例如：2019-04-12'},
+         {label: '备注', type: 'textbox', name: 'remarks', option: '', placeholder: this.latetotleSelect[0].remarks, value: {row: 2, col: 6}},
+       ];
+     } else {
+       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
+     }
   }
   // sure add latetotle
-  public  latetotleAddSureClick(): void {
+  public  latetotleModifySureClick(): void {
     // console.log(this.primitDatas);
-
+    this.toolSrv.setConfirmation('修改', '修改', () => {
+      this.loadHidden = false;
+      this.lateSrv.updateLatePayment(this.modifyLatePayment).subscribe(
+        value => {
+          this.loadHidden = true;
+          this.toolSrv.setQuestJudgment(value.status, value.message, () => {
+            this.optionDialog.dialog = false;
+            this.latetotleSelect = [];
+            this.queryData(this.SearchData);
+          });
+        }
+      );
+    });
   }
   // close  add latetotle dialog
-  public latetotleAddCloseClick(): void {
-
-  }
 // delete latetotle
   public  latetotleDeleteClick(): void {
     // if (this.latetotleSelect === undefined || this.latetotleSelect.length === 0) {
@@ -107,7 +165,7 @@ export class LatepaymentTotalComponent implements OnInit {
   public  nowpageEventHandle(event: any): void {
     this.SearchData.pageNo = event;
     // this.SearchData.pageNo = 10;
-    console.log(this.SearchData);
+    // console.log(this.SearchData);
     this.queryData(this.SearchData);
   }
   // show upload file dialog
@@ -118,14 +176,41 @@ export class LatepaymentTotalComponent implements OnInit {
   }
   // sure upload file
   public  UploadSureClick(e): void {
+    this.loadHidden = false;
     this.lateSrv.uploadFile(e).subscribe(
       (value) => {
+        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
          this.toolSrv.setToast('success', '请求成功', '上传成功');
-         // this.UploadFileDialog = false;
-          this.UploadFileOption.files = [];
-
+         this.UploadFileOption.files = [];
+         // this.UploadFileOption.dialog = false;
+         this.fileRecordoption = {
+           width: '900',
+           dialog: true,
+           title: '上传记录',
+           totalNumber: value.data.totalNumber,
+           realNumber: value.data.realNumber,
+           uploadOption: {
+             width: '102%',
+             tableHeader: {
+               data: [
+                 {field: 'orderId', header: '导入编号'},
+                 {field: 'code', header: '编号'},
+                 {field: 'roomCode', header: '房间号'},
+                 {field: 'result', header: '结果'},
+                 {field: 'remark', header: '备注'},
+               ],
+               style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+             },
+             tableContent: {
+               data: value.data.liquidatedDamageLogDOS,
+               styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+               styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+             }
+           }
+         };
+         this.queryData(this.SearchData);
         }
         console.log(value);
       });
@@ -211,6 +296,7 @@ export class LatepaymentTotalComponent implements OnInit {
         console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
+
           this.setTableOption(value.data.contents);
           this.pageOption = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {
@@ -218,5 +304,57 @@ export class LatepaymentTotalComponent implements OnInit {
         }
       }
     );
+  }
+  // dialog click event
+  public  eventClick(e): void {
+    if (e === 'false') {
+      this.optionDialog.dialog = false;
+      this.latetotleSelect = [];
+    } else {
+      console.log(e);
+      if (e.invalid) {
+        if (e.type === '添加信息') {
+          for (const eKey in e.value.value) {
+            // const a = eKey;
+          }
+        } else  {
+          for (const eKey in e.value.value) {
+            // const a = eKey;
+            this.modifyLatePayment[eKey] = e.value.value[eKey];
+          }
+          this.latetotleModifySureClick();
+        }
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '信息未填完整');
+      }
+    }
+  }
+  // select data
+  public selectData(e): void {
+    this.latetotleSelect = e;
+  }
+  // btn click event
+  public  btnEvent(e): void {
+      // console.log(e);
+      switch (e) {
+        case '新增': console.log(e); break;
+        case '修改': this.latetotleModifyClick(); break;
+        case '删除': console.log(e); break;
+        case '上传': this.uploadFileClick(); break;
+      }
+  }
+  public  searchClick(e): void {
+     console.log(e);
+     if (e.value === '') {
+       this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
+     } else {
+       if (e.type === 1) {
+         this.SearchData.roomCode = e.value;
+         this.queryData(this.SearchData);
+       } else {
+         this.SearchData.mobilePhone = e.value;
+         this.queryData(this.SearchData);
+       }
+     }
   }
 }

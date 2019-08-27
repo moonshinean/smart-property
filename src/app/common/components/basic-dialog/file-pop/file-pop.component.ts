@@ -27,6 +27,6 @@ export class FilePopComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log();
+    console.log(this.UploadFileOption);
   }
 }

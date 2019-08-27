@@ -44,7 +44,9 @@ export class CheckTableBtnComponent implements OnInit, OnChanges {
   }
   // select Data
   public  selectClick(e): void {
-      this.selectData.emit(this.select);
+    console.log(e);
+    console.log(123);
+    this.selectData.emit(this.select);
   }
   // cancel select data
   public  noSelectClick(e): void {

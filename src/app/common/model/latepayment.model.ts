@@ -48,3 +48,10 @@ export class LatePaymentQueryData {
   pageNo?: any;
   pageSize?: any;
 }
+
+// 修改
+export class ModifyLatePayment {
+  id: any;
+  liquidatedDamages: any;
+  remark: any;
+}

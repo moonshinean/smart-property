@@ -111,7 +111,6 @@ export class BfOwnerComponent implements OnInit {
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
        (value) => {
          this.loadHidden = true;
-         console.log(value);
          this.ownerTableContent = value.data.contents;
          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
        }
@@ -201,8 +200,6 @@ export class BfOwnerComponent implements OnInit {
   }
   // condition search click
   public  ownerSearchClick(): void {
-    console.log(this.mobileNumber === '');
-
     if (this.mobileNumber !== '') {
       this.owerSrv.queryByMobileNumber({pageNo: 1, pageSize: 10, mobilePhone: this.mobileNumber}).subscribe(
         value => {
@@ -210,7 +207,7 @@ export class BfOwnerComponent implements OnInit {
             this.loadHidden = true;
             this.ownerTableContent = value.data.contents;
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-          }else {
+          } else {
             this.toolSrv.setToast('error', '请求错误', value.message);
           }
         }

@@ -18,4 +18,49 @@ export class LatePaymentService {
   public  queryLatePaymentPageData(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + '/liquidated/damages/findByPage', pamars);
   }
+  public  updateLatePayment(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/liquidated/damages/update', pamars);
+  }
+
+  /**
+   * 待审核模块
+   */
+  public  queryLatePaymentReviewPageData(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/liquidated/damages/findByWaitAuditPage', pamars);
+  }
+
+
+  /**
+   * 待复审模块
+   */
+  public  queryLatePaymentPendReviewPageData(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/liquidated/damages/findByWaitReviewPage', pamars);
+  }
+  public  reviewLatePaymentAgainPass(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/liquidated/damages/reviewPass', pamars);
+  }
+
+  /**
+   * 审核拒绝模块
+   */
+  public  queryLatePaymentNoPassPageData(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/liquidated/damages/findByNotPassPage', pamars);
+  }
+
+  /**
+   * 审核通过模块
+   */
+  public  queryLatePaymentAlreadyPageData(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/liquidated/damages/findByAlreadyAuditPage', pamars);
+  }
+  public  reviewLatePaymentPass(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/liquidated/damages/auditPass', pamars);
+  }
+  /**
+   * 公共模块
+   */
+  public  reviewLatePaymentNoPass(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/liquidated/damages/noPass', pamars);
+  }
+
 }

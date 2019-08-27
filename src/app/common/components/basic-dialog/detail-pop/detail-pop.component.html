@@ -8,8 +8,12 @@
             <div class="ui-g-4">
               <label>{{item.header}}</label>
             </div>
-            <div class="ui-g-8">
+            <div class="ui-g-8" style="text-align: center" *ngIf="item.field !== 'remarks'">
               <span>{{dialogOption.poplist.popContent[item.field]}}</span>
+            </div>
+            <div class="ui-g-8"  *ngIf="item.field === 'remarks'">
+              <!--<span style="height: 3vh">{{dialogOption.poplist.popContent[item.field]}}</span>-->
+              <textarea rows="3" cols="4" pInputTextarea [placeholder]="dialogOption.poplist.popContent[item.field]" disabled></textarea>
             </div>
           </div>
           <div class="ui-g-12" *ngIf="dialogOption.tableHidden">

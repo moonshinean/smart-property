@@ -21,3 +21,8 @@ export class FileOption {
   files?: any;
   width?: any;
 }
+
+export class ReviewOption {
+  dialog: boolean;
+  width: any;
+}
