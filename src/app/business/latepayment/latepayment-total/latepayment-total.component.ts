@@ -77,18 +77,20 @@ export class LatepaymentTotalComponent implements OnInit {
   ) { }
   ngOnInit() {
     this.btnOption.btnlist = [
-      {label: '新增', src: 'assets/images/ic_add.png', style: {background: '#55AB7F', marginLeft: '2vw'} },
-      {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '1vw'} },
+      // {label: '新增', src: 'assets/images/ic_add.png', style: {background: '#55AB7F', marginLeft: '2vw'} },
+      {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '2vw'} },
       {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#A84847', marginLeft: '1vw'} },
       {label: '上传', src: '', style: {background: '#55AB7F', marginLeft: '1vw'} },
     ];
-    this.btnOption.searchHidden = false;
+    this.btnOption.searchHidden = true;
     this.latetotleInitialization();
   }
   // Initialize latetotle data
   public  latetotleInitialization(): void {
     this.SearchData.pageNo = 1;
     this.SearchData.pageSize = 10;
+    this.SearchData.mobilePhone = '';
+    this.SearchData.roomCode = '';
     this.queryData(this.SearchData);
   }
 
@@ -140,26 +142,23 @@ export class LatepaymentTotalComponent implements OnInit {
   // close  add latetotle dialog
 // delete latetotle
   public  latetotleDeleteClick(): void {
-    // if (this.latetotleSelect === undefined || this.latetotleSelect.length === 0) {
-    //   this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
-    // } else {
-    //   this.toolSrv.setConfirmation('删除', `删除这${this.latetotleSelect.length}项`, () => {
-    //     this.latetotleSelect.forEach( v => {
-    //       this.ids.push(v.id);
-    //     });
-    //     this.latetotleSrv.deleteRolePerimit({ids: this.ids.join(',')}).subscribe(
-    //       (value) => {
-    //         if (value.status === '1000') {
-    //           this.latetotleInitialization();
-    //           this.toolSrv.setToast('success', '操作成功', '删除成功');
-    //           this.latetotleSelect = [];
-    //         } else {
-    //           this.toolSrv.setToast('error', '操作失败', value.message);
-    //         }
-    //       }
-    //     );
-    //   });
-    // }
+    if (this.latetotleSelect === undefined || this.latetotleSelect.length === 0) {
+      this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
+    } else {
+      this.toolSrv.setConfirmation('删除', `删除这${this.latetotleSelect.length}项`, () => {
+        this.latetotleSelect.forEach( v => {
+          this.ids.push(v.id);
+        });
+        this.lateSrv.deleteLatePayment({ids: this.ids.join(',')}).subscribe(
+          (value) => {
+            this.toolSrv.setQuestJudgment(value.status, value.message, () => {
+              this.latetotleInitialization();
+              this.latetotleSelect = [];
+            });
+          }
+        );
+      });
+    }
   }
   // paging query
   public  nowpageEventHandle(event: any): void {
@@ -218,7 +217,7 @@ export class LatepaymentTotalComponent implements OnInit {
   // set table data
   public  setTableOption(data): void {
     this.optionTable = {
-      width: '80vw',
+      width: '100%',
       header: {
         data:  [
           {field: 'orderId', header: '订单编号'},
@@ -339,22 +338,32 @@ export class LatepaymentTotalComponent implements OnInit {
       switch (e) {
         case '新增': console.log(e); break;
         case '修改': this.latetotleModifyClick(); break;
-        case '删除': console.log(e); break;
+        case '删除': this.latetotleDeleteClick(); break;
         case '上传': this.uploadFileClick(); break;
       }
   }
+  // search data
   public  searchClick(e): void {
-     console.log(e);
-     if (e.value === '') {
-       this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
-     } else {
        if (e.type === 1) {
-         this.SearchData.roomCode = e.value;
+         this.SearchData.mobilePhone = '';
+         this.SearchData.roomCode = '';
          this.queryData(this.SearchData);
+       } else if (e.type === 2) {
+         if (e.value === '') {
+           this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
+         } else {
+           this.SearchData.mobilePhone = '';
+           this.SearchData.roomCode = e.value;
+           this.queryData(this.SearchData);
+         }
        } else {
-         this.SearchData.mobilePhone = e.value;
-         this.queryData(this.SearchData);
-       }
+           if (e.value === '') {
+             this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
+           } else {
+             this.SearchData.roomCode = '';
+             this.SearchData.mobilePhone = e.value;
+             this.queryData(this.SearchData);
+           }
+         }
      }
-  }
 }

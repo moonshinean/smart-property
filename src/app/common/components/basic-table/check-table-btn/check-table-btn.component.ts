@@ -44,8 +44,7 @@ export class CheckTableBtnComponent implements OnInit, OnChanges {
   }
   // select Data
   public  selectClick(e): void {
-    console.log(e);
-    console.log(123);
+    console.log(this.select);
     this.selectData.emit(this.select);
   }
   // cancel select data
@@ -53,4 +52,7 @@ export class CheckTableBtnComponent implements OnInit, OnChanges {
       this.selectData.emit(this.select);
   }
 
+  public  checkClick(): void {
+    this.selectData.emit(this.select);
+  }
 }

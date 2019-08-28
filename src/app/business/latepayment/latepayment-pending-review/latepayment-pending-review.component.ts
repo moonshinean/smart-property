@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {LatePaymentQueryData} from '../../../common/model/latepayment.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {LatePaymentService} from '../../../common/services/late-payment.service';
+import {BtnOption} from '../../../common/components/header-btn/headerData.model';
 
 @Component({
   selector: 'rbi-latepayment-pending-review',
@@ -13,6 +14,8 @@ export class LatepaymentPendingReviewComponent implements OnInit {
   public optionTable: any;
   public reviewOption: any;
   public latependreviewSelect = [];
+  // 基础按钮相关
+  public btnOption: BtnOption = new BtnOption();
   public SearchData: LatePaymentQueryData = new LatePaymentQueryData();
   // 详情相关
   public dialogOption: any;
@@ -58,6 +61,13 @@ export class LatepaymentPendingReviewComponent implements OnInit {
     private lateSrv: LatePaymentService
   ) { }
   ngOnInit() {
+    this.btnOption.btnlist = [
+      // {label: '新增', src: 'assets/images/ic_add.png', style: {background: '#55AB7F', marginLeft: '2vw'} },
+      // {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '1vw'} },
+      // {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#A84847', marginLeft: '1vw'} },
+      {label: '审核', src: '', style: {background: '#55AB7F', marginLeft: '2vw'} },
+    ];
+    this.btnOption.searchHidden = true;
     this.latependreviewInitialization();
   }
   // Initialize latependreview data
@@ -89,7 +99,7 @@ export class LatepaymentPendingReviewComponent implements OnInit {
   // set table data
   public  setTableOption(data): void {
     this.optionTable = {
-      width: '79vw',
+      width: '100%',
       header: {
         data:  [
           {field: 'orderId', header: '订单编号'},
@@ -212,5 +222,33 @@ export class LatepaymentPendingReviewComponent implements OnInit {
   public clearSelect(): void {
     this.reviewOption.dialog = false;
     this.latependreviewSelect = [];
+  }
+
+  public btnClick(e): void {
+    this.reviewClick();
+  }
+  // search data
+  public  searchClick(e): void {
+    if (e.type === 1) {
+      this.SearchData.mobilePhone = '';
+      this.SearchData.roomCode = '';
+      this.queryData(this.SearchData);
+    } else if (e.type === 2) {
+      if (e.value === '') {
+        this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
+      } else {
+        this.SearchData.mobilePhone = '';
+        this.SearchData.roomCode = e.value;
+        this.queryData(this.SearchData);
+      }
+    } else {
+      if (e.value === '') {
+        this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
+      } else {
+        this.SearchData.roomCode = '';
+        this.SearchData.mobilePhone = e.value;
+        this.queryData(this.SearchData);
+      }
+    }
   }
 }

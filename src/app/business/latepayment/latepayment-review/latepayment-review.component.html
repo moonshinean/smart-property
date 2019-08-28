@@ -5,30 +5,7 @@
   <p-messages  [closable]="true" [style]="{'position':'fixed','left':'10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
   <!--顶部按钮-->
   <div class="latepayment-review-header">
-    <div class=" ui-g-6">
-      <!--<div class="ui-g-1 latepayment-review-header-btn latepayment-review-header-btn-add" (click)="latetotleConfigClick()">-->
-        <!--<img class="latepayment-review-header-img-add" src="assets/images/ic_add.png" alt="">-->
-        <!--<span>增 加</span>-->
-      <!--</div>-->
-      <!--<div class="ui-g-1 latepayment-review-header-btn latepayment-review-header-btn-modify" (click)="latetotleConfigClick()">-->
-        <!--<img class="latepayment-review-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
-        <!--<span>修 改</span>-->
-      <!--</div>-->
-      <!--<div class="ui-g-1 latepayment-review-header-btn latepayment-review-header-btn-delete" (click)="latetotleDeleteClick()">-->
-        <!--<img class="latepayment-review-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
-        <!--<span>删 除</span>-->
-      <!--</div>-->
-      <div class="ui-g-1 latepayment-review-header-btn latepayment-review-header-btn-add" (click)="reviewClick()">
-        <!--<img class="latepayment-review-header-img-delete" src="" alt="">-->
-        <span>审  核</span>
-      </div>
-    </div>
-    <!--搜索-->
-    <!--<div class="ui-inputgroup latepayment-review-header-btn-search">-->
-      <!--<input type="text" pInputText placeholder="请输入权限编码" >-->
-      <!--<button   type="button"  (click)="latetotleSearchClick()"  label="搜索" style="outline: none;border:0;background: #5E6372;width: 6vw;color: #fff;margin-left: 1vw;border-radius: 5px">搜索</button>-->
-      <!--&lt;!&ndash;<span class="ui-inputgroup-addon" (click)="exportSearchClick($event)"><i class="fa fa-search"></i></span>&ndash;&gt;-->
-    <!--</div>-->
+    <rbi-basic-btn [btnOption]="btnOption" (event)="btnClick($event)" (searchEvent)="searchClick($event)"></rbi-basic-btn>
   </div>
   <!--表格-->
   <div class="latepayment-review-table">

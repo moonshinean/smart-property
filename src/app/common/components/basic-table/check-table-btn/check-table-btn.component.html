@@ -1,11 +1,11 @@
 <div class="check-table-btn" *ngIf="option">
   <!--没有按钮的-->
   <div *ngIf="!option.btnHidden">
-    <p-table [columns]="option.header.data" [value]="option.Content.data"  [scrollable]="true"  scrollHeight="50vh"  [style]="{'width': option?.width}"  [(selection)]="select"   (onRowSelect)="selectClick($event)" (onRowUnselect)="noSelectClick($event)">
+    <p-table [columns]="option.header.data" [value]="option.Content.data"  [scrollable]="false"  scrollHeight="50vh"  [style]="{'width': option?.width}"  [(selection)]="select"   (onRowSelect)="selectClick($event)" (onRowUnselect)="noSelectClick($event)">
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th style="width: 3em" [ngStyle]="option.header.style">
-            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            <p-tableHeaderCheckbox (click)="checkClick()"></p-tableHeaderCheckbox>
           </th>
           <th *ngFor="let col of columns"  [ngStyle]="option.header.style">
             {{col.header}}
@@ -35,11 +35,11 @@
   </div>
   <!--有按钮的-->
   <div *ngIf="option.btnHidden">
-    <p-table [columns]="option.header.data" [value]="option.Content.data"  [scrollable]="true"  scrollHeight="50vh"  [style]="{'width':  option?.width}"  [(selection)]="select"  (onRowSelect)="selectClick($event)"  (onRowUnselect)="noSelectClick($event)">
+    <p-table [columns]="option.header.data" [value]="option.Content.data"  [scrollable]="false"   scrollHeight="50vh"  [style]="{'width':  option?.width}"  [(selection)]="select"  (onRowSelect)="selectClick($event)"  (onRowUnselect)="noSelectClick($event)">
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <th [ngStyle]="option.header.style">
-            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          <th [ngStyle]="option.header.style" style="width: 3em">
+            <p-tableHeaderCheckbox (click)="checkClick()"></p-tableHeaderCheckbox>
           </th>
           <th *ngFor="let col of columns"  [ngStyle]="option.header.style">
             {{col.header}}
@@ -49,7 +49,7 @@
       <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
         <!--普通列表-->
         <tr [pSelectableRow]="rowData" *ngIf="rowIndex%2!=1" [ngStyle]="option.Content.styleone">
-          <td>
+          <td style="width: 3em">
             <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
           </td>
           <td  *ngFor="let col of columns.slice(0, columns.length-1)" >

@@ -21,6 +21,9 @@ export class LatePaymentService {
   public  updateLatePayment(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + '/liquidated/damages/update', pamars);
   }
+  public  deleteLatePayment(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/liquidated/damages/delete', pamars);
+  }
 
   /**
    * 待审核模块
@@ -62,5 +65,7 @@ export class LatePaymentService {
   public  reviewLatePaymentNoPass(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + '/liquidated/damages/noPass', pamars);
   }
+
+
 
 }

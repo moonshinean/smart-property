@@ -15,8 +15,9 @@ export class BasicBtnComponent implements OnInit {
   @Output()
   public searchEvent = new EventEmitter<any>();
   public searchOption = [
-    {label: '房间号', value: 1},
-    {label: '手机号', value: 2},
+    {label: '所有', value: 1},
+    {label: '房间号', value: 2},
+    {label: '手机号', value: 3},
   ];
   public searchType = 1;
   public serchData = '';
