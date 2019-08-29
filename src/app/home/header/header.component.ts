@@ -139,6 +139,7 @@ export class HeaderComponent implements OnInit {
           if (value.status === '1000') {
             this.localSrv.remove('appkey');
             this.localSrv.remove('item');
+            this.localSrv.remove('sidebarItem');
             this.router.navigate(['/login']);
           } else {
             this.toolSrv.setToast('error', '请求失败', value.message);

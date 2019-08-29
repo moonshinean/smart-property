@@ -139,8 +139,7 @@ export class LatepaymentTotalComponent implements OnInit {
       );
     });
   }
-  // close  add latetotle dialog
-// delete latetotle
+  // delete latetotle
   public  latetotleDeleteClick(): void {
     if (this.latetotleSelect === undefined || this.latetotleSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
@@ -163,6 +162,7 @@ export class LatepaymentTotalComponent implements OnInit {
   // paging query
   public  nowpageEventHandle(event: any): void {
     this.SearchData.pageNo = event;
+
     // this.SearchData.pageNo = 10;
     // console.log(this.SearchData);
     this.queryData(this.SearchData);
@@ -288,7 +288,6 @@ export class LatepaymentTotalComponent implements OnInit {
   }
   // query data
   public  queryData(data): void {
-    // this.SearchData.pageSize = 10;
     this.loadHidden = false;
     this.lateSrv.queryLatePaymentPageData(data).subscribe(
       value => {
