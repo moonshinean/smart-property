@@ -291,10 +291,8 @@ export class LatepaymentTotalComponent implements OnInit {
     this.loadHidden = false;
     this.lateSrv.queryLatePaymentPageData(data).subscribe(
       value => {
-        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
-
           this.setTableOption(value.data.contents);
           this.pageOption = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {

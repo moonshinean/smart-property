@@ -60,13 +60,13 @@ export class ChargemanPaymentComponent implements OnInit {
   // 收费项目选择确认查找详细数据
   public payItemDetail: ChargeItemData = new ChargeItemData();
   // public payItem: ChargeItems[] = [];
-  // public  SearchOption = {
-  //   village: [],
-  //   region: [],
-  //   building: [],
-  //   unit: [],
-  //   room: [],
-  // };
+  public  SearchOption = {
+    village: [],
+    region: [],
+    building: [],
+    // unit: [],
+    // room: [],
+  };
   public chargeScrollPanelStyle: any;
   public SearchData: SearchData = new SearchData();
   // 缴费相关
@@ -130,13 +130,13 @@ export class ChargemanPaymentComponent implements OnInit {
         }
       }
     );
-    // this.globalSrv.queryVillageInfo({}).subscribe(
-    //   (data) => {
-    //     data.data.forEach( v => {
-    //       this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-    //     });
-    //   }
-    // );
+    this.globalSrv.queryVillageInfo({}).subscribe(
+      (data) => {
+        data.data.forEach( v => {
+          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+        });
+      }
+    );
   }
   // condition search click
   public  paymentSearchClick(): void {
@@ -157,6 +157,8 @@ export class ChargemanPaymentComponent implements OnInit {
             if (value.data.contents) {
               this.toolSrv.setToast('success', '搜索成功', value.message);
               this.paymentTableContent = value.data.contents;
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+
             } else {
               this.toolSrv.setToast('success', '搜索成功', '数据为空');
             }
@@ -180,6 +182,7 @@ export class ChargemanPaymentComponent implements OnInit {
             if (value.data.contents) {
               this.toolSrv.setToast('success', '搜索成功', value.message);
               this.paymentTableContent = value.data.contents;
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
             } else {
               this.toolSrv.setToast('success', '搜索成功', '数据为空');
             }
@@ -191,47 +194,47 @@ export class ChargemanPaymentComponent implements OnInit {
       );
     }
   }
-  // // select village
-  // public  VillageChange(e): void {
-  //   // console.log(this.test);
-  //   this.SearchOption.building = [];
-  //   this.SearchOption.unit = [];
-  //   this.SearchOption.region = [];
-  //   this.SearchData.villageCode = e.value;
-  //   this.loadHidden = false;
-  //   this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
-  //     (value) => {
-  //       value.data.forEach( v => {
-  //         this.loadHidden = true;
-  //         this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
-  //       });
-  //     }
-  //   );
-  // }
-  // // select region
-  // public  regionChange(e): void {
-  //   this.loadHidden = false;
-  //   this.SearchData.regionCode = '';
-  //   this.SearchData.buildingCode = '';
-  //   this.SearchData.unitCode = '';
-  //   this.SearchData.regionCode = e.value;
-  //   this.SearchOption.building = [];
-  //   this.SearchOption.unit = [];
-  //   this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
-  //     (value) => {
-  //       value.data.forEach( v => {
-  //         this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
-  //       });
-  //       this.loadHidden = true;
-  //
-  //     }
-  //   );
-  // }
-  // // select building
+  // select village
+  public  VillageChange(e): void {
+    // console.log(this.test);
+    this.SearchOption.building = [];
+    // this.SearchOption.unit = [];
+    this.SearchOption.region = [];
+    // this.SearchData.villageCode = e.value;
+    this.loadHidden = false;
+    this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
+      (value) => {
+        value.data.forEach( v => {
+          this.loadHidden = true;
+          this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
+        });
+      }
+    );
+  }
+  // select region
+  public  regionChange(e): void {
+    this.loadHidden = false;
+    // this.SearchData.regionCode = '';
+    // this.SearchData.buildingCode = '';
+    // this.SearchData.unitCode = '';
+    // this.SearchData.regionCode = e.value;
+    this.SearchOption.building = [];
+    // this.SearchOption.unit = [];
+    this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
+      (value) => {
+        value.data.forEach( v => {
+          this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
+        });
+        this.loadHidden = true;
+
+      }
+    );
+  }
+  // select building
   // public  buildingChange(e): void {
-  //   this.SearchData.buildingCode = '';
-  //   this.SearchData.unitCode = '';
-  //   this.SearchOption.unit = [];
+  //   // this.SearchData.buildingCode = '';
+  //   // this.SearchData.unitCode = '';
+  //   // this.SearchOption.unit = [];
   //   this.SearchData.buildingCode = e.value;
   //   this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
   //     (value) => {
