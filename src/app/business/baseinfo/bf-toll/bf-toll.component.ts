@@ -358,9 +358,7 @@ export class BfTollComponent implements OnInit {
   // show Detail Dialog
   public  toolDetailClick(e): void {
     this.tollTitle = e;
-    console.log(this.tollTitle.mustPay);
     if (this.tollTitle.mustPay !== null ) {
-      console.log(this.mustPayOption);
       this.mustPayOption.forEach(value => {
         if (this.tollTitle.mustPay.toString() === value.value) {
           this.tollmustpayMedify = value.label;

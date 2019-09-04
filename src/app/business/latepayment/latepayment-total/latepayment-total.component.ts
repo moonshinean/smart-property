@@ -26,39 +26,7 @@ export class LatepaymentTotalComponent implements OnInit {
   public fileRecordoption: any;
   // 详情相关
   public dialogOption: any;
-  public detailTitle = [
-    {field: 'orderId', header: '订单编号'},
-    {field: 'villageName', header: '小区名称'},
-    {field: 'regionName', header: '地块名称'},
-    {field: 'buildingName', header: '楼宇名称'},
-    {field: 'unitName', header: '单元名称'},
-    {field: 'roomCode', header: '房间号'},
-    {field: 'roomSize', header: '房间大小'},
-    {field: 'surname', header: '客户姓'},
-    {field: 'mobilePhone', header: '手机号'},
-    {field: 'amountTotalReceivable', header: '应收总金额'},
-    {field: 'actualTotalMoneyCollection', header: '实收总金额'},
-    {field: 'surplusTotal', header: '减免金额'},
-    {field: 'surplusReason', header: '减免原因'},
-    {field: 'auditStatus', header: '审核状态'},
-    {field: 'reviserId', header: '修订人'},
-    {field: 'auditId', header: '审核人'},
-    {field: 'retrialId', header: '复核人'},
-    {field: 'propertyActualMoneyCollection', header: '物业费金额'},
-    {field: 'month', header: '缴费月数'},
-    {field: 'liquidatedDamageDueTime', header: '违约金到期时间'},
-    {field: 'startTime', header: '物业费计费开始时间'},
-    {field: 'dueTime', header: '物业费计费结束时间'},
-    {field: 'oneMonthPropertyFeeAmount', header: '单月物业费'},
-    {field: 'tollCollectorName', header: '操作人姓名'},
-    {field: 'superfluousAmount', header: '超额物业费'},
-    {field: 'reviserName', header: '修订人姓名'},
-    {field: 'auditName', header: '审核人姓名'},
-    {field: 'retrialName', header: '复审人姓名'},
-    {field: 'quarterlyCycleTime', header: '季度周期循环时间'},
-    {field: 'remarks', header: '备注'},
-
-  ];
+  public detailTitle: any;
   // 修改相关
   public modifyLatePayment: ModifyLatePayment = new ModifyLatePayment();
   // 删除相关
@@ -244,6 +212,39 @@ export class LatepaymentTotalComponent implements OnInit {
   }
   // set detail dialog data
   public  detailClick(e): void {
+      this.detailTitle = [
+      {field: 'orderId', header: '订单编号'},
+      {field: 'villageName', header: '小区名称'},
+      {field: 'regionName', header: '地块名称'},
+      {field: 'buildingName', header: '楼宇名称'},
+      {field: 'unitName', header: '单元名称'},
+      {field: 'roomCode', header: '房间号'},
+      {field: 'roomSize', header: '房间大小'},
+      {field: 'surname', header: '客户姓'},
+      {field: 'mobilePhone', header: '手机号'},
+      {field: 'amountTotalReceivable', header: '应收总金额'},
+      {field: 'actualTotalMoneyCollection', header: '实收总金额'},
+      {field: 'surplusTotal', header: '减免金额'},
+      {field: 'surplusReason', header: '减免原因'},
+      {field: 'auditStatus', header: '审核状态'},
+      {field: 'reviserId', header: '修订人'},
+      {field: 'auditId', header: '审核人'},
+      {field: 'retrialId', header: '复核人'},
+      {field: 'propertyActualMoneyCollection', header: '物业费金额'},
+      {field: 'month', header: '缴费月数'},
+      {field: 'liquidatedDamageDueTime', header: '违约金到期时间'},
+      {field: 'startTime', header: '物业费计费开始时间'},
+      {field: 'dueTime', header: '物业费计费结束时间'},
+      {field: 'oneMonthPropertyFeeAmount', header: '单月物业费'},
+      {field: 'tollCollectorName', header: '操作人姓名'},
+      {field: 'superfluousAmount', header: '超额物业费'},
+      {field: 'reviserName', header: '修订人姓名'},
+      {field: 'auditName', header: '审核人姓名'},
+      {field: 'retrialName', header: '复审人姓名'},
+      {field: 'quarterlyCycleTime', header: '季度周期循环时间'},
+      {field: 'remarks', header: '备注'},
+
+    ];
       if (e.liquidatedDamages) {
         this.dialogOption = {
           dialog: true,

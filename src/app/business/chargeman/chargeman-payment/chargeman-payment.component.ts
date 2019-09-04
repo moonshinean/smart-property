@@ -602,7 +602,6 @@ export class ChargemanPaymentComponent implements OnInit {
   }
   // show detail dialog (展示详情弹窗)
   public  detailClick(e): void {
-      console.log(e);
     this.dialogOption = {
       dialog: true,
       tableHidden: false,

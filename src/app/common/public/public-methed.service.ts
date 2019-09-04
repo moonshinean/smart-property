@@ -150,4 +150,18 @@ export class PublicMethedService {
     //   case '1008': this.setToast('error', '请求失败', '原始密码不匹配'); break;
     // }
   }
+
+  /**
+   * 数九转换
+   * @param data
+   * @param label
+   */
+  public  dataConversion(data, label): any {
+    data.forEach( v => {
+      if (label.toString() === v.settingCode) {
+        label = v.settingName;
+      }
+    });
+    return label;
+  }
 }

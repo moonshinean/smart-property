@@ -21,6 +21,8 @@ import {
 import {TableModule} from 'primeng/table';
 import {FormsModule} from '@angular/forms';
 import {PublicMethedService} from '../../common/public/public-methed.service';
+import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
+import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,8 @@ import {PublicMethedService} from '../../common/public/public-methed.service';
     CalendarModule,
     PagingModule,
     InputTextareaModule,
+    BasicTableModule,
+    BasicDialogModule
   ],
   providers: [MessageService, ConfirmationService, PublicMethedService]
 
