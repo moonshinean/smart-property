@@ -24,8 +24,6 @@ export class AuthInterceptor implements HttpInterceptor {
     }
   }
   public debug_http(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
-    console.log(req.url);
     if (req.url === environment.loginUrl + '/login') {
       this.clonedRequest = req.clone({
         url: req.url,

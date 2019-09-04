@@ -26,6 +26,8 @@ import {PagingModule} from '../../common/components/paging/paging.module';
 import {LoadingModule} from '../../common/components/loading/loading.module';
 import { ChargeParkspaceComponent } from './charge-parkspace/charge-parkspace.component';
 import {PublicMethedService} from '../../common/public/public-methed.service';
+import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
+import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,9 @@ import {PublicMethedService} from '../../common/public/public-methed.service';
     CalendarModule,
     PagingModule,
     InputTextareaModule,
-    LoadingModule
+    LoadingModule,
+    BasicTableModule,
+    BasicDialogModule
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

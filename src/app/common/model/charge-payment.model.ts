@@ -95,10 +95,10 @@ export class LiquidatedDamages {
   amountMoney?: any;
 }
 export  class SearchData {
-  // villageCode: any;
-  // unitCode: any;
-  // regionCode: any;
-  // buildingCode: any;
+  villageCode: any;
+  unitCode: any;
+  regionCode: any;
+  buildingCode: any;
   roomCode: any;
   pageNo: any;
   pageSize: any;

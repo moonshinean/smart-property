@@ -19,7 +19,7 @@ export class CheckTableBtnComponent implements OnInit, OnChanges {
         styleone: any;
         styletwo: any;
       };
-      btnHidden?: any;
+      type?: any;
       tableList?: TableeBtn[];
   };
   @Output()

@@ -48,11 +48,9 @@ export class PublicMethedService {
   public  getAdminStatus(parameter, callback: (...args: any[]) => any): void {
     this.globalSrv.queryAdminStatus({settingType: parameter}).subscribe(
       value => {
-        if (value.status === '1000') {
+        this.setQuestJudgment(value.status, value.message, () => {
           callback(value.data);
-        } else {
-           callback([]);
-        }
+        });
       }
     );
   }
@@ -62,14 +60,12 @@ export class PublicMethedService {
    * @param parameter (Request parameter)
    * @param callback
    */
-  public  getNativeStatus(parameter, success: (...args: any[]) => any): void {
+  public  getNativeStatus(parameter, callback: (...args: any[]) => any): void {
     this.globalSrv.queryNativeStatus({settingType: parameter}).subscribe(
       value => {
-        if (value.status === '1000') {
-          success(value.data);
-        } else {
-          success(false);
-        }
+        this.setQuestJudgment(value.status, value.message, () => {
+          callback(value.data);
+        });
       }
     );
   }

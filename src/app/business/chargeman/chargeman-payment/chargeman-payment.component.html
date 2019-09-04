@@ -25,52 +25,14 @@
     <!--搜索-->
     <div class="ui-inputgroup chargeman-payment-header-search">
       <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>
-      <p-dropdown [options]="searchOption"   scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索方式.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
       <input type="text" pInputText placeholder="请输入业主手机号.."  [(ngModel)]="searchData">
       <button id="disabled-btn" class="chargeman-payment-header-btn-search" type="button"  (click)="paymentSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>
   <!--表格-->
   <div class="chargeman-payment-table">
-    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
-      <p-table [columns]="paymentTableTitle" [value]="paymentTableContent" [(selection)]="paymentSelect" >
-        <ng-template pTemplate="header" let-columns>
-          <tr >
-            <th style="width: 3em"  [ngStyle]="this.paymentTableTitleStyle">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th *ngFor="let col of columns"  [ngStyle]="this.paymentTableTitleStyle">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td>
-              {{rowIndex+1}}
-            </td>
-            <td  *ngFor="let col of columns.slice(1,columns.length)" >
-              {{rowData[col.field]}}
-            </td>
-          </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td>
-              {{rowIndex+1}}
-            </td>
-            <td  *ngFor="let col of columns.slice(1,columns.length)" >
-              {{rowData[col.field]}}
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-scrollPanel>
-
+    <rbi-check-table-btn [option]="optionTable" [select]="paymentSelect" (detail)="detailClick($event)" (selectData)="selectData($event)"></rbi-check-table-btn>
   </div>
   <!--项目弹窗-->
   <p-dialog header="项目选择" [(visible)]="projectSelectDialog" [width]="500" [focusOnShow]="false" [transitionOptions]="'200ms'" [closable]="false">
@@ -84,13 +46,13 @@
           <label >月数</label>
         </div>
         <div class="ui-g-4" [hidden]="!(item.chargeWay === 1)">
-          <p-spinner size="30" [(ngModel)]="item.datedif" [min]="item.minMonth" [max]="12"></p-spinner>
+          <p-spinner size="30" [(ngModel)]="item.datedif" min="1" [max]="12"></p-spinner>
         </div>
         <div class="ui-g-2" [hidden]="!(item.chargeWay === 2)">
           <label >张数</label>
         </div>
         <div class="ui-g-4" [hidden]="!(item.chargeWay === 2)">
-          <p-spinner size="30" [(ngModel)]="item.datedif" [min]="item.minMonth" [max]="12"></p-spinner>
+          <p-spinner size="30" [(ngModel)]="item.datedif" min="1" [max]="12"></p-spinner>
         </div>
       </div>
     </div>
@@ -259,6 +221,7 @@
       </div>
     </p-footer>
   </p-dialog>
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

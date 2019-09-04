@@ -124,7 +124,7 @@ export class LatepaymentReviewComponent implements OnInit {
         styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
         styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
       },
-      btnHidden: true,
+      type: 2,
       tableList:  [{label: '详情', color: '#6A72A1'}]
     };
   }
@@ -135,6 +135,7 @@ export class LatepaymentReviewComponent implements OnInit {
         dialog: true,
         tableHidden: true,
         width: '1000',
+        type: 2,
         title: '详情',
         poplist: {
           popContent: e,
@@ -164,6 +165,7 @@ export class LatepaymentReviewComponent implements OnInit {
         dialog: true,
         tableHidden: false,
         width: '1000',
+        type: 2,
         title: '详情',
         poplist: {
           popContent: e,

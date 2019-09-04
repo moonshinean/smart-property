@@ -14,6 +14,7 @@ export class DetailPopComponent implements OnInit, OnChanges {
     width?: any;
     dialog?: any;
     tableHidden?: boolean;
+    type: any;
     poplist?: PopData;
     tablelist?: TableOption;
   };

@@ -13,7 +13,6 @@ import {
 import {environment} from '../../../../environments/environment';
 import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
-import {ScrollPanel} from 'primeng/primeng';
 
 @Component({
   selector: 'rbi-chargeman-payment',
@@ -24,15 +23,10 @@ export class ChargemanPaymentComponent implements OnInit {
 
   @ViewChild('input') input: Input;
   @ViewChild('scrollpanel') scrollpanel: ElementRef;
-  public paymentTableTitle = [
-    {field: 'id', header: '序号'},
-    {field: 'roomCode', header: '房间号'},
-    {field: 'roomSize', header: '建筑面积'},
-    {field: 'surname', header: '客户名称'},
-    {field: 'mobilePhone', header: '客户电话'},
-    {field: 'dueTime', header: '物业费到期时间'}];
-  public paymentTableContent: any;
-  public paymentTableTitleStyle: any;
+  // public paymentTableTitle = ;
+  public optionTable: any;
+  // public paymentTableContent: any;
+  // public paymentTableTitleStyle: any;
   public paymentDialogTableTitle = [
     {field: 'chargeName', header: '项目名称'},
     {field: 'chargeStandard', header: '标准单价'},
@@ -57,6 +51,8 @@ export class ChargemanPaymentComponent implements OnInit {
   public liquidatedDamagesStyle: any;
   public addPayProject = false;
   public paymentSelect: Patyment[];
+  // 详情相关
+  public dialogOption: any;
   // 收费项目选择确认查找详细数据
   public payItemDetail: ChargeItemData = new ChargeItemData();
   // public payItem: ChargeItems[] = [];
@@ -64,8 +60,6 @@ export class ChargemanPaymentComponent implements OnInit {
     village: [],
     region: [],
     building: [],
-    // unit: [],
-    // room: [],
   };
   public chargeScrollPanelStyle: any;
   public SearchData: SearchData = new SearchData();
@@ -88,8 +82,9 @@ export class ChargemanPaymentComponent implements OnInit {
     {name: '物业费到期时间', value: '', label: 'dueTime'},
   ];
   public searchOption = [
-    {label: '手机号', value: '1'},
-    {label: '房间号', value: '2'},
+    {label: '全部', value: 1},
+    {label: '手机号', value: 2},
+    {label: '房间号', value: 3},
   ];
   public searchType: any;
   public searchData: any;
@@ -110,97 +105,53 @@ export class ChargemanPaymentComponent implements OnInit {
     private  toolSrv: PublicMethedService
   ) { }
   ngOnInit() {
-
+    this.SearchData.buildingCode = '';
+    this.SearchData.pageNo = 1;
+    this.SearchData.pageSize = 10;
+    this.SearchData.mobilePhone = '';
+    this.SearchData.roomCode = '';
+    this.SearchData.regionCode = '';
+    this.SearchData.villageCode = '';
+    this.SearchData.unitCode = '';
     this.paymentInitialization();
   }
-  // initialization payment
+  // Initialize the charge record（初始化收费记录）
   public  paymentInitialization(): void {
     this.loadHidden = false;
-    this.paymentTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
-    this.paymentSrv.searchPaymentData({pageNo: this.nowPage , pageSize: 10}).subscribe(
-      (value) => {
-        if (value.status === '1000') {
-          this.loadHidden = true;
-          if (value.data.contents) {
-            this.paymentTableContent = value.data.contents;
-          }
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        } else {
-          this.toolSrv.setToast('error', '请求错误', value.message);
-        }
-      }
-    );
-    this.globalSrv.queryVillageInfo({}).subscribe(
-      (data) => {
-        data.data.forEach( v => {
-          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-        });
-      }
-    );
+    // this.paymentTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
+    this.queryDataPage();
   }
-  // condition search click
+  // condition search 条件搜索）
   public  paymentSearchClick(): void {
     if (this.searchType === undefined) {
-      this.searchType = '1';
-    }
-    if (this.searchType === '1') {
-      this.SearchData.pageNo = 1;
-      this.SearchData.pageSize = 10;
+      this.queryData(this.SearchData);
+    } else if (this.searchType === 2) {
       this.SearchData.roomCode = '';
       this.SearchData.mobilePhone = this.searchData;
-      // @ts-ignore
       this.loadHidden = false;
-      this.paymentSrv.searchPaymentData(this.SearchData).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.loadHidden = true;
-            if (value.data.contents) {
-              this.toolSrv.setToast('success', '搜索成功', value.message);
-              this.paymentTableContent = value.data.contents;
-              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-
-            } else {
-              this.toolSrv.setToast('success', '搜索成功', '数据为空');
-            }
-          } else {
-            this.toolSrv.setToast('error', '搜索失败', value.message);
-
-          }
-        }
-      );
-    } else {
+      // this.SearchOption = {}
+      this.queryData(this.SearchData);
+    } else if (this.searchType === 3) {
       this.SearchData.pageNo = 1;
       this.SearchData.pageSize = 10;
       this.SearchData.roomCode = this.searchData;
       this.SearchData.mobilePhone = '';
-      // @ts-ignore
       this.loadHidden = false;
-      this.paymentSrv.searchPaymentData(this.SearchData).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.loadHidden = true;
-            if (value.data.contents) {
-              this.toolSrv.setToast('success', '搜索成功', value.message);
-              this.paymentTableContent = value.data.contents;
-              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-            } else {
-              this.toolSrv.setToast('success', '搜索成功', '数据为空');
-            }
-          } else {
-            this.toolSrv.setToast('error', '搜索失败', value.message);
-
-          }
-        }
-      );
+      this.queryData(this.SearchData);
+    } else {
+      this.SearchOption.region = [];
+      this.SearchOption.building = [];
+      this.SearchOption.village = [];
+      this.queryDataPage();
     }
   }
-  // select village
+  // select village  (选择小区)
   public  VillageChange(e): void {
-    // console.log(this.test);
+    this.SearchData.buildingCode = '';
+    this.SearchData.regionCode = '';
     this.SearchOption.building = [];
-    // this.SearchOption.unit = [];
+    this.SearchData.villageCode = e.value;
     this.SearchOption.region = [];
-    // this.SearchData.villageCode = e.value;
     this.loadHidden = false;
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
       (value) => {
@@ -211,13 +162,11 @@ export class ChargemanPaymentComponent implements OnInit {
       }
     );
   }
-  // select region
+  // select region (选择地块)
   public  regionChange(e): void {
     this.loadHidden = false;
-    // this.SearchData.regionCode = '';
-    // this.SearchData.buildingCode = '';
-    // this.SearchData.unitCode = '';
-    // this.SearchData.regionCode = e.value;
+    this.SearchData.regionCode = e.value;
+    this.SearchData.buildingCode = '';
     this.SearchOption.building = [];
     // this.SearchOption.unit = [];
     this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
@@ -230,20 +179,21 @@ export class ChargemanPaymentComponent implements OnInit {
       }
     );
   }
-  // select building
-  // public  buildingChange(e): void {
-  //   // this.SearchData.buildingCode = '';
-  //   // this.SearchData.unitCode = '';
-  //   // this.SearchOption.unit = [];
-  //   this.SearchData.buildingCode = e.value;
-  //   this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
-  //     (value) => {
-  //       value.data.forEach( v => {
-  //         this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
-  //       });
-  //     }
-  //   );
-  // }
+  // select building (选择楼栋)
+  public  buildingChange(e): void {
+    // this.SearchData.buildingCode = '';
+    // this.SearchData.unitCode = '';
+    // this.SearchData.buildingCode
+    // this.SearchOption.unit = [];
+    this.SearchData.buildingCode = e.value;
+    // this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
+    //   (value) => {
+    //     value.data.forEach( v => {
+    //       this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
+    //     });
+    //   }
+    // );
+  }
   // // select unit
   // public  unitChange(e): void {
   //   this.SearchData.roomCode = '';
@@ -256,7 +206,7 @@ export class ChargemanPaymentComponent implements OnInit {
   //     }
   //   );
   // }
-  // sure selectPreject payment
+  // sure selectPreject payment （选择项目确认）
   public  paymentProjectSureClick(): void {
     let monthStatus = true;
     let monthCheckStatus = false;
@@ -284,6 +234,7 @@ export class ChargemanPaymentComponent implements OnInit {
     } else {
       if (monthStatus) {
         this.loadHidden = false;
+        this.optonDialog = [];
         this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
           data.forEach(v => {
             this.optonDialog.push({label: v.settingName, value: v.settingCode});
@@ -306,7 +257,6 @@ export class ChargemanPaymentComponent implements OnInit {
         });
         this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(
           (value) => {
-            console.log(value);
             if (value.status === '1000') {
               this.paymentItemData = value.data.cost;
               if (value.data.cost.length > 4) {
@@ -329,6 +279,7 @@ export class ChargemanPaymentComponent implements OnInit {
                 this.paymentTotle = this.paymentTotle + v.actualMoneyCollection;
                 this.paymentActualTotal = this.paymentActualTotal + v.amountReceivable;
               });
+              this.paymentTotle = Number(this.paymentTotle.toFixed(2));
               this.paymentMoney = this.paymentTotle;
             } else {
               this.toolSrv.setToast('error', '操作错误', value.message);
@@ -340,7 +291,7 @@ export class ChargemanPaymentComponent implements OnInit {
       }
     }
   }
-  // sure modify payment
+  // sure  payment (缴费确认)
   public  paymentSureClick(): void {
     if (this.paymentOrderAdd.paymentMethod === undefined || this.paymentOrderAdd.payerName === undefined || this.paymentOrderAdd.payerPhone === undefined) {
         this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
@@ -407,7 +358,7 @@ export class ChargemanPaymentComponent implements OnInit {
       }
     }
   }
-  // delete payment
+  // Display charging items selection pop-up window (展示项目选择弹窗)
   public  paymentClick(): void {
     if (this.paymentSelect === undefined || this.paymentSelect.length === 0 ) {
       this.toolSrv.setToast('error', '请求错误', '请选择需要缴费的项');
@@ -424,7 +375,11 @@ export class ChargemanPaymentComponent implements OnInit {
               });
               if (flag) {
                 if ( v.chargeType === '1' || v.chargeType === '2' || v.chargeType === '3') {
-                  this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: this.paymentSelect[0].minMonth, chargeWay: v.chargeWay, check: 0, minMonth: this.paymentSelect[0].minMonth });
+                  if (this.paymentSelect[0].minMonth === 0) {
+                    this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: this.paymentSelect[0].minMonth + 1, chargeWay: v.chargeWay, check: 0, minMonth: this.paymentSelect[0].minMonth});
+                  }else {
+                    this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: this.paymentSelect[0].minMonth, chargeWay: v.chargeWay, check: 0, minMonth: this.paymentSelect[0].minMonth});
+                  }
                 } else {
                   this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 0, minMonth: 1});
                 }
@@ -439,7 +394,7 @@ export class ChargemanPaymentComponent implements OnInit {
       this.toolSrv.setToast('error', '请求错误', '只能选择一项进行缴费');
     }
   }
-  // select payment
+  // Charge item selection switch (收费项目选择切换)
   public  projectChange(i): void {
     if (this.paymentProject[i].check === 0) {
       this.paymentProject[i].check = 1;
@@ -486,7 +441,7 @@ export class ChargemanPaymentComponent implements OnInit {
       // console.log(e);
       this.paymentOrderAdd.paymentMethod = e.value;
   }
-  // Calculated amount
+  // Calculated amount (计算金额)
   public  getBalance(e): void {
     if (e.target.value >= this.paymentTotle) {
       this.Balance = parseFloat(( e.target.value - this.paymentTotle).toFixed(2));
@@ -508,29 +463,20 @@ export class ChargemanPaymentComponent implements OnInit {
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.paymentSrv.searchPaymentData({pageNo: event , pageSize: 10}).subscribe(
-      (value) => {
-        this.loadHidden = true;
-
-        if (value.data.contents) {
-          this.paymentTableContent = value.data.contents;
-        }
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-      }
-    );
+    this.queryDataPage();
     this.paymentSelect = [];
   }
-  // Mobile phone number format judgment
+  // Mobile phone number format judgment （手机号格式判断）
   public paymentPhoneChange(e): void {
-      if (e.length !== '' && e.length < 11 || isNaN(e)) {
-        this.toolSrv.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
-        this.phoneErrorToast = false;
-      } else {
-        this.phoneErrorToast = true;
-      }
-
+    if (!/^1[37458]\d{9}$/.test(e)) {
+      this.toolSrv.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
+      this.phoneErrorToast = false;
+      // return false;
+    } else {
+      this.phoneErrorToast = true;
+    }
   }
-  // Reset data
+  // Reset data (重置数据)
   public  InitializationAllpayData(): void {
     this.paymentItemData = [];
     // this.paymentDialog = false;
@@ -542,6 +488,149 @@ export class ChargemanPaymentComponent implements OnInit {
     this.paymentInitialization();
     this.payItemDetail = new ChargeItemData();
     this.paymentProject = [];
+  }
+  // query data （搜索条件的搜索数据）
+  public  queryData(searData): void {
+    this.toolSrv.getAdminStatus('SEX', (data) => {
+      // console.log(data);
+      this.toolSrv.getAdminStatus('ROOM_TYPE', (value) => {
+        // console.log(value);
+        this.paymentSrv.searchPaymentData(searData).subscribe(
+          (val) => {
+            if (val.status === '1000') {
+              this.loadHidden = true;
+              if (val.data.contents) {
+                val.data.contents.forEach( total => {
+                  total.sex = this.dataConversion(data, total.sex);
+                  total.roomType = this.dataConversion(value, total.roomType);
+                });
+                this.setTableOption(val.data.contents);
+                // }
+                this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+              } else {
+                this.toolSrv.setToast('success', '搜索成功', '数据为空');
+              }
+            } else {
+              this.toolSrv.setToast('error', '搜索失败', value.message);
+
+            }
+          }
+        );
+      });
+    });
+    // this.globalSrv.queryVillageInfo({}).subscribe(
+    //   (data) => {
+    //     this.SearchOption = {
+    //       village: [],
+    //       region: [],
+    //       building: [],
+    //     };
+    //     data.data.forEach( v => {
+    //       this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+    //     });
+    //   }
+    // );
+  }
+  // Paging query data （分页查询数据）
+  public   queryDataPage(): void {
+    this.toolSrv.getAdminStatus('SEX', (data) => {
+      // console.log(data);
+      this.toolSrv.getAdminStatus('ROOM_TYPE', (value) => {
+        // console.log(value);
+        this.paymentSrv.searchPaymentData({pageNo: this.nowPage , pageSize: 10}).subscribe(
+          (val) => {
+            if (val.status === '1000') {
+              this.loadHidden = true;
+              val.data.contents.forEach( total => {
+                total.sex = this.dataConversion(data, total.sex);
+                total.roomType = this.dataConversion(value, total.roomType);
+              });
+              this.setTableOption(val.data.contents);
+              // }
+              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+            } else {
+              this.toolSrv.setToast('error', '请求错误', val.message);
+            }
+          }
+        );
+      });
+    });
+    this.globalSrv.queryVillageInfo({}).subscribe(
+      (data) => {
+        data.data.forEach( v => {
+          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+        });
+      }
+    );
+  }
+  // set table data （设置列表数据）
+  public  setTableOption(data): void {
+    this.optionTable = {
+      width: '100%',
+      header: {
+        data:  [
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'roomCode', header: '房间编号'},
+          // {field: 'roomCode', header: '房间号'},
+          {field: 'roomSize', header: '建筑面积'},
+          {field: 'roomType', header: '房间类型'},
+          {field: 'surname', header: '客户名称'},
+          {field: 'sex', header: '客户性别'},
+          {field: 'mobilePhone', header: '客户电话'},
+          {field: 'dueTime', header: '物业费到期时间'},
+          {field: 'minMonth', header: '欠费月数'},
+          {field: 'operating', header: '操作'}],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 3,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
+  }
+  // set data coversion （数据类型转换）
+  public  dataConversion(data, label): any {
+     data.forEach( v => {
+       if (label.toString() === v.settingCode) {
+         label = v.settingName;
+       }
+     });
+     return label;
+  }
+  // show detail dialog (展示详情弹窗)
+  public  detailClick(e): void {
+      console.log(e);
+    this.dialogOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'roomSize', header: '建筑面积'},
+          {field: 'roomType', header: '房间类型'},
+          {field: 'surname', header: '客户名称'},
+          {field: 'sex', header: '客户性别'},
+          {field: 'mobilePhone', header: '客户电话'},
+          {field: 'dueTime', header: '物业费到期时间'},
+          {field: 'minMonth', header: '欠费月数'},
+        ],
+      }
+    };
+  }
+  // select data （选择数据）
+  public  selectData(e): void {
+      this.paymentSelect = e;
   }
 }
 
