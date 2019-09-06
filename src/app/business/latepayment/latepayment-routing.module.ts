@@ -6,6 +6,7 @@ import {LatepaymentReviewComponent} from './latepayment-review/latepayment-revie
 import {LatepaymentPendingReviewComponent} from './latepayment-pending-review/latepayment-pending-review.component';
 import {LatepaymentNoPassComponent} from './latepayment-no-pass/latepayment-no-pass.component';
 import {LatepaymentAuditedComponent} from './latepayment-audited/latepayment-audited.component';
+import {LatepaymentOwnerComponent} from './latepayment-owner/latepayment-owner.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
       {path: 'pendreview', component: LatepaymentPendingReviewComponent},
       {path: 'nopass', component: LatepaymentNoPassComponent},
       {path: 'audited', component: LatepaymentAuditedComponent},
+      {path: 'owner', component: LatepaymentOwnerComponent},
     ]
   }
 ];

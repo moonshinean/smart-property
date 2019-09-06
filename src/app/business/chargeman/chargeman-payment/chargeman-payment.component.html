@@ -9,6 +9,9 @@
       <div class="ui-g-1 chargeman-payment-header-btn chargeman-payment-header-btn-delete"  style="margin-left: 2vw" (click)="paymentClick()">
         <span>缴 费</span>
       </div>
+      <div class="ui-g-1 chargeman-payment-header-btn chargeman-payment-btn-add"  style="margin-left: 2vw" (click)="uploadFile()">
+        <span>上  传</span>
+      </div>
       <div style="margin-top: 4.5vh;font-size: 0.875rem">
         <label style="color: #fff;margin-left: 0.5vw" >小区：</label>
         <p-dropdown [options]="SearchOption.village"  scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)" [style]="{'width':'5vw'}"></p-dropdown>
@@ -222,6 +225,8 @@
     </p-footer>
   </p-dialog>
   <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
+  <rbi-file-pop [UploadFileOption]="paymentUploadFileOption" (event)="uploadFileSureClick($event)"></rbi-file-pop>
+  <rbi-upload-file-record [uploadRecordOption]="fileRecordoption"></rbi-upload-file-record>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

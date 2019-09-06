@@ -58,7 +58,7 @@ export class HeaderComponent implements OnInit {
     this.item = [];
     this.headerSrv.getUserInfo().subscribe(
       value => {
-
+          console.log(value);
         if (value.status === '1000') {
           this.username = value.data.username;
         }

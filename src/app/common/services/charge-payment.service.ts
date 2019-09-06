@@ -30,4 +30,9 @@ export class ChargePaymentService {
   public  getPayDocument(pamars): Observable<any> {
      return this.http.post(environment.chargeUrl + `/cash/register/printBilles`, pamars);
   }
+
+  // 导入旧账单
+  public importOldBills(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/cash/register/importOldBills`, pamars);
+  }
 }

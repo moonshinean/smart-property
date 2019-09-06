@@ -123,7 +123,7 @@ export class LatepaymentAuditedComponent implements OnInit {
           popTitle: this.detailTitle,
         },
         tablelist: {
-          width: '104%',
+          width: '100%',
           title: '违约金信息',
           tableHeader: {
             data: [

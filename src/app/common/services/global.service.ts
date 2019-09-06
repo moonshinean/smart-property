@@ -40,4 +40,6 @@ export class GlobalService {
   public queryNativeStatus(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/setting/findNativeChoose`, pamars);
   }
+
+
 }

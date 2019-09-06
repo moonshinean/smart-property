@@ -23,6 +23,7 @@ export class FilePopComponent implements OnInit, OnChanges {
     this.UploadFileOption.files.forEach(v => {
       fileData.append('file', v);
     });
+    // console.log(fileData.getAll('file'));
     this.event.emit(fileData);
   }
 

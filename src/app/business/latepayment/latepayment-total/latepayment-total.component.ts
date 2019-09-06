@@ -146,7 +146,6 @@ export class LatepaymentTotalComponent implements OnInit {
     this.loadHidden = false;
     this.lateSrv.uploadFile(e).subscribe(
       (value) => {
-        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
          this.toolSrv.setToast('success', '请求成功', '上传成功');
@@ -257,7 +256,7 @@ export class LatepaymentTotalComponent implements OnInit {
             popTitle: this.detailTitle,
           },
           tablelist: {
-            width: '104%',
+            width: '100%',
             title: '违约金信息',
             tableHeader: {
               data: [

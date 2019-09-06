@@ -24,9 +24,18 @@ import { LatepaymentPendingReviewComponent } from './latepayment-pending-review/
 import { LatepaymentAuditedComponent } from './latepayment-audited/latepayment-audited.component';
 import { LatepaymentNoPassComponent } from './latepayment-no-pass/latepayment-no-pass.component';
 import {HeaderBtnModule} from '../../common/components/header-btn/header-btn.module';
+import { LatepaymentOwnerComponent } from './latepayment-owner/latepayment-owner.component';
 
 @NgModule({
-  declarations: [LatepaymentComponent, LatepaymentTotalComponent, LatepaymentReviewComponent, LatepaymentPendingReviewComponent, LatepaymentAuditedComponent, LatepaymentNoPassComponent],
+  declarations: [
+    LatepaymentComponent,
+    LatepaymentTotalComponent,
+    LatepaymentReviewComponent,
+    LatepaymentPendingReviewComponent,
+    LatepaymentAuditedComponent,
+    LatepaymentNoPassComponent,
+    LatepaymentOwnerComponent
+  ],
   imports: [
     CommonModule,
     LatepaymentRoutingModule,

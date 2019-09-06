@@ -32,7 +32,8 @@ export class AuthInterceptor implements HttpInterceptor {
         // .set('Content-type', 'application/x-www-form-urlencoded')
     });
     } else if (req.url === environment.sysetUrl + '/excel/readExcel'
-      || req.url === environment.chargeUrl + '/liquidated/damages/batch/processing') {
+      || req.url === environment.chargeUrl + '/liquidated/damages/batch/processing' ||
+      environment.chargeUrl + '/cash/register/importOldBills') {
       this.clonedRequest = req.clone({
         url: req.url,
         headers: req.headers
@@ -77,7 +78,8 @@ export class AuthInterceptor implements HttpInterceptor {
          // .set('Content-type', 'application/x-www-form-urlencoded')
        });
      } else if (req.url === environment.sysetUrl + '/excel/readExcel'
-       || req.url === environment.chargeUrl + '/liquidated/damages/batch/processing') {
+       || req.url === environment.chargeUrl + '/liquidated/damages/batch/processing' ||
+       environment.chargeUrl + '/cash/register/importOldBills') {
        this.clonedRequest = req.clone({
          url: req.url,
          headers: req.headers

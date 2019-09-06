@@ -406,6 +406,7 @@ export class BfOwnerComponent implements OnInit {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
     }
   }
+
   public  modifyMoreOwerClick(): void {
     for (const ownerinfoKey in this.ownerinfo) {
       if (this.ownerinfo[ownerinfoKey] === null) {

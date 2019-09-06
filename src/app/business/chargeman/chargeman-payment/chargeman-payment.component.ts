@@ -13,6 +13,7 @@ import {
 import {environment} from '../../../../environments/environment';
 import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 
 @Component({
   selector: 'rbi-chargeman-payment',
@@ -25,6 +26,10 @@ export class ChargemanPaymentComponent implements OnInit {
   @ViewChild('scrollpanel') scrollpanel: ElementRef;
   // public paymentTableTitle = ;
   public optionTable: any;
+  public paymentUploadFileOption: FileOption = new FileOption();
+  public uploadedFiles: any[] = [];
+  // 上传详情记录相关
+  public fileRecordoption: any;
   // public paymentTableContent: any;
   // public paymentTableTitleStyle: any;
   public paymentDialogTableTitle = [
@@ -630,6 +635,50 @@ export class ChargemanPaymentComponent implements OnInit {
   // select data （选择数据）
   public  selectData(e): void {
       this.paymentSelect = e;
+  }
+
+  // show upload file dialog
+  public  uploadFile(): void {
+    this.paymentUploadFileOption.dialog = true;
+    this.paymentUploadFileOption.files = this.uploadedFiles;
+    this.paymentUploadFileOption.width = '800';
+  }
+  // sure upload file (确定上传文件)
+  public  uploadFileSureClick(e): void {
+    this.loadHidden = false;
+    this.paymentSrv.importOldBills(e).subscribe(
+      value => {
+        this.loadHidden = true;
+        this.toolSrv.setQuestJudgment(value.status, value.message, () => {
+         this.paymentUploadFileOption.files = [];
+          this.fileRecordoption = {
+            width: '900',
+              dialog: true,
+            title: '上传记录',
+            totalNumber: value.data.totalNumber,
+            realNumber: value.data.realNumber,
+            uploadOption: {
+            width: '102%',
+              tableHeader: {
+              data: [
+                {field: 'orderId', header: '导入编号'},
+                {field: 'code', header: '编号'},
+                {field: 'roomCode', header: '房间号'},
+                {field: 'result', header: '结果'},
+                {field: 'remark', header: '备注'},
+              ],
+                style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+            },
+            tableContent: {
+              data: value.data.logOldBillsDOS,
+                styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+              styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+            }
+          }
+          };
+        });
+      }
+    );
   }
 }
 

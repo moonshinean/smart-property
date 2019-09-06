@@ -67,5 +67,11 @@ export class LatePaymentService {
   }
 
 
+  /**
+   * 计算违约金
+   */
+  public  calcLatepayment(pamars): Observable<any> {
+      return this.http.post(environment.chargeUrl + '/liquidated/damages/onekeyCalculationLiquidatedDamages', pamars)
+  }
 
 }

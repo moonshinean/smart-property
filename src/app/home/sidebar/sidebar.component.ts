@@ -175,6 +175,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           {label: '退款已审核', icon: 'pi pi-fw ', routerLink: ['/home/refund/audited']},
         ] },
       { title: '违约金', item: [],  routingItem: [
+          {label: '业主信息', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/owner']},
           {label: '违约金信息', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/latepaytotle']},
           {label: '待审核', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/review']},
           {label: '待复审', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/pendreview']},
