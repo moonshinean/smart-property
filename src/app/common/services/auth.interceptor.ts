@@ -31,7 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
         .set('Content-type', 'application/json; charset=UTF-8')
         // .set('Content-type', 'application/x-www-form-urlencoded')
     });
-    } else if (req.url === environment.sysetUrl + '/excel/readExcel'
+    } else if (req.url === environment.sysetUrl + '/owner/import'
       || req.url === environment.chargeUrl + '/liquidated/damages/batch/processing' ||
       environment.chargeUrl + '/cash/register/importOldBills') {
       this.clonedRequest = req.clone({
@@ -77,7 +77,7 @@ export class AuthInterceptor implements HttpInterceptor {
            .set('Content-type', 'application/json; charset=UTF-8')
          // .set('Content-type', 'application/x-www-form-urlencoded')
        });
-     } else if (req.url === environment.sysetUrl + '/excel/readExcel'
+     } else if (req.url === environment.sysetUrl + '/owner/import'
        || req.url === environment.chargeUrl + '/liquidated/damages/batch/processing' ||
        environment.chargeUrl + '/cash/register/importOldBills') {
        this.clonedRequest = req.clone({

@@ -55,3 +55,16 @@ export class ModifyLatePayment {
   liquidatedDamages: any;
   remark: any;
 }
+
+
+// 计算违约金
+export class CalaPaymentData {
+  roomCodeAndMobilePhoneDTOS?: CalCDTO[];
+  startTime: any;
+  endTime: any;
+  liquidatedDamageDueTime: any;
+}
+export class CalCDTO {
+  roomCode?: any;
+  mobilePhone?: any;
+}

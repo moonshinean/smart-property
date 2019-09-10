@@ -3,6 +3,10 @@ import {BfOwnerService} from '../../../common/services/bf-owner.service';
 import {LatePaymentService} from '../../../common/services/late-payment.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {SearchOwner} from '../../../common/model/bf-owner.model';
+import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
+import {FormGroup} from '@angular/forms';
+import {CalaPaymentData} from '../../../common/model/latepayment.model';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'rbi-latepayment-owner',
@@ -17,12 +21,20 @@ export class LatepaymentOwnerComponent implements OnInit {
   // 其他相关
   public pageOption: any;
   public loadHidden = true;
+  // 计算违约金相关
+  public CalcPaymentData: CalaPaymentData = new CalaPaymentData();
+
+  public form: FormValue[] = [];
+  public formgroup: FormGroup;
+  public formdata: any[];
+  public optionDialog: DialogModel = new DialogModel();
   // 查询相关
   public searchOwerData: SearchOwner = new SearchOwner();
   constructor(
     private ownerSrv: BfOwnerService,
     private lateSrv: LatePaymentService,
-    private toolSrv: PublicMethedService
+    private toolSrv: PublicMethedService,
+    private datePipe: DatePipe
   ) { }
 
   ngOnInit() {
@@ -53,9 +65,28 @@ export class LatepaymentOwnerComponent implements OnInit {
 
   // 计算违约金
   public  CalculationClick(): void {
+    this.CalcPaymentData.roomCodeAndMobilePhoneDTOS = [];
     if (this.ownerSelect.length > 0) {
-      this.toolSrv.setToast('warn', '操作成功', '功能待完善');
-    }else {
+      this.ownerSelect.forEach( v => {
+        this.CalcPaymentData.roomCodeAndMobilePhoneDTOS.push({roomCode: v.roomCode, mobilePhone: v.mobilePhone});
+      });
+      this.optionDialog = {
+        type: 'add',
+        title: '选择时间',
+        width: '800',
+        dialog: true
+      };
+      const list = ['startTime', 'endTime', 'liquidatedDamageDueTime'];
+      list.forEach(val => {
+          this.form.push({key: val, disabled: false, required: true, value: ''});
+      });
+      this.formgroup = this.toolSrv.setFormGroup(this.form);
+      this.formdata = [
+        {label: '开始时间', type: 'date', name: 'startTime', option: '', placeholder: '请选择开始时间'},
+        {label: '结束时间', type: 'date', name: 'endTime', option: '', placeholder: '请选择结束时间'},
+        {label: '违约金到期', type: 'date', name: 'liquidatedDamageDueTime', option: '', placeholder: '请选择违约金到期时间'},
+      ];
+    } else {
       this.toolSrv.setToast('error', '操作错误', '请选择需要计算的项');
     }
   }
@@ -63,7 +94,7 @@ export class LatepaymentOwnerComponent implements OnInit {
   // set table data
   public  setTableOption(data): void {
     this.optionTable = {
-      width: '100%',
+      width: '101.4%',
       header: {
         data:  [
           {field: 'villageName', header: '小区名称'},
@@ -92,7 +123,6 @@ export class LatepaymentOwnerComponent implements OnInit {
     this.loadHidden = false;
     this.ownerSrv.queryOwerDataList(data).subscribe(
       value => {
-        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
           this.setTableOption(value.data.contents);
@@ -175,5 +205,32 @@ export class LatepaymentOwnerComponent implements OnInit {
   // select data
   public  selectData(e): void {
       this.ownerSelect = e;
+  }
+
+  public  nowpageEventHandle(e): void {
+    this.searchOwerData.pageNo = e;
+    this.queryData(this.searchOwerData);
+  }
+
+  public  eventClick(e): void {
+      // if (！e)
+    if (e === 'false') {
+      this.optionDialog.dialog = false;
+      this.ownerSelect = [];
+    } else {
+      for (const key in e.value.value) {
+           this.CalcPaymentData[key] = this.datePipe.transform(e.value.value[key], 'yyyy-MM-dd');
+      }
+      this.calcLatepayment(this.CalcPaymentData);
+    }
+  }
+
+  public  calcLatepayment(data): void {
+    console.log(data);
+    this.lateSrv.calcLatepayment(data).subscribe(
+        value => {
+          console.log(value);
+        }
+      );
   }
 }

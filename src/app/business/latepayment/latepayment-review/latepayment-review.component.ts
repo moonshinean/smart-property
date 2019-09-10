@@ -103,7 +103,7 @@ export class LatepaymentReviewComponent implements OnInit {
   // set table data
   public  setTableOption(data): void {
     this.optionTable = {
-      width: '100%',
+      width: '101.4%',
       header: {
         data:  [
           {field: 'orderId', header: '订单编号'},
@@ -142,7 +142,7 @@ export class LatepaymentReviewComponent implements OnInit {
           popTitle: this.detailTitle,
         },
         tablelist: {
-          width: '104%',
+          width: '102%',
           title: '违约金信息',
           tableHeader: {
             data: [

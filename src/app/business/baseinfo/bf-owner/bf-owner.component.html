@@ -604,53 +604,55 @@
       </div>
     </p-footer>
   </p-dialog>
-  <p-dialog header="导入成功信息" [(visible)]="ownerInfoDialog" [width]="900">
-    <!--Content-->
-    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6" style="text-align: center; font-size: 1rem; font-weight: bold">
-        <div class="ui-g-4">
-          <label >插入总条数:</label>
-        </div>
-        <div class="ui-g-8">
-          <label >{{uploadOption?.tableContent?.data[0]?.totalNumber}}</label>
-        </div>
-      </div>
-      <div class="ui-g-6" style="text-align: center; font-size: 1rem; font-weight: bold">
-        <div class="ui-g-4">
-          <label >插入成功条数:</label>
-        </div>
-        <div class="ui-g-8">
-          <label >{{uploadOption?.tableContent?.data[0]?.realNumber}}</label>
-        </div>
-      </div>
-      <div class="ui-g-12">
-        <rbi-bf-table [option]="uploadOption"></rbi-bf-table>
-      </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerInfoDialog=false">确认</button>
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerInfoDialog=false">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+<!--  <p-dialog header="导入成功信息" [(visible)]="ownerInfoDialog" [width]="900">-->
+<!--    &lt;!&ndash;Content&ndash;&gt;-->
+<!--    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">-->
+<!--      <div class="ui-g-6" style="text-align: center; font-size: 1rem; font-weight: bold">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >插入总条数:</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <label >{{uploadOption?.tableContent?.data[0]?.totalNumber}}</label>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6" style="text-align: center; font-size: 1rem; font-weight: bold">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >插入成功条数:</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <label >{{uploadOption?.tableContent?.data[0]?.realNumber}}</label>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-12">-->
+<!--        <rbi-bf-table [option]="uploadOption"></rbi-bf-table>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <p-footer>-->
+<!--      <div class="ui-dialog-buttonpane ui-helper-clearfix">-->
+<!--        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerInfoDialog=false">确认</button>-->
+<!--        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerInfoDialog=false">取消</button>-->
+<!--      </div>-->
+<!--    </p-footer>-->
+<!--  </p-dialog>-->
   <!--文件上传-->
   <button class="bf-owner-dialog-Btn bf-owner-bottom-Btn" (click)="addMoreClick()" >批量导入</button>
-  <p-dialog header="信息上传" [(visible)]="ownerUploadFileDialog" [width]="800">
-    <!--Content-->
-    <div class="ui-g ui-fluid" >
-      <div class="ui-g-12">
-        <p-fileUpload multiple="multiple"  maxFileSize="10000000000"  [files]="uploadedFiles" chooseLabel="选择文件">
-        </p-fileUpload>
-      </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerUploadSureClick()">确认</button>
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerUploadFileDialog=false">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+<!--  <p-dialog header="信息上传" [(visible)]="ownerUploadFileDialog" [width]="800">-->
+<!--    &lt;!&ndash;Content&ndash;&gt;-->
+<!--    <div class="ui-g ui-fluid" >-->
+<!--      <div class="ui-g-12">-->
+<!--        <p-fileUpload multiple="multiple"  maxFileSize="10000000000"  [files]="uploadedFiles" chooseLabel="选择文件">-->
+<!--        </p-fileUpload>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <p-footer>-->
+<!--      <div class="ui-dialog-buttonpane ui-helper-clearfix">-->
+<!--        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerUploadSureClick()">确认</button>-->
+<!--        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerUploadFileDialog=false">取消</button>-->
+<!--      </div>-->
+<!--    </p-footer>-->
+<!--  </p-dialog>-->
+  <rbi-file-pop [UploadFileOption]="UploadFileOption" (event)="ownerUploadSureClick($event)"></rbi-file-pop>
+  <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

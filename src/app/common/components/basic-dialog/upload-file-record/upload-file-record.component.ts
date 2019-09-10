@@ -9,7 +9,7 @@ export class UploadFileRecordComponent implements OnInit {
 
   @Input()
   public uploadRecordOption: {
-    with: any,
+    width: any,
     dialog: boolean,
     title: any,
     totalNumber: any,

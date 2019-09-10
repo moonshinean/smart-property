@@ -351,7 +351,7 @@ export class CouponTotalComponent implements OnInit {
   // set table data
   public  setTableOption(data): void {
     this.couponTotalOption = {
-      width: '100%',
+      width: '101.4%',
       header: {
         data:   [
           {field: 'roomCode', header: '房间代码'},

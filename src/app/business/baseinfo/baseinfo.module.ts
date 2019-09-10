@@ -27,6 +27,7 @@ import { BfCouponComponent } from './bf-coupon/bf-coupon.component';
 import { BfRoombindChangeitemComponent } from './bf-roombind-changeitem/bf-roombind-changeitem.component';
 import {PublicMethedService} from '../../common/public/public-methed.service';
 import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
+import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import {BasicTableModule} from '../../common/components/basic-table/basic-table.
     LoadingModule,
     TreeModule,
     ReactiveFormsModule,
-    BasicTableModule
+    BasicTableModule,
+    BasicDialogModule
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

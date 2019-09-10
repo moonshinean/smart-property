@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 
 import { LatepaymentRoutingModule } from './latepayment-routing.module';
 import { LatepaymentComponent } from './latepayment/latepayment.component';
@@ -54,6 +54,6 @@ import { LatepaymentOwnerComponent } from './latepayment-owner/latepayment-owner
     BasicDialogModule,
     HeaderBtnModule
   ],
-  providers: [MessageService, ConfirmationService, PublicMethedService]
+  providers: [MessageService, ConfirmationService, PublicMethedService, DatePipe]
 })
 export class LatepaymentModule { }

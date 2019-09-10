@@ -27,226 +27,77 @@
   </div>
   <!--表格-->
   <div class="bf-coupon-table">
-    <p-scrollPanel [style]="{width:'100%',height: '95%'}" styleClass="custombar">
-      <p-table [columns]="couponTableTitle" [value]="couponTableContent"  [(selection)]="couponSelect">
-        <ng-template pTemplate="header" let-columns>
-          <tr >
-            <th style="width: 3em"  [ngStyle]="this.couponTableTitleStyle">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th *ngFor="let col of columns"  [ngStyle]="this.couponTableTitleStyle">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1);" >
-              <span *ngIf="col.field === 'money'">￥</span> {{rowData[col.field]}}<span *ngIf="col.field === 'effectiveTime'"><span  *ngIf="rowData[col.field]!== '无期限'">天</span></span>
-            </td>
-            <td>
-              <button class="bf-coupon-table-Btn" (click)="couponDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              <span *ngIf="col.field === 'money'">￥</span>{{rowData[col.field]}} <span *ngIf="col.field === 'effectiveTime'"><span  *ngIf="rowData[col.field]!== '无期限'">天</span></span>
-            </td>
-            <td >
-              <button class="bf-coupon-table-Btn" (click)="couponDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-scrollPanel>
-
+    <rbi-check-table-btn [select]="couponSelect" (selectData)="selectData($event)" [option]="optionTable" (detail)="couponDetailClick($event)"></rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
-  <p-dialog header="优惠券添加" [(visible)]="couponAddDialog" [width]="800">
-    <!--Content-->
-    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >优惠卷名称：</label>
-        </div>
-        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <input id="addroomCode" type="text" pInputText placeholder="请输入优惠券名称.." [(ngModel)]="couponAdd.couponName">
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label > 优惠卷类型：</label>
-        </div>
-        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #addcouponType   [options]="couponTypeData" placeholder="请选择优惠类型.." (onChange)="couponTypeChange($event)"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >收费项目：</label>
-        </div>
-        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #addChargeCode [options]="ChargeCodeData"  placeholder="请选择收费项目.."  (onChange)="chargeCodeChange($event)"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addroomCode">有效时长：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #addEffectiveTime [options]="EffectiveTime"  placeholder="请选择有效时长.." (onChange)="EffectiveTimeChange($event)"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="money">金额：</label>
-        </div>
-        <div class="ui-g-8">
-          <input id="money" type="text" pInputText placeholder="请输入金额.." [(ngModel)]="couponAdd.money">
-        </div>
-      </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="bf-coupon-dialog-Btn bf-coupon-dialog-Btn-sure" (click)="couponAddSureClick()">确认</button>
-        <button class="bf-coupon-dialog-Btn bf-coupon-dialog-Btn-false" (click)="couponAddDialog=false;clearData()">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+  <rbi-dialog-pop
+    [dialogOption]="optionDialog"
+    [formContrl]="formgroup"
+    [formdata]="formdata"
+    (eventClick)="eventClick($event)">
+  </rbi-dialog-pop>
   <!--修改弹窗-->
-  <p-dialog header="信息修改" [(visible)]="couponModifayDialog" [width]="800">
-    <!--Content-->
-    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >优惠卷名称：</label>
-        </div>
-        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <input id="modifyroomCode" type="text" pInputText placeholder="请输入房间代码.." [(ngModel)]="couponModify.couponName">
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label > 优惠卷类型：</label>
-        </div>
-        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #modifycouponType  [options]="couponTypeData" [placeholder]="couponModify.couponType" [(ngModel)]="couponModify.couponType"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >收费项目：</label>
-        </div>
-        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #modifyChargeCode [options]="ChargeCodeData" [placeholder]="couponModify.chargeCode" [(ngModel)]="couponModify.chargeCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addroomCode">有效时长：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #modifyeffectiveTime [options]="EffectiveTime"  [placeholder]="modifyEffectiveTime" [(ngModel)]="couponModify.effectiveTime"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addroomCode">是否可用：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px" #modifyeffectiveTime [options]="optionEnable"  [placeholder]="modifyEnable" [(ngModel)]="couponModify.enable"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addbclientName">金额：</label>
-        </div>
-        <div class="ui-g-8">
-          <input id="addbclientName" type="text" pInputText placeholder="请输入金额.." [(ngModel)]="couponModify.money">
-        </div>
-      </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="bf-coupon-dialog-Btn bf-coupon-dialog-Btn-sure" (click)="couponModifySureClick()">确认</button>
-        <button class="bf-coupon-dialog-Btn bf-coupon-dialog-Btn-false"  (click)="couponModifayDialog=false;clearData()">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+<!--  <p-dialog header="信息修改" [(visible)]="couponModifayDialog" [width]="800">-->
+<!--    &lt;!&ndash;Content&ndash;&gt;-->
+<!--    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >优惠卷名称：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">-->
+<!--          <input id="modifyroomCode" type="text" pInputText placeholder="请输入房间代码.." [(ngModel)]="couponModify.couponName">-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label > 优惠卷类型：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">-->
+<!--          <p-dropdown scrollHeight="100px" #modifycouponType  [options]="couponTypeData" [placeholder]="couponModify.couponType" [(ngModel)]="couponModify.couponType"></p-dropdown>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >收费项目：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">-->
+<!--          <p-dropdown scrollHeight="100px" #modifyChargeCode [options]="ChargeCodeData" [placeholder]="couponModify.chargeCode" [(ngModel)]="couponModify.chargeCode"></p-dropdown>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >有效时长：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+<!--          <p-dropdown scrollHeight="100px" #modifyeffectiveTime [options]="EffectiveTime"  [placeholder]="modifyEffectiveTime" [(ngModel)]="couponModify.effectiveTime"></p-dropdown>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >是否可用：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+<!--          <p-dropdown scrollHeight="100px" #modifyeffectiveTime [options]="optionEnable"  [placeholder]="modifyEnable" [(ngModel)]="couponModify.enable"></p-dropdown>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label for="addbclientName">金额：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <input id="addbclientName" type="text" pInputText placeholder="请输入金额.." [(ngModel)]="couponModify.money">-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <p-footer>-->
+<!--      <div class="ui-dialog-buttonpane ui-helper-clearfix">-->
+<!--        <button class="bf-coupon-dialog-Btn bf-coupon-dialog-Btn-sure" (click)="couponModifySureClick()">确认</button>-->
+<!--        <button class="bf-coupon-dialog-Btn bf-coupon-dialog-Btn-false"  (click)="couponModifayDialog=false;clearData()">取消</button>-->
+<!--      </div>-->
+<!--    </p-footer>-->
+<!--  </p-dialog>-->
   <!--详情弹窗-->
-  <p-dialog header="详细信息" [(visible)]="couponDetailDialog" [width]="800">
-    <!--Content-->
-    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh','text-align':'center'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >收费项目：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{couponDetail.chargeCode}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >优惠券名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{couponDetail.couponName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >优惠卷类型：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{couponDetail.couponType}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >发放人：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{couponDetail.distributor}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >金额：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >￥{{couponDetail.money}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >是否可用：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{couponDetail.enable}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >有效时间：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{couponDetail.effectiveTime}} <span *ngIf="couponDetail.effectiveTime !== '无期限'">天</span></span>
-        </div>
-      </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <!--<button class="bf-coupon-dialog-Btn bf-coupon-dialog-Btn-sure" (click)="couponModifySureClick()">确认</button>-->
-        <button class="bf-coupon-dialog-Btn bf-coupon-dialog-Btn-false"  (click)="couponDetailDialog=false">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
   <!--文件上传-->
   <!--<button class="bf-coupon-dialog-Btn bf-coupon-bottom-Btn" (click)="AddMoreClick()" >批量导入</button>-->
   <!--<p-dialog header="信息上传" [(visible)]="couponUploadFileDialog" [width]="800">-->

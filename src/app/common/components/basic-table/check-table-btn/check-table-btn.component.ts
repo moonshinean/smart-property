@@ -5,6 +5,7 @@ import { TableeBtn} from '../table.model';
   selector: 'rbi-check-table-btn',
   templateUrl: './check-table-btn.component.html',
   styleUrls: ['./check-table-btn.component.less']
+
 })
 export class CheckTableBtnComponent implements OnInit, OnChanges {
   @Input()

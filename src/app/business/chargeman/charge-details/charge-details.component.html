@@ -5,6 +5,10 @@
     <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
     <!--顶部按钮-->
     <div class="charge-details-header">
+      <div class="ui-g-1 charge-details-header-btn charge-details-header-btn-add" (click)="uploadFileClick()">
+<!--        <img class="charge-margin-header-img-add" src="assets/images/ic_add.png" alt="">-->
+        <span>上 传</span>
+      </div>
       <!--<div class="ui-g-12">-->
         <!--<div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">-->
           <!--<label style="color: #fff;margin-left: 0.5vw" >小区：</label>-->
@@ -29,38 +33,10 @@
   <!--<button class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" style="position: absolute;top: 18.7vh;right: 5vw;z-index: 10000">搜索</button>-->
     <!--表格-->
     <div class="charge-details-table">
-      <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
-        <p-table [columns]="ChargedetailTableTitle" [value]="detailsTableContent" >
-          <ng-template pTemplate="header" let-columns>
-            <tr >
-              <th *ngFor="let col of columns"  [ngStyle]="this.detailsTableTitleStyle">
-                {{col.header}}
-              </th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-              <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-                <span *ngIf="col.header === '缴费金额'">￥</span>{{rowData[col.field]}}
-              </td>
-              <td>
-                <button class="charge-details-table-Btn" (click)="detailsDialogClick(rowData)">详情</button>
-              </td>
-            </tr>
-            <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-              <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-                <span *ngIf="col.header === '缴费金额'">￥</span>{{rowData[col.field]}}
-              </td>
-              <td>
-                <button class="charge-details-table-Btn" (click)="detailsDialogClick(rowData)">详情</button>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-scrollPanel>
+      <rbi-check-table-btn (detail)="detailsDialogClick($event)" [option]="optionTable"></rbi-check-table-btn>
     </div>
    <!--详情弹框-->
-    <p-dialog header="费用详情" [(visible)]="detailsDialog" [width]="800" >
+  <p-dialog header="费用详情" [(visible)]="detailsDialog" [width]="800" >
       <!--Content-->
       <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
          <div class="ui-g ui-fluid">
@@ -177,6 +153,8 @@
         </div>
       </p-footer>
     </p-dialog>
+  <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
+  <rbi-file-pop [UploadFileOption]="uploadFileOption" (event)="uploadFileSureClick($event)"></rbi-file-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 

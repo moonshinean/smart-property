@@ -43,7 +43,7 @@ export class MainEventComponent implements OnInit {
     ];
     // this.styleHeader = { background: '#33353C', color: '#DEDEDE', height: '6vh'};
     this.option = {
-      width: '85.5vw',
+      width: '101.5%',
       tableHeader: {
         data: this.cols,
         style: { background: '#33353C', color: '#DEDEDE', height: '6vh'},

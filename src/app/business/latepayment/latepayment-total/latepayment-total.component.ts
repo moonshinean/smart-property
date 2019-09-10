@@ -21,7 +21,6 @@ export class LatepaymentTotalComponent implements OnInit {
   public SearchData: LatePaymentQueryData = new LatePaymentQueryData();
   // 上传相关
   public UploadFileOption: FileOption = new FileOption();
-  public uploadedFiles: any[] = [];
   // 上传详情记录相关
   public fileRecordoption: any;
   // 详情相关
@@ -138,7 +137,7 @@ export class LatepaymentTotalComponent implements OnInit {
   // show upload file dialog
   public uploadFileClick(): void {
       this.UploadFileOption.dialog = true;
-      this.UploadFileOption.files = this.uploadedFiles;
+      this.UploadFileOption.files = [];
       this.UploadFileOption.width = '800';
   }
   // sure upload file
@@ -165,7 +164,8 @@ export class LatepaymentTotalComponent implements OnInit {
                  {field: 'code', header: '编号'},
                  {field: 'roomCode', header: '房间号'},
                  {field: 'result', header: '结果'},
-                 {field: 'remark', header: '备注'},
+                 {field: 'remarks' +
+                     '', header: '备注'},
                ],
                style: { background: '#F4F4F4', color: '#000', height: '6vh'}
              },
@@ -184,7 +184,7 @@ export class LatepaymentTotalComponent implements OnInit {
   // set table data
   public  setTableOption(data): void {
     this.optionTable = {
-      width: '100%',
+      width: '101.4%',
       header: {
         data:  [
           {field: 'orderId', header: '订单编号'},

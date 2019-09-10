@@ -6,6 +6,7 @@ import {C} from '@angular/cdk/typings/esm5/keycodes';
 import {GlobalService} from '../../../common/services/global.service';
 import {DatePipe} from '@angular/common';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 
 @Component({
   selector: 'rbi-bf-owner',
@@ -18,6 +19,9 @@ export class BfOwnerComponent implements OnInit {
   public ownerTableContent: Owner[];
   public ownerTableTitleStyle: any;
   public ownerSelect: any;
+  // 上传文件相关
+  public UploadFileOption: FileOption = new FileOption();
+  public uploadRecordOption: any;
   // 查询相关
   public searchOwerData: SearchOwner = new SearchOwner();
   public SearchOption = {village: [], region: [], building: [], unit: []};
@@ -73,8 +77,6 @@ export class BfOwnerComponent implements OnInit {
   public ownerModifyDialog: any;
   public ownerListIndex: any;
   // 上传相关
-  public ownerUploadFileDialog: boolean;
-  public uploadedFiles: any[] = [];
   public ownerInfoDialog: any;
   public uploadOption: any;
   // 其他相关
@@ -539,37 +541,62 @@ export class BfOwnerComponent implements OnInit {
   }
   // add more upload file Dialog
   public  addMoreClick(): void {
-    this.ownerUploadFileDialog = true;
+    this.UploadFileOption.width = '800';
+    this.UploadFileOption.dialog = true;
+    this.UploadFileOption.files = [];
   }
   // upload file
-  public  ownerUploadSureClick(): void {
-    const fileData = new FormData();
-    this.uploadedFiles.forEach(v => {
-      fileData.append('file', v);
-    });
-    this.confirmationService.confirm({
-      message: `确认要上传吗？`,
-      header: '上传提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.loadHidden = false;
-        this.owerSrv.uploadOwerInfoFile(fileData).subscribe(
-          (value) => {
-            if (value.status === '1000') {
-              this.loadHidden = true;
-              this.uploadedFiles = [];
-              this.getUploadSuccessInfo(value.data);
-              this.toolSrv.setToast('success', '上传成功', value.message);
-              this.ownerInitialization();
-            } else {
-              this.toolSrv.setToast('error', '上传失败', value.message);
+  public  ownerUploadSureClick(e): void {
+    this.loadHidden = false;
+    this.owerSrv.uploadOwerInfoFile(e).subscribe(
+      (value) => {
+        if (value.status === '1000') {
+          this.loadHidden = true;
+          // this.uploadedFiles = [];
+          this.UploadFileOption.files = [];
+          this.uploadRecordOption = {
+            width: '900',
+            dialog: true,
+            title: '上传记录',
+            totalNumber: value.data.totalNumber,
+            realNumber: value.data.realNumber,
+            uploadOption: {
+              width: '102%',
+              tableHeader: {
+                data: [
+                  {field: 'code', header: '序号'},
+                  {field: 'roomCode', header: '房间编号'},
+                  {field: 'result', header: '结果'},
+                  {field: 'remarks', header: '备注'},
+                ],
+                style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+              },
+              tableContent: {
+                data: value.data.logOwnerInformationDOS,
+                styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+                styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+              }
             }
-          }
-        );
-      },
-      reject: () => {
+          };
+          // this.ownerInfoDialog = true;
+          this.toolSrv.setToast('success', '上传成功', value.message);
+          this.ownerInitialization();
+        } else {
+          this.toolSrv.setToast('error', '上传失败', value.message);
+        }
       }
-    });
+    );
+    // this.confirmationService.confirm({
+    //   message: `确认要上传吗？`,
+    //   header: '上传提醒',
+    //   icon: 'pi pi-exclamation-triangle',
+    //   accept: () => {
+    //     this.loadHidden = false;
+    //
+    //   },
+    //   reject: () => {
+    //   }
+    // });
   }
   public  clearData(): void {
      this.ownerAdd = new AddOwner();
@@ -770,35 +797,5 @@ export class BfOwnerComponent implements OnInit {
         );
       }
     }, 400);
-  }
-
-  public getUploadSuccessInfo(id): void {
-      this.owerSrv.queryUploadDetail({logCode: id}).subscribe(
-        value => {
-          this.uploadOption = {
-            width: '102%',
-            tableHeader: {
-              data: [
-                {field: 'roomCode', header: '房间编号'},
-                {field: 'surname', header: '客户姓氏'},
-                {field: 'phone', header: '客户电话'},
-                {field: 'result', header: '结果'},
-              ],
-              style: { background: '#F4F4F4', color: '#000', height: '6vh'}
-            },
-            tableContent: {
-              data: value.data,
-              styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
-              styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
-            }
-          };
-          if (value.status === '1000') {
-            this.ownerInfoDialog = true;
-            this.ownerUploadFileDialog = false;
-          } else {
-            this.toolSrv.setToast('error', '查询上传信息失败', value.message);
-          }
-        }
-      );
   }
 }

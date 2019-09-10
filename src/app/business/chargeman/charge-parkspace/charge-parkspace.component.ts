@@ -16,6 +16,7 @@ export class ChargeParkspaceComponent implements OnInit {
   public parkspaceTableContent: any[];
   public parkspaceTableTitleStyle: any;
   public parkspaceSelect: any;
+  public optionTable: any;
   // 添加相关
   public parkspaceAddDialog: boolean;
   public parkspaceAdd: ChargeParkSpaceModel = new ChargeParkSpaceModel();
@@ -61,6 +62,7 @@ export class ChargeParkspaceComponent implements OnInit {
   public esDate: any;
   public option: any;
   public loadHidden = true;
+  public dialogOption: any;
   // 详情
   public parkspaceDetailDialog: boolean;
   public parkspaceDetail: ChargeParkSpaceModel = new ChargeParkSpaceModel();
@@ -95,7 +97,7 @@ export class ChargeParkspaceComponent implements OnInit {
     this.chargeParkspaceSrv.queryChargeParkSpacePageInfo({pageNo: this.nowPage, pageSize: 10 }).subscribe(
       value => {
         this.loadHidden = true;
-        this.parkspaceTableContent = value.data.contents;
+        this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );
@@ -338,17 +340,57 @@ export class ChargeParkspaceComponent implements OnInit {
 
   // Parking fee details
   public  parkSpaceDetailClick(e): void {
-    this.parkspaceDetail = e;
     this.getChargeItemInfo();
     this.getCarInfo();
     this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
       if (data.length > 0) {
         this.toolSrv.setDataFormat(data, this.parkspaceDetail.paymentMethod, (list, dataName) =>{
-          this.paymentMethed = dataName;
+          e.paymentMethod = dataName;
         });
       }
     });
-    this.parkspaceDetailDialog = true;
+
+    this.dialogOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'surname', header: '客户名称'},
+          {field: 'mobilePhone', header: '客户电话'},
+          {field: 'licensePlateNumber', header: '车牌号'},
+          {field: 'licensePlateColor', header: '车牌号'},
+          {field: 'licensePlateType', header: '车牌类型'},
+          {field: 'vehicleOriginalType', header: '车辆原始类型'},
+          {field: 'parkingSpaceCode', header: '车位编号'},
+          {field: 'parkingSpaceArea', header: '车位面积'},
+          {field: 'parkingSpaceType', header: '车位类型'},
+          {field: 'parkingSpaceNature', header: '车位性质'},
+          {field: 'chargeName', header: '收费项目'},
+          {field: 'chargeUnit', header: '收费单位'},
+          {field: 'chargeStandard', header: '缴费月数'},
+          {field: 'datedif', header: '收费单价'},
+          {field: 'discount', header: '折扣'},
+          {field: 'amountReceivable', header: '应收金额'},
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'preferentialAmount', header: '优惠金额'},
+          {field: 'rentalRenewalStatus', header: '续租状态'},
+          {field: 'startTime', header: '开始时间'},
+          {field: 'dueTime', header: '结束时间'},
+          {field: 'payerName', header: '缴费人'},
+          {field: 'payerPhone', header: '缴费人电话'},
+          {field: 'paymentMethod', header: '支付方式'},
+        ],
+      }
+    };
   }
   // select parkspace
   public clearData(): void {
@@ -444,9 +486,32 @@ export class ChargeParkspaceComponent implements OnInit {
     this.chargeParkspaceSrv.queryChargeParkSpacePageInfo({pageNo: this.nowPage, pageSize: 10 }).subscribe(
       value => {
         this.loadHidden = true;
-        this.parkspaceTableContent = value.data.contents;
+        // this.parkspaceTableContent = value.data.contents;
+        this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );
+  }
+
+  public  selectData(e): void {
+      this.parkspaceSelect = e;
+  }
+
+  // set table data （设置列表数据）
+  public  setTableOption(data): void {
+    this.optionTable = {
+      width: '100%',
+      header: {
+        data:  this.parkspaceTableTitle,
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 3,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
   }
 }

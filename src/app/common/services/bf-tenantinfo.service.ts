@@ -19,7 +19,7 @@ export class BfTenantinfoService {
 
   // upload owerInfo file
   public  uploadTenantInfoFile(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/excel/readExcel', body);
+    return  this.http.post(environment.chargeUrl + '/owner/import', body);
     // return  this.http.post('/recieveMessage', body);
   }
   public  addTenantInfo(body): Observable<any> {

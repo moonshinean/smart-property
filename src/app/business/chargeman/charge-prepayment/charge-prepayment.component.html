@@ -28,37 +28,39 @@
   </div>
   <!--表格-->
   <div class="charge-prepayment-table">
-    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
-      <p-table [columns]="prepaymentTableTitle" [value]="prepaymentTableContent" selectionMode="multiple"  [(selection)]="prepaymentSelect">
-        <ng-template pTemplate="header" let-columns>
-          <tr >
-            <th *ngFor="let col of columns"  [ngStyle]="this.prepaymentTableTitleStyle">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              {{rowData[col.field]}}
-            </td>
-            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
-              <button class="charge-prepayment-table-Btn" (click)="prepaymentDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              {{rowData[col.field]}}
-            </td>
-            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">
-              <button class="charge-prepayment-table-Btn" (click)="prepaymentDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-scrollPanel>
+    <rbi-check-table-btn [option]="optionTable" (selectData)="selectData($event)" [select]="prepaymentSelect"   (detail)="prepaymentDetailClick($event)"></rbi-check-table-btn>
+<!--    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">-->
+<!--      <p-table [columns]="prepaymentTableTitle" [value]="prepaymentTableContent" selectionMode="multiple"  [(selection)]="prepaymentSelect">-->
+<!--        <ng-template pTemplate="header" let-columns>-->
+<!--          <tr >-->
+<!--            <th *ngFor="let col of columns"  [ngStyle]="this.prepaymentTableTitleStyle">-->
+<!--              {{col.header}}-->
+<!--            </th>-->
+<!--          </tr>-->
+<!--        </ng-template>-->
+<!--        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">-->
+<!--          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">-->
+<!--            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >-->
+<!--              {{rowData[col.field]}}-->
+<!--            </td>-->
+<!--            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">-->
+<!--              <button class="charge-prepayment-table-Btn" (click)="prepaymentDetailClick(rowData)">详情</button>-->
+<!--            </td>-->
+<!--          </tr>-->
+<!--          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">-->
+<!--            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >-->
+<!--              {{rowData[col.field]}}-->
+<!--            </td>-->
+<!--            <td *ngFor="let col of columns.slice(columns.length-1,columns.length)">-->
+<!--              <button class="charge-prepayment-table-Btn" (click)="prepaymentDetailClick(rowData)">详情</button>-->
+<!--            </td>-->
+<!--          </tr>-->
+<!--        </ng-template>-->
+<!--      </p-table>-->
+<!--    </p-scrollPanel>-->
   </div>
   <!--详情弹框-->
+  <rbi-detail-pop [dialogOption]="detailOption"></rbi-detail-pop>
   <p-dialog header="预缴详情" [(visible)]="prepaymentDetailDialog" [width]="800"  >
     <!--Content-->
     <p-scrollPanel [style]="{width:'100%',height: '50vh'}" styleClass="custombar">

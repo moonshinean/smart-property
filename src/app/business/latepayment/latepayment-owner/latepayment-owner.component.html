@@ -42,6 +42,12 @@
     <rbi-check-table-btn [option]="optionTable"   (detail)="detailClick($event)" [select]="ownerSelect" (selectData)="selectData($event)"></rbi-check-table-btn>
   </div>
   <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
+  <rbi-dialog-pop
+    [formdata]="formdata"
+    [formContrl]="formgroup"
+    [dialogOption]="optionDialog"
+   (eventClick)="eventClick($event)">
+  </rbi-dialog-pop>
   <!--增加弹窗-->
   <rbi-paging [option]="pageOption" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>

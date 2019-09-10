@@ -20,7 +20,6 @@
       </div>
     </div>
     <!--搜索-->
-    <!--搜索-->
     <div class="ui-inputgroup  charge-parkspace-header-search">
       <input type="text" pInputText placeholder="请输入缴费人" #input>
       <button id="disabled-btn" class=" charge-parkspace-header-btn-search" type="button"  (click)="parkspaceSearchClick()"  label="搜索">搜索</button>
@@ -28,7 +27,9 @@
   </div>
   <!--表格-->
   <div class=" charge-parkspace-table">
-    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+
+    <rbi-check-table-btn [option]="optionTable" [select]="parkspaceSelect" (selectData)="selectData($event)" (detail)="parkSpaceDetailClick($event)"></rbi-check-table-btn>
+ <!--   <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
       <p-table [columns]="parkspaceTableTitle" [value]="parkspaceTableContent"  [(selection)]="parkspaceSelect">
         <ng-template pTemplate="header" let-columns>
           <tr >
@@ -66,7 +67,7 @@
         </ng-template>
       </p-table>
     </p-scrollPanel>
-
+-->
   </div>
   <!--增加弹窗-->
   <p-dialog header="信息添加" [(visible)]="parkspaceAddDialog" [width]="900">
@@ -165,7 +166,7 @@
           <label >车位：</label>
         </div>
         <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px"  [options]="parkSpaceOption" placeholder="请选择车辆.." (onChange)="parkSpaceChange($event)" [(ngModel)]="parkspaceAdd.parkingSpaceCode"></p-dropdown>
+          <p-dropdown scrollHeight="100px"  [options]="parkSpaceOption" placeholder="请选择车位.." (onChange)="parkSpaceChange($event)" [(ngModel)]="parkspaceAdd.parkingSpaceCode"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -229,7 +230,7 @@
           <label >月数：</label>
         </div>
         <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px"  [options]="monthOption" placeholder="请选择收费项目.."  [(ngModel)]="parkspaceAdd.datedif"></p-dropdown>
+          <p-dropdown scrollHeight="100px"  [options]="monthOption" placeholder="请选择月数.."  [(ngModel)]="parkspaceAdd.datedif"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -284,257 +285,7 @@
     </p-footer>
   </p-dialog>
   <!--修改弹窗-->
-  <p-dialog header="详情" [(visible)]="parkspaceDetailDialog" [width]="900">
-    <p-scrollPanel [style]="{width:'100%',height: '60vh'}" styleClass="custombar">
-      <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}" style="text-align: center">
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >小区：</label>
-          </div>
-          <div class="ui-g-8">
-           <span>{{parkspaceDetail.villageName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >地块：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.regionName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >楼栋：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.buildingName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >单元：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.unitName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >房间号：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.roomCode}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >客户名称：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.surname}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >客户电话：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.mobilePhone}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >客户电话：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.mobilePhone}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >车牌号：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.licensePlateNumber}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >车牌颜色：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{licenseColor}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >车牌类型：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{licenseType}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >车辆原始类型：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{carType}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >车位编号：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.parkingSpaceCode}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >车位面积：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.parkingSpaceArea}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >车辆类型：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkSpaceType}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >车位性质：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkSpaceNature}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >收费项目：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.chargeName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >收费单位：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.chargeUnit}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >收费单价：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.chargeStandard}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >缴费月数：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.datedif}}个月</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >折扣：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.discount}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >应收金额：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>￥{{parkspaceDetail.amountReceivable}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >实收金额：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>￥{{parkspaceDetail.actualMoneyCollection}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >优惠金额：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>￥{{parkspaceDetail.preferentialAmount}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >续租状态：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.rentalRenewalStatus}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >开始时间：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.startTime}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >结束时间：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.dueTime}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >缴费人：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.payerName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >缴费人电话：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{parkspaceDetail.payerPhone}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >支付方式：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{paymentMethed}}</span>
-          </div>
-        </div>
-      </div>
-    </p-scrollPanel>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class=" charge-parkspace-dialog-Btn  charge-parkspace-dialog-Btn-false"  (click)="parkspaceDetailDialog=false;clearData()">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

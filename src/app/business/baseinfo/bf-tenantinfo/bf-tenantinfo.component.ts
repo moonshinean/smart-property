@@ -6,6 +6,7 @@ import {AddTenant, ModifyTenant, OwerList, RoomTitle, SearchTenant, Tenant} from
 import {BfTenantinfoService} from '../../../common/services/bf-tenantinfo.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {isObjectFlagSet} from 'tslint';
+import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 
 
 @Component({
@@ -59,6 +60,9 @@ export class BfTenantinfoComponent implements OnInit {
   public tenantUserSelect: any;
   public normalChargeOption: any[] = [];
   public identityOption: any[] = [];
+  // 上传文件相关
+  public UploadFileOption: FileOption = new FileOption();
+  public uploadRecordOption: any;
   // 修改相关
   public tenantModifayDialog: boolean;
   public tenantModify: ModifyTenant[]  = [];
@@ -72,9 +76,7 @@ export class BfTenantinfoComponent implements OnInit {
   public tenantModifyDialog: any;
   public tenantListIndex: any;
   public villageOption: any[] = [];
-  // 上传相关
-  public tenantUploadFileDialog: boolean;
-  public uploadedFiles: any[] = [];
+  // 上传相
   public tenantInfoDialog: any;
   public uploadOption: any;
   // 其他相关
@@ -659,38 +661,50 @@ export class BfTenantinfoComponent implements OnInit {
   }
   // add more info Dialog
   public  AddMoreClick(): void {
-    this.tenantUploadFileDialog = true;
+    this.UploadFileOption.files = [];
+    this.UploadFileOption.dialog = true;
+    this.UploadFileOption.width = '800';
   }
 
   // upload file
-  public  tenantUploadSureClick(): void {
-    const fileData = new FormData();
-    this.uploadedFiles.forEach(v => {
-      fileData.append('file', v);
-    });
-    this.confirmationService.confirm({
-      message: `确认要上传吗？`,
-      header: '上传提醒',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.tenantSrv.uploadTenantInfoFile(fileData).subscribe(
-          (value) => {
-            if (value.status === '1000') {
-              this.loadHidden = false;
-              this.loadHidden = true;
-              this.uploadedFiles = [];
-              this.getUploadSuccessInfo(value.data);
-              this.toolSrv.setToast('success', '上传成功', value.message);
-              this.tenantInitialization();
-            } else {
-              this.toolSrv.setToast('error', '上传失败', value.message);
+  public  tenantUploadSureClick(e): void {
+    this.loadHidden = false;
+    this.tenantSrv.uploadTenantInfoFile(e).subscribe(
+      (value) => {
+        if (value.status === '1000') {
+          this.loadHidden = true;
+          this.UploadFileOption.files = [];
+          this.uploadRecordOption = {
+            width: '900',
+            dialog: true,
+            title: '上传记录',
+            totalNumber: value.data.totalNumber,
+            realNumber: value.data.realNumber,
+            uploadOption: {
+              width: '102%',
+              tableHeader: {
+                data: [
+                  {field: 'roomCode', header: '房间编号'},
+                  {field: 'surname', header: '客户姓氏'},
+                  {field: 'phone', header: '客户电话'},
+                  {field: 'result', header: '结果'},
+                ],
+                style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+              },
+              tableContent: {
+                data: value.data.logOwnerInformationDOS,
+                styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+                styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+              }
             }
-          }
-        );
-      },
-      reject: () => {
+          };
+          this.toolSrv.setToast('success', '上传成功', value.message);
+          this.tenantInitialization();
+        } else {
+          this.toolSrv.setToast('error', '上传失败', value.message);
+        }
       }
-    });
+    );
   }
   public  queryTenantInfo(code): void {
     this.identityOption = [];
@@ -746,7 +760,6 @@ export class BfTenantinfoComponent implements OnInit {
       if (this.sexOption.length > 0 && this.normalChargeOption.length && this.normalChargeOption.length > 0){
         this.tenantSrv.queryTenantInfoDetail({roomCode: code}).subscribe(
           value => {
-            console.log(value);
             this.tenantList = [];
             if (value.status === '1000') {
               value.data.forEach( v => {
@@ -805,13 +818,11 @@ export class BfTenantinfoComponent implements OnInit {
   // 分页请求
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
-    console.log(event);
     this.nowPage = event;
     this.searchTenantData.pageNo = this.nowPage;
     if (this.searchTenantData.villageCode !== '' || this.searchTenantData.regionCode !== '' || this.searchTenantData.buildingCode !== '' || this.searchTenantData.unitCode !== '') {
       this.tenantSrv.queryTenantInfoList(this.searchTenantData).subscribe(
         (value) => {
-          console.log(value);
           this.loadHidden = true;
 
           if (value.data.contents) {
@@ -823,7 +834,6 @@ export class BfTenantinfoComponent implements OnInit {
     } else {
       this.tenantSrv.queryTenantDataList(this.searchTenantData).subscribe(
         (value) => {
-          console.log(value);
           this.loadHidden = true;
           if (value.status === '1000') {
             if (value.data.contents) {
@@ -850,25 +860,8 @@ export class BfTenantinfoComponent implements OnInit {
     this.tenantSrv.queryUploadDetail({logCode: id}).subscribe(
       value => {
         if (value.status === '1000') {
-          this.uploadOption = {
-            width: '102%',
-            tableHeader: {
-              data: [
-                {field: 'roomCode', header: '房间编号'},
-                {field: 'surname', header: '客户姓氏'},
-                {field: 'phone', header: '客户电话'},
-                {field: 'result', header: '结果'},
-              ],
-              style: { background: '#F4F4F4', color: '#000', height: '6vh'}
-            },
-            tableContent: {
-              data: value.data,
-              styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
-              styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
-            }
-          };
+
           this.tenantInfoDialog = true;
-          this.tenantUploadFileDialog = false;
         } else {
           this.toolSrv.setToast('error', '查询上传信息失败', value.message);
         }

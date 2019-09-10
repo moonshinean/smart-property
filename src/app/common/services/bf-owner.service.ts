@@ -21,7 +21,7 @@ export class BfOwnerService {
   }
   // upload owerInfo file
   public  uploadOwerInfoFile(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/excel/readExcel', body);
+    return  this.http.post(environment.chargeUrl + '/owner/import', body);
     // return  this.http.post('/recieveMessage', body);
   }
   public  addOwerInfo(body): Observable<any> {

@@ -17,4 +17,7 @@ export class ChargeDetailsService {
   public  getPayDocument(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/cash/register/printBilles`, pamars);
   }
+  public  importPayDocument(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/cash/register/importOldBills`, pamars);
+  }
 }
