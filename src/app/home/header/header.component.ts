@@ -61,6 +61,7 @@ export class HeaderComponent implements OnInit {
           console.log(value);
         if (value.status === '1000') {
           this.username = value.data.username;
+          console.log(this.username );
         }
       }
     );

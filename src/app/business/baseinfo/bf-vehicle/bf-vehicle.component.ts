@@ -5,6 +5,8 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {AddVehicle, ModifyVehicle, Vehicle} from '../../../common/model/bf-vehicle.model';
 import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
+import {FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'rbi-bf-vehicle',
@@ -13,9 +15,17 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
 })
 export class BfVehicleComponent implements OnInit {
   public vehicleTableTitle: any;
-  public vehicleTableContent: any[];
   public vehicleTableTitleStyle: any;
-  public vehicleSelect: any[];
+  public vehicleSelect: any[] = [];
+  public tableOption: any;
+  public detailOption: any;
+
+  public optionDialog: DialogModel = new DialogModel();
+  public form: FormValue[] = [];
+  public formgroup: FormGroup;
+  public formdata: any[];
+  public roomtree: any;
+
   // 添加相关
   public vehicleAddDialog: boolean;
   public vehicleAdd: AddVehicle = new AddVehicle();
@@ -71,13 +81,7 @@ export class BfVehicleComponent implements OnInit {
       {field: 'operating', header: '操作'},
     ];
     this.loadHidden = false;
-    this.vehicleSrv.queryVehicleInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      value => {
-        this.loadHidden = true;
-        this.vehicleTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-      }
-    );
+    this.queryVehicleQuerydata(1);
     this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
         data.data.forEach(v => {
@@ -86,8 +90,15 @@ export class BfVehicleComponent implements OnInit {
         });
       }
     );
-    this.vehicleTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
-
+    this.globalSrv.queryTVillageTree().subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          this.roomtree = value.data;
+        }
+      }
+    );
+    this.getCarInfo();
   }
   // select village
   public VillageChange(e): void {
@@ -152,18 +163,35 @@ export class BfVehicleComponent implements OnInit {
   }
   // Show add vehicle dialog
   public vehicleAddClick(): void {
-    this.getCarInfo('', '', '');
-    this.vehicleAddDialog = true;
+    this.optionDialog = {
+      type: 'add',
+      title: '添加信息',
+      width: '800',
+      dialog: true
+    };
+    const list = ['villageCode', 'villageName', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode', 'unitName',
+      'roomCode', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType', 'vehicleOriginalType'];
+    list.forEach(val => {
+      this.form.push({key: val, disabled: false, required: true, value: ''});
+    });
+    this.formgroup = this.toolSrv.setFormGroup(this.form);
+    this.formdata = [
+      {label: '房间号', type: 'tree', name: 'roomCode', option: '', placeholder: '请选择房间'},
+      {label: '车牌号', type: 'input', name: 'licensePlateNumber', option: '', placeholder: '请选择房间'},
+      {label: '车牌颜色', type: 'dropdown', name: 'licensePlateColor', option: this.licensePlateColorOption, placeholder: '请选择车牌颜色'},
+      {label: '车牌类型', type: 'dropdown', name: 'licensePlateType', option: this.licensePlateTypeOption, placeholder: '请选择车牌类型'},
+      {label: '原始车辆类型', type: 'dropdown', name: 'vehicleOriginalType', option: this.vehicleOriginalTypeOption, placeholder: '请选择原始车辆类型'},
+    ];
   }
   // sure add vehicle
-  public vehicleAddSureClick(): void {
+  public vehicleAddSureClick(data): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
-      this.vehicleSrv.addVehicleInfo(this.vehicleAdd).subscribe(
+      this.vehicleSrv.addVehicleInfo(data).subscribe(
         value => {
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', value.message);
             this.clearData();
-            this.vehicleAddDialog = false;
+            this.optionDialog.dialog = false;
             this.vehicleInitialization();
           }
         }
@@ -172,33 +200,69 @@ export class BfVehicleComponent implements OnInit {
   }
   //  show vehicle detail dialog
   public vehicleDetailClick(e): void {
-    this.vehicleDetail = e;
-    this.getCarInfo(this.vehicleDetail.licensePlateColor, this.vehicleDetail.licensePlateType, this.vehicleDetail.vehicleOriginalType);
-    this.vehicleDetailDialog = true;
-  }
-  // vehicle select
-  public  vehicleonRowSelect(e): void {
-    this.vehicleModify = e.data;
+    e.licensePlateColor = this.setDataName(this.licensePlateColorOption, e.licensePlateColor);
+    e.licensePlateType = this.setDataName(this.licensePlateTypeOption, e.licensePlateType);
+    e.vehicleOriginalType = this.setDataName(this.vehicleOriginalTypeOption, e.vehicleOriginalType);
+    this.detailOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'licensePlateNumber', header: '车牌号'},
+          {field: 'licensePlateType', header: '车牌类型'},
+          {field: 'licensePlateColor', header: '车牌颜色'},
+          {field: 'vehicleOriginalType', header: '原始车辆类型'},
+        ],
+      }
+    };
   }
   // Show modify vehicle dialog
   public vehicleModifyClick(): void {
     if (this.vehicleSelect === undefined || this.vehicleSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.vehicleSelect.length === 1) {
-      this.getCarInfo(this.vehicleModify.licensePlateColor, this.vehicleModify.licensePlateType, this.vehicleModify.vehicleOriginalType);
-      this.vehicleModifayDialog = true;
+      this.vehicleModify = this.vehicleSelect[0];
+      this.optionDialog = {
+        type: 'add',
+        title: '修改信息',
+        width: '800',
+        dialog: true
+      };
+      const list = ['villageCode', 'villageName', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode', 'unitName',
+        'roomCode', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType', 'vehicleOriginalType'];
+      list.forEach(val => {
+        this.form.push({key: val, disabled: false, required: true, value: this.vehicleSelect[0][val]});
+      });
+      this.formgroup = this.toolSrv.setFormGroup(this.form);
+      this.formdata = [
+        {label: '房间号', type: 'tree', name: 'roomCode', option: '', placeholder: '请选择房间'},
+        {label: '车牌号', type: 'input', name: 'licensePlateNumber', option: '', placeholder: '请选择房间'},
+        {label: '车牌颜色', type: 'dropdown', name: 'licensePlateColor', option: this.licensePlateColorOption, placeholder: '请选择车牌颜色'},
+        {label: '车牌类型', type: 'dropdown', name: 'licensePlateType', option: this.licensePlateTypeOption, placeholder: '请选择车牌类型'},
+        {label: '原始车辆类型', type: 'dropdown', name: 'vehicleOriginalType', option: this.vehicleOriginalTypeOption, placeholder: '请选择原始车辆类型'},
+      ];
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
     }
   }
   // sure modify vehicle
-  public vehicleModifySureClick(): void {
+  public vehicleModifySureClick(data): void {
     this.toolSrv.setConfirmation('修改', '修改' , () => {
-      this.vehicleSrv.updateVehicleInfo(this.vehicleModify).subscribe(
+      this.vehicleSrv.updateVehicleInfo(data).subscribe(
         value => {
+          console.log(value);
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', value.message);
-            this.vehicleModifayDialog = false;
+            this.optionDialog.dialog = false;
             this.clearData();
             this.vehicleInitialization();
           }
@@ -240,42 +304,115 @@ export class BfVehicleComponent implements OnInit {
     this.vehicleSelect = [];
   }
   // get car info
-  public  getCarInfo(color, type, OriginalType): void {
+  public  getCarInfo(): void {
     this.toolSrv.getNativeStatus('LICENSE_PLATE_COLOR', (data) => {
       if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, color, (list, dataName) => {
-          this.licensePlateColorOption = list;
-          this.licensePlateColorModify = dataName;
-        });
+         data.forEach( v => {
+           this.licensePlateColorOption.push({label: v.settingName, value: v.settingCode});
+         });
       }
-    });
-    this.toolSrv.getNativeStatus('LICENSE_PLATE_TYPE', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, type, (list, dataName) => {
-          this.licensePlateTypeOption = list;
-          this.licensePlateTypeModify = dataName;
+      this.toolSrv.getNativeStatus('LICENSE_PLATE_TYPE', (val) => {
+          if (val.length > 0) {
+            val.forEach( v => {
+              this.licensePlateTypeOption.push({label: v.settingName, value: v.settingCode});
+            });
+            this.toolSrv.getNativeStatus('VEHICLE_ORIGINA_TYPE', (value) => {
+              if (value.length > 0) {
+                value.forEach( v => {
+                  this.vehicleOriginalTypeOption.push({label: v.settingName, value: v.settingCode});
+                });
+              }
+            });
+          }
         });
-      }
-    });
-    this.toolSrv.getNativeStatus('VEHICLE_ORIGINA_TYPE', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, OriginalType, (list, dataName) => {
-          this.vehicleOriginalTypeOption = list;
-          this.vehicleOriginalTypeModify = dataName;
-        });
-      }
     });
   }
   // paging query
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.vehicleSrv.queryVehicleInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.queryVehicleQuerydata(event);
+  }
+
+  // select data (选择数据)
+  public  selectData(e): void {
+      this.vehicleSelect = e;
+  }
+  // set table data （设置列表数据）
+  public  setTableOption(data): void {
+    this.tableOption = {
+      width: '101.4%',
+      header: {
+        data:  this.vehicleTableTitle,
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
+  }
+  // query Data (查询数据)
+  public  queryVehicleQuerydata(page): void {
+    this.vehicleSrv.queryVehicleInfoPage({pageNo: page, pageSize: 10}).subscribe(
       value => {
-        this.loadHidden = true;
-        this.vehicleTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        this.toolSrv.setQuestJudgment(value.status, value.message,
+          () => {
+          console.log(value);
+          this.loadHidden = true;
+          this.setTableOption(value.data.contents);
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        });
       }
     );
+  }
+
+  // Convert status values to Chinese names  （状态值转换为中文名）
+  public setDataName(list, label): any {
+    list.forEach( v => {
+      if ( label === v.value ) {
+        label = v.label;
+      }
+    });
+    return label;
+  }
+  // Chinese name converted to status value （中文名转换为状态值）
+  public setDataValue(list, label): any {
+    list.forEach( v => {
+      if ( label === v.label) {
+        label = v.value;
+      }
+    });
+    return label;
+  }
+
+  // Popup event （弹窗事件）
+  public  eventClick(e): void {
+    console.log(e);
+    if (e === 'false') {  // 取消关闭弹窗
+      this.optionDialog.dialog = false;
+      this.vehicleSelect = [];
+    } else {  // 确认 提交数据
+      if (e.invalid) { // 判断必填信息是否填满
+        if (e.type === '添加信息') {
+          for (const key in e.value.value) {
+            this.vehicleAdd[key] = e.value.value[key];
+          }
+          // console.log(this.couponAdd);
+          this.vehicleAddSureClick(this.vehicleAdd);
+        } else {
+          for (const key in e.value.value) {
+            this.vehicleModify[key] = e.value.value[key];
+          }
+          this.vehicleModifySureClick(this.vehicleModify);
+        }
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '请填写完整信息');
+      }
+      // if ()
+    }
   }
 }

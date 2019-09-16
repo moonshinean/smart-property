@@ -41,5 +41,8 @@ export class GlobalService {
     return this.http.post(environment.sysetUrl + `/setting/findNativeChoose`, pamars);
   }
 
-
+  // query village data tree
+  public  queryTVillageTree(): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/villageChooze/findTree`, {});
+  }
 }

@@ -15,29 +15,15 @@ import {FormGroup} from '@angular/forms';
   styleUrls: ['./bf-coupon.component.less']
 })
 export class BfCouponComponent implements OnInit {
-
-  @ViewChild('input') input: Input;
-  @ViewChild('addcouponType') addcouponType: Dropdown;
-  @ViewChild('addChargeCode') addChargeCode: Dropdown;
-  @ViewChild('addEffectiveTime') addEffectiveTime: Dropdown;
-  @ViewChild('modifyeffectiveTime') modifyeffectiveTime: Dropdown;
-  @ViewChild('modifycouponType') modifycouponType: Dropdown;
-  @ViewChild('modifyChargeCode') modifychargeCode: Dropdown;
   // @ViewChild('file') file: Input;
   public couponTableTitle: any;
   public couponSelect: ModifyBfCoupon[] = [];
   // 添加相关
-  public couponAddDialog: boolean;
   public couponAdd: AddBfCoupon = new AddBfCoupon();
   // public couponAdd: any;
   // 修改相关
-  public couponModifayDialog: boolean;
   public couponModify: ModifyBfCoupon = new ModifyBfCoupon();
   public optionEnable: any[] = [];
-  public modifyEnable: any;
-  // public couponModify: any;
-  public couponDetailDialog: boolean;
-  public couponDetail: ModifyBfCoupon = new ModifyBfCoupon();
 
   public optionDialog: DialogModel = new DialogModel();
   public form: FormValue[] = [];
@@ -133,7 +119,6 @@ export class BfCouponComponent implements OnInit {
   // sure add coupon （添加确认请求）
   public  couponAddSureClick(data): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
-
       this.couponSrv.addCoupon(data).subscribe(
         value => {
           this.toolSrv.setToast('success', '操作成功', value.message);
@@ -183,6 +168,11 @@ export class BfCouponComponent implements OnInit {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
 
     } else if (this.couponSelect.length === 1) {
+      this.optionEnable.forEach( value => {
+        if (this.couponSelect[0].enable === value.label) {
+          this.couponSelect[0].enable  = value.value;
+        }
+      });
       this.couponModify = this.couponSelect[0];
       this.optionDialog = {
         type: 'add',
@@ -195,12 +185,13 @@ export class BfCouponComponent implements OnInit {
         this.form.push({key: val, disabled: false, required: true, value: this.couponSelect[0][val]});
       });
       this.formgroup = this.toolSrv.setFormGroup(this.form);
+      const enable = this.couponSelect[0].enable === 1 ? '启用' : '禁用';
       this.formdata = [
         {label: '优惠卷名称', type: 'input', name: 'couponName', option: '', placeholder: '请输入优惠卷名称'},
         {label: '优惠卷类型', type: 'dropdown', name: 'couponType', option: this.couponTypeData, placeholder: this.couponSelect[0].couponType},
         {label: '收费项目', type: 'dropdown', name: 'chargeCode', option: this.ChargeCodeData, placeholder: this.couponSelect[0].chargeCode},
         {label: '有效时长', type: 'dropdown', name: 'effectiveTime', option: this.EffectiveTime, placeholder:  this.couponSelect[0].effectiveTime},
-        {label: '有效时长', type: 'dropdown', name: 'enable', option: this.optionEnable, placeholder:  ''},
+        {label: '启用状态', type: 'dropdown', name: 'enable', option: this.optionEnable, placeholder: enable },
         {label: '金额', type: 'input', name: 'money', option: '', placeholder: '请输入金额'},
       ];
     } else {

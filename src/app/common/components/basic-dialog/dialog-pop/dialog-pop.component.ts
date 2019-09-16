@@ -50,13 +50,13 @@ export class DialogPopComponent implements OnInit, OnChanges {
   }
   // input click event
   public  inputData(): void {
-    this.treeData = undefined;
+    // this.treeData = undefined;
   }
   // Close the dialog
   public  CloseClick(): void {
     this.eventClick.emit('false');
     this.flag = 0;
-    this.treeData = undefined;
+    // this.treeData = undefined;
   }
   // Initialization tree structure
   public  dataTreeClick(): void {
