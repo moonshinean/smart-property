@@ -479,15 +479,15 @@
           <input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="ownerinfo.surname">
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>客户性别：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="sexOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="ownerinfo.sex"></p-dropdown>
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label>客户性别：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+<!--          <p-dropdown [options]="sexOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="ownerinfo.sex"></p-dropdown>-->
 
-        </div>
-      </div>
+<!--        </div>-->
+<!--      </div>-->
       <div class="ui-g-6">
         <div class="ui-g-4">
           <label >客户电话：</label>
@@ -506,18 +506,35 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4">
+          <label >身份号码：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.idNumber">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
           <label for="addroomSize">是否正常缴费：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择注销状态..."  [(ngModel)]="ownerinfo.normalPaymentStatus"></p-dropdown>
         </div>
       </div>
+
       <div class="ui-g-6">
         <div class="ui-g-4">
           <label >物业费开始计费时间：</label>
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="ownerinfo.startBillingTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >实际交房时间：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="ownerinfo.realRecyclingHomeTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">
@@ -549,19 +566,18 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <label>客户性别：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="sexOption"  scrollHeight="100px" [placeholder]="ownerinfo.sex"  [(ngModel)]="ownerinfo.sex"></p-dropdown>
-
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
           <label >客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入客户电话" [(ngModel)]="ownerinfo.mobilePhone">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >身份号码：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.idNumber">
         </div>
       </div>
       <div class="ui-g-6">
@@ -586,6 +602,14 @@
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="ownerinfo.startBillingTime" [placeholder]="ownerinfo.startBillingTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >实际交房时间：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="ownerinfo.realRecyclingHomeTime" [placeholder]="ownerinfo.realRecyclingHomeTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">

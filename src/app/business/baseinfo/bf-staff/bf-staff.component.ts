@@ -13,7 +13,7 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
   styleUrls: ['./bf-staff.component.less']
 })
 export class BfStaffComponent implements OnInit {
-  
+
   public staffTableTitle: any;
   public staffTableContent: Staff[];
   public staffTableTitleStyle: any;
@@ -229,40 +229,44 @@ export class BfStaffComponent implements OnInit {
           this.enableOption = list;
           this.enableModifyDrapPlaceholder = label;
         });
-      }
-    });
-    this.toolSrv.getAdminStatus('LOGIN_STATUS', (data) => {
-      if (data.length > 0 ) {
-        this.toolSrv.setDataFormat(data, loginStatus, (list, label) => {
-          this.loginStatusOption = list;
-          this.loginStatusModifyDrapPlaceholder = label;
+        this.toolSrv.getAdminStatus('LOGIN_STATUS', (v) => {
+          if (v.length > 0 ) {
+            this.toolSrv.setDataFormat(v, loginStatus, (list, label) => {
+              this.loginStatusOption = list;
+              this.loginStatusModifyDrapPlaceholder = label;
+            });
+          }
+          this.toolSrv.getAdminStatus('EDUCATIONAL_BACKGROUND', (val) => {
+            if (val.length > 0 ) {
+              this.toolSrv.setDataFormat(val, educational, (list, label) => {
+                this.educationalOption = list;
+                this.educationalModifyDrapPlaceholder = label;
+              });
+            }
+            this.toolSrv.getAdminStatus('POLITICAL_STATUS', (value) => {
+              if (value.length > 0 ) {
+                this.toolSrv.setDataFormat(value, political, (list, label) => {
+                  this.politicalStatusOption = list;
+                  this.politicalStatusModifyDrapPlaceholder = label;
+                });
+              }
+              this.toolSrv.getAdminStatus('MARITAL_STATUS', (mdata) => {
+                if (mdata.length > 0 ) {
+                  this.toolSrv.setDataFormat(mdata, marital, (list, label) => {
+                    this.maritalOption = list;
+                    this.maritalModifyDrapPlaceholder = label;
+                  });
+                }
+              });
+            });
+          });
         });
       }
     });
-    this.toolSrv.getAdminStatus('EDUCATIONAL_BACKGROUND', (data) => {
-      if (data.length > 0 ) {
-        this.toolSrv.setDataFormat(data, educational, (list, label) => {
-          this.educationalOption = list;
-          this.educationalModifyDrapPlaceholder = label;
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus('POLITICAL_STATUS', (data) => {
-      if (data.length > 0 ) {
-        this.toolSrv.setDataFormat(data, political, (list, label) => {
-          this.politicalStatusOption = list;
-          this.politicalStatusModifyDrapPlaceholder = label;
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus('MARITAL_STATUS', (data) => {
-      if (data.length > 0 ) {
-        this.toolSrv.setDataFormat(data, marital, (list, label) => {
-          this.maritalOption = list;
-          this.maritalModifyDrapPlaceholder = label;
-        });
-      }
-    });
+
+
+
+
   }
   // paging query
   public  nowpageEventHandle(event: any): void {

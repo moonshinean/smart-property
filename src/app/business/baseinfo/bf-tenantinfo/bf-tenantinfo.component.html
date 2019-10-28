@@ -189,7 +189,7 @@
                 <td>
                   <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
                 </td>
-                <td  *ngFor="let col of columns.slice(0,columns.length - 1)" style="text-align: center">
+                <td  *ngFor="let col of columns.slice(0,columns.length - 1)" style="text-align: center; overflow-x: auto">
                   {{rowData[col.field]}}
                 </td>
                 <td [ngStyle]="{'text-align': 'center'}">
@@ -214,7 +214,7 @@
     </p-footer>
   </p-dialog>
   <!--修改弹窗-->
-  <p-dialog header="信息修改" [(visible)]="tenantModifayDialog" [width]="800">
+  <p-dialog header="信息修改" [(visible)]="tenantModifayDialog" [width]="1100">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
@@ -323,7 +323,7 @@
                 <td>
                   <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
                 </td>
-                <td  *ngFor="let col of columns.slice(0,columns.length - 1)" style="text-align: center">
+                <td  *ngFor="let col of columns.slice(0,columns.length - 1)" style="text-align: center; overflow-x: auto">
                   {{rowData[col.field]}}
                 </td>
                 <td [ngStyle]="{'text-align': 'center'}">
@@ -479,21 +479,29 @@
           <input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="tenantinfo.surname">
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>客户性别：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="sexOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="tenantinfo.sex"></p-dropdown>
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label>客户性别：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+<!--          <p-dropdown [options]="sexOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="tenantinfo.sex"></p-dropdown>-->
 
-        </div>
-      </div>
+<!--        </div>-->
+<!--      </div>-->
       <div class="ui-g-6">
         <div class="ui-g-4">
           <label >客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="tenantinfo.mobilePhone">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >身份证号：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <input  type="text" pInputText placeholder="请输入身份证号..." [(ngModel)]="tenantinfo.idNumber">
         </div>
       </div>
       <!--<div class="ui-g-6">-->
@@ -518,6 +526,14 @@
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="tenantinfo.startBillingTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >实际交房时间：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="tenantinfo.realRecyclingHomeTime" placeholder="请选择实际交房日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">
@@ -547,21 +563,29 @@
           <input  type="text" pInputText [placeholder]="tenantinfo.surname" [(ngModel)]="tenantinfo.surname">
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>客户性别：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="sexOption"  scrollHeight="100px" [placeholder]="tenantinfo.sex"  [(ngModel)]="tenantinfo.sex"></p-dropdown>
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label>客户性别：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+<!--          <p-dropdown [options]="sexOption"  scrollHeight="100px" [placeholder]="tenantinfo.sex"  [(ngModel)]="tenantinfo.sex"></p-dropdown>-->
 
-        </div>
-      </div>
+<!--        </div>-->
+<!--      </div>-->
       <div class="ui-g-6">
         <div class="ui-g-4">
           <label >客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText [placeholder]="tenantinfo.mobilePhone" [(ngModel)]="tenantinfo.mobilePhone">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >身份证号：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <input  type="text" pInputText [placeholder]="tenantinfo.idNumber" [(ngModel)]="tenantinfo.mobilePhone">
         </div>
       </div>
       <!--<div class="ui-g-6">-->
@@ -586,6 +610,14 @@
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="tenantinfo.startBillingTime" [placeholder]="tenantinfo.startBillingTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >实际交房时间：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="tenantinfo.realRecyclingHomeTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">

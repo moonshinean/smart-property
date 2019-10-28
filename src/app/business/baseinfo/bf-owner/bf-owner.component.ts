@@ -44,6 +44,8 @@ export class BfOwnerComponent implements OnInit {
     {field: 'sex', header: '性别'},
     {field: 'mobilePhone', header: '客户电话'},
     {field: 'identity', header: '身份'},
+    {field: 'idNumber', header: '身份证号'},
+    {field: 'realRecyclingHomeTime', header: '实际交房时间'},
     {field: 'normalPaymentStatus', header: '是否正常缴费'},
     {field: 'startBillingTime', header: '物业费开始既费时间'},
     {field: 'remarks', header: '备注'},
@@ -76,9 +78,6 @@ export class BfOwnerComponent implements OnInit {
   // 业主修改相关
   public ownerModifyDialog: any;
   public ownerListIndex: any;
-  // 上传相关
-  public ownerInfoDialog: any;
-  public uploadOption: any;
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public option: any;
@@ -112,6 +111,7 @@ export class BfOwnerComponent implements OnInit {
 
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
        (value) => {
+         console.log(value);
          this.loadHidden = true;
          this.ownerTableContent = value.data.contents;
          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -235,12 +235,12 @@ export class BfOwnerComponent implements OnInit {
       // console.log(e);
       if (e.value === '1') {
         this.timeHide = false;
-      //   this.roomTitle.renovationStartTime = '';
-      //   this.roomTitle.renovationDeadline = '';
+        this.roomTitle.renovationStartTime = '';
+        this.roomTitle.renovationDeadline = '';
       } else {
         this.timeHide = true;
-      //   this.roomTitle.renovationStartTime = '';
-      //   this.roomTitle.renovationDeadline = '';
+        this.roomTitle.renovationStartTime = '';
+        this.roomTitle.renovationDeadline = '';
       }
   }
   // show add owner box
@@ -312,6 +312,9 @@ export class BfOwnerComponent implements OnInit {
       if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
         this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
       }
+      if (this.ownerinfo.hasOwnProperty('realRecyclingHomeTime') && this.ownerinfo.realRecyclingHomeTime !== '') {
+        this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform( this.ownerinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
+      }
       for (const key in this.roomTitle) {
         this.ownerAdd[key] = this.roomTitle[key];
       }
@@ -339,6 +342,12 @@ export class BfOwnerComponent implements OnInit {
   }
   // detail ownerInfo
   public  ownerDetailClick(e): void {
+    console.log(e);
+    if (e.renovationStatus === '1') {
+      this.ownerTimeDetailHide = false;
+    }else {
+      this.ownerTimeDetailHide = true;
+    }
     this.renovationStatusName = null;
     this.identityOption = [];
     this.sexOption = [];
@@ -394,9 +403,9 @@ export class BfOwnerComponent implements OnInit {
               if ( this.renovationName === '') {
                 this.renovationName = '请选择装修状态';
                 this.timeHide = true;
-              } else if(this.renovationName === '已装修') {
+              } else if (this.renovationName === '已装修') {
                 this.timeHide = false;
-              }else {
+              } else {
                 this.timeHide = true;
               }
             });
@@ -435,6 +444,9 @@ export class BfOwnerComponent implements OnInit {
       }
       if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
         this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
+      }
+      if (this.ownerinfo.hasOwnProperty('realRecyclingHomeTime') && this.ownerinfo.realRecyclingHomeTime !== '') {
+        this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform(this.ownerinfo.realRecyclingHomeTime, 'yyyy-MM-dd');
       }
       for (const key in this.roomTitle) {
         this.ownerAdd[key] = this.roomTitle[key];
@@ -475,7 +487,7 @@ export class BfOwnerComponent implements OnInit {
           value => {
             this.loadHidden = true;
             if (value.status === '1000') {
-              this.toolSrv.setToast('success', '操作成功', '添加成功');
+              this.toolSrv.setToast('success', '操作成功', '修改成功');
               this.selectOwerInfo(value.data);
               // this.clearData();
               this.ownerModifyDialog = false;
@@ -492,6 +504,16 @@ export class BfOwnerComponent implements OnInit {
   public  ownerModifySureClick(): void {
     this.toolSrv.setConfirmation('修改', '修改', () => {
       if (this.ownerList.length === 0 ) {
+        if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
+          this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
+        }
+        if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
+          this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
+        }
+        if (this.ownerinfo.hasOwnProperty('realRecyclingHomeTime') && this.ownerinfo.realRecyclingHomeTime !== '') {
+          this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform( this.ownerinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
+        }
+        this.roomTitle.roomCode = this.roomTitle.roomCode.slice(this.roomTitle.roomCode.lastIndexOf('-') + 1, this.roomTitle.roomCode.length);
         this.owerSrv.addRoomCodeInfo(this.roomTitle).subscribe(
           value => {
             if (value.status === '1000') {
@@ -598,6 +620,7 @@ export class BfOwnerComponent implements OnInit {
     //   }
     // });
   }
+
   public  clearData(): void {
      this.ownerAdd = new AddOwner();
      this.ownerModify = [];

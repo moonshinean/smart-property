@@ -91,4 +91,6 @@ export class OwerList {
   identity?: any;
   normalPaymentStatus?: any;
   startBillingTime?: any;
+  idNumber?: any;
+  realRecyclingHomeTime?: any;
 }

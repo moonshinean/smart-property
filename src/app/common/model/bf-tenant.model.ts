@@ -61,7 +61,7 @@ export class ModifyTenant {
 
 }
 
-export class SearchTenant{
+export class SearchTenant {
   villageCode?: any;
   regionCode?: string; // 地块编号
   buildingCode?: string; // 楼栋编号
@@ -91,4 +91,6 @@ export class OwerList {
   identity?: any;
   normalPaymentStatus?: any;
   startBillingTime?: any;
+  realRecyclingHomeTime?: any;
+  idNumber?: any;
 }

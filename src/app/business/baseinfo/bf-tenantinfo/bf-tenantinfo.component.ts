@@ -39,8 +39,10 @@ export class BfTenantinfoComponent implements OnInit {
     {field: 'surname', header: '客户姓氏'},
     {field: 'sex', header: '性别'},
     {field: 'mobilePhone', header: '客户电话'},
+    {field: 'idNumber', header: '身份证号'},
     {field: 'normalPaymentStatus', header: '是否正常缴费'},
     {field: 'startBillingTime', header: '物业费开始既费时间'},
+    {field: 'realRecyclingHomeTime', header: '实际交房时间'},
     {field: 'remarks', header: '备注'},
     {field: 'operating', header: '操作'},
   ];
@@ -358,6 +360,9 @@ export class BfTenantinfoComponent implements OnInit {
       if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
         this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
       }
+      if (this.tenantinfo.hasOwnProperty('realRecyclingHomeTime') && this.tenantinfo.realRecyclingHomeTime !== '') {
+        this.tenantinfo.realRecyclingHomeTime = this.datePipe.transform( this.tenantinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
+      }
       for (const key in this.roomTitle) {
         this.tenantRoomAdd[key] = this.roomTitle[key];
       }
@@ -391,6 +396,11 @@ export class BfTenantinfoComponent implements OnInit {
   }
   // detail tenantInfo
   public  tenantDetailClick(e): void {
+    if (e.renovationStatus === '1') {
+      this.tenantTimeDetailHide = false;
+    } else {
+      this.tenantTimeDetailHide = true;
+    }
     this.identityOption = [];
     this.sexOption = [];
     this.normalChargeOption = [];
@@ -418,11 +428,6 @@ export class BfTenantinfoComponent implements OnInit {
         value.data.forEach( v => {
           if (this.roomTitle.renovationStatus.toString() === v.settingCode) {
             this.renovationStatusName = v.settingName;
-            if (this.renovationStatusName === '未装修') {
-              this.tenantTimeDetailHide = true;
-            } else {
-              this.tenantTimeDetailHide = false;
-            }
           }
         });
       }
@@ -435,6 +440,11 @@ export class BfTenantinfoComponent implements OnInit {
     if (this.tenantSelect === undefined || this.tenantSelect.length === 0 ) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.tenantSelect.length === 1) {
+      if (this.tenantSelect[0].renovationStatus === '1') {
+        this.timeHide = false;
+      }else {
+        this.timeHide = true;
+      }
       this.tenantSrv.queryTenantInfoAllStatus({settingType: 'ROOM_TYPE'}).subscribe(
         value => {
           value.data.forEach( v => {
@@ -564,6 +574,9 @@ export class BfTenantinfoComponent implements OnInit {
       if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
         this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
       }
+      if (this.tenantinfo.hasOwnProperty('realRecyclingHomeTime') && this.tenantinfo.realRecyclingHomeTime !== '') {
+        this.tenantinfo.realRecyclingHomeTime = this.datePipe.transform( this.tenantinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
+      }
       for (const key in this.roomTitle) {
         this.tenantRoomAdd[key] = this.roomTitle[key];
       }
@@ -591,12 +604,12 @@ export class BfTenantinfoComponent implements OnInit {
       delete this.tenantRoomAdd.unitCode;
       delete this.tenantRoomAdd.regionCode;
       delete this.tenantRoomAdd.villageCode;
-      this.tenantAdd.push(this.tenantRoomAdd);
-      this.tenantSrv.addTenantInfo(this.tenantAdd).subscribe(
+      // this.tenantAdd.push(this.tenantRoomAdd);
+      this.tenantSrv.addTenantInfo(this.tenantRoomAdd).subscribe(
         value => {
           this.loadHidden = true;
           if (value.status === '1000') {
-            this.toolSrv.setToast('success', '操作成功', '添加成功');
+            this.toolSrv.setToast('success', '操作成功', '修改成功');
             this.queryTenantInfo(value.data);
             this.tenantUserSelect = [];
             this.tenantModifyDialog = false;
@@ -610,6 +623,15 @@ export class BfTenantinfoComponent implements OnInit {
   public  tenantModifySureClick(): void {
     this.toolSrv.setConfirmation('修改', '修改', () => {
       if (this.tenantList.length === 0 ) {
+        if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
+          this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
+        }
+        if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
+          this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
+        }
+        if (this.tenantinfo.hasOwnProperty('realRecyclingHomeTime') && this.tenantinfo.realRecyclingHomeTime !== '') {
+          this.tenantinfo.realRecyclingHomeTime = this.datePipe.transform( this.tenantinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
+        }
         this.roomTitle.roomCode = this.roomTitle.roomCode.slice(this.roomTitle.roomCode.lastIndexOf('-') + 1, this.roomTitle.roomCode.length);
         this.tenantSrv.addRoomCodeInfo(this.roomTitle).subscribe(
           value => {
