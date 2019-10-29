@@ -97,6 +97,7 @@ export class ChargeParkspaceComponent implements OnInit {
     this.chargeParkspaceSrv.queryChargeParkSpacePageInfo({pageNo: this.nowPage, pageSize: 10 }).subscribe(
       value => {
         this.loadHidden = true;
+        console.log(value.data.contents);
         this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
@@ -209,6 +210,9 @@ export class ChargeParkspaceComponent implements OnInit {
   }
   // Vehicle selection
   public  carSelectChange(e): void {
+    // console.log(e);
+    // console.log();
+    this.parkspaceAdd.licensePlateNumber = e.originalEvent.srcElement.innerText;
     this.carOptions.forEach( v => {
       if (e.value === v.licensePlateType) {
         this.parkspaceAdd.licensePlateColor = v.licensePlateColor;
@@ -323,6 +327,7 @@ export class ChargeParkspaceComponent implements OnInit {
   }
   // sure add parkspace
   public  parkspaceAddSureClick(): void {
+    // console.log(this.parkspaceAdd);
     this.toolSrv.setConfirmation('增加', '增加', () => {
       this.chargeParkspaceSrv.addChargeParkSpaceTolList(this.parkspaceAdd).subscribe(
         value => {
@@ -340,6 +345,7 @@ export class ChargeParkspaceComponent implements OnInit {
 
   // Parking fee details
   public  parkSpaceDetailClick(e): void {
+    this.parkspaceDetail = e;
     this.getChargeItemInfo();
     this.getCarInfo();
     this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
@@ -348,6 +354,52 @@ export class ChargeParkspaceComponent implements OnInit {
           e.paymentMethod = dataName;
         });
       }
+      this.toolSrv.getNativeStatus('LICENSE_PLATE_COLOR', (data1) => {
+        if (data1.length > 0) {
+          console.log(data1);
+          this.toolSrv.setDataFormat(data1, this.parkspaceDetail.licensePlateColor, (list, dataName) => {
+           console.log(dataName);
+            e.licensePlateColor = dataName;
+          });
+        }
+      });
+      this.toolSrv.getNativeStatus('LICENSE_PLATE_TYPE', (data2) => {
+        if (data2.length > 0) {
+          this.toolSrv.setDataFormat(data2, this.parkspaceDetail.licensePlateType, (list, dataName) => {
+            e.licensePlateType = dataName;
+          });
+        }
+      });
+      this.toolSrv.getNativeStatus('VEHICLE_ORIGINA_TYPE', (VehicleOriginaType) => {
+        if (VehicleOriginaType.length > 0) {
+          this.toolSrv.setDataFormat(VehicleOriginaType, this.parkspaceDetail.vehicleOriginalType, (list, dataName) => {
+            e.vehicleOriginalType = dataName;
+          });
+        }
+      });
+      this.toolSrv.getAdminStatus('CHARGE_TYPE', (Chargetype) => {
+        if (Chargetype.length > 0) {
+          this.toolSrv.setDataFormat(Chargetype, this.parkspaceDetail.chargeType, (list, dataName) => {
+            e.chargeType = dataName;
+          });
+        }
+      });
+
+      this.toolSrv.getNativeStatus('CWXZ', (CWXZ) => {
+        if (CWXZ.length > 0) {
+          this.toolSrv.setDataFormat(CWXZ, this.parkspaceDetail.parkingSpaceNature, (list, dataName) => {
+            e.parkingSpaceNature = dataName;
+          });
+        }
+      });
+      this.toolSrv.getNativeStatus('CWLX', (CWLX) => {
+        if (CWLX.length > 0) {
+          this.toolSrv.setDataFormat(CWLX, this.parkspaceDetail.parkingSpaceType, (list, dataName) => {
+            e.parkingSpaceType = dataName;
+          });
+        }
+      });
+
     });
 
     this.dialogOption = {
@@ -367,7 +419,7 @@ export class ChargeParkspaceComponent implements OnInit {
           {field: 'surname', header: '客户名称'},
           {field: 'mobilePhone', header: '客户电话'},
           {field: 'licensePlateNumber', header: '车牌号'},
-          {field: 'licensePlateColor', header: '车牌号'},
+          {field: 'licensePlateColor', header: '车牌颜色'},
           {field: 'licensePlateType', header: '车牌类型'},
           {field: 'vehicleOriginalType', header: '车辆原始类型'},
           {field: 'parkingSpaceCode', header: '车位编号'},
@@ -498,7 +550,7 @@ export class ChargeParkspaceComponent implements OnInit {
   }
 
   // set table data （设置列表数据）
-  public  setTableOption(data): void {
+  public  setTableOption(data1): void {
     this.optionTable = {
       width: '100%',
       header: {
@@ -506,11 +558,11 @@ export class ChargeParkspaceComponent implements OnInit {
         style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
       },
       Content: {
-        data: data,
+        data: data1,
         styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
         styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
       },
-      type: 3,
+      type: 2,
       tableList:  [{label: '详情', color: '#6A72A1'}]
     };
   }

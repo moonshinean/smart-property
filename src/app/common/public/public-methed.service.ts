@@ -78,13 +78,15 @@ export class PublicMethedService {
    */
   public  setDataFormat(list: any[], status: any, callback: (...args: any[]) => any): void {
     this.dataList = [];
+    console.log(status);
     list.forEach( v => {
        this.dataList.push({label: v.settingName, value: v.settingCode});
        if (status !== '' && status !== null) {
-         if (status.toString() === v.settingCode) {
+         if (status === v.settingCode) {
            this.dataName = v.settingName;
          }
        } else {
+
          this.dataName = null;
        }
        if (list.indexOf(v) === list.length - 1) {

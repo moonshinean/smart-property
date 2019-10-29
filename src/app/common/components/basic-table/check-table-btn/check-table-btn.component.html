@@ -48,18 +48,18 @@
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
         <!--普通列表-->
-        <tr [pSelectableRow]="rowData" *ngIf="rowIndex%2!=1" [ngStyle]="option.Content.styleone">
+        <tr [pSelectableRow]="rowData" *ngIf="rowIndex%2 != 1" [ngStyle]="option.Content.styleone">
           <td style="width: 3em">
             <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
           </td>
-          <td  *ngFor="let col of columns.slice(0, columns.length-1)" >
+          <td  *ngFor="let col of columns?.slice(0, columns?.length-1)" >
             {{rowData[col.field]}}
           </td>
           <td >
             <button class="check-table-btn-detail" (click)="DetailClick(rowData)" *ngFor="let item of option.tableList" [ngStyle]="{'background': item.color}">{{item.label}}</button>
           </td>
         </tr>
-        <tr [pSelectableRow]="rowData" *ngIf="rowIndex%2!=0" [ngStyle]="option.Content.styletwo">
+        <tr [pSelectableRow]="rowData" *ngIf="rowIndex %2!== 0" [ngStyle]="option.Content.styletwo">
           <td>
             <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
           </td>

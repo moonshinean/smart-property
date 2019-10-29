@@ -36,7 +36,7 @@ export class CheckTableBtnComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     // if (this.option) {
-    //   console.log(this.option);
+      console.log(this.option);
     // }
   }
   public  DetailClick(e): void {

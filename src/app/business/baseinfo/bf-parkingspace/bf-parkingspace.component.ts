@@ -25,6 +25,7 @@ export class BfParkingspaceComponent implements OnInit {
   public parkSpaceTypeOption: any[] = [];
   public parkSpaceTypemodify: any;
   public parkSpaceNaturemodify: any;
+  public parkSpaceCode: any;
   // 详情相关
   public parkingspaceDetailDialog: boolean;
   public parkingspaceDetail: Parkingspace = new Parkingspace();
@@ -142,6 +143,9 @@ export class BfParkingspaceComponent implements OnInit {
   }
   // sure add parkingspace
   public parkingspaceAddSureClick(): void {
+    // var
+    this.parkingspaceAdd.parkingSpaceCode = this.parkingspaceAdd.regionCode + '-' + this.parkSpaceCode;
+    // console.log(  this.parkingspaceAdd);
     this.toolSrv.setConfirmation('增加', '增加', () => {
       this.parkingSpaceSrv.addParkingSpace(this.parkingspaceAdd).subscribe(
         value => {
@@ -183,6 +187,7 @@ export class BfParkingspaceComponent implements OnInit {
 
   // sure modify parkingspace
   public parkingspaceModifySureClick(): void {
+
     this.toolSrv.setConfirmation('修改', '修改', () => {
       this.parkingSpaceSrv.updateParkingSpace(this.parkingspaceModify).subscribe(
         value => {

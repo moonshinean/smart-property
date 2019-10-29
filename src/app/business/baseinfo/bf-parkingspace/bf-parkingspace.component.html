@@ -102,7 +102,7 @@
           <label >车位编号：</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceAdd.parkingSpaceCode">
+          <input type="text" pInputText placeholder="请输入车位编号..." [(ngModel)]="parkSpaceCode">
         </div>
       </div>
       <div class="ui-g-6">
@@ -154,7 +154,7 @@
           <label >小区：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="SearchOption.village" scrollHeight="100px" [placeholder]="parkingspaceModify.villageName"  (onChange)="VillageChange($event)" [(ngModel)]="parkingspaceModify.villageCode"></p-dropdown>
+          <input type="text" disabled pInputText  [placeholder]="parkingspaceModify.villageName"  [(ngModel)]="parkingspaceModify.villageName" >
         </div>
       </div>
       <div class="ui-g-6">
@@ -162,7 +162,7 @@
           <label>地块：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="SearchOption.region" scrollHeight="100px" [placeholder]="parkingspaceModify.regionName" (onChange)="regionChange($event)" [(ngModel)]="parkingspaceModify.regionCode"></p-dropdown>
+          <input type="text" disabled pInputText  [placeholder]="parkingspaceModify.regionName"  [(ngModel)]="parkingspaceModify.regionName" >
         </div>
       </div>
       <div class="ui-g-6">
@@ -170,7 +170,7 @@
           <label >车位编号：</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceModify.parkingSpaceCode">
+          <input type="text" disabled pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceModify.parkingSpaceCode">
         </div>
       </div>
       <div class="ui-g-6">
