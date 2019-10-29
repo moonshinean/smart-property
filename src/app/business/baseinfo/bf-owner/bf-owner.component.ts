@@ -569,45 +569,53 @@ export class BfOwnerComponent implements OnInit {
   }
   // upload file
   public  ownerUploadSureClick(e): void {
-    this.loadHidden = false;
-    this.owerSrv.uploadOwerInfoFile(e).subscribe(
-      (value) => {
-        if (value.status === '1000') {
-          this.loadHidden = true;
-          // this.uploadedFiles = [];
-          this.UploadFileOption.files = [];
-          this.uploadRecordOption = {
-            width: '900',
-            dialog: true,
-            title: '上传记录',
-            totalNumber: value.data.totalNumber,
-            realNumber: value.data.realNumber,
-            uploadOption: {
-              width: '102%',
-              tableHeader: {
-                data: [
-                  {field: 'code', header: '序号'},
-                  {field: 'roomCode', header: '房间编号'},
-                  {field: 'result', header: '结果'},
-                  {field: 'remarks', header: '备注'},
-                ],
-                style: { background: '#F4F4F4', color: '#000', height: '6vh'}
-              },
-              tableContent: {
-                data: value.data.logOwnerInformationDOS,
-                styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
-                styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+    console.log(e.getAll('file').length !== 0);
+    if (e.getAll('file').length !== 0) {
+      this.loadHidden = false;
+      this.owerSrv.uploadOwerInfoFile(e).subscribe(
+        (value) => {
+          if (value.status === '1000') {
+            this.loadHidden = true;
+            // this.uploadedFiles = [];
+            this.UploadFileOption.files = [];
+            this.uploadRecordOption = {
+              width: '900',
+              dialog: true,
+              title: '上传记录',
+              totalNumber: value.data.totalNumber,
+              realNumber: value.data.realNumber,
+              uploadOption: {
+                width: '102%',
+                tableHeader: {
+                  data: [
+                    {field: 'code', header: '序号'},
+                    {field: 'roomCode', header: '房间编号'},
+                    {field: 'result', header: '结果'},
+                    {field: 'remarks', header: '备注'},
+                  ],
+                  style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+                },
+                tableContent: {
+                  data: value.data.logOwnerInformationDOS,
+                  styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+                  styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+                }
               }
-            }
-          };
-          // this.ownerInfoDialog = true;
-          this.toolSrv.setToast('success', '上传成功', value.message);
-          this.ownerInitialization();
-        } else {
-          this.toolSrv.setToast('error', '上传失败', value.message);
+            };
+            // this.ownerInfoDialog = true;
+            this.toolSrv.setToast('success', '上传成功', value.message);
+            this.ownerInitialization();
+          } else {
+            console.log(123);
+            this.loadHidden = true;
+            this.toolSrv.setToast('error', '上传失败', value.message);
+          }
         }
-      }
-    );
+      );
+    } else {
+      this.toolSrv.setToast('error', '操作失败', '请选择需要上传的文件');
+    }
+
     // this.confirmationService.confirm({
     //   message: `确认要上传吗？`,
     //   header: '上传提醒',

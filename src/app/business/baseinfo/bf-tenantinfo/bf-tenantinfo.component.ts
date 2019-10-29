@@ -690,43 +690,49 @@ export class BfTenantinfoComponent implements OnInit {
 
   // upload file
   public  tenantUploadSureClick(e): void {
-    this.loadHidden = false;
-    this.tenantSrv.uploadTenantInfoFile(e).subscribe(
-      (value) => {
-        if (value.status === '1000') {
-          this.loadHidden = true;
-          this.UploadFileOption.files = [];
-          this.uploadRecordOption = {
-            width: '900',
-            dialog: true,
-            title: '上传记录',
-            totalNumber: value.data.totalNumber,
-            realNumber: value.data.realNumber,
-            uploadOption: {
-              width: '102%',
-              tableHeader: {
-                data: [
-                  {field: 'roomCode', header: '房间编号'},
-                  {field: 'surname', header: '客户姓氏'},
-                  {field: 'phone', header: '客户电话'},
-                  {field: 'result', header: '结果'},
-                ],
-                style: { background: '#F4F4F4', color: '#000', height: '6vh'}
-              },
-              tableContent: {
-                data: value.data.logOwnerInformationDOS,
-                styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
-                styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+    if (e.getAll('file').length !== 0) {
+      this.loadHidden = false;
+      this.tenantSrv.uploadTenantInfoFile(e).subscribe(
+        (value) => {
+          if (value.status === '1000') {
+            this.loadHidden = true;
+            this.UploadFileOption.files = [];
+            this.uploadRecordOption = {
+              width: '900',
+              dialog: true,
+              title: '上传记录',
+              totalNumber: value.data.totalNumber,
+              realNumber: value.data.realNumber,
+              uploadOption: {
+                width: '102%',
+                tableHeader: {
+                  data: [
+                    {field: 'roomCode', header: '房间编号'},
+                    {field: 'surname', header: '客户姓氏'},
+                    {field: 'phone', header: '客户电话'},
+                    {field: 'result', header: '结果'},
+                  ],
+                  style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+                },
+                tableContent: {
+                  data: value.data.logOwnerInformationDOS,
+                  styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+                  styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+                }
               }
-            }
-          };
-          this.toolSrv.setToast('success', '上传成功', value.message);
-          this.tenantInitialization();
-        } else {
-          this.toolSrv.setToast('error', '上传失败', value.message);
+            };
+            this.toolSrv.setToast('success', '上传成功', value.message);
+            this.tenantInitialization();
+          } else {
+            this.loadHidden = true;
+            this.toolSrv.setToast('error', '上传失败', value.message);
+          }
         }
-      }
-    );
+      );
+    } else  {
+      this.toolSrv.setToast('error', '操作失败', '请选择需要上传的文件');
+    }
+
   }
   public  queryTenantInfo(code): void {
     this.identityOption = [];
