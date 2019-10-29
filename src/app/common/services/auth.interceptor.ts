@@ -2,11 +2,11 @@ import {Injectable} from '@angular/core';
 import {HttpEvent, HttpRequest, HttpHandler, HttpInterceptor, HttpErrorResponse} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {EMPTY, Observable, of} from 'rxjs';
-import {catchError, mergeMap, tap} from 'rxjs/operators';
+import {catchError, mergeMap, tap, timeout} from 'rxjs/operators';
 import {GlobalService} from './global.service';
 import {Router} from '@angular/router';
 import {LocalStorageService} from './local-storage.service';
-
+const DEFAULTTIMEOUT = 3000000;
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   public clonedRequest: any;
@@ -50,6 +50,7 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
     return next.handle(this.clonedRequest).pipe(
+      timeout(DEFAULTTIMEOUT),
       tap((event: any) => {
         if (event.status === 200) {
           // if (event.body.status === '1000') {
@@ -95,6 +96,7 @@ export class AuthInterceptor implements HttpInterceptor {
        });
      }
      return next.handle(this.clonedRequest).pipe(
+       timeout(DEFAULTTIMEOUT),
        tap((event: any) => {
            if (event.status === 200) {
                return of(event);
