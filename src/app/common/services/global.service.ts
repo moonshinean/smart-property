@@ -45,4 +45,16 @@ export class GlobalService {
   public  queryTVillageTree(): Observable<any> {
     return this.http.post(environment.sysetUrl + `/villageChooze/findTree`, {});
   }
+
+  //更新接口
+  // query system status values
+  public queryAdminchoose(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/setting/findAdmChoose`, pamars);
+  }
+
+  // query system status values
+  public  queryNatchoose(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/setting/findAdmChoose`, pamars);
+  }
+
 }

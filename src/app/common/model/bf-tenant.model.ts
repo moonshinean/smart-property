@@ -37,7 +37,6 @@ export class AddTenant {
   remarks?: any;
   identity?: any;
   normalPaymentStatus?: any;
-  startBillingTime?: any;
 }
 export class ModifyTenant {
   villageName?: string; // 小区名称
@@ -57,8 +56,6 @@ export class ModifyTenant {
   remarks?: any;
   identity?: any;
   normalPaymentStatus?: any;
-  startBillingTime?: any;
-
 }
 
 export class SearchTenant {
@@ -90,7 +87,7 @@ export class OwerList {
   remarks?: any;
   identity?: any;
   normalPaymentStatus?: any;
-  startBillingTime?: any;
-  realRecyclingHomeTime?: any;
+  startTime?: any;  // 租房开始时间
+  endTime?: any;   // 祖租房结束时间
   idNumber?: any;
 }

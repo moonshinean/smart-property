@@ -15,9 +15,6 @@ import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.m
 })
 export class BfOwnerComponent implements OnInit {
 
-  public ownerTableTitle: any;
-  public ownerTableContent: Owner[];
-  public ownerTableTitleStyle: any;
   public ownerSelect: any;
   // 上传文件相关
   public UploadFileOption: FileOption = new FileOption();
@@ -25,6 +22,11 @@ export class BfOwnerComponent implements OnInit {
   // 查询相关
   public searchOwerData: SearchOwner = new SearchOwner();
   public SearchOption = {village: [], region: [], building: [], unit: []};
+  public inputSearchData = '';
+  public searchType = 0;
+  public SearchTypeOption = [{label: '全部', value: 1},
+                      {label: '手机号', value: 2},
+                      {label: '房间号', value: 3}];
   // 添加相关
   public ownerAddDialog: boolean;
   public ownerAdd: AddOwner = new AddOwner();
@@ -60,6 +62,7 @@ export class BfOwnerComponent implements OnInit {
     {field: 'startBillingTime', header: '物业费开始既费时间'},
     {field: 'remarks', header: '备注'},
   ];
+  public ownertableOption: any;
   // 业主信息相关
   public ownerinfo: OwerList = new OwerList();
   public ownerDialog: boolean;
@@ -84,7 +87,6 @@ export class BfOwnerComponent implements OnInit {
   public esDate: any;
   public loadHidden = true;
   public deleteId: any[] = [];
-  public mobileNumber = '';
   public nowPage = 1;
   constructor(
     private owerSrv: BfOwnerService,
@@ -100,23 +102,10 @@ export class BfOwnerComponent implements OnInit {
 
   // initialization houseinfo
   public  ownerInitialization(): void {
+    this.esDate = this.toolSrv.esDate;
     this.loadHidden = false;
     // console.log('这里是信息的初始化');
-    this.searchOwerData.pageNo = this.nowPage;
-    this.searchOwerData.pageSize = 10;
-    this.searchOwerData.villageCode = '';
-    this.searchOwerData.regionCode = '';
-    this.searchOwerData.buildingCode = '';
-    this.searchOwerData.unitCode = '';
-
-    this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
-       (value) => {
-         console.log(value);
-         this.loadHidden = true;
-         this.ownerTableContent = value.data.contents;
-         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-       }
-     );
+    this.getOwnerAllData();
     this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
         data.data.forEach( v => {
@@ -125,20 +114,6 @@ export class BfOwnerComponent implements OnInit {
         });
       }
     );
-    this.esDate = this.toolSrv.esDate;
-
-    this.ownerTableTitle = [
-      {field: 'villageName', header: '小区名称'},
-      {field: 'regionName', header: '地块名称'},
-      {field: 'buildingName', header: '楼栋名称'},
-      {field: 'unitName', header: '单元名称'},
-      {field: 'roomCode', header: '房间编号'},
-      {field: 'roomSize', header: '房间大小'},
-      // {field: 'roomStatus', header: '房间使用状态'},
-      {field: 'operating', header: '操作'}
-    ];
-
-    this.ownerTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
     // console.log(this.roomTitle);
   }
   // village change function
@@ -200,14 +175,57 @@ export class BfOwnerComponent implements OnInit {
     this.searchOwerData.unitCode = '';
     this.searchOwerData.unitCode = e.value;
   }
+  // search type
+  public  searchTypeChange(): void {
+    if (this.searchType !== 1 && this.searchType !== 0) {
+        this.searchOwerData.villageCode = '';
+        this.searchOwerData.regionCode = '';
+        this.searchOwerData.buildingCode = '';
+        this.searchOwerData.unitCode = '';
+        this.SearchOption.village = [];
+        this.SearchOption.region = [];
+        this.SearchOption.building = [];
+        this.SearchOption.unit = [];
+        this.SearchOption.village = this.villageOption;
+    }
+  }
   // condition search click
   public  ownerSearchClick(): void {
-    if (this.mobileNumber !== '') {
-      this.owerSrv.queryByMobileNumber({pageNo: 1, pageSize: 10, mobilePhone: this.mobileNumber}).subscribe(
+    if (this.searchType === 0) {
+      if ( this.searchOwerData.villageCode !== '' ) {
+        this.loadHidden = false;
+        this.searchOwerData.pageNo = 1;
+        this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
+          (value) => {
+            this.loadHidden = true;
+            this.setTableOption(value.data.contents);
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          }
+        );
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '请选择或输入搜索条件');
+      }
+    } else if (this.searchType === 1) {
+      if ( this.searchOwerData.villageCode !== '' ) {
+        this.loadHidden = false;
+        this.searchOwerData.pageNo = 1;
+        this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
+          (value) => {
+            this.loadHidden = true;
+            this.setTableOption(value.data.contents);
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          }
+        );
+      } else {
+          this.getOwnerAllData();
+          this.inputSearchData = '';
+      }
+    } else if (this.searchType === 2) {
+      this.owerSrv.queryByMobileNumber({pageNo: 1, pageSize: 10, mobilePhone: this.inputSearchData}).subscribe(
         value => {
           if (value.status === '1000') {
             this.loadHidden = true;
-            this.ownerTableContent = value.data.contents;
+            this.setTableOption(value.data.contents);
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
           } else {
             this.toolSrv.setToast('error', '请求错误', value.message);
@@ -215,19 +233,18 @@ export class BfOwnerComponent implements OnInit {
         }
       );
     } else {
-      if ( this.searchOwerData.villageCode !== '' ) {
-        this.loadHidden = false;
-        this.searchOwerData.pageNo = 1;
-        this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
-          (value) => {
+      this.owerSrv.queryByroomCode({pageNo: 1, pageSize: 10, roomCode: this.inputSearchData}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
             this.loadHidden = true;
-            this.ownerTableContent = value.data.contents;
+            this.setTableOption(value.data.contents);
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          } else {
+            this.toolSrv.setToast('error', '请求错误', value.message);
           }
-        );
-      } else {
-        this.toolSrv.setToast('error', '操作错误', '请选择或输入搜索条件');
-      }
+        }
+      );
     }
   }
   // renovation change function
@@ -368,9 +385,11 @@ export class BfOwnerComponent implements OnInit {
      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.ownerSelect.length === 1) {
       this.renovationStatusName = null;
-      for (const roomTitleKey in this.roomTitle) {
-        if (this.roomTitle[roomTitleKey] === null ) {
+      for (const roomTitleKey in this.ownerSelect[0]) {
+        if (this.ownerSelect[0][roomTitleKey] === null ) {
           this.roomTitle[roomTitleKey] = '';
+        } else {
+          this.roomTitle[roomTitleKey] = this.ownerSelect[0][roomTitleKey];
         }
       }
       this.toolSrv.getAdminStatus('ROOM_TYPE', (data) => {
@@ -659,7 +678,7 @@ export class BfOwnerComponent implements OnInit {
         (value) => {
           this.loadHidden = true;
           if (value.data.contents) {
-            this.ownerTableContent = value.data.contents;
+            this.setTableOption(value.data.contents);
           }
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         }
@@ -670,7 +689,7 @@ export class BfOwnerComponent implements OnInit {
           this.loadHidden = true;
           if (value.status === '1000') {
             if (value.data.contents) {
-              this.ownerTableContent = value.data.contents;
+              this.setTableOption(value.data.contents);
             }
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
           } else {
@@ -788,7 +807,6 @@ export class BfOwnerComponent implements OnInit {
       if (this.sexOption.length > 0 && this.normalChargeOption.length && this.normalChargeOption.length > 0){
         this.owerSrv.queryOwerInfoDetail({roomCode: code}).subscribe(
           value => {
-            console.log(value);
             this.ownerList = [];
             clearInterval(setTime);
 
@@ -828,5 +846,57 @@ export class BfOwnerComponent implements OnInit {
         );
       }
     }, 400);
+  }
+
+//  搜索分页查询
+  public  getOwnerAllData(): void {
+    this.searchOwerData.pageNo = this.nowPage;
+    this.searchOwerData.pageSize = 10;
+    this.searchOwerData.villageCode = '';
+    this.searchOwerData.regionCode = '';
+    this.searchOwerData.buildingCode = '';
+    this.searchOwerData.unitCode = '';
+    this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
+      (value) => {
+        console.log(value);
+        this.loadHidden = true;
+        this.setTableOption(value.data.contents);
+        // this.ownerTableContent = ;
+        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+      }
+    );
+  }
+
+
+  // 设置表格数据
+  // set table data （设置列表数据）
+  public  setTableOption(data1): void {
+    this.ownertableOption = {
+      width: '101.4%',
+      header: {
+        data:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'roomSize', header: '房间大小'},
+          // {field: 'roomStatus', header: '房间使用状态'},
+          {field: 'operating', header: '操作'}
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
+  }
+  // select data
+  public  selectData(e): void {
+    this.ownerSelect = e;
   }
 }

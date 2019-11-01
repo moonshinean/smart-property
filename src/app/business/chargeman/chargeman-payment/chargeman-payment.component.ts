@@ -110,14 +110,9 @@ export class ChargemanPaymentComponent implements OnInit {
     private  toolSrv: PublicMethedService
   ) { }
   ngOnInit() {
-    this.SearchData.buildingCode = '';
-    this.SearchData.pageNo = 1;
-    this.SearchData.pageSize = 10;
+    this.SearchDataClear();
     this.SearchData.mobilePhone = '';
     this.SearchData.roomCode = '';
-    this.SearchData.regionCode = '';
-    this.SearchData.villageCode = '';
-    this.SearchData.unitCode = '';
     this.paymentInitialization();
   }
   // Initialize the charge record（初始化收费记录）
@@ -129,27 +124,44 @@ export class ChargemanPaymentComponent implements OnInit {
   // condition search 条件搜索）
   public  paymentSearchClick(): void {
     if (this.searchType === undefined) {
-      this.queryData(this.SearchData);
+      if (this.SearchData.villageCode !== '') {
+        this.queryData(this.SearchData);
+      }else {
+        this.toolSrv.setToast('error', '操作错误', '请选择搜索方式');
+      }
     } else if (this.searchType === 2) {
-      this.SearchData.roomCode = '';
+      this.SearchDataClear();
       this.SearchData.mobilePhone = this.searchData;
       this.loadHidden = false;
       // this.SearchOption = {}
       this.queryData(this.SearchData);
     } else if (this.searchType === 3) {
-      this.SearchData.pageNo = 1;
-      this.SearchData.pageSize = 10;
+      this.SearchDataClear();
       this.SearchData.roomCode = this.searchData;
       this.SearchData.mobilePhone = '';
+
       this.loadHidden = false;
       this.queryData(this.SearchData);
     } else {
+      this.nowPage = 1;
       this.SearchOption.region = [];
       this.SearchOption.building = [];
       this.SearchOption.village = [];
+      this.searchData = '';
       this.queryDataPage();
     }
   }
+  //
+   public  SearchDataClear(): void {
+     this.SearchData.pageNo = 1;
+     this.SearchData.pageSize = 10;
+     this.SearchData.buildingCode = '';
+     this.SearchData.regionCode = '';
+     this.SearchData.villageCode = '';
+     this.SearchOption.region = [];
+     this.SearchOption.building = [];
+     this.SearchOption.village = [];
+   }
   // select village  (选择小区)
   public  VillageChange(e): void {
     this.SearchData.buildingCode = '';
@@ -186,31 +198,9 @@ export class ChargemanPaymentComponent implements OnInit {
   }
   // select building (选择楼栋)
   public  buildingChange(e): void {
-    // this.SearchData.buildingCode = '';
-    // this.SearchData.unitCode = '';
-    // this.SearchData.buildingCode
-    // this.SearchOption.unit = [];
+
     this.SearchData.buildingCode = e.value;
-    // this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
-    //   (value) => {
-    //     value.data.forEach( v => {
-    //       this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
-    //     });
-    //   }
-    // );
   }
-  // // select unit
-  // public  unitChange(e): void {
-  //   this.SearchData.roomCode = '';
-  //   this.SearchData.unitCode = e.value;
-  //   this.globalSrv.queryRoomCode({unitCode: e.value}).subscribe(
-  //     (value) => {
-  //       value.data.forEach( v => {
-  //         this. SearchOption.room.push({label: v.roomCode, value: v.roomCode});
-  //       });
-  //     }
-  //   );
-  // }
   // sure selectPreject payment （选择项目确认）
   public  paymentProjectSureClick(): void {
     let monthStatus = true;
@@ -468,7 +458,13 @@ export class ChargemanPaymentComponent implements OnInit {
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.queryDataPage();
+    this.SearchData.pageNo = event;
+    if (this.searchType === undefined) {
+      this.queryData(this.SearchData);
+    }else {
+      this.queryDataPage();
+
+    }
     this.paymentSelect = [];
   }
   // Mobile phone number format judgment （手机号格式判断）
@@ -523,18 +519,13 @@ export class ChargemanPaymentComponent implements OnInit {
         );
       });
     });
-    // this.globalSrv.queryVillageInfo({}).subscribe(
-    //   (data) => {
-    //     this.SearchOption = {
-    //       village: [],
-    //       region: [],
-    //       building: [],
-    //     };
-    //     data.data.forEach( v => {
-    //       this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-    //     });
-    //   }
-    // );
+    this.globalSrv.queryVillageInfo({}).subscribe(
+      (data) => {
+        data.data.forEach( v => {
+          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+        });
+      }
+    );
   }
   // Paging query data （分页查询数据）
   public   queryDataPage(): void {
@@ -569,9 +560,9 @@ export class ChargemanPaymentComponent implements OnInit {
     );
   }
   // set table data （设置列表数据）
-  public  setTableOption(data): void {
+  public  setTableOption(data1): void {
     this.optionTable = {
-      width: '101.5%',
+      width: '100%',
       header: {
         data:  [
           {field: 'buildingName', header: '楼栋名称'},
@@ -585,10 +576,10 @@ export class ChargemanPaymentComponent implements OnInit {
           {field: 'dueTime', header: '物业费到期时间'},
           {field: 'minMonth', header: '欠费月数'},
           {field: 'operating', header: '操作'}],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh', marginRight: '0'}
       },
       Content: {
-        data: data,
+        data: data1,
         styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
         styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
       },
@@ -636,49 +627,5 @@ export class ChargemanPaymentComponent implements OnInit {
   public  selectData(e): void {
       this.paymentSelect = e;
   }
-
-  // // show upload file dialog
-  // public  uploadFile(): void {
-  //   this.paymentUploadFileOption.dialog = true;
-  //   this.paymentUploadFileOption.files = this.uploadedFiles;
-  //   this.paymentUploadFileOption.width = '800';
-  // }
-  // sure upload file (确定上传文件)
-  // public  uploadFileSureClick(e): void {
-  //   this.loadHidden = false;
-  //   this.paymentSrv.importOldBills(e).subscribe(
-  //     value => {
-  //       this.loadHidden = true;
-  //       this.toolSrv.setQuestJudgment(value.status, value.message, () => {
-  //        this.paymentUploadFileOption.files = [];
-  //         this.fileRecordoption = {
-  //           width: '900',
-  //             dialog: true,
-  //           title: '上传记录',
-  //           totalNumber: value.data.totalNumber,
-  //           realNumber: value.data.realNumber,
-  //           uploadOption: {
-  //           width: '102%',
-  //             tableHeader: {
-  //             data: [
-  //               {field: 'orderId', header: '导入编号'},
-  //               {field: 'code', header: '编号'},
-  //               {field: 'roomCode', header: '房间号'},
-  //               {field: 'result', header: '结果'},
-  //               {field: 'remark', header: '备注'},
-  //             ],
-  //               style: { background: '#F4F4F4', color: '#000', height: '6vh'}
-  //           },
-  //           tableContent: {
-  //             data: value.data.logOldBillsDOS,
-  //               styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
-  //             styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
-  //           }
-  //         }
-  //         };
-  //       });
-  //     }
-  //   );
-  // }
 }
 

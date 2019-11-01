@@ -89,7 +89,7 @@
       <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
         <!--普通列表-->
         <tr [pSelectableRow]="rowData" *ngIf="rowIndex%2!=1" [ngStyle]="option.Content.styleone">
-          <td style="width: 3em">
+          <td style="width: 2em">
             <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
           </td>
           <td  *ngFor="let col of columns.slice(0, columns.length-1)" >

@@ -55,4 +55,8 @@ export class BfOwnerService {
   public  queryByMobileNumber(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/findByPhone', body);
   }
+  // 按房间哈哈查询
+  public  queryByroomCode(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/roomInfo/findByRoomCode', body);
+  }
 }
