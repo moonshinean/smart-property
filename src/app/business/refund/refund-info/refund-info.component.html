@@ -18,69 +18,28 @@
         <img class="refund-info-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
-      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">
-        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>
-        <p-dropdown [options]="SearchOption.village"  scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)"></p-dropdown>
-        <label style="color: #fff;margin-left: 0.5vw">地块：</label>
-        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)"></p-dropdown>
-        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>
-        <p-dropdown [options]="SearchOption.building"  scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)"></p-dropdown>
-        <label style="color: #fff;margin-left: 0.5vw">单元：</label>
-        <p-dropdown [options]="SearchOption.unit"   scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)"></p-dropdown>
-        <label style="color: #fff;margin-left: 0.5vw">房屋：</label>
-        <p-dropdown [options]="SearchOption.room"   scrollHeight="100px" placeholder="请选择房屋..." [(ngModel)]="searchRefundInfo.roomCode"></p-dropdown>
-      </div>
+<!--      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">-->
+<!--        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>-->
+<!--        <p-dropdown [options]="SearchOption.village"  scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)"></p-dropdown>-->
+<!--        <label style="color: #fff;margin-left: 0.5vw">地块：</label>-->
+<!--        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)"></p-dropdown>-->
+<!--        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>-->
+<!--        <p-dropdown [options]="SearchOption.building"  scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)"></p-dropdown>-->
+<!--        <label style="color: #fff;margin-left: 0.5vw">单元：</label>-->
+<!--        <p-dropdown [options]="SearchOption.unit"   scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)"></p-dropdown>-->
+<!--        <label style="color: #fff;margin-left: 0.5vw">房屋：</label>-->
+<!--        <p-dropdown [options]="SearchOption.room"   scrollHeight="100px" placeholder="请选择房屋..." [(ngModel)]="searchRefundInfo.roomCode"></p-dropdown>-->
+<!--      </div>-->
     </div>
     <!--//搜索-->
     <div class="ui-inputgroup refund-info-header-search">
-      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">
+      <input type="text" pInputText placeholder="请输入搜索内容" #input style="width: 7vw">
       <button id="disabled-btn" class="refund-info-header-btn-search" type="button"  (click)="infoSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>
   <!--表格-->
   <div class="refund-info-table">
-    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
-      <p-table [columns]="infoTableTitle" [value]="infoTableContent"  [(selection)]="infoSelect" (onRowSelect)="infoonRowSelect($event)">
-        <ng-template pTemplate="header" let-columns>
-          <tr >
-            <th style="width: 3em"  [ngStyle]="this.infoTableTitleStyle">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th *ngFor="let col of columns"  [ngStyle]="this.infoTableTitleStyle">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1);" >
-              {{rowData[col.field]}}
-            </td>
-            <td>
-              <button class="refund-info-table-Btn refund-info-table-Btn-detail" (click)="infoDetailClick(rowData)" >详情</button>
-              <!--<button class="refund-info-table-Btn refund-info-table-Btn-Refund" (click)="InfoRefundClick(rowData)" >退款申请</button>-->
-
-            </td>
-          </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1);" >
-              {{rowData[col.field]}}
-            </td>
-            <td>
-              <button class="refund-info-table-Btn refund-info-table-Btn-detail" (click)="infoDetailClick(rowData)" >详情</button>
-              <!--<button class="refund-info-table-Btn refund-info-table-Btn-Refund" (click)="InfoRefundClick(rowData)" >退款申请</button>-->
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-scrollPanel>
-
+    <rbi-check-table-btn [select]="infoSelect" (selectData)="selectData($event)" (detail)="infoDetailClick($event)" [option]="refundInfoOption"></rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
   <p-dialog header="信息添加" [(visible)]="infoAddDialog" [width]="1100">
@@ -196,7 +155,7 @@
           <label >缴费方式：</label>
         </div>
         <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px"  [options]="paymentSelectOption" placeholder="请选择支付方式"  [(ngModel)]="infoAdd.paymentMethod"></p-dropdown>
+          <p-dropdown scrollHeight="100px"  [options]="paymentMethodOption" placeholder="请选择支付方式"  [(ngModel)]="infoAdd.paymentMethod"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -215,22 +174,6 @@
           <p-calendar [(ngModel)]="infoAdd.dueTime" placeholder="请选择结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2100" [locale]="esDate"></p-calendar>
         </div>
       </div>
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="personLiable">延长日期：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<input id="personLiable" type="text" pInputText placeholder="请输入延长日期..（单位/天）" [(ngModel)]="infoAdd.delayTime">-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="delayReason">延期原因：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<textarea id="delayReason" type="text" pInputText placeholder="请输入延期原因..." [(ngModel)]="infoAdd.delayReason"></textarea>-->
-        <!--</div>-->
-      <!--</div>-->
       <div class="ui-g-6">
         <div class="ui-g-4">
           <label for="personLiable">责任人：</label>
@@ -266,7 +209,7 @@
     </div>
     </p-scrollPanel>
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style=" text-align: center">
         <button class="refund-info-dialog-Btn refund-info-dialog-Btn-sure" (click)="infoAddSureClick()">确认</button>
         <button class="refund-info-dialog-Btn refund-info-dialog-Btn-false"  (click)="infoAddDialog=false;clearData()">取消</button>
       </div>
@@ -372,7 +315,7 @@
           <label >缴费方式：</label>
         </div>
         <div class="ui-g-8"  [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown scrollHeight="100px"  [options]="paymentSelectOption" [placeholder]="infoModify.paymentMethod"  [(ngModel)]="infoModify.paymentMethod"></p-dropdown>
+          <p-dropdown scrollHeight="100px"  [options]="paymentMethodOption" [placeholder]="infoModify.paymentMethod"  [(ngModel)]="infoModify.paymentMethod"></p-dropdown>
         </div>
       </div>
 
@@ -430,7 +373,7 @@
           <label >延期原因：</label>
         </div>
         <div class="ui-g-8">
-          <textarea  type="text" pInputText [placeholder]="infoModify.delayReason" [(ngModel)]="infoModify.delayReason"></textarea>
+          <textarea  type="text" pInputText [placeholder]="infoModify.delayReason" [(ngModel)]="infoModify.delayReason" [cols]="3" [rows]="4"></textarea>
         </div>
       </div>
       <div class="ui-g-6">
@@ -446,7 +389,7 @@
           <label for="remarks">抵扣原因：</label>
         </div>
         <div class="ui-g-8">
-          <textarea id="remark" type="text" pInputText [placeholder]="infoModify.reasonForDeduction" [(ngModel)]="infoModify.reasonForDeduction"></textarea>
+          <textarea id="remark" type="text" pInputText [placeholder]="infoModify.reasonForDeduction" [(ngModel)]="infoModify.reasonForDeduction" [cols]="3" [rows]="4"></textarea>
 
         </div>
       </div>
@@ -454,244 +397,14 @@
     </p-scrollPanel>
 
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style=" text-align: center">
         <button class="refund-info-dialog-Btn refund-info-dialog-Btn-sure" (click)="infoModifySureClick()">确认</button>
         <button class="refund-info-dialog-Btn refund-info-dialog-Btn-false"  (click)="infoModifayDialog=false;clearData()">取消</button>
       </div>
     </p-footer>
   </p-dialog>
   <!--详情弹窗-->
-  <p-dialog header="详情弹窗" [(visible)]="infoDetailDialog" [width]="900">
-    <!--Content-->
-    <p-scrollPanel [style]="{width:'100%',height: '75vh'}" styleClass="custombar">
-
-       <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >组织名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{infoDetail.organizationName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >小区名称：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.villageName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>地块名称：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.regionName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>楼栋：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{infoDetail.buildingName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>单元名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{infoDetail.unitName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>房屋编号：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.roomCode}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>客户名称：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.surname}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>住房大小：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.roomSize}}平米</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>项目名称：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.chargeName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>实收金额：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>￥{{infoDetail.actualMoneyCollection}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>抵扣金额：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>￥{{infoDetail.mortgageAmount}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>抵扣原因：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.reasonForDeduction}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>可退还金额：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>￥{{infoDetail.refundableAmount}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>收费单位：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.chargeUnit}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-      <div class="ui-g-4">
-        <label>缴费人手机号：</label>
-      </div>
-      <div class="ui-g-8" >
-        <span>{{infoDetail.payerPhone}}</span>
-      </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>缴费人姓名：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.payerName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>支付方式：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.paymentMethod}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>支付类型：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{paymentTypeDetail}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>退款状态：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{refundStatusDetail}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>开始时间：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.startTime}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>结束日期：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.dueTime}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>延迟时长：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.delayTime}}天</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>延期原因：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.delayReason}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>责任人：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.personLiable}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>责任人电话：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.personLiablePhone}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>负责机构：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.responsibleAgencies}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>申请退款备注：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{infoDetail.remark}}</span>
-        </div>
-      </div>
-    </div>
-    </p-scrollPanel>
-
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <!--<button class="refund-info-dialog-Btn refund-info-dialog-Btn-sure" (click)="infoModifySureClick()">确认</button>-->
-        <button class="refund-info-dialog-Btn refund-info-dialog-Btn-false"  (click)="infoDetailDialog=false">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+  <rbi-detail-pop [dialogOption]="infoDetailOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

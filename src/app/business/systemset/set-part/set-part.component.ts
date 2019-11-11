@@ -15,9 +15,7 @@ export class SetPartComponent implements OnInit {
 
 
   // @ViewChild('addSetType') addSetType: Dropdown;
-  @ViewChild('input') input: Input;
-  public partTableTitle: any;
-  public partTableContent: SetPart[];
+  public partOption: any;
   public partTableTitleStyle: any;
   public partSelect: SetPart[];
   // 添加相关
@@ -32,6 +30,7 @@ export class SetPartComponent implements OnInit {
   public option: any;
   public setlimitCodeOption: any[] = [];
   public loadHidden = true;
+  public pageNo = 1;
   constructor(
     private partSrv: SetPartService,
     private toolSrv: PublicMethedService,
@@ -43,25 +42,7 @@ export class SetPartComponent implements OnInit {
   // initialization part
   public  partInitialization(): void {
     this.loadHidden = false;
-    this.partTableTitle = [
-      {field: 'id', header: 'id'},
-      {field: 'roleCode', header: '权限编号'},
-      {field: 'roleName', header: '权限名称'},
-      {field: 'remark', header: '备注'},
-    ];
-    this.partSrv.queryPartPageData({pageNo: 1, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadHidden = true;
-        if (value.status === '1000') {
-          this.partTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        }  else {
-          this.toolSrv.setToast('error', '查询错误', value.message);
-        }
-      }
-    );
-    this.partTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
-
+    this.queryPartPageData();
   }
   // condition search click
   // public  partSearchClick(): void {
@@ -182,16 +163,48 @@ export class SetPartComponent implements OnInit {
   }
   // paging query
   public  nowpageEventHandle(event: any): void {
-    this.partSrv.queryPartPageData({pageNo: event, pageSize: 10}).subscribe(
+    this.pageNo = event;
+    this.queryPartPageData();
+    this.partSelect = [];
+  }
+  // 选择数据
+  public  selectData(e): void {
+      this.partSelect = e;
+  }
+  // 设置表格
+  public  setTableOption(data1): void {
+    this.partOption = {
+      width: '101.4%',
+      header: {
+        data:   [
+          {field: 'id', header: 'id'},
+          {field: 'roleCode', header: '权限编号'},
+          {field: 'roleName', header: '权限名称'},
+          {field: 'remark', header: '备注'},
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 1,
+      tableList:  []
+    };
+  }
+  // 分页查询
+  public  queryPartPageData(): void {
+    this.partSrv.queryPartPageData({pageNo: this.pageNo, pageSize: 10}).subscribe(
       (value) => {
         this.loadHidden = true;
         if (value.status === '1000') {
-          this.partTableContent = value.data.contents;
+          this.setTableOption(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else  {
           this.toolSrv.setToast('error', '查询失败', value.message);
         }
       });
-    this.partSelect = [];
   }
+
 }

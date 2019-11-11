@@ -14,7 +14,7 @@ export class BfTenantinfoService {
   }
   // Conditional search unitinfo
   public  queryTenantInfoList(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/roomInfo/findAllByPage`, pamars);
+    return this.http.post(environment.sysetUrl + `/roomInfo/findAllCustomerByPage`, pamars);
   }
 
   // upload owerInfo file
@@ -45,6 +45,9 @@ export class BfTenantinfoService {
     return  this.http.post(environment.sysetUrl + '/excel/findLog', body);
   }
   public  queryByMobileNumber(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/findByPhone', body);
+    return  this.http.post(environment.sysetUrl + '/roomInfo/findByPhone2', body);
+  }
+  public  queryByRoomCode(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/roomInfo/findByRoomCode2', body);
   }
 }

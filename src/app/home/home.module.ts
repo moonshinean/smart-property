@@ -7,9 +7,18 @@ import { FooterComponent } from './footer/footer.component';
 import {HomeRoutingModule} from './home-routing.module';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import {PanelMenuModule} from 'primeng/panelmenu';
-import {ConfirmationService, ConfirmDialogModule, MessageModule, MessageService, MessagesModule} from 'primeng/primeng';
+import {
+  ConfirmationService,
+  ConfirmDialogModule,
+  DialogModule,
+  MessageModule,
+  MessageService,
+  MessagesModule, ScrollPanelModule,
+  TreeModule
+} from 'primeng/primeng';
 import {LoadingModule} from '../common/components/loading/loading.module';
 import {PublicMethedService} from '../common/public/public-methed.service';
+import {SharedServiceService} from '../common/public/shared-service.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +36,10 @@ import {PublicMethedService} from '../common/public/public-methed.service';
     LoadingModule,
     MessageModule,
     MessagesModule,
+    DialogModule,
+    TreeModule,
+    ScrollPanelModule,
   ],
-  providers: [ConfirmationService, MessageService, PublicMethedService]
+  providers: [ConfirmationService, MessageService, PublicMethedService, SharedServiceService]
 })
 export class HomeModule { }

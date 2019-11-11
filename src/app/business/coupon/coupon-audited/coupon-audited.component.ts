@@ -11,84 +11,43 @@ import {CouponService} from '../../../common/services/coupon.service';
 })
 export class CouponAuditedComponent implements OnInit {
 
-
-  @ViewChild('input') input: Input;
-  // @ViewChild('file') file: Input;
-  public couponAuditedTableTitle: any;
-  public couponAuditedTableContent: CouponAudited[];
-  // public couponAuditedTableContent: any;
-  public couponAuditedTableTitleStyle: any;
+  public couponAuditedOption: any;
   public couponAuditedSelect: any;
-  // 添加相关
-  public couponAuditedDetail: CouponAudited = new CouponAudited();
-  // 修改相关
-  // public couponModify: any;
-  public couponAuditedDetailDialog: boolean;
-  public esDate: any;
-  // 上传相关
-  // public couponAuditedUploadFileDialog: boolean;
-  // public uploadedFiles: any[] = [];
-  // 其他相关
-  public cleanTimer: any; // 清除时钟
+
+  // 详情相关
+  public couponAuditedDetailOption: any;
+  // 状态相关
+  public couponTypeOption = [];
+  public auditStatusOption = [];
+  public pastDueOption = [];
+  public userStatusOption = [];
+  // 其他相关除时钟
   public option: any;
   public loadingHide = true;
-  public couponAuditedSeachData: any;
-  // public SearchCoupon: SearchCoupon = new SearchCoupon();
   public nowPage = 1;
-  public SearchOption = {
-    village: [],
-    region: [],
-    building: [],
-    unit: [],
-    room: [],
-  };
-  public couponSelectOption: any[] = [];
-  public roonCodeSelectOption: any[] = [];
-  public couponTypeName: any;
-  public couponMoney: any;
-  public couponEffectiveTime: any;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private couponAuditedSrv: CouponService,
-    private toolSrv: PublicMethedService,
-    private globalSrv: GlobalService
+    private toolSrv: PublicMethedService
   ) {
   }
 
   ngOnInit() {
-    this.esDate = this.toolSrv.esDate;
     this.couponAuditedInitialization();
   }
 
   // initialization houseinfo
   public couponAuditedInitialization(): void {
-    this.couponAuditedTableTitle = [
-      {field: 'roomCode', header: '房间代码'},
-      {field: 'couponName', header: '优惠券名称'},
-      {field: 'surname', header: '客户名称'},
-      {field: 'mobilePhone', header: '客户电话'},
-      {field: 'effectiveTime', header: '有效时长'},
-      {field: 'money', header: '金额'},
-      {field: 'operating', header: '操作'}
-    ];
+    this.toolSrv.getNatStatus([{settingType: 'COUPON_TYPE'}], (data) => {
+      this.couponTypeOption = this.toolSrv.setListMap(data.COUPON_TYPE);
+    });
+    this.toolSrv.getAdmStatus([{settingType: 'USE_STATUS'}, {settingType: 'PAST_DUE'}, {settingType: 'AUDIT_STATUS'}], (data) => {
+      this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
+      this.pastDueOption = this.toolSrv.setListMap(data.PAST_DUE);
+      this.userStatusOption = this.toolSrv.setListMap(data.USE_STATUS);
+      this.queryCouponAuditedPageData();
+    });
     this.loadingHide = false;
-    this.couponAuditedSrv.queryCouponAuditedPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadingHide = true;
-        this.couponAuditedTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-      }
-    );
-    this.couponAuditedTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
-    // this.globalSrv.queryVillageInfo({}).subscribe(
-    //   (data) => {
-    //     data.data.forEach( v => {
-    //       this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-    //       // = v.villageName;
-    //     });
-    //     // this.villageplaceholder =  this.SearchOption.village[0].label;
-    //   }
-    // );
   }
 
 /*  public  VillageChange(e): void {
@@ -140,58 +99,91 @@ export class CouponAuditedComponent implements OnInit {
 
   // detail couponAuditedInfo
   public couponAuditedDetailClick(e): void {
-    this.couponAuditedDetailDialog = true;
-    this.couponAuditedDetail = e;
-    if (e.effectiveTime === 0 ) {
-      this.couponEffectiveTime = '无期限';
-    } else  {
-      this.couponEffectiveTime = e.effectiveTime + '天';
-    }
-    this.couponAuditedSrv.queryCouponType({}).subscribe(
-      val => {
-        val.data.forEach( v => {
-          if (e.couponType === v.settingCode) {
-            this.couponTypeName = v.settingName;
-          }
-        });
+    e.couponType = this.toolSrv.setValueToLabel(this.couponTypeOption, e.couponType);
+    e.usageState = this.toolSrv.setValueToLabel(this.userStatusOption, e.usageState);
+    this.couponAuditedDetailOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'couponName', header: '优惠券名称'},
+          {field: 'couponType', header: '优惠券类型'},
+          {field: 'surname', header: '客户姓名'},
+          {field: 'mobilePhone', header: '客户电话'},
+          {field: 'money', header: '优惠金额'},
+          {field: 'propertyFee', header: '抵扣物业费金额'},
+          {field: 'balanceAmount', header: '剩余金额'},
+          {field: 'usageState', header: '使用状态'},
+          {field: 'pastDue', header: '过期状态'},
+          {field: 'effectiveTime', header: '有效时长'},
+          {field: 'dueTime', header: '物业费到期时间'},
+          {field: 'auditStatus', header: '审核状态'},
+          {field: 'startTime', header: '开始时间'},
+          {field: 'endTime', header: '结束时间'},
+          {field: 'remarks', header: '备注 '},
+        ],
       }
-    );
-    this.toolSrv.getAdminStatus('PAST_DUE', (data) => {
-      data.forEach( v => {
-        if (this.couponAuditedDetail.pastDue.toString() === v.settingCode) {
-          this.couponAuditedDetail.pastDue = v.settingName;
-        }
-      });
-    });
+    };
   }
   // 分页请求
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;
     this.nowPage = event;
-    this.couponAuditedSrv.queryCouponAuditedPageData({pageNo: event, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadingHide = true;
-        this.couponAuditedTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-
-      }
-    );
+    this.queryCouponAuditedPageData();
     this.couponAuditedSelect = [];
   }
-
-  public clearData(): void {
-    this.couponTypeName = null;
-    this.couponMoney = null;
-    this.couponEffectiveTime = null;
-    this.SearchOption = {
-      village: [],
-      region: [],
-      building: [],
-      unit: [],
-      room: [],
+  // 设置表格
+  public  setTableOption(data1): void {
+    this.couponAuditedOption = {
+      width: '101.4%',
+      header: {
+        data:   [
+          {field: 'roomCode', header: '房间代码'},
+          {field: 'couponName', header: '优惠券名称'},
+          {field: 'surname', header: '客户名称'},
+          {field: 'mobilePhone', header: '客户电话'},
+          {field: 'effectiveTime', header: '有效时长'},
+          {field: 'money', header: '金额'},
+          {field: 'operating', header: '操作'}
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
     };
-    this.couponSelectOption = [];
-    this.roonCodeSelectOption = [];
   }
 
+  // 选择数据
+  public  selectData(e): void {
+    this.couponAuditedSelect = e;
+  }
+  // 分页查询
+  public  queryCouponAuditedPageData(): void {
+    this.couponAuditedSrv.queryCouponAuditedPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
+      (value) => {
+        this.loadingHide = true;
+        value.data.contents.forEach( v => {
+          v.effectiveTime = (v.effectiveTime === 0 || v.effectiveTime === '0') ? '无期限': v.effectiveTime + '天';
+          v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
+          v.pastDue = this.toolSrv.setValueToLabel(this.pastDueOption, v.pastDue);
+        });
+        this.setTableOption(value.data.contents);
+        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+      }
+    );
+  }
 }

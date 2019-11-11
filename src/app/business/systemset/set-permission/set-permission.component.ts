@@ -13,9 +13,8 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
   styleUrls: ['./set-permission.component.less']
 })
 export class SetPermissionComponent implements OnInit {
-  public permissionTableTitle: any;
-  public permissionTableContent: SetPermission[];
-  public permissionTableTitleStyle: any;
+  public permissionOption: any;
+  public permissionTableContent = [];
   public permissionSelect: SetPermission[];
   // 添加相关
   public permissionAddDialog: boolean;
@@ -34,6 +33,7 @@ export class SetPermissionComponent implements OnInit {
   public option: any;
   public setlimitCodeOption: any[] = [];
   public loadHidden = true;
+  public pageNo = 1;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private permissionSrv: SetPermissionService,
@@ -46,26 +46,7 @@ export class SetPermissionComponent implements OnInit {
   // Initialize permission data
   public  permissionInitialization(): void {
     this.loadHidden = false;
-    this.permissionTableTitle = [
-      {field: 'roleName', header: '角色名称'},
-      {field: 'title', header: '权限名称'},
-      // {field: 'remark', header: '备注'},
-    ];
-    this.permissionSrv.queryPermissionData({pageNo: 1, pageSize: 10}).subscribe(
-      (value) => {
-        console.log(value);
-        if (value.status === '1000') {
-          this.loadHidden = true;
-          this.permissionTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        } else {
-          this.toolSrv.setToast('error', '查询错误', value.message);
-        }
-
-      }
-    );
-    this.permissionTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
-
+    this.queryPrimissionPageData();
   }
   // show add permission dialog
   public  permissionConfigClick(): void {
@@ -220,6 +201,7 @@ export class SetPermissionComponent implements OnInit {
     this.permissionSrv.queryPermissionData({pageNo: event, pageSize: 10}).subscribe(
       (value) => {
         this.permissionTableContent = value.data.contents;
+        this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );
@@ -261,24 +243,63 @@ export class SetPermissionComponent implements OnInit {
         return;
       }
       this.checkNode(nodes[i].children, str);
-      let count = nodes[i].children.length;
+      const count = nodes[i].children.length;
       let c = 0;
-      for(let j = 0 ; j < nodes[i].children.length ; j++) {
-        if(this.primitDatas.includes(nodes[i].children[j])) {
+      for (let j = 0 ; j < nodes[i].children.length ; j++) {
+        if (this.primitDatas.includes(nodes[i].children[j])) {
           c++;
         }
-        if (nodes[i].children[j].partialSelected) nodes[i].partialSelected = true;
+        if (nodes[i].children[j].partialSelected) { nodes[i].partialSelected = true; }
       }
-      if (c === 0) {}
-      else if (c === count) {
+      if (c === 0) {} else if (c === count) {
         nodes[i].partialSelected = false;
         if (!this.primitDatas.includes(nodes[i])) {
           this.primitDatas.push(nodes[i]);
         }
-      }
-      else {
+      } else {
         nodes[i].partialSelected = true;
       }
     }
+  }
+
+  public  queryPrimissionPageData(): void {
+    this.permissionSrv.queryPermissionData({pageNo: this.pageNo, pageSize: 10}).subscribe(
+      (value) => {
+        console.log(value);
+        if (value.status === '1000') {
+          this.loadHidden = true;
+          this.permissionTableContent = value.data.contents;
+          this.setTableOption(value.data.contents);
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询错误', value.message);
+        }
+
+      }
+    );
+  }
+  // 设置表格
+  public  setTableOption(data1): void {
+    this.permissionOption = {
+      width: '101.4%',
+      header: {
+        data:   [
+          {field: 'roleName', header: '角色名称'},
+          {field: 'title', header: '权限名称'},
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 1,
+      tableList:  []
+    };
+  }
+
+  public  selectData(e): void {
+    this.permissionSelect = e;
   }
 }

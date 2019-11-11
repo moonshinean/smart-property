@@ -18,7 +18,6 @@ export class BfVehicleComponent implements OnInit {
   public vehicleTableTitleStyle: any;
   public vehicleSelect: any[] = [];
   public tableOption: any;
-  public detailOption: any;
 
   public optionDialog: DialogModel = new DialogModel();
   public form: FormValue[] = [];
@@ -39,8 +38,7 @@ export class BfVehicleComponent implements OnInit {
   public licensePlateTypeModify: any;
   public vehicleOriginalTypeModify: any;
   // 详情相关
-  public vehicleDetailDialog: boolean;
-  public vehicleDetail: Vehicle = new Vehicle();
+  public detailOption: any;
 
   // public msgs: Message[] = []; // 消息弹窗
   public SearchOption = {
@@ -98,7 +96,6 @@ export class BfVehicleComponent implements OnInit {
         }
       }
     );
-    this.getCarInfo();
   }
   // select village
   public VillageChange(e): void {
@@ -302,30 +299,6 @@ export class BfVehicleComponent implements OnInit {
     this.licensePlateTypeOption = [];
     this.vehicleOriginalTypeOption = [];
     this.vehicleSelect = [];
-  }
-  // get car info
-  public  getCarInfo(): void {
-    this.toolSrv.getNativeStatus('LICENSE_PLATE_COLOR', (data) => {
-      if (data.length > 0) {
-         data.forEach( v => {
-           this.licensePlateColorOption.push({label: v.settingName, value: v.settingCode});
-         });
-      }
-      this.toolSrv.getNativeStatus('LICENSE_PLATE_TYPE', (val) => {
-          if (val.length > 0) {
-            val.forEach( v => {
-              this.licensePlateTypeOption.push({label: v.settingName, value: v.settingCode});
-            });
-            this.toolSrv.getNativeStatus('VEHICLE_ORIGINA_TYPE', (value) => {
-              if (value.length > 0) {
-                value.forEach( v => {
-                  this.vehicleOriginalTypeOption.push({label: v.settingName, value: v.settingCode});
-                });
-              }
-            });
-          }
-        });
-    });
   }
   // paging query
   public nowpageEventHandle(event: any): void {

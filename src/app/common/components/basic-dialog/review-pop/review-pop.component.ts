@@ -21,7 +21,6 @@ export class ReviewPopComponent implements OnInit {
       this.event.emit(this.reviewStatus);
   }
   public closeClick(): void {
-    console.log(234);
     this.event.emit('false');
   }
 }

@@ -30,14 +30,14 @@
       <!--</div>-->
     </div>
     <!--//搜索-->
-    <div class="ui-inputgroup refund-no-header-search">
-      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">
-      <button id="disabled-btn" class="refund-no-header-btn-search" type="button"  (click)="refundNoSearchClick()"  label="搜索">搜索</button>
-    </div>
+<!--    <div class="ui-inputgroup refund-no-header-search">-->
+<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
+<!--      <button id="disabled-btn" class="refund-no-header-btn-search" type="button"  (click)="refundNoSearchClick()"  label="搜索">搜索</button>-->
+<!--    </div>-->
   </div>
   <!--表格-->
   <div class="refund-no-table">
-    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
+  <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
       <p-table [columns]="refundNoTableTitle" [value]="refundNoTableContent"  [(selection)]="refundNoSelect" (onRowSelect)="refundNoonRowSelect($event)">
         <ng-template pTemplate="header" let-columns>
           <tr >
@@ -47,7 +47,7 @@
             <th *ngFor="let col of columns"  [ngStyle]="this.refundNoTableTitleStyle">
               {{col.header}}
             </th>
-            
+
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
@@ -60,10 +60,10 @@
             </td>
             <td>
               <button class="refund-no-table-Btn refund-no-table-Btn-detail" (click)="refundNoDetailClick(rowData)" >详情</button>
-              <span *ngIf="rowData.refundStatus !== 0">
-                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474"  (click)="InfoRefundClick(rowData)"  [disabled]="rowData.refundStatus !== 0">退款申请</button>
+              <span *ngIf="rowData.refundStatus !== '未退'">
+                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474"  (click)="InfoRefundClick(rowData)"  [disabled]="rowData.refundStatus !== '未退'">退款申请</button>
               </span>
-              <span *ngIf="rowData.refundStatus === 0">
+              <span *ngIf="rowData.refundStatus === '未退'">
                 <button class="refund-no-table-Btn refund-no-table-Btn-Refund" (click)="InfoRefundClick(rowData)" >退款申请</button>
               </span>
             </td>
@@ -77,10 +77,10 @@
             </td>
             <td>
               <button class="refund-no-table-Btn refund-no-table-Btn-detail" (click)="refundNoDetailClick(rowData)" >详情</button>
-              <span *ngIf="rowData.refundStatus !== 0">
-                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474" (click)="InfoRefundClick(rowData)" aria-disabled="true"  [disabled]="rowData.refundStatus !== 0">退款申请</button>
+              <span *ngIf="rowData.refundStatus !== '未退'">
+                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474" (click)="InfoRefundClick(rowData)" aria-disabled="true"  [disabled]="rowData.refundStatus !== '未退'">退款申请</button>
               </span>
-              <span *ngIf="rowData.refundStatus === 0">
+              <span *ngIf="rowData.refundStatus === '未退'">
                 <button class="refund-no-table-Btn refund-no-table-Btn-Refund" (click)="InfoRefundClick(rowData)" >退款申请</button>
               </span>
             </td>
@@ -88,238 +88,7 @@
         </ng-template>
       </p-table>
     </p-scrollPanel>
-
   </div>
-  <p-dialog header="详细信息" [(visible)]="refundNoDetailDialog" [width]="900">
-    <!--Content-->
-    <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
-      <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >组织名称：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{refundNoDetail.organizationName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >小区名称：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.villageName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>地块名称：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.regionName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>楼栋：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{refundNoDetail.buildingName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>单元名称：</label>
-          </div>
-          <div class="ui-g-8">
-            <span>{{refundNoDetail.unitName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>房屋编号：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.roomCode}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>客户名称：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.surname}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>住房大小：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.roomSize}}平米</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>项目名称：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.chargeName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>实收金额：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>￥{{refundNoDetail.actualMoneyCollection}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>抵扣金额：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>￥{{refundNoDetail.mortgageAmount}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>抵扣原因：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.reasonForDeduction}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>可退还金额：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>￥{{refundNoDetail.refundableAmount}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>收费单位：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.chargeUnit}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>缴费人手机号：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.payerPhone}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>缴费人姓名：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.payerName}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>支付方式：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.paymentMethod}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>支付类型：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{paymentTypeDetail}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>退款状态：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundStatusDetail}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>开始时间：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.startTime}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>结束日期：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.dueTime}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>延迟时长：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.delayTime}}天</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>延期原因：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.delayReason}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>责任人：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.personLiable}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>责任人电话：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.personLiablePhone}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>负责机构：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.responsibleAgencies}}</span>
-          </div>
-        </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label>申请退款备注：</label>
-          </div>
-          <div class="ui-g-8" >
-            <span>{{refundNoDetail.remark}}</span>
-          </div>
-        </div>
-      </div>
-    </p-scrollPanel>
-
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <!--<button class="refund-review-dialog-Btn refund-review-dialog-Btn-sure" (click)="refundReviewModifySureClick()">确认</button>-->
-        <button class="refund-no-dialog-Btn refund-no-dialog-Btn-false"  (click)="refundNoDetailDialog=false">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
   <p-dialog header="退款申请" [(visible)]="RefundDialog" [width]="600" >
     <!--Content-->
     <div class="ui-g ui-fluid" style="line-height: 4vh">
@@ -386,12 +155,14 @@
       </div>
     </div>
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="refund-no-dialog-Btn refund-no-dialog-Btn-sure" (click)="refundSureClick()">确 认</button>
         <button class="refund-no-dialog-Btn refund-no-dialog-Btn-false" (click)="RefundDialog = false;clearData()">取 消</button>
       </div>
     </p-footer>
   </p-dialog>
+  <!--详情弹窗-->
+  <rbi-detail-pop [dialogOption]="infoNoOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

@@ -178,36 +178,36 @@ export class ChargePrepaymentComponent implements OnInit {
     );
   }
   public  getAllStatus(): void {
-      this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-        if (data.length > 0 ) {
-          data.forEach (val => {
-            this.chargeStatusOption.push({label: val.settingName, value: val.settingCode});
-          });
-        }
-        this.toolSrv.getAdminStatus('INVALID_STATE', (value) => {
-          if (value.length > 0 ) {
-            value.forEach (val => {
-              this.invalidStateOption.push({label: val.settingName, value: val.settingCode});
-            });
-          }
-          this.toolSrv.getAdminStatus('PAYMENT_METHOD', (datavalue) => {
-            if (datavalue.length > 0 ) {
-              datavalue.forEach (val => {
-                this.paymentMethodOption.push({label: val.settingName, value: val.settingCode});
-              });
-            }
-            this.toolSrv.getAdminStatus('REFUND_STATUS', (datastatus) => {
-              if (datastatus.length > 0 ) {
-                datastatus.forEach (val => {
-                  this.refundStatusOption.push({label: val.settingName, value: val.settingCode});
-                });
-              }
-              this.queryData(this.nowPage);
-            });
-          });
-        });
-      });
-
+      // this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
+      //   if (data.length > 0 ) {
+      //     data.forEach (val => {
+      //       this.chargeStatusOption.push({label: val.settingName, value: val.settingCode});
+      //     });
+      //   }
+      //   this.toolSrv.getAdminStatus('INVALID_STATE', (value) => {
+      //     if (value.length > 0 ) {
+      //       value.forEach (val => {
+      //         this.invalidStateOption.push({label: val.settingName, value: val.settingCode});
+      //       });
+      //     }
+      //     this.toolSrv.getAdminStatus('PAYMENT_METHOD', (datavalue) => {
+      //       if (datavalue.length > 0 ) {
+      //         datavalue.forEach (val => {
+      //           this.paymentMethodOption.push({label: val.settingName, value: val.settingCode});
+      //         });
+      //       }
+      //       this.toolSrv.getAdminStatus('REFUND_STATUS', (datastatus) => {
+      //         if (datastatus.length > 0 ) {
+      //           datastatus.forEach (val => {
+      //             this.refundStatusOption.push({label: val.settingName, value: val.settingCode});
+      //           });
+      //         }
+      //         this.queryData(this.nowPage);
+      //       });
+      //     });
+      //   });
+      // });
+      //
 
 
   }

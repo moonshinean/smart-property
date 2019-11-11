@@ -253,7 +253,7 @@ export class ChargeParkspaceComponent implements OnInit {
         this.parkspaceAdd.chargeStandard = v.chargeStandard;
       }
     });
-    this.getChargeItemInfo();
+    // this.getChargeItemInfo();
   }
   // condition search click
   public  parkspaceSearchClick(): void {
@@ -273,13 +273,13 @@ export class ChargeParkspaceComponent implements OnInit {
         }
       }
     );
-    this.toolSrv.getAdminStatus( 'PAYMENT_METHOD', (data) => {
-      if (data.length > 0) {
-        data.forEach( v => {
-          this.paymentSelectOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    });
+    // this.toolSrv.getAdminStatus( 'PAYMENT_METHOD', (data) => {
+    //   if (data.length > 0) {
+    //     data.forEach( v => {
+    //       this.paymentSelectOption.push({label: v.settingName, value: v.settingCode});
+    //     });
+    //   }
+    // });
     this.parkspaceAddDialog = true;
   }
   // Parking space billing
@@ -346,61 +346,61 @@ export class ChargeParkspaceComponent implements OnInit {
   // Parking fee details
   public  parkSpaceDetailClick(e): void {
     this.parkspaceDetail = e;
-    this.getChargeItemInfo();
+    // this.getChargeItemInfo();
     this.getCarInfo();
-    this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, this.parkspaceDetail.paymentMethod, (list, dataName) =>{
-          e.paymentMethod = dataName;
-        });
-      }
-      this.toolSrv.getNativeStatus('LICENSE_PLATE_COLOR', (data1) => {
-        if (data1.length > 0) {
-          console.log(data1);
-          this.toolSrv.setDataFormat(data1, this.parkspaceDetail.licensePlateColor, (list, dataName) => {
-           console.log(dataName);
-            e.licensePlateColor = dataName;
-          });
-        }
-      });
-      this.toolSrv.getNativeStatus('LICENSE_PLATE_TYPE', (data2) => {
-        if (data2.length > 0) {
-          this.toolSrv.setDataFormat(data2, this.parkspaceDetail.licensePlateType, (list, dataName) => {
-            e.licensePlateType = dataName;
-          });
-        }
-      });
-      this.toolSrv.getNativeStatus('VEHICLE_ORIGINA_TYPE', (VehicleOriginaType) => {
-        if (VehicleOriginaType.length > 0) {
-          this.toolSrv.setDataFormat(VehicleOriginaType, this.parkspaceDetail.vehicleOriginalType, (list, dataName) => {
-            e.vehicleOriginalType = dataName;
-          });
-        }
-      });
-      this.toolSrv.getAdminStatus('CHARGE_TYPE', (Chargetype) => {
-        if (Chargetype.length > 0) {
-          this.toolSrv.setDataFormat(Chargetype, this.parkspaceDetail.chargeType, (list, dataName) => {
-            e.chargeType = dataName;
-          });
-        }
-      });
-
-      this.toolSrv.getNativeStatus('CWXZ', (CWXZ) => {
-        if (CWXZ.length > 0) {
-          this.toolSrv.setDataFormat(CWXZ, this.parkspaceDetail.parkingSpaceNature, (list, dataName) => {
-            e.parkingSpaceNature = dataName;
-          });
-        }
-      });
-      this.toolSrv.getNativeStatus('CWLX', (CWLX) => {
-        if (CWLX.length > 0) {
-          this.toolSrv.setDataFormat(CWLX, this.parkspaceDetail.parkingSpaceType, (list, dataName) => {
-            e.parkingSpaceType = dataName;
-          });
-        }
-      });
-
-    });
+    // this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
+    //   if (data.length > 0) {
+    //     this.toolSrv.setDataFormat(data, this.parkspaceDetail.paymentMethod, (list, dataName) =>{
+    //       e.paymentMethod = dataName;
+    //     });
+    //   }
+    //   this.toolSrv.getNativeStatus('LICENSE_PLATE_COLOR', (data1) => {
+    //     if (data1.length > 0) {
+    //       console.log(data1);
+    //       this.toolSrv.setDataFormat(data1, this.parkspaceDetail.licensePlateColor, (list, dataName) => {
+    //        console.log(dataName);
+    //         e.licensePlateColor = dataName;
+    //       });
+    //     }
+    //   });
+    //   this.toolSrv.getNativeStatus('LICENSE_PLATE_TYPE', (data2) => {
+    //     if (data2.length > 0) {
+    //       this.toolSrv.setDataFormat(data2, this.parkspaceDetail.licensePlateType, (list, dataName) => {
+    //         e.licensePlateType = dataName;
+    //       });
+    //     }
+    //   });
+    //   this.toolSrv.getNativeStatus('VEHICLE_ORIGINA_TYPE', (VehicleOriginaType) => {
+    //     if (VehicleOriginaType.length > 0) {
+    //       this.toolSrv.setDataFormat(VehicleOriginaType, this.parkspaceDetail.vehicleOriginalType, (list, dataName) => {
+    //         e.vehicleOriginalType = dataName;
+    //       });
+    //     }
+    //   });
+    //   this.toolSrv.getAdminStatus('CHARGE_TYPE', (Chargetype) => {
+    //     if (Chargetype.length > 0) {
+    //       this.toolSrv.setDataFormat(Chargetype, this.parkspaceDetail.chargeType, (list, dataName) => {
+    //         e.chargeType = dataName;
+    //       });
+    //     }
+    //   });
+    //
+    //   this.toolSrv.getNativeStatus('CWXZ', (CWXZ) => {
+    //     if (CWXZ.length > 0) {
+    //       this.toolSrv.setDataFormat(CWXZ, this.parkspaceDetail.parkingSpaceNature, (list, dataName) => {
+    //         e.parkingSpaceNature = dataName;
+    //       });
+    //     }
+    //   });
+    //   this.toolSrv.getNativeStatus('CWLX', (CWLX) => {
+    //     if (CWLX.length > 0) {
+    //       this.toolSrv.setDataFormat(CWLX, this.parkspaceDetail.parkingSpaceType, (list, dataName) => {
+    //         e.parkingSpaceType = dataName;
+    //       });
+    //     }
+    //   });
+    //
+    // });
 
     this.dialogOption = {
       dialog: true,
@@ -475,61 +475,61 @@ export class ChargeParkspaceComponent implements OnInit {
   }
   // get car info
   public getCarInfo(): void {
-    this.toolSrv.getNativeStatus('LICENSE_PLATE_COLOR', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, this.parkspaceAdd.licensePlateColor, (list, dataName) => {
-          this.licenseColor = dataName;
-        });
-      }
-    });
-    this.toolSrv.getNativeStatus('LICENSE_PLATE_TYPE', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, this.parkspaceAdd.licensePlateType, (list, dataName) => {
-          this.licenseType = dataName;
-        });
-      }
-    });
-    this.toolSrv.getNativeStatus('VEHICLE_ORIGINA_TYPE', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, this.parkspaceAdd.vehicleOriginalType, (list, dataName) => {
-          this.carType = dataName;
-        });
-      }
-    });
+    // this.toolSrv.getNativeStatus('LICENSE_PLATE_COLOR', (data) => {
+    //   if (data.length > 0) {
+    //     this.toolSrv.setDataFormat(data, this.parkspaceAdd.licensePlateColor, (list, dataName) => {
+    //       this.licenseColor = dataName;
+    //     });
+    //   }
+    // });
+    // this.toolSrv.getNativeStatus('LICENSE_PLATE_TYPE', (data) => {
+    //   if (data.length > 0) {
+    //     this.toolSrv.setDataFormat(data, this.parkspaceAdd.licensePlateType, (list, dataName) => {
+    //       this.licenseType = dataName;
+    //     });
+    //   }
+    // });
+    // this.toolSrv.getNativeStatus('VEHICLE_ORIGINA_TYPE', (data) => {
+    //   if (data.length > 0) {
+    //     this.toolSrv.setDataFormat(data, this.parkspaceAdd.vehicleOriginalType, (list, dataName) => {
+    //       this.carType = dataName;
+    //     });
+    //   }
+    // });
   }
   // get parking info
   public  getParkingInfo(): void {
-    this.toolSrv.getNativeStatus('CWXZ', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, this.parkspaceAdd.parkingSpaceNature, (list, dataName) => {
-          this.parkSpaceNature = dataName;
-        });
-      }
-    });
-    this.toolSrv.getNativeStatus('CWLX', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, this.parkspaceAdd.parkingSpaceType, (list, dataName) => {
-          this.parkSpaceType = dataName;
-        });
-      }
-    });
-  }
-  // get ChargeItem Info
-  public  getChargeItemInfo(): void {
-    this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, this.parkspaceAdd.chargeType, (list, dataName) => {
-          this.ChargetTypeName = dataName;
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus('DATEDIF', (data) => {
-      if (data.length > 0) {
-        data.forEach( v => {
-          this.monthOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    });
+  //   this.toolSrv.getNativeStatus('CWXZ', (data) => {
+  //     if (data.length > 0) {
+  //       this.toolSrv.setDataFormat(data, this.parkspaceAdd.parkingSpaceNature, (list, dataName) => {
+  //         this.parkSpaceNature = dataName;
+  //       });
+  //     }
+  //   });
+  //   this.toolSrv.getNativeStatus('CWLX', (data) => {
+  //     if (data.length > 0) {
+  //       this.toolSrv.setDataFormat(data, this.parkspaceAdd.parkingSpaceType, (list, dataName) => {
+  //         this.parkSpaceType = dataName;
+  //       });
+  //     }
+  //   });
+  // }
+  // // get ChargeItem Info
+  // public  getChargeItemInfo(): void {
+  //   this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
+  //     if (data.length > 0) {
+  //       this.toolSrv.setDataFormat(data, this.parkspaceAdd.chargeType, (list, dataName) => {
+  //         this.ChargetTypeName = dataName;
+  //       });
+  //     }
+  //   });
+  //   this.toolSrv.getAdminStatus('DATEDIF', (data) => {
+  //     if (data.length > 0) {
+  //       data.forEach( v => {
+  //         this.monthOption.push({label: v.settingName, value: v.settingCode});
+  //       });
+  //     }
+  //   });
   }
   // paging query
   public nowpageEventHandle(event): void {

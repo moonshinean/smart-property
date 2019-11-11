@@ -43,8 +43,8 @@
       }
     }
     ::ng-deep .ui-dropdown{
-      width: 5% !important;
-      min-width: 6em;
+      //width: 5% !important;
+      min-width: 0;
     }
     .coupon-total-header-search{
       position: absolute;
@@ -73,81 +73,7 @@
     margin-right: 2vw;
     //margin-top: 14vh;
     height: 60vh;
-    //去掉table边框
-    ::ng-deep .ui-table .ui-table-thead>tr >th{
-      border: 0;
-
-    }
-    ::ng-deep .ui-table .ui-table-tbody>tr >td{
-      border: 0;
-    }
-    //隐藏滚动条
-    ::ng-deep .custombar .ui-scrollpanel-bar {
-      background-color: rgba(0, 0, 0, 0);
-      transition: background-color .3s;
-    }
-    ::ng-deep .custombar .ui-scrollpanel-content{
-      padding-right: 0;
-    }
-    .coupon-total-table-Btn{
-      width: 6vw;
-      text-align: center;
-      border-radius: 5px;
-      height: 3.5vh;
-      outline: none;
-      color: #fff;
-      border: 0;
-      background: #6A72A1;
-      //text-align: center;
-      cursor:pointer;
-
-    }
-    .coupon-total-table-Btn:hover{
-      background: #50588E;
-    }
-  }
-
-  //弹框按钮
-  .coupon-total-dialog-Btn{
-    width: 4vw;
-    text-align: center;
-    border-radius: 5px;
-    height: 4vh;
-    outline: none;
-    color: #fff;
-    border: 0;
-    cursor:pointer;
-  }
-  .coupon-total-dialog-Btn-sure{
-    background: #449D44;
-  }
-  .coupon-total-dialog-Btn-sure:hover{
-    background: #275D27;
-  }
-  .coupon-total-dialog-Btn-false{
-    background: #F0AD4E;
-  }
-  .coupon-total-dialog-Btn-false:hover{
-    background: #956A29;
-  }
-  .coupon-total-bottom-Btn {
-    background: #449D44;
-    right: 6vw;
-    position: absolute;
-    height: 3vh;
-    font-size: 0.7rem;
-    cursor:pointer;
-    //margin-top: 2vh;
 
   }
-}
-::ng-deep .ui-dialog-titlebar{
-  text-align: center;
-  font-size: 1rem;
-}
-::ng-deep .ui-dialog-content{
-  overflow: visible !important;
-}
-::ng-deep p-button {
-  display: none;
+
 }

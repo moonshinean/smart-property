@@ -89,14 +89,14 @@ export class ChargeDetailsComponent implements OnInit {
   // initialization details
   public  detailsInitialization(): void {
     this.loadHidden = false;
-    this.toolSrv.getAdminStatus('PAYMENT_METHOD' , (data) => {
-      if (data.length > 0) {
-        data.forEach( v =>  {
-          this.chargeStatusoption.push({label: v.settingName, value: v.settingCode}) ;
-        });
-        this.queryData();
-      }
-    });
+    // this.toolSrv.getAdminStatus('PAYMENT_METHOD' , (data) => {
+    //   if (data.length > 0) {
+    //     data.forEach( v =>  {
+    //       this.chargeStatusoption.push({label: v.settingName, value: v.settingCode}) ;
+    //     });
+    //     this.queryData();
+    //   }
+    // });
     this.detailsTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
  // condition search click

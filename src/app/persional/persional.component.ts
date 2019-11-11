@@ -57,12 +57,12 @@ export class PersionalComponent implements OnInit {
         value => {
           if (value.status === '1000') {
             this.changeUserInfo = value.data;
-            this.toolSrv.getAdminStatus('EDUCATIONAL_BACKGROUND', (e) => {
-              this.toolSrv.setDataFormat(e, this.changeUserInfo.educationalBackground, (dataList, dataName) => {
-                this.educationalOption = dataList;
-                this.educationalName = dataName;
-              });
-            });
+            // this.toolSrv.getAdminStatus('EDUCATIONAL_BACKGROUND', (e) => {
+            //   this.toolSrv.setDataFormat(e, this.changeUserInfo.educationalBackground, (dataList, dataName) => {
+            //     this.educationalOption = dataList;
+            //     this.educationalName = dataName;
+            //   });
+            // });
           } else {
             this.toolSrv.setToast('error', '请求失败', value.message);
           }

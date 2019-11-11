@@ -7,6 +7,7 @@ import {GlobalService} from '../../../common/services/global.service';
 import {DatePipe} from '@angular/common';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
+import {Dropdown} from 'primeng/dropdown';
 
 @Component({
   selector: 'rbi-bf-owner',
@@ -14,14 +15,14 @@ import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.m
   styleUrls: ['./bf-owner.component.less']
 })
 export class BfOwnerComponent implements OnInit {
-
+ @ViewChild('villageCode') villageCode: Dropdown;
   public ownerSelect: any;
   // 上传文件相关
   public UploadFileOption: FileOption = new FileOption();
   public uploadRecordOption: any;
   // 查询相关
   public searchOwerData: SearchOwner = new SearchOwner();
-  public SearchOption = {village: [], region: [], building: [], unit: []};
+  // public SearchOption = {village: [], region: [], building: [], unit: []};
   public inputSearchData = '';
   public searchType = 0;
   public SearchTypeOption = [{label: '全部', value: 1},
@@ -49,7 +50,6 @@ export class BfOwnerComponent implements OnInit {
     {field: 'idNumber', header: '身份证号'},
     {field: 'realRecyclingHomeTime', header: '实际交房时间'},
     {field: 'normalPaymentStatus', header: '是否正常缴费'},
-    {field: 'startBillingTime', header: '物业费开始既费时间'},
     {field: 'remarks', header: '备注'},
     {field: 'operating', header: '操作'},
   ];
@@ -105,88 +105,93 @@ export class BfOwnerComponent implements OnInit {
     this.esDate = this.toolSrv.esDate;
     this.loadHidden = false;
     // console.log('这里是信息的初始化');
-    this.getOwnerAllData();
-    this.globalSrv.queryVillageInfo({}).subscribe(
-      (data) => {
-        data.data.forEach( v => {
-          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-          this.villageOption.push({label: v.villageName, value: v.villageName});
-        });
-      }
-    );
+    // this.getOwnerAllData();
+    this.getownerDropdown();
+    // this.globalSrv.queryVillageInfo({}).subscribe(
+    //   (data) => {
+    //     data.data.forEach( v => {
+    //       this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+    //       this.villageOption.push({label: v.villageName, value:  v.villageCode});
+    //     });
+    //   }
+    // );
     // console.log(this.roomTitle);
   }
   // village change function
-  public  VillageChange(e): void {
-    // console.log(this.test);
-    this.loadHidden = false;
-    this.searchOwerData.villageCode = '';
-    this.searchOwerData.regionCode = '';
-    this.searchOwerData.buildingCode = '';
-    this.searchOwerData.unitCode = '';
-    this.SearchOption.region = [];
-    this.SearchOption.building = [];
-    this.SearchOption.unit = [];
-    this.searchOwerData.villageCode = e.value;
-
-    this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
-        (value) => {
-          this.loadHidden = true;
-          value.data.forEach( v => {
-            this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
-          });
-        }
-      );
-  }
-  // region change function
-  public  regionChange(e): void {
-    this.loadHidden = false;
-    this.searchOwerData.regionCode = '';
-    this.searchOwerData.buildingCode = '';
-    this.searchOwerData.unitCode = '';
-    this.searchOwerData.regionCode = e.value;
-    this.SearchOption.building = [];
-    this.SearchOption.unit = [];
-    this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach( v => {
-          this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
-        });
-        this.loadHidden = true;
-
-      }
-    );
-  }
-  // building change function
-  public  buildingChange(e): void {
-    this.searchOwerData.unitCode = '';
-    this.SearchOption.unit = [];
-    this.searchOwerData.buildingCode = e.value;
-    this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach( v => {
-          this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
-        });
-      }
-    );
-  }
-  // unit change function
-  public  unitChange(e): void {
-    this.searchOwerData.unitCode = '';
-    this.searchOwerData.unitCode = e.value;
-  }
+  // public  VillageChange(e): void {
+  //   // console.log(this.test);
+  //   this.loadHidden = false;
+  //   this.searchOwerData.villageCode = '';
+  //   this.searchOwerData.regionCode = '';
+  //   this.searchOwerData.buildingCode = '';
+  //   this.searchOwerData.unitCode = '';
+  //   this.SearchOption.region = [];
+  //   this.SearchOption.building = [];
+  //   this.SearchOption.unit = [];
+  //   this.searchOwerData.villageCode = e.value;
+  //
+  //   this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
+  //       (value) => {
+  //         this.loadHidden = true;
+  //         value.data.forEach( v => {
+  //           this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
+  //         });
+  //       }
+  //     );
+  // }
+  // // region change function
+  // public  regionChange(e): void {
+  //   this.loadHidden = false;
+  //   this.searchOwerData.regionCode = '';
+  //   this.searchOwerData.buildingCode = '';
+  //   this.searchOwerData.unitCode = '';
+  //   this.searchOwerData.regionCode = e.value;
+  //   this.SearchOption.building = [];
+  //   this.SearchOption.unit = [];
+  //   this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
+  //     (value) => {
+  //       value.data.forEach( v => {
+  //         this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
+  //       });
+  //       this.loadHidden = true;
+  //
+  //     }
+  //   );
+  // }
+  // // building change function
+  // public  buildingChange(e): void {
+  //   this.searchOwerData.unitCode = '';
+  //   this.SearchOption.unit = [];
+  //   this.searchOwerData.buildingCode = e.value;
+  //   this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
+  //     (value) => {
+  //       value.data.forEach( v => {
+  //         this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
+  //       });
+  //     }
+  //   );
+  // }
+  // // unit change function
+  // public  unitChange(e): void {
+  //   this.searchOwerData.unitCode = '';
+  //   this.searchOwerData.unitCode = e.value;
+  // }
   // search type
   public  searchTypeChange(): void {
     if (this.searchType !== 1 && this.searchType !== 0) {
-        this.searchOwerData.villageCode = '';
-        this.searchOwerData.regionCode = '';
-        this.searchOwerData.buildingCode = '';
-        this.searchOwerData.unitCode = '';
-        this.SearchOption.village = [];
-        this.SearchOption.region = [];
-        this.SearchOption.building = [];
-        this.SearchOption.unit = [];
-        this.SearchOption.village = this.villageOption;
+      console.log(123);
+      // this.searchOwerData.villageCode = '';
+      // this.searchOwerData.regionCode = '';
+      // this.searchOwerData.buildingCode = '';
+      // this.searchOwerData.unitCode = '';
+      // this.SearchOption.village = [];
+      // this.SearchOption.region = [];
+      // this.SearchOption.building = [];
+      // this.SearchOption.unit = [];
+      this.villageCode.value = '';
+      this.villageCode.selectedOption = [];
+      // this.SearchOption.village = this.villageOption;
+      console.log(this.villageCode);
     }
   }
   // condition search click
@@ -217,34 +222,44 @@ export class BfOwnerComponent implements OnInit {
           }
         );
       } else {
-          this.getOwnerAllData();
+          // this.getOwnerAllData();
           this.inputSearchData = '';
       }
     } else if (this.searchType === 2) {
-      this.owerSrv.queryByMobileNumber({pageNo: 1, pageSize: 10, mobilePhone: this.inputSearchData}).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.loadHidden = true;
-            this.setTableOption(value.data.contents);
-            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-          } else {
-            this.toolSrv.setToast('error', '请求错误', value.message);
+      if (this.inputSearchData !== '') {
+        this.owerSrv.queryByMobileNumber({pageNo: 1, pageSize: 10, mobilePhone: this.inputSearchData}).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.loadHidden = true;
+              this.setTableOption(value.data.contents);
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+            } else {
+              this.toolSrv.setToast('error', '请求错误', value.message);
+            }
           }
-        }
-      );
+        );
+      } else {
+        this.loadHidden = true;
+        this.toolSrv.setToast('error', '操作错误', '请输入需要搜索的手机号');
+      }
     } else {
-      this.owerSrv.queryByroomCode({pageNo: 1, pageSize: 10, roomCode: this.inputSearchData}).subscribe(
-        value => {
-          console.log(value);
-          if (value.status === '1000') {
-            this.loadHidden = true;
-            this.setTableOption(value.data.contents);
-            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-          } else {
-            this.toolSrv.setToast('error', '请求错误', value.message);
+      if(this.inputSearchData !== '') {
+        this.owerSrv.queryByroomCode({pageNo: 1, pageSize: 10, roomCode: this.inputSearchData}).subscribe(
+          value => {
+            console.log(value);
+            if (value.status === '1000') {
+              this.loadHidden = true;
+              this.setTableOption(value.data.contents);
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+            } else {
+              this.toolSrv.setToast('error', '请求错误', value.message);
+            }
           }
-        }
-      );
+        );
+      } else {
+        this.loadHidden = true;
+        this.toolSrv.setToast('error', '操作错误', '请输入需要搜索的房间号');
+      }
     }
   }
   // renovation change function
@@ -264,7 +279,7 @@ export class BfOwnerComponent implements OnInit {
   public  ownerAddClick(): void {
     this.roomTitle = new RoomTitle();
     this.setRoomTitleData();
-    this.getRoomDropdownData('', '', '');
+    // this.getRoomDropdownData('', '', '');
     this.ownerAddDialog = true;
   }
   // sure add houser and owner info
@@ -316,7 +331,7 @@ export class BfOwnerComponent implements OnInit {
     this.sexOption = [];
     this.normalChargeOption = [];
     this.identityOption = [];
-    this.getownerDropdown('', '');
+    // this.getownerDropdown('', '');
     this.ownerDialog = true;
   }
   // submit owner and roomInfo
@@ -375,7 +390,7 @@ export class BfOwnerComponent implements OnInit {
          this.roomTitle[roomTitleKey] = '';
       }
     }
-    this.getRoomDropdownData(this.roomTitle.roomType, this.roomTitle.roomStatus, this.roomTitle.renovationStatus);
+    // this.getRoomDropdownData(this.roomTitle.roomType, this.roomTitle.roomStatus, this.roomTitle.renovationStatus);
     this.selectOwerInfo(this.roomTitle.roomCode);
     this.ownerDetailDialog = true;
   }
@@ -392,44 +407,44 @@ export class BfOwnerComponent implements OnInit {
           this.roomTitle[roomTitleKey] = this.ownerSelect[0][roomTitleKey];
         }
       }
-      this.toolSrv.getAdminStatus('ROOM_TYPE', (data) => {
-        if (data.length > 0) {
-          this.toolSrv.setDataFormat(data, this.roomTitle.roomType, (list, label) => {
-            this.roomTypeOption = list;
-            this.roomTypeName = label;
-            if (this.roomTypeName === '') {
-              this.roomTypeName = '请选择房屋类型';
-            }
-          });
-        }
-      });
-      this.toolSrv.getAdminStatus('ROOM_STATUS', (data) => {
-        if (data.length > 0) {
-          this.toolSrv.setDataFormat(data,  this.roomTitle.roomStatus, (list, label) => {
-            this.roomStatusOption = list;
-            this.roomStatusName = label;
-            if (this.roomStatusName === '') {
-              this.roomStatusName = '请选择房屋状态';
-            }
-          });
-        }
-      });
-      this.toolSrv.getAdminStatus('RENOVATION_STATUS', (data) => {
-        if (data.length > 0) {
-            this.toolSrv.setDataFormat(data, this.roomTitle.renovationStatus, (list, labelname) => {
-              this.renovationStatusOption = list;
-              this.renovationName = labelname;
-              if ( this.renovationName === '') {
-                this.renovationName = '请选择装修状态';
-                this.timeHide = true;
-              } else if (this.renovationName === '已装修') {
-                this.timeHide = false;
-              } else {
-                this.timeHide = true;
-              }
-            });
-          }
-      });
+      // this.toolSrv.getAdminStatus('ROOM_TYPE', (data) => {
+      //   if (data.length > 0) {
+      //     this.toolSrv.setDataFormat(data, this.roomTitle.roomType, (list, label) => {
+      //       this.roomTypeOption = list;
+      //       this.roomTypeName = label;
+      //       if (this.roomTypeName === '') {
+      //         this.roomTypeName = '请选择房屋类型';
+      //       }
+      //     });
+      //   }
+      // });
+      // this.toolSrv.getAdminStatus('ROOM_STATUS', (data) => {
+      //   if (data.length > 0) {
+      //     this.toolSrv.setDataFormat(data,  this.roomTitle.roomStatus, (list, label) => {
+      //       this.roomStatusOption = list;
+      //       this.roomStatusName = label;
+      //       if (this.roomStatusName === '') {
+      //         this.roomStatusName = '请选择房屋状态';
+      //       }
+      //     });
+      //   }
+      // });
+      // this.toolSrv.getAdminStatus('RENOVATION_STATUS', (data) => {
+      //   if (data.length > 0) {
+      //       this.toolSrv.setDataFormat(data, this.roomTitle.renovationStatus, (list, labelname) => {
+      //         this.renovationStatusOption = list;
+      //         this.renovationName = labelname;
+      //         if ( this.renovationName === '') {
+      //           this.renovationName = '请选择装修状态';
+      //           this.timeHide = true;
+      //         } else if (this.renovationName === '已装修') {
+      //           this.timeHide = false;
+      //         } else {
+      //           this.timeHide = true;
+      //         }
+      //       });
+      //     }
+      // });
       this.selectOwerInfo(this.roomTitle.roomCode);
       this.ownerModifayDialog = true;
     } else {
@@ -701,56 +716,59 @@ export class BfOwnerComponent implements OnInit {
     // this.paymentSelect = [];
   }
   // get room Dropdown data
-  public getRoomDropdownData(roomType, roomStatus, renovation): void {
-    this.toolSrv.getAdminStatus('ROOM_TYPE', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, roomType, (list, label) => {
-          this.roomTypeOption = list;
-          this.roomTypeName = label;
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus('ROOM_STATUS', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, roomStatus, (list, label) => {
-          this.roomStatusOption = list;
-          this.roomStatusName = label;
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus('RENOVATION_STATUS', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, renovation, (list, labelname) => {
-          this.renovationStatusOption = list;
-          this.renovationName = labelname;
-        });
-      }
-    });
-  }
+  // public getRoomDropdownData(roomType, roomStatus, renovation): void {
+  //   this.toolSrv.getAdminStatus('ROOM_TYPE', (data) => {
+  //     if (data.length > 0) {
+  //       this.toolSrv.setDataFormat(data, roomType, (list, label) => {
+  //         this.roomTypeOption = list;
+  //         this.roomTypeName = label;
+  //       });
+  //     }
+  //   });
+  //   this.toolSrv.getAdminStatus('ROOM_STATUS', (data) => {
+  //     if (data.length > 0) {
+  //       this.toolSrv.setDataFormat(data, roomStatus, (list, label) => {
+  //         this.roomStatusOption = list;
+  //         this.roomStatusName = label;
+  //       });
+  //     }
+  //   });
+  //   this.toolSrv.getAdminStatus('RENOVATION_STATUS', (data) => {
+  //     if (data.length > 0) {
+  //       this.toolSrv.setDataFormat(data, renovation, (list, labelname) => {
+  //         this.renovationStatusOption = list;
+  //         this.renovationName = labelname;
+  //       });
+  //     }
+  //   });
+  // }
   // get owner Dropdown data
-  public  getownerDropdown(sex, normal): void {
-    this.toolSrv.getAdminStatus( 'SEX', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, sex, (list, label) => {
-          this.sexOption = list;
-        });
-      }
+  public  getownerDropdown(): void {
+    this.toolSrv.getAdmStatus([{settingType: 'ROOM_TYPE'}, {settingType: 'ROOM_STATUS'}, {settingType: 'RENOVATION_STATUS'}, {settingType: 'SEX'}, {settingType: 'NORMAL_PAYMENT_STATUS'}, {settingType: 'IDENTITY' }], (data) => {
+          console.log(data);
     });
-    this.toolSrv.getAdminStatus( 'NORMAL_PAYMENT_STATUS', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, normal, (list, label) => {
-          this.normalChargeOption = list;
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus( 'IDENTITY', (data) => {
-      if (data.length > 0) {
-         data.forEach( v => {
-          if (v.settingName !== '租客')
-            this.identityOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    });
+    // this.toolSrv.getAdminStatus( , (data) => {
+    //   if (data.length > 0) {
+    //     this.toolSrv.setDataFormat(data, sex, (list, label) => {
+    //       this.sexOption = list;
+    //     });
+    //   }
+    // });
+    // this.toolSrv.getAdminStatus( 'NORMAL_PAYMENT_STATUS', (data) => {
+    //   if (data.length > 0) {
+    //     this.toolSrv.setDataFormat(data, normal, (list, label) => {
+    //       this.normalChargeOption = list;
+    //     });
+    //   }
+    // });
+    // this.toolSrv.getAdminStatus( 'IDENTITY', (data) => {
+    //   if (data.length > 0) {
+    //      data.forEach( v => {
+    //       if (v.settingName !== '租客')
+    //         this.identityOption.push({label: v.settingName, value: v.settingCode});
+    //     });
+    //   }
+    // });
   }
   // set roomtilt
   public  setRoomTitleData(): void {
@@ -781,91 +799,91 @@ export class BfOwnerComponent implements OnInit {
     this.normalChargeOption = [];
     this.identityOption = [];
     this.ownerUserSelect = [];
-    this.owerSrv.queryOwerInfoAllStatus({settingType: 'SEX'}).subscribe(
-      value => {
-        value.data.forEach( v => {
-          this.sexOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    );
-    this.owerSrv.queryOwerInfoAllStatus({settingType: 'NORMAL_PAYMENT_STATUS'}).subscribe(
-      value => {
-        value.data.forEach( v => {
-          this.normalChargeOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    );
-    this.owerSrv.queryOwerInfoAllStatus({settingType: 'IDENTITY'}).subscribe(
-      value => {
-        value.data.forEach( v => {
-          if (v.settingName !== '租客')
-            this.identityOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    );
-    const setTime = setInterval(() => {
-      if (this.sexOption.length > 0 && this.normalChargeOption.length && this.normalChargeOption.length > 0){
-        this.owerSrv.queryOwerInfoDetail({roomCode: code}).subscribe(
-          value => {
-            this.ownerList = [];
-            clearInterval(setTime);
-
-            if (value.status === '1000') {
-              value.data.forEach( v => {
-                for (const key in  v) {
-                  this.ownerinfo[key] = v[key];
-                }
-                if (this.ownerinfo.sex != null ) {
-                  this.sexOption.forEach(val => {
-                    if (this.ownerinfo.sex.toString() === val.value.toString()) {
-                      this.ownerinfo.sex = val.label;
-                    }
-                  });
-                }
-                if (this.ownerinfo.normalPaymentStatus != null)  {
-                  this.normalChargeOption.forEach(val => {
-                    if (this.ownerinfo.normalPaymentStatus.toString() === val.value.toString()) {
-                      this.ownerinfo.normalPaymentStatus = val.label;
-                    }
-                  });
-                }
-                if (this.ownerinfo.identity != null){
-                  this.identityOption.forEach(val => {
-                    if (this.ownerinfo.identity.toString() === val.value.toString()) {
-                      this.ownerinfo.identity = val.label;
-                    }
-                  });
-                }
-                this.ownerList.push(this.ownerinfo);
-                this.ownerinfo = new OwerList();
-              });
-            } else {
-              this.toolSrv.setToast('error', '操作错误', '用户信息数据错误');
-            }
-          }
-        );
-      }
-    }, 400);
+    // this.owerSrv.queryOwerInfoAllStatus({settingType: 'SEX'}).subscribe(
+    //   value => {
+    //     value.data.forEach( v => {
+    //       this.sexOption.push({label: v.settingName, value: v.settingCode});
+    //     });
+    //   }
+    // );
+    // this.owerSrv.queryOwerInfoAllStatus({settingType: 'NORMAL_PAYMENT_STATUS'}).subscribe(
+    //   value => {
+    //     value.data.forEach( v => {
+    //       this.normalChargeOption.push({label: v.settingName, value: v.settingCode});
+    //     });
+    //   }
+    // );
+    // this.owerSrv.queryOwerInfoAllStatus({settingType: 'IDENTITY'}).subscribe(
+    //   value => {
+    //     value.data.forEach( v => {
+    //       if (v.settingName !== '租客')
+    //         this.identityOption.push({label: v.settingName, value: v.settingCode});
+    //     });
+    //   }
+    // );
+    // const setTime = setInterval(() => {
+    //   if (this.sexOption.length > 0 && this.normalChargeOption.length && this.normalChargeOption.length > 0){
+    //     this.owerSrv.queryOwerInfoDetail({roomCode: code}).subscribe(
+    //       value => {
+    //         this.ownerList = [];
+    //         clearInterval(setTime);
+    //
+    //         if (value.status === '1000') {
+    //           value.data.forEach( v => {
+    //             for (const key in  v) {
+    //               this.ownerinfo[key] = v[key];
+    //             }
+    //             if (this.ownerinfo.sex != null ) {
+    //               this.sexOption.forEach(val => {
+    //                 if (this.ownerinfo.sex.toString() === val.value.toString()) {
+    //                   this.ownerinfo.sex = val.label;
+    //                 }
+    //               });
+    //             }
+    //             if (this.ownerinfo.normalPaymentStatus != null)  {
+    //               this.normalChargeOption.forEach(val => {
+    //                 if (this.ownerinfo.normalPaymentStatus.toString() === val.value.toString()) {
+    //                   this.ownerinfo.normalPaymentStatus = val.label;
+    //                 }
+    //               });
+    //             }
+    //             if (this.ownerinfo.identity != null){
+    //               this.identityOption.forEach(val => {
+    //                 if (this.ownerinfo.identity.toString() === val.value.toString()) {
+    //                   this.ownerinfo.identity = val.label;
+    //                 }
+    //               });
+    //             }
+    //             this.ownerList.push(this.ownerinfo);
+    //             this.ownerinfo = new OwerList();
+    //           });
+    //         } else {
+    //           this.toolSrv.setToast('error', '操作错误', '用户信息数据错误');
+    //         }
+    //       }
+    //     );
+    //   }
+    // }, 400);
   }
 
-//  搜索分页查询
-  public  getOwnerAllData(): void {
-    this.searchOwerData.pageNo = this.nowPage;
-    this.searchOwerData.pageSize = 10;
-    this.searchOwerData.villageCode = '';
-    this.searchOwerData.regionCode = '';
-    this.searchOwerData.buildingCode = '';
-    this.searchOwerData.unitCode = '';
-    this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
-      (value) => {
-        console.log(value);
-        this.loadHidden = true;
-        this.setTableOption(value.data.contents);
-        // this.ownerTableContent = ;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-      }
-    );
-  }
+// //  搜索分页查询
+//   public  getOwnerAllData(): void {
+//     this.searchOwerData.pageNo = this.nowPage;
+//     this.searchOwerData.pageSize = 10;
+//     this.searchOwerData.villageCode = '';
+//     this.searchOwerData.regionCode = '';
+//     this.searchOwerData.buildingCode = '';
+//     this.searchOwerData.unitCode = '';
+//     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
+//       (value) => {
+//         console.log(value);
+//         this.loadHidden = true;
+//         this.setTableOption(value.data.contents);
+//         // this.ownerTableContent = ;
+//         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+//       }
+//     );
+//   }
 
 
   // 设置表格数据

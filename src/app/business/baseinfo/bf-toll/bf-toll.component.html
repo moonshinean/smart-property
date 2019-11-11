@@ -20,52 +20,19 @@
       </div>
     </div>
     <!--搜索-->
-    <div class="ui-inputgroup bf-toll-header-search">
-      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">
-      <button id="disabled-btn" class="bf-toll-header-btn-search" type="button"  (click)="tollSearchClick()"  label="搜索">搜索</button>
-    </div>
+<!--    <div class="ui-inputgroup bf-toll-header-search">-->
+<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
+<!--      <button id="disabled-btn" class="bf-toll-header-btn-search" type="button"  (click)="tollSearchClick()"  label="搜索">搜索</button>-->
+<!--    </div>-->
   </div>
   <!--表格-->
   <div class="bf-toll-table">
-    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
-      <p-table [columns]="tollTableTitle" [value]="tollTableContent"   [(selection)]="tollSelect" (onRowSelect)="tollonRowSelect($event)">
-        <ng-template pTemplate="header" let-columns>
-          <tr >
-            <th style="width: 3em"  [ngStyle]="this.tollTableTitleStyle">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th *ngFor="let col of columns"  [ngStyle]="this.tollTableTitleStyle">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              {{rowData[col.field]}}
-            </td>
-            <td>
-              <button class="bf-toll-table-Btn" (click)="toolDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              {{rowData[col.field]}}
-            </td>
-            <td>
-              <button class="bf-toll-table-Btn" (click)="toolDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-scrollPanel>
-
+    <rbi-check-table-btn
+      [option]="tableOption"
+      [select]="tollSelect"
+      (selectData)="selectData($event)"
+      (detail)="toolDetailClick($event)">
+    </rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
   <p-dialog header="信息添加" [(visible)]="tollAddDialog" [width]="1000" (onHide)="clearData()">
@@ -366,7 +333,6 @@
       </div>
     </p-footer>
   </p-dialog>
-
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

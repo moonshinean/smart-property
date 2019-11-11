@@ -20,52 +20,52 @@
       </div>
     </div>
     <!--搜索-->
-    <div class="ui-inputgroup bf-staff-header-search">
-      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">
-      <button id="disabled-btn" class="bf-staff-header-btn-search" type="button"  (click)="staffSearchClick()"  label="搜索">搜索</button>
-    </div>
+<!--    <div class="ui-inputgroup bf-staff-header-search">-->
+<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
+<!--      <button id="disabled-btn" class="bf-staff-header-btn-search" type="button"  (click)="staffSearchClick()"  label="搜索">搜索</button>-->
+<!--    </div>-->
   </div>
   <!--表格-->
   <div class="bf-staff-table">
-    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
-      <p-table [columns]="staffTableTitle" [value]="staffTableContent"  [(selection)]="staffSelect"  (onRowSelect)="staffonRowSelect($event)">
-        <ng-template pTemplate="header" let-columns>
-          <tr >
-            <th style="width: 3em"  [ngStyle]="this.staffTableTitleStyle">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th *ngFor="let col of columns"  [ngStyle]="this.staffTableTitleStyle">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              {{rowData[col.field]}}
-            </td>
-            <td>
-              <button class="bf-staff-table-Btn" (click)="staffDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              {{rowData[col.field]}}
-            </td>
-            <td>
-              <button class="bf-staff-table-Btn" (click)="staffDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-scrollPanel>
-
+<!--    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">-->
+<!--      <p-table [columns]="staffTableTitle" [value]="staffTableContent"  [(selection)]="staffSelect"  (onRowSelect)="staffonRowSelect($event)">-->
+<!--        <ng-template pTemplate="header" let-columns>-->
+<!--          <tr >-->
+<!--            <th style="width: 3em"  [ngStyle]="this.staffTableTitleStyle">-->
+<!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
+<!--            </th>-->
+<!--            <th *ngFor="let col of columns"  [ngStyle]="this.staffTableTitleStyle">-->
+<!--              {{col.header}}-->
+<!--            </th>-->
+<!--          </tr>-->
+<!--        </ng-template>-->
+<!--        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">-->
+<!--          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">-->
+<!--            <td>-->
+<!--              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>-->
+<!--            </td>-->
+<!--            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >-->
+<!--              {{rowData[col.field]}}-->
+<!--            </td>-->
+<!--            <td>-->
+<!--              <button class="bf-staff-table-Btn" (click)="staffDetailClick(rowData)">详情</button>-->
+<!--            </td>-->
+<!--          </tr>-->
+<!--          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">-->
+<!--            <td>-->
+<!--              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>-->
+<!--            </td>-->
+<!--            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >-->
+<!--              {{rowData[col.field]}}-->
+<!--            </td>-->
+<!--            <td>-->
+<!--              <button class="bf-staff-table-Btn" (click)="staffDetailClick(rowData)">详情</button>-->
+<!--            </td>-->
+<!--          </tr>-->
+<!--        </ng-template>-->
+<!--      </p-table>-->
+<!--    </p-scrollPanel>-->
+    <rbi-check-table-btn [select]="staffSelect" (selectData)="selectData($event)" [option]="optionTable" (detail)="staffDetailClick($event)"></rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
   <p-dialog header="信息添加" [(visible)]="staffAddDialog" [width]="900" >
@@ -262,7 +262,7 @@
     </p-scrollPanel>
 
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="bf-staff-dialog-Btn bf-staff-dialog-Btn-sure" (click)="staffAddSureClick()">确认</button>
         <button class="bf-staff-dialog-Btn bf-staff-dialog-Btn-false" (click)="staffAddDialog=false;clearData()">取消</button>
       </div>
@@ -463,7 +463,7 @@
     </p-scrollPanel>
 
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="bf-staff-dialog-Btn bf-staff-dialog-Btn-sure" (click)="staffModifySureClick()">确认</button>
         <button class="bf-staff-dialog-Btn bf-staff-dialog-Btn-false" (click)="staffModifayDialog=false; clearData()">取消</button>
       </div>
@@ -471,8 +471,8 @@
   </p-dialog>
 
   <!--详情弹窗-->
-  <p-dialog header="详情" [(visible)]="staffDetailDialog" [width]="800">
-    <!--Content-->
+<!--  <p-dialog header="详情" [(visible)]="staffDetailDialog" [width]="800">
+    &lt;!&ndash;Content&ndash;&gt;
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh', 'text-align': 'center'}">
       <div class="ui-g-6">
         <div class="ui-g-4">
@@ -506,14 +506,14 @@
           <span>{{staffDetail.username}}</span>
         </div>
       </div>
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label >密码：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<span>{{staffDetail.password}}</span>-->
-        <!--</div>-->
-      <!--</div>-->
+      &lt;!&ndash;<div class="ui-g-6">&ndash;&gt;
+        &lt;!&ndash;<div class="ui-g-4">&ndash;&gt;
+          &lt;!&ndash;<label >密码：</label>&ndash;&gt;
+        &lt;!&ndash;</div>&ndash;&gt;
+        &lt;!&ndash;<div class="ui-g-8">&ndash;&gt;
+          &lt;!&ndash;<span>{{staffDetail.password}}</span>&ndash;&gt;
+        &lt;!&ndash;</div>&ndash;&gt;
+      &lt;!&ndash;</div>&ndash;&gt;
       <div class="ui-g-6">
         <div class="ui-g-4">
           <label>真实姓名：</label>
@@ -666,22 +666,22 @@
           <span>{{staffDetail.remarks}}</span>
         </div>
       </div>
-      <!--<div class="ui-g-6">-->
-      <!--<div class="ui-g-4">-->
-      <!--<label for="addportraitPath">头像地址：</label>-->
-      <!--</div>-->
-      <!--<div class="ui-g-8">-->
-      <!--<input id="addportraitPath" type="text" pInputText placeholder="请输入地块号" [(ngModel)]="staffAdd.portraitPath">-->
-      <!--</div>-->
-      <!--</div>-->
+      &lt;!&ndash;<div class="ui-g-6">&ndash;&gt;
+      &lt;!&ndash;<div class="ui-g-4">&ndash;&gt;
+      &lt;!&ndash;<label for="addportraitPath">头像地址：</label>&ndash;&gt;
+      &lt;!&ndash;</div>&ndash;&gt;
+      &lt;!&ndash;<div class="ui-g-8">&ndash;&gt;
+      &lt;!&ndash;<input id="addportraitPath" type="text" pInputText placeholder="请输入地块号" [(ngModel)]="staffAdd.portraitPath">&ndash;&gt;
+      &lt;!&ndash;</div>&ndash;&gt;
+      &lt;!&ndash;</div>&ndash;&gt;
     </div>
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <!--<button class="bf-staff-dialog-Btn bf-staff-dialog-Btn-sure" (click)="staffModifySureClick()">确认</button>-->
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        &lt;!&ndash;<button class="bf-staff-dialog-Btn bf-staff-dialog-Btn-sure" (click)="staffModifySureClick()">确认</button>&ndash;&gt;
         <button class="bf-staff-dialog-Btn bf-staff-dialog-Btn-false" (click)="staffDetailDialog=false">取消</button>
       </div>
     </p-footer>
-  </p-dialog>
+  </p-dialog>-->
   <!--区域选择-->
   <p-dialog header="请选择部门" [(visible)]="departDialog" [responsive]="true" showEffect="fade" [maximizable]="true" [baseZIndex]="10000" [modal]="true" [width]="300" [height]="400">
     <div class="ui-g ui-fluid">
@@ -705,6 +705,7 @@
       </div>
     </p-footer>
   </p-dialog>
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 

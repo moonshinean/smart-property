@@ -25,6 +25,8 @@ import { RefundPendReviewComponent } from './refund-pend-review/refund-pend-revi
 import { RefundAuditedComponent } from './refund-audited/refund-audited.component';
 import { RefundApplicationInfoComponent } from './refund-application-info/refund-application-info.component';
 import {PublicMethedService} from '../../common/public/public-methed.service';
+import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
+import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,8 @@ import {PublicMethedService} from '../../common/public/public-methed.service';
     CalendarModule,
     LoadingModule,
     TreeModule,
+    BasicTableModule,
+    BasicDialogModule
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

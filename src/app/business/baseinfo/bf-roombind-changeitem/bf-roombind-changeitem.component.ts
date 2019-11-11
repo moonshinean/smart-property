@@ -14,11 +14,11 @@ export class BfRoombindChangeitemComponent implements OnInit {
 
   @ViewChild('input') input: Input;
   // @ViewChild('file') file: Input;
-  public roombindTableTitle: any;
+  public tableOption: any;
   public roombindTableContent: any[];
   public roombindTableTitleStyle: any;
   public roombindSelect: any;
-  public nowPage = 1;
+  public NOW_PAGE = 1;
   // 查询相关
   public SearchOption = {village: [], region: [], building: [], unit: [], room: []};
   // 添加相关
@@ -28,9 +28,10 @@ export class BfRoombindChangeitemComponent implements OnInit {
   // 修改相关
   public roombindModifayDialog: boolean;
   public roombindModify: ModifyRoomBindChargeItem = new ModifyRoomBindChargeItem();
-  public roombindDetailDialog: boolean;
   public roombindDetail: ModifyRoomBindChargeItem = new ModifyRoomBindChargeItem();
   public chargeItemName: any;
+  // 详情相关
+  public detailOption: any;
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public option: any;
@@ -49,41 +50,15 @@ export class BfRoombindChangeitemComponent implements OnInit {
 
   // initialization houseinfo
   public  roombindInitialization(): void {
-    this.roombindTableTitle = [
-      {field: 'villageName', header: '小区名称'},
-      {field: 'regionName', header: '地块名称'},
-      {field: 'buildingName', header: '楼栋名称'},
-      {field: 'unitName', header: '单元名称'},
-      {field: 'roomCode', header: '房间编号'},
-      {field: 'chargeCode', header: '缴费项目'},
-      {field: 'operating', header: '操作'}
-    ];
     this.loadHidden = false;
     this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
       value => {
-        console.log(value);
-        value.data.forEach( v => {
-          this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
-        });
-        this.roomBindChargeSrv.queryRoomChangeInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-          (val) => {
-            console.log(val);
-            this.loadHidden = true;
-            if (val.status === '1000') {
-              val.data.contents.forEach( v => {
-                this.chargeItemOption.forEach( data =>{
-                  if (v.chargeCode === data.value) {
-                    v.chargeCode = data.label;
-                  }
-                });
-              });
-              this.roombindTableContent = val.data.contents;
-              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-            } else {
-              this.toolSrv.setToast('error', '请求错误', val.message);
-            }
-          }
-        );
+        if (value.status === '1000') {
+          value.data.forEach(v => {
+            this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
+          });
+          this.queryRoomBindChargeItemPageData();
+        }
       }
     );
 
@@ -112,6 +87,7 @@ export class BfRoombindChangeitemComponent implements OnInit {
 
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
       (value) => {
+        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
           if (value.data.length !== 0) {
@@ -227,9 +203,25 @@ export class BfRoombindChangeitemComponent implements OnInit {
   }
   // detail roombindInfo
   public  roombindDetailClick(e): void {
-    this.roombindDetail = e;
-    this.chargeItemName = this.roombindDetail.chargeCode;
-    this.roombindDetailDialog = true;
+    // this.roombindDetail = e;
+    this.detailOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'chargeCode', header: '缴费项目'},
+        ],
+      }
+    };
   }
   // modify roombind
   public roombindModifyClick(): void {
@@ -245,16 +237,6 @@ export class BfRoombindChangeitemComponent implements OnInit {
           });
         }
       );
-      // this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
-      //   value => {
-      //     value.data.forEach( v => {
-      //       this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
-      //       if (this.roombindModify.chargeCode === v.chargeCode) {
-      //         this.chargeItemName = v.chargeName;
-      //       }
-      //     });
-      //   }
-      // );
       this.globalSrv.queryRegionInfo({villageCode: this.roombindModify.villageCode}).subscribe(
         (value) => {
           value.data.forEach( v => {
@@ -335,10 +317,6 @@ export class BfRoombindChangeitemComponent implements OnInit {
       });
     }
   }
-  // select houseinfo
-  public  roombindonRowSelect(e): void {
-    this.roombindModify = e.data;
-  }
   // Reset data
   public  clearData(): void {
     this.roombindAdd = new AddRoomBindChargeItem();
@@ -354,31 +332,66 @@ export class BfRoombindChangeitemComponent implements OnInit {
   // paging query
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
-    this.nowPage = event;
+    this.NOW_PAGE= event;
     this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
       value => {
         value.data.forEach( v => {
           this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
         });
-        this.roomBindChargeSrv.queryRoomChangeInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-          (val) => {
-            this.loadHidden = true;
-            if (val.status === '1000') {
-              val.data.contents.forEach( v => {
-                this.chargeItemOption.forEach( data =>{
-                  if (v.chargeCode === data.value) {
-                    v.chargeCode = data.label;
-                  }
-                });
-              });
-              this.roombindTableContent = val.data.contents;
-              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-            } else {
-              this.toolSrv.setToast('error', '请求错误', val.message);
-            }
-          }
-        );
       }
     );
     }
+
+
+  // select data (选择数据)
+  public  selectData(e): void {
+    this.roombindSelect = e;
+  }
+  // set table data （设置列表数据）
+  public  setTableOption(data1): void {
+    this.tableOption = {
+      width: '101.4%',
+      header: {
+        data:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'chargeCode', header: '缴费项目'},
+          {field: 'operating', header: '操作'}
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
+  }
+
+  public  queryRoomBindChargeItemPageData(): void {
+    this.roomBindChargeSrv.queryRoomChangeInfoPage({pageNo: this.NOW_PAGE, pageSize: 10}).subscribe(
+      (val) => {
+        this.loadHidden = true;
+        if (val.status === '1000') {
+          console.log(val);
+          val.data.contents.forEach( v => {
+            this.chargeItemOption.forEach( data => {
+              if (v.chargeCode === data.value) {
+                v.chargeCode = data.label;
+              }
+            });
+          });
+          this.setTableOption(val.data.contents);
+          this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '请求错误', val.message);
+        }
+      }
+    );
+  }
 }

@@ -30,72 +30,18 @@
       <!--</div>-->
     </div>
     <!--//搜索-->
-    <div class="ui-inputgroup refund-already-header-search">
-      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">
-      <button id="disabled-btn" class="refund-already-header-btn-search" type="button"  (click)="alreadySearchClick()"  label="搜索">搜索</button>
-    </div>
+<!--    <div class="ui-inputgroup refund-already-header-search">-->
+<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
+<!--      <button id="disabled-btn" class="refund-already-header-btn-search" type="button"  (click)="alreadySearchClick()"  label="搜索">搜索</button>-->
+<!--    </div>-->
   </div>
   <!--表格-->
   <div class="refund-already-table">
-    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
-      <p-table [columns]="alreadyTableTitle" [value]="alreadyTableContent"  [(selection)]="alreadySelect" (onRowSelect)="alreadyonRowSelect($event)">
-        <ng-template pTemplate="header" let-columns>
-          <tr >
-            <th style="width: 3em"  [ngStyle]="this.alreadyTableTitleStyle">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th *ngFor="let col of columns"  [ngStyle]="this.alreadyTableTitleStyle">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1);" >
-              <span *ngIf="col.field === 'actualMoneyCollection'">￥</span> {{rowData[col.field]}}
-            </td>
-            <td>
-              <button class="refund-already-table-Btn" (click)="alreadyDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1);" >
-              <span *ngIf="col.field === 'actualMoneyCollection'">￥</span>{{rowData[col.field]}}
-            </td>
-            <td>
-              <button class="refund-already-table-Btn" (click)="alreadyDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-scrollPanel>
+    <rbi-check-table-btn [select]="alreadySelect" (selectData)="selectData($event)" (detail)="alreadyDetailClick($event)" [option]="alreadyOption"></rbi-check-table-btn>
   </div>
+
   <!--详情弹窗-->
-  <p-dialog header="详情弹窗" [(visible)]="alreadyDetailDialog" [width]="900">
-      <p-scrollPanel [style]="{width:'100%',height: '50vh'}" styleClass="custombar">
-        <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-          <div class="ui-g-6" *ngFor="let item of detailTitle">
-            <div class="ui-g-4">
-              <label >{{item?.header}}：</label>
-            </div>
-            <div class="ui-g-8">
-              <span>{{alreadyDetail[item?.field]}}</span>
-            </div>
-          </div>
-        </div>
-      </p-scrollPanel>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="refund-already-dialog-Btn refund-already-dialog-Btn-false"  (click)="alreadyDetailDialog=false;">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+  <rbi-detail-pop [dialogOption]="alreadyDetailOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

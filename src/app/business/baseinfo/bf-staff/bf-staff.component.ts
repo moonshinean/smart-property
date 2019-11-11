@@ -18,9 +18,11 @@ export class BfStaffComponent implements OnInit {
   public staffTableContent: Staff[];
   public staffTableTitleStyle: any;
   public staffSelect: any;
+  public optionTable: any;
   // 添加相关
   public staffAddDialog: boolean;
   public staffAdd: AddStaff = new AddStaff();
+
   public enableOption: any[] = [];
   public loginStatusOption: any[] = [];
   public educationalOption: any[] = [];
@@ -35,6 +37,7 @@ export class BfStaffComponent implements OnInit {
   public politicalStatusModifyDrapPlaceholder: any;
   public maritalModifyDrapPlaceholder: any;
    // 详情相关
+  public dialogOption: any;
   public staffDetailDialog: boolean;
   public staffDetail: ModifyStaff = new ModifyStaff();
   // 其他相关
@@ -59,41 +62,26 @@ export class BfStaffComponent implements OnInit {
 
   // initialization staff
   public  staffInitialization(): void {
-    this.staffTableTitle = [
-      {field: 'username', header: '用户名'},
-      {field: 'realName', header: '员工姓名'},
-      {field: 'sex', header: '性别'},
-      {field: 'mobilePhone', header: '手机号码'},
-      // {field: 'organizationName', header: '组织/机构名称'},
-      {field: 'departmentName', header: '部门名称'},
-      {field: 'enabled', header: '可用状态'},
-      {field: 'operating', header: '操作'},
-    ];
     this.esDate = this.toolSrv.esDate;
     this.loadHidden = false;
-    this.toolSrv.getAdminStatus('ENABLED', (data) => {
-      if (data.length > 0 ) {
-        this.staffSrv.queryStaffInfoPage({pageNo: this.nowPage, pageSize: 10 }).subscribe(
-          value => {
-            this.loadHidden = true;
-            value.data.contents.forEach( v => {
-              v.enabled = this.setDataName(data, v.enabled);
-            });
-            this.staffTableContent = value.data.contents;
-            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-          }
-        );
-      }
+    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'},
+      {settingType: 'LOGIN_STATUS'}, {settingType: 'EDUCATIONAL_BACKGROUND'}, {settingType: 'POLITICAL_STATUS'},
+      {settingType: 'MARITAL_STATUS'}], (data) => {
+      console.log(data);
+      this.enableOption = this.toolSrv.setListMap(data.ENABLED);
+      this.loginStatusOption = this.toolSrv.setListMap(data.LOGIN_STATUS);
+      this.educationalOption = this.toolSrv.setListMap(data.EDUCATIONAL_BACKGROUND);
+      this.politicalStatusOption = this.toolSrv.setListMap(data.POLITICAL_STATUS);
+      this.maritalOption = this.toolSrv.setListMap(data.MARITAL_STATUS);
+      this.queryStaffPageData();
     });
-    this.staffTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
   // condition search click
-  public  staffSearchClick(): void {
-    // @ts-ignore
-  }
+  // public  staffSearchClick(): void {
+  //   // @ts-ignore
+  // }
   // add staff
   public  staffAddClick(): void {
-    this.getDownLoadData('', '', '', '', '');
     this.staffAddDialog = true;
   }
   public  DepartTreeClick(): void {
@@ -135,7 +123,6 @@ export class BfStaffComponent implements OnInit {
     if (this.staffSelect === undefined || this.staffSelect.length === 0 ) {
       this.toolSrv.setToast('error',  '操作错误',  '请选择需要修改的项');
     } else if (this.staffSelect.length === 1) {
-      this.getDownLoadData(this.staffModifay.enabled, this.staffModifay.loginStatus, this.staffModifay.educationalBackground, this.staffModifay.politicalStatus, this.staffModifay.maritalStatus);
       this.staffModifayDialog = true;
     } else {
       this.toolSrv.setToast('error',  '操作错误',  '只能选择一项进行修改');
@@ -183,16 +170,45 @@ export class BfStaffComponent implements OnInit {
   public  treeOnNodeSelect(e): void {
     console.log(e);
   }
-  // select staff
-  public  staffonRowSelect(e): void {
-    this.staffModifay = e.data;
-  }
   // see staffinfo detail
   public  staffDetailClick(e): void {
       // console.log(e);
     this.staffDetail = e;
-    this.getDownLoadData(e.enabled, e.loginStatus, e.educationalBackground, e.politicalStatus, e.maritalStatus);
     this.staffDetailDialog = true;
+    this.dialogOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'organizationName', header: '组织名称'},
+          {field: 'departmentName', header: '部门名称'},
+          {field: 'userId', header: '用户ID'},
+          {field: 'username', header: '用户名'},
+          {field: 'realName', header: '真实姓名'},
+          {field: 'sex', header: '性别'},
+          {field: 'email', header: 'E-mail'},
+          {field: 'address', header: '地址'},
+          {field: 'mobilePhone', header: '手机号码'},
+          {field: 'identity', header: '身份证号'},
+          {field: 'identity', header: '登录状态'},
+          {field: 'portraitPath', header: '头像地址'},
+          {field: 'enabled', header: '是否可用'},
+          {field: 'educationalBackground', header: '学历'},
+          {field: 'workingYears', header: '工龄'},
+          {field: 'hiredate', header: '入职时间'},
+          {field: 'nativePlace', header: '籍贯'},
+          {field: 'politicalStatus', header: '政治面貌'},
+          {field: 'maritalStatus', header: '婚姻状况'},
+          {field: 'volk', header: '民族'},
+          {field: 'technicalTitle', header: '职称'},
+          {field: 'remarks', header: '备注'},
+        ],
+      }
+    };
   }
   // Data formatting
   public initializeTree(data): any {
@@ -221,72 +237,56 @@ export class BfStaffComponent implements OnInit {
       this.loginStatusOption = [];
       this.educationalOption = [];
   }
-  // get DownLoad data
-  public  getDownLoadData(enable, loginStatus, educational, political, marital): void {
-    this.toolSrv.getAdminStatus('ENABLED', (data) => {
-      if (data.length > 0 ) {
-        this.toolSrv.setDataFormat(data, enable, (list, label) => {
-          this.enableOption = list;
-          this.enableModifyDrapPlaceholder = label;
-        });
-        this.toolSrv.getAdminStatus('LOGIN_STATUS', (v) => {
-          if (v.length > 0 ) {
-            this.toolSrv.setDataFormat(v, loginStatus, (list, label) => {
-              this.loginStatusOption = list;
-              this.loginStatusModifyDrapPlaceholder = label;
-            });
-          }
-          this.toolSrv.getAdminStatus('EDUCATIONAL_BACKGROUND', (val) => {
-            if (val.length > 0 ) {
-              this.toolSrv.setDataFormat(val, educational, (list, label) => {
-                this.educationalOption = list;
-                this.educationalModifyDrapPlaceholder = label;
-              });
-            }
-            this.toolSrv.getAdminStatus('POLITICAL_STATUS', (value) => {
-              if (value.length > 0 ) {
-                this.toolSrv.setDataFormat(value, political, (list, label) => {
-                  this.politicalStatusOption = list;
-                  this.politicalStatusModifyDrapPlaceholder = label;
-                });
-              }
-              this.toolSrv.getAdminStatus('MARITAL_STATUS', (mdata) => {
-                if (mdata.length > 0 ) {
-                  this.toolSrv.setDataFormat(mdata, marital, (list, label) => {
-                    this.maritalOption = list;
-                    this.maritalModifyDrapPlaceholder = label;
-                  });
-                }
-              });
-            });
-          });
-        });
-      }
-    });
-
-
-
-
-  }
   // paging query
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.staffSrv.queryStaffInfoPage({pageNo: this.nowPage, pageSize: 10 }).subscribe(
-      value => {
-        this.loadHidden = true;
-        this.staffTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-      }
-    );
-    this.staffTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
+    this.queryStaffPageData();
   }
-  public  setDataName(option , label): any {
-    option.forEach( v => {
-      if ( label.toString()  === v.settingCode) {
-        label = v.settingName;
-      }
-    });
-    return label;
+  public  queryStaffPageData(): void {
+        this.staffSrv.queryStaffInfoPage({pageNo: this.nowPage, pageSize: 10 }).subscribe(
+          value => {
+            this.loadHidden = true;
+            value.data.contents.forEach( v => {
+              v.enabled = this.toolSrv.setValueToLabel(this.enableOption, v.enabled);
+              v.loginStatus = this.toolSrv.setValueToLabel(this.loginStatusOption, v.loginStatus);
+              v.maritalStatus = this.toolSrv.setValueToLabel(this.maritalOption, v.maritalStatus);
+              v.politicalStatus = this.toolSrv.setValueToLabel(this.politicalStatusOption, v.politicalStatus);
+              v.educationalBackground = this.toolSrv.setValueToLabel(this.educationalOption, v.educationalBackground);
+            });
+            this. setTableOption(value.data.contents);
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+          }
+        );
+  }
+
+  public  selectData(e): void {
+    this.staffSelect = e;
+  }
+  // set table data （设置列表数据）
+  public  setTableOption(data1): void {
+    this.optionTable = {
+      width: '101.4%',
+      header: {
+        data: [
+          {field: 'username', header: '用户名'},
+          {field: 'realName', header: '员工姓名'},
+          {field: 'sex', header: '性别'},
+          {field: 'mobilePhone', header: '手机号码'},
+          // {field: 'organizationName', header: '组织/机构名称'},
+          {field: 'departmentName', header: '部门名称'},
+          {field: 'enabled', header: '可用状态'},
+          {field: 'operating', header: '操作'},
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
   }
 }

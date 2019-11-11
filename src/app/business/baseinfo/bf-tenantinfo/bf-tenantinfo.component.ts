@@ -6,6 +6,8 @@ import {AddTenant, ModifyTenant, OwerList, RoomTitle, SearchTenant, Tenant} from
 import {BfTenantinfoService} from '../../../common/services/bf-tenantinfo.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
+import {Dropdown} from 'primeng/dropdown';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 
 @Component({
@@ -14,6 +16,7 @@ import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.m
   styleUrls: ['./bf-tenantinfo.component.less']
 })
 export class BfTenantinfoComponent implements OnInit {
+  @ViewChild('villageCode') villageCode: Dropdown;
   public tenantSelect: any;
   public tenantTableOption: any;
   // 查询相关
@@ -55,7 +58,7 @@ export class BfTenantinfoComponent implements OnInit {
     {field: 'mobilePhone', header: '客户电话'},
     {field: 'identity', header: '身份'},
     {field: 'normalPaymentStatus', header: '是否正常缴费'},
-    {field: 'startBillingTime', header: '物业费开始既费时间'},
+    // {field: 'startBillingTime', header: '物业费开始既费时间'},
     {field: 'startTime', header: '租房开始日期'},
     {field: 'endTime', header: '租房结束日期'},
     {field: 'remarks', header: '备注'},
@@ -97,9 +100,18 @@ export class BfTenantinfoComponent implements OnInit {
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private datePipe: DatePipe,
-  ) { }
+    private shareSrv: SharedServiceService,
+  ) {
+
+  }
   ngOnInit() {
+    this.shareSrv.changeEmitted$.subscribe(value => {
+      // console.log(123);
+      console.log(value);
+    });
+    // console.log(this.shareSrv.changeEmitted);
     this.tenantInitialization();
+
   }
 
   // initialization houseinfo
@@ -111,7 +123,7 @@ export class BfTenantinfoComponent implements OnInit {
       (data) => {
         data.data.forEach( v => {
           this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-          this.villageOption.push({label: v.villageName, value: v.villageName});
+          this.villageOption.push({label: v.villageName, value: v.villageCode});
         });
       }
     );
@@ -130,7 +142,7 @@ export class BfTenantinfoComponent implements OnInit {
     this.SearchOption.building = [];
     this.SearchOption.unit = [];
     this.searchTenantData.villageCode = e.value;
-
+    console.log(e.value);
     this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
       (value) => {
         value.data.forEach( v => {
@@ -191,6 +203,8 @@ export class BfTenantinfoComponent implements OnInit {
       this.SearchOption.region = [];
       this.SearchOption.building = [];
       this.SearchOption.unit = [];
+      this.villageCode.value = '';
+      this.villageCode.selectedOption = [];
       this.SearchOption.village = this.villageOption;
     }
   }
@@ -228,29 +242,40 @@ export class BfTenantinfoComponent implements OnInit {
         this.inputSearchData = '';
       }
     } else if (this.searchType === 2) {
-      this.tenantSrv.queryByMobileNumber({pageNo: this.nowPage, pageSize: 10, mobilePhone: this.inputSearchData}).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.loadHidden = true;
-            this.setTableOption(value.data.contents);
-            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-          } else {
-            this.toolSrv.setToast('error', '请求错误', value.message);
+      if (this.inputSearchData !== '') {
+        this.tenantSrv.queryByMobileNumber({pageNo: this.nowPage, pageSize: 10, mobilePhone: this.inputSearchData}).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.loadHidden = true;
+              this.setTableOption(value.data.contents);
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+            } else {
+              this.toolSrv.setToast('error', '请求错误', value.message);
+            }
           }
-        }
-      );
+        );
+      }else {
+        this.loadHidden = true;
+        this.toolSrv.setToast('error', '操作错误', '请输入需要搜索的内容');
+      }
+
     } else {
-      this.tenantSrv.queryByMobileNumber({pageNo: this.nowPage, pageSize: 10, roomCode: this.inputSearchData}).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.loadHidden = true;
-            this.setTableOption(value.data.contents);
-            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-          } else {
-            this.toolSrv.setToast('error', '请求错误', value.message);
+      if (this.inputSearchData !== '') {
+        this.tenantSrv.queryByRoomCode({pageNo: this.nowPage, pageSize: 10, roomCode: this.inputSearchData}).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.loadHidden = true;
+              this.setTableOption(value.data.contents);
+              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+            } else {
+              this.toolSrv.setToast('error', '请求错误', value.message);
+            }
           }
-        }
-      );
+        );
+      }else  {
+        this.loadHidden = true;
+        this.toolSrv.setToast('error', '操作错误', '请输入需要搜索的内容');
+      }
     }
   }
   // roomStatus Change
@@ -324,16 +349,21 @@ export class BfTenantinfoComponent implements OnInit {
   }
   // delete Tenant
   public  deleteTenantMoreClick(e): void {
-    this.tenantSrv.deleteTenantInfo({roomCode: e.roomCode, userId: e.userId}).subscribe(
-      value => {
-        if (value.status === '1000') {
-          this.toolSrv.setToast('success', '请求成功', value.message);
-          this.queryTenantInfo(e.roomCode);
-        } else {
-          this.toolSrv.setToast('error', '请求失败', value.message);
+    if (e.identity === '租客') {
+      this.tenantSrv.deleteTenantInfo({roomCode: e.roomCode, userId: e.userId}).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '请求成功', value.message);
+            this.queryTenantInfo(e.roomCode);
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
+          }
         }
-      }
-    );
+      );
+    } else {
+      this.toolSrv.setToast('error', '操作失败', '只能对租客进行删除操作');
+    }
+
   }
   // add
   public  addMoreTenantClick(): void {
@@ -573,9 +603,14 @@ export class BfTenantinfoComponent implements OnInit {
     if (this.tenantUserSelect === undefined || this.tenantUserSelect.length === 0 ) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.tenantUserSelect.length === 1) {
-      this.tenantinfo =   this.tenantUserSelect[0];
-      this.tenantListIndex = this.tenantList.indexOf(this.tenantinfo);
-      this.tenantModifyDialog = true;
+      if (this.tenantUserSelect[0].identity === '租客') {
+        this.tenantinfo =   this.tenantUserSelect[0];
+        this.tenantListIndex = this.tenantList.indexOf(this.tenantinfo);
+        this.tenantModifyDialog = true;
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '只能对租客进行修改');
+      }
+
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改的项');
     }
@@ -594,7 +629,7 @@ export class BfTenantinfoComponent implements OnInit {
       if (this.tenantinfo.hasOwnProperty('endTime') && this.tenantinfo.endTime !== '') {
         this.tenantinfo.endTime = this.datePipe.transform( this.tenantinfo.endTime , 'yyyy-MM-dd');
       }
-      if (this.tenantinfo.hasOwnProperty('starTime') && this.tenantinfo.startTime !== '') {
+      if (this.tenantinfo.hasOwnProperty('startTime') && this.tenantinfo.startTime !== '') {
         this.tenantinfo.startTime = this.datePipe.transform( this.tenantinfo.startTime , 'yyyy-MM-dd');
       }
       for (const key in this.roomTitle) {
@@ -699,10 +734,7 @@ export class BfTenantinfoComponent implements OnInit {
       });
     }
   }
-  // select houseinfo
-  public  tenantonRowSelect(e): void {
-    this.roomTitle = e.data;
-  }
+
   // add more info Dialog
   public  AddMoreClick(): void {
     this.UploadFileOption.files = [];

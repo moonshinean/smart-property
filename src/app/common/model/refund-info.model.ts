@@ -74,6 +74,7 @@ export class AddRefundInfo {
 export class ModifyRefundInfo {
   id?: any;
   orderId?: any; // 订单Id
+  chargeType?: any; // 缴费类型
   tollCollectorId?: any; // 收费人编号
   payerName?: any; // 缴费人姓名
   payerPhone?: any; // 缴费人手机号
@@ -96,6 +97,7 @@ export class ModifyRefundInfo {
   roomSize?: any; // 房屋大小
   organizationId?: any; // 机构ID
   organizationName?: any; // 机构名称
+  chargeStandard?: any; // 项目单价
   chargeCode?: any; // 项目编号
   chargeName?: any; // 项目名称
   actualMoneyCollection?: any; // 实收金额

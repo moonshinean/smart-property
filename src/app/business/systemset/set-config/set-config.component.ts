@@ -19,6 +19,8 @@ export class SetConfigComponent implements OnInit {
   public configTableContent: SetConfig[];
   public configTableTitleStyle: any;
   public configSelect: SetConfig[];
+
+  public cconfigOption: any;
   // 添加相关
   public configAddDialog: boolean;
   public configAdd: Addconfig = new Addconfig();
@@ -45,36 +47,15 @@ export class SetConfigComponent implements OnInit {
   // initialization config
   public  configInitialization(): void {
     this.loadHidden = false;
-    this.configTableTitle = [
-      // {field: 'organizationId', header: '集团id'},
-      {field: 'settingCode', header: '设置编号'},
-      {field: 'settingName', header: '设置名称'},
-      {field: 'settingType', header: '设置类型'},
-    ];
-    this.configService.querySetPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadHidden = true;
-        if (value.status === '1000') {
-          this.configTableContent = value.data.contents;
-          // console.log(this.configTableContent);
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        } else {
-          this.toolSrv.setToast('error', '查询失败', value.message);
-        }
-      }
-    );
+    this.queryConfigPageData();
     this.configService.getSetType({}).subscribe(
       (value) => {
-        // console.log(value);/
         value.data.forEach( v => {
           this.setTypeOption.push({label: v.settingName, value: v.settingCode});
 
         });
       }
     );
-
-    this.configTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
-
   }
   // // condition search click
   // public  configSearchClick(): void {
@@ -209,6 +190,32 @@ export class SetConfigComponent implements OnInit {
   public  setTypeChange(e): void {
     this.configAdd.settingType = e.value;
   }
+  // 设置表格
+  public  setTableOption(data1): void {
+    this.cconfigOption = {
+      width: '101.4%',
+      header: {
+        data:   [
+          {field: 'settingCode', header: '设置编号'},
+          {field: 'settingName', header: '设置名称'},
+          {field: 'settingType', header: '设置类型'},
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 1,
+      tableList:  []
+    };
+  }
+
+  // 选择数据
+  public  selectData(e): void {
+    this.configSelect = e;
+  }
   // Reset data
   public initializationData(): void {
     this.configSelect = [];
@@ -221,18 +228,21 @@ export class SetConfigComponent implements OnInit {
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.configService.querySetPage({pageNo: event, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadHidden = true;
-        if (value.status === '1000') {
-          this.configTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        } else {
-          this.toolSrv.setToast('error', '操作失败', value.message);
-        }
-        // console.log(123);
-      }
-    );
+    this.queryConfigPageData();
     this.configSelect = [];
   }
+
+ public   queryConfigPageData(): void {
+   this.configService.querySetPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
+     (value) => {
+       this.loadHidden = true;
+       if (value.status === '1000') {
+         this.setTableOption( value.data.contents);
+         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+       } else {
+         this.toolSrv.setToast('error', '查询失败', value.message);
+       }
+     }
+   );
+ }
 }

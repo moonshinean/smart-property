@@ -14,19 +14,14 @@ export class RefundNoComponent implements OnInit {
   public refundNoTableContent: any[];
   public refundNoTableTitleStyle: any;
   public refundNoSelect: any[];
+
+  public chargeTypeOption = [];
+  public paymentMethodOption = [];
+  public refundStatusOption = [];
   // 添加相关
   public refundNoAdd: any;
-  public  licensePlateColorOption: any[] = [];
-  public  licensePlateTypeOption: any[] = [];
-  public  refundNoOriginalTypeOption: any[] = [];
-  // 修改相关
-  public refundNoModify: any;
-  public licensePlateColorModify: any;
-  public licensePlateTypeModify: any;
-  public paymentTypeDetail: any;
-  public refundStatusDetail: any;
   // 详情相关
-  public refundNoDetailDialog: boolean;
+  public infoNoOption: any;
   public refundNoDetail: ModifyRefundInfo = new ModifyRefundInfo();
 
   // 申请退款
@@ -45,7 +40,6 @@ export class RefundNoComponent implements OnInit {
   // 其他相关
   // public cleanTimer: any; // 清除时钟
   public nowPage = 1;
-  public roonCodeSelectOption: any[] = [];
   constructor(
     private refundNoSrv: RefundService,
     private toolSrv: PublicMethedService,
@@ -66,27 +60,17 @@ export class RefundNoComponent implements OnInit {
       {field: 'roomCode', header: '房间编号'},
       {field: 'chargeName', header: '项目名称'},
       {field: 'actualMoneyCollection', header: '实收金额'},
+      // {field: 'refundStatus', header: '退款状态'},
       {field: 'operating', header: '操作'},
     ];
     this.loadHidden = false;
-    this.refundNoSrv.queryRefundNoInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      value => {
-        this.loadHidden = true;
-        if (value.status === '1000') {
-          this.refundNoTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        } else {
-          this.toolSrv.setToast('error', '查询失败', value.message);
-        }
-      }
-    );
-  /*  this.globalSrv.queryVillageInfo({}).subscribe(
-      (data) => {
-        data.data.forEach(v => {
-          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-        });
-      }
-    );*/
+    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'}, {settingType: 'CHARGE_TYPE'}, {settingType: 'REFUND_STATUS'}, {settingType: 'PARMENT_TYPE'}], (data) => {
+      this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
+      this.paymentMethodOption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
+      this.refundStatusOption = this.toolSrv.setListMap(data.REFUND_STATUS);
+      this.queryRefundNoInfoPageData();
+    });
+
     this.refundNoTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
 
   }
@@ -170,31 +154,65 @@ export class RefundNoComponent implements OnInit {
   // Non-refundable details
   public refundNoDetailClick(e): void {
     this.refundNoDetail = e;
-    this.toolSrv.getAdminStatus('REFUND_STATUS', (data) => {
-      if (data.length > 0) {
-          data.forEach( v => {
-          if (this.refundNoDetail.refundStatus.toString() === v.settingCode) {
-            this.refundStatusDetail = v.settingName;
-          }
-        });
+    this.infoNoOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 2,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'organizationName', header: '组织名称'},
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'surname', header: '客户名称'},
+          {field: 'roomSize', header: '住房大小'},
+          {field: 'chargeName', header: '项目名称'},
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'mortgageAmount', header: '抵扣金额'},
+          {field: 'reasonForDeduction', header: '抵扣原因'},
+          {field: 'refundableAmount', header: '可退还金额'},
+          {field: 'chargeUnit', header: '收费单位'},
+          {field: 'payerPhone', header: '缴费人手机号'},
+          {field: 'paymentMethod', header: '支付方式'},
+          {field: 'paymentType', header: '支付类型'},
+          {field: 'refundStatus', header: '退款状态'},
+          {field: 'startTime', header: '开始时间'},
+          {field: 'endTime', header: '结束时间'},
+          {field: 'delayTime', header: '延迟时长'},
+          {field: 'delayReason', header: '延期原因'},
+          {field: 'personLiable', header: '责任人'},
+          {field: 'personLiablePhone', header: '责任人电话'},
+          {field: 'responsibleAgencies', header: '负责机构'},
+          {field: 'remark', header: '申请退款备注 '},
+        ],
       }
-    });
-    this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-      if (data.length > 0) {
-        data.forEach( v => {
-          if (this.refundNoDetail.paymentType.toString() === v.settingCode) {
-            this.paymentTypeDetail = v.settingName;
-          }
-        });
-      }
-    });
-    this.refundNoDetailDialog = true;
+    };
+    // this.toolSrv.getAdminStatus('REFUND_STATUS', (data) => {
+    //   if (data.length > 0) {
+    //       data.forEach( v => {
+    //       if (this.refundNoDetail.refundStatus.toString() === v.settingCode) {
+    //         this.refundStatusDetail = v.settingName;
+    //       }
+    //     });
+    //   }
+    // });
+    // this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
+    //   if (data.length > 0) {
+    //     data.forEach( v => {
+    //       if (this.refundNoDetail.paymentType.toString() === v.settingCode) {
+    //         this.paymentTypeDetail = v.settingName;
+    //       }
+    //     });
+    //   }
+    // });
 
   }
   // refundNo select
-  public  refundNoonRowSelect(e): void {
-    this.refundNoModify = e.data;
-  }
   // Amount calculation
   public  transferCardAmountChange(): void {
     this.ApplicationRefund.deductionPropertyFee = Number(this.ApplicationRefund.refundableAmount) - Number(this.ApplicationRefund.transferCardAmount);
@@ -202,13 +220,6 @@ export class RefundNoComponent implements OnInit {
   // Reset data
   public clearData(): void {
     this.refundNoAdd = null;
-    this.refundNoModify = null;
-    this.licensePlateColorModify = null;
-    this.licensePlateTypeModify = null;
-    this.licensePlateTypeModify = null;
-    this.licensePlateColorOption = [];
-    this.licensePlateTypeOption = [];
-    this.refundNoOriginalTypeOption = [];
     this.refundNoSelect = [];
     this.ApplicationRefund = new ApplicationRefund();
   }
@@ -216,12 +227,37 @@ export class RefundNoComponent implements OnInit {
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
+    this.queryRefundNoInfoPageData();
+  }
+
+  public  queryRefundNoInfoPageData(): void {
     this.refundNoSrv.queryRefundNoInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
       value => {
         this.loadHidden = true;
-        this.refundNoTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        if (value.status === '1000') {
+          value.data.contents.forEach( v => {
+            if (this.isOrNull(v.refundStatus)) {
+              v.refundStatus = this.toolSrv.setValueToLabel(this.refundStatusOption, v.refundStatus);
+            }
+            if (this.isOrNull(v.paymentMethod)) {
+              v.paymentMethod = this.toolSrv.setValueToLabel(this.paymentMethodOption, v.paymentMethod);
+
+            }
+            if (this.isOrNull(v.paymentType)) {
+              v.paymentType = this.toolSrv.setValueToLabel(this.chargeTypeOption, v.paymentType);
+
+            }
+          });
+          this.refundNoTableContent = value.data.contents;
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询失败', value.message);
+        }
       }
     );
   }
+  public  isOrNull(data: any): boolean {
+    return (data !== null && data !== '' && data !== undefined);
+  }
+
 }

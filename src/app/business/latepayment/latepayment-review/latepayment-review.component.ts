@@ -180,7 +180,7 @@ export class LatepaymentReviewComponent implements OnInit {
     this.loadHidden = false;
     this.lateSrv.queryLatePaymentReviewPageData(data).subscribe(
       value => {
-        console.log(value);
+        // console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
           this.setTableOption(value.data.contents);

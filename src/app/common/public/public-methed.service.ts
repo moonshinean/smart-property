@@ -1,9 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
-import {ConfirmDialogModule} from 'primeng/primeng';
-import {LoginService} from '../services/login.service';
 import {GlobalService} from '../services/global.service';
-import {elementDef} from '@angular/core/src/view';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Injectable({
@@ -45,8 +42,8 @@ export class PublicMethedService {
    * @param parameter  (Request parameter)
    * @param callback
    */
-  public  getAdminStatus(parameter, callback: (...args: any[]) => any): void {
-    this.globalSrv.queryAdminStatus({settingType: parameter}).subscribe(
+  public  getAdmStatus(parameter: any[], callback: (...args: any[]) => any): void {
+    this.globalSrv.queryAdminchoose({data: parameter}).subscribe(
       value => {
         this.setQuestJudgment(value.status, value.message, () => {
           callback(value.data);
@@ -55,13 +52,22 @@ export class PublicMethedService {
     );
   }
 
+  /**
+   * 组装列表
+   * @param list
+   */
+  public  setListMap(list): any {
+    return list.map(v => {
+       return {label: v.settingName, value: v.settingCode};
+     });
+  }
   /**
    * get Native Status
    * @param parameter (Request parameter)
    * @param callback
    */
-  public  getNativeStatus(parameter, callback: (...args: any[]) => any): void {
-    this.globalSrv.queryNativeStatus({settingType: parameter}).subscribe(
+  public  getNatStatus(parameter, callback: (...args: any[]) => any): void {
+    this.globalSrv.queryNatchoose({data: parameter}).subscribe(
       value => {
         this.setQuestJudgment(value.status, value.message, () => {
           callback(value.data);
@@ -69,32 +75,6 @@ export class PublicMethedService {
       }
     );
   }
-
-  /**
-   * Set the data format
-   * @param list  (getNatiuveStatus(getAdminStatus) result list)
-   * @param status (Status value)
-   * @param callback
-   */
-  public  setDataFormat(list: any[], status: any, callback: (...args: any[]) => any): void {
-    this.dataList = [];
-    console.log(status);
-    list.forEach( v => {
-       this.dataList.push({label: v.settingName, value: v.settingCode});
-       if (status !== '' && status !== null) {
-         if (status === v.settingCode) {
-           this.dataName = v.settingName;
-         }
-       } else {
-
-         this.dataName = null;
-       }
-       if (list.indexOf(v) === list.length - 1) {
-          callback(this.dataList, this.dataName);
-        }
-     });
-  }
-
   public  setConfirmation(title, message, callback: (...args: any[]) => any): void {
     this.confirmationService.confirm({
       message: `确认要${message}吗？`,
@@ -108,6 +88,36 @@ export class PublicMethedService {
     });
   }
 
+  /**
+   * 将值装换位字母
+   * @param list
+   * @param data
+   */
+  public setValueToLabel(list: any[], data: any): any {
+    // console.log(data);
+    if (data !== null && data !== '' && data !== undefined) {
+      list.forEach(v => {
+        if (data.toString() === v.value) {
+          data =  v.label;
+        }
+      });
+    }
+    return data;
+  }
+
+  /**
+   * 将字母转换为值
+   * @param list
+   * @param data
+   */
+  public setLabelToValue(list: any[], data: any): any {
+    list.forEach(v => {
+      if (data === v.label) {
+        data =  v.value;
+      }
+    });
+    return data;
+  }
   /**
    *   Create formGroup
    * @param data

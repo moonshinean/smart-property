@@ -40,7 +40,6 @@ export class BfCouponComponent implements OnInit {
   public cleanTimer: any; // 清除时钟
   public option: any;
   public loadingHide = true;
-  public couponSeachData: any;
   public couponTypeData: any[] = [];
   public EffectiveTime: any[] = [];
   public ChargeCodeData: any[] = [];
@@ -48,6 +47,7 @@ export class BfCouponComponent implements OnInit {
   public modifyCouponType: any;
   public modifyChargeName: any;
   public modifyEffectiveTime: any;
+  public nowPage = 1;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private messageService: MessageService,
@@ -71,11 +71,33 @@ export class BfCouponComponent implements OnInit {
       {field: 'operating', header: '操作'}
     ];
     this.loadingHide = false;
-    this.queryData(1);
+    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}], (data) => {
+      this.optionEnable = this.toolSrv.setListMap(data.ENABLED);
+      this.couponSrv.queryCouponType({}).subscribe(
+        value => {
+          if (value.status === '1000') {
+            value.data.forEach( v => {
+              this.couponTypeData.push({label: v.settingName, value: v.settingCode});
+            });
+            this.couponSrv.queryChargeCode({}).subscribe(
+              val => {
+                console.log(val);
+                if (val.status === '1000') {
+                  val.data.forEach( v => {
+                    this.ChargeCodeData.push({label: v.chargeName, value: v.chargeCode});
+                  });
+                  this.queryData(this.nowPage);
+                }
+              }
+            );
+          }
+        }
+      );
+    });
     this.couponSrv.queryEffectiveTime({}).subscribe(
       value => {
         value.data.forEach( v => {
-          if (v.settingName === '0') {
+          if (v.settingName === '0' || v.settingName === 0) {
             this.EffectiveTime.push({label: '无限期', value: v.settingName});
           } else {
             this.EffectiveTime.push({label:  v.settingName + '天', value: v.settingName});
@@ -83,17 +105,13 @@ export class BfCouponComponent implements OnInit {
         });
       }
     );
-    this.toolSrv.getAdminStatus('ENABLED', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, '' , (list, label) => {
-          this.optionEnable = list;
-        });
-      }
-    });
-  }
-  // condition search click
-  public  couponSearchClick(): void {
-    // @ts-ignore
+    // this.toolSrv.getAdminStatus('ENABLED', (data) => {
+    //   if (data.length > 0) {
+    //     this.toolSrv.setDataFormat(data, '' , (list, label) => {
+    //       this.optionEnable = list;
+    //     });
+    //   }
+    // });
   }
   // Show add coupon popup window （显示添加优惠卷弹窗）
   public  couponAddClick(): void {
@@ -201,15 +219,16 @@ export class BfCouponComponent implements OnInit {
   // sure modify coupon （确定修改）
   public  couponModifySureClick(data): void {
     if  (this.isChinese(data.couponType)) {
-      data.couponType = this.setDataValue(this.couponTypeData, data.couponType);
+      data.couponType = this.toolSrv.setLabelToValue(this.couponTypeData, data.couponType);
     }
     if (this.isChinese(data.chargeCode)) {
-      data.chargeCode = this.setDataValue(this.ChargeCodeData, data.chargeCode);
+      data.chargeCode = this.toolSrv.setLabelToValue(this.ChargeCodeData, data.chargeCode);
     }
     if (data.effectiveTime.includes('天')) {
       data.effectiveTime = data.effectiveTime.substring(0, data.effectiveTime.indexOf('天'));
+    } else {
+      data.effectiveTime = '0';
     }
-    // console.log(data);
     this.toolSrv.setConfirmation('修改', '修改', () => {
       this.couponSrv.updateCoupon(data).subscribe(
         value => {
@@ -252,7 +271,8 @@ export class BfCouponComponent implements OnInit {
   // Paging request (分页请求)
   public  nowpageEventHandle(event: any): void {
     this.loadingHide = false;
-    this.queryData(event);
+    this.nowPage = event;
+    this.queryData(this.nowPage);
     this.couponSelect = [];
   }
   // clear data (清除数据)
@@ -263,30 +283,6 @@ export class BfCouponComponent implements OnInit {
     this.modifyEffectiveTime = null;
     this.couponModify = new ModifyBfCoupon();
     this.couponAdd = new AddBfCoupon();
-    // this.addcouponType.selectedOption = null;
-    // this.addChargeCode.selectedOption = null;
-    // this.addEffectiveTime.selectedOption = null;
-    // this.modifycouponType.selectedOption = null;
-    // this.modifychargeCode.selectedOption = null;
-    // this.modifyeffectiveTime.selectedOption = null;
-  }
-  // Convert status values to Chinese names  （状态值转换为中文名）
-  public setDataName(list, label): any {
-      list.forEach( v => {
-        if ( label === v.value ) {
-          label = v.label;
-        }
-      });
-      return label;
-  }
-  // Chinese name converted to status value （中文名转换为状态值）
-  public setDataValue(list, label): any {
-    list.forEach( v => {
-      if ( label === v.label) {
-        label = v.value;
-      }
-    });
-    return label;
   }
   // Determine if it is Chinese （判断是否为中文）
   public  isChinese(s): any {
@@ -301,7 +297,7 @@ export class BfCouponComponent implements OnInit {
       this.couponSelect = e;
   }
   // set table data （设置列表数据）
-  public  setTableOption(data): void {
+  public  setTableOption(data1): void {
     this.optionTable = {
       width: '101.4%',
       header: {
@@ -309,7 +305,7 @@ export class BfCouponComponent implements OnInit {
         style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
       },
       Content: {
-        data: data,
+        data: data1,
         styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
         styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
       },
@@ -319,36 +315,25 @@ export class BfCouponComponent implements OnInit {
   }
   // Paging query data （分页查询数据）
   public  queryData(data): void {
-    this.couponSrv.queryCouponType({}).subscribe(
-      value => {
-        value.data.forEach( v => {
-          this.couponTypeData.push({label: v.settingName, value: v.settingCode});
-        });
-        this.couponSrv.queryChargeCode({}).subscribe(
-          val => {
-            val.data.forEach( v => {
-              this.ChargeCodeData.push({label: v.chargeName, value: v.chargeCode});
-            });
-            this.couponSrv.queryCouponPagination({pageNo: data, pageSize: 10 }).subscribe(
-              (values) => {
-                this.loadingHide = true;
-                if (values.status === '1000') {
-                  values.data.contents.forEach( item => {
-                    item.couponType  = this.setDataName(this.couponTypeData, item.couponType);
-                    item.chargeCode = this.setDataName(this.ChargeCodeData, item.chargeCode);
-                    if (item.effectiveTime !== '无限期') {
-                      item.effectiveTime = item.effectiveTime + '天';
-                    }
-                  });
-                  this.setTableOption(values.data.contents);
-                  this.option = {total: values.data.totalRecord, row: values.data.pageSize, nowpage:  values.data.pageNo};
-                } else {
-                  this.toolSrv.setToast('error', '查询失败', values.message);
-                }
-              }
-            );
-          }
-        );
+    this.couponSrv.queryCouponPagination({pageNo: data, pageSize: 10 }).subscribe(
+      (values) => {
+        console.log(values);
+        this.loadingHide = true;
+        if (values.status === '1000') {
+          values.data.contents.forEach( item => {
+            item.couponType  = this.toolSrv.setValueToLabel(this.couponTypeData, item.couponType);
+            item.chargeCode = this.toolSrv.setValueToLabel(this.ChargeCodeData, item.chargeCode);
+            item.enable = this.toolSrv.setValueToLabel(this.optionEnable, item.enable);
+            // if (item.effectiveTime !== '无限期') {
+            //   item.effectiveTime = item.effectiveTime + '天';
+            item.effectiveTime = (item.effectiveTime === '0') ? '无期限' : item.effectiveTime + '天';
+            // }
+          });
+          this.setTableOption(values.data.contents);
+          this.option = {total: values.data.totalRecord, row: values.data.pageSize, nowpage:  values.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询失败', values.message);
+        }
       }
     );
   }

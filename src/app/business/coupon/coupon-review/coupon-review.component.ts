@@ -10,18 +10,9 @@ import {CouponService} from '../../../common/services/coupon.service';
 })
 export class CouponReviewComponent implements OnInit {
 
-
-  @ViewChild('input') input: Input;
-  // @ViewChild('file') file: Input;
   public couponReviewTableTitle: any;
-  public couponReviewTableContent: CouponReview[] = [];
-  // public couponReviewTableContent: any;
-  public couponReviewTableTitleStyle: any;
   public couponReviewSelect: any;
   // 添加相关
-  // public couponReviewModify: any;
-  public couponReviewDetailDialog: boolean;
-  public couponReviewDetail: CouponReview = new CouponReview();
   public esDate: any;
   // 审核相关
   public couponReviewDialog: any;
@@ -30,17 +21,17 @@ export class CouponReviewComponent implements OnInit {
   public cleanTimer: any; // 清除时钟
   public option: any;
   public loadingHide = true;
-  public couponReviewSeachData: any;
-  // public SearchOption = {
-  //   village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
-  //   region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
-  //   building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
-  //   unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
-  //   room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
-  // };
+  public couponReviewOption: any;
   public nowPage = 1;
-  public couponTypeName: any;
-  public couponEffectiveTime: any;
+  // 状态相关
+  public couponTypeOption = [];
+  public auditStatusOption = [];
+  public pastDueOption = [];
+  public userStatusOption = [];
+  // 详情相关
+  public couponReviewDetailOption: any;
+  // 审核相关
+  public reviewOption: any;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private couponReviewSrv: CouponService,
@@ -65,48 +56,61 @@ export class CouponReviewComponent implements OnInit {
       {field: 'operating', header: '操作'}
     ];
     this.loadingHide = false;
-    this.couponReviewSrv.queryCouponReviewPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      (value) => {
-        console.log(value);
-        this.loadingHide = true;
-        if (value.status === '1000') {
-          this.couponReviewTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        } else {
-          this.toolSrv.setToast('error', '请求失败', value.message);
-        }
-      }
-    );
-    this.couponReviewTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
-    console.log(this.couponReviewSelect);
-
+    this.toolSrv.getNatStatus([{settingType: 'COUPON_TYPE'}], (data) => {
+      this.couponTypeOption = this.toolSrv.setListMap(data.COUPON_TYPE);
+    });
+    this.toolSrv.getAdmStatus([{settingType: 'USE_STATUS'}, {settingType: 'PAST_DUE'}, {settingType: 'AUDIT_STATUS'}], (data) => {
+      this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
+      this.pastDueOption = this.toolSrv.setListMap(data.PAST_DUE);
+      this.userStatusOption = this.toolSrv.setListMap(data.USE_STATUS);
+      // console.log(this.userStatusOption);
+      this.queryCouponPageData();
+    });
+    // this.couponReviewTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
 
   // condition search click
-  public couponReviewSearchClick(): void {
-    // }
-    console.log('这里是条件搜索');
-  }
+  // public couponReviewSearchClick(): void {
+  //   // }
+  //   console.log('这里是条件搜索');
+  // }
   // detail couponReviewInfo
   public couponReviewDetailClick(e): void {
-    this.couponReviewDetailDialog = true;
-    console.log(e);
-    this.couponReviewDetail = e;
-    if (e.effectiveTime === 0 ) {
-      this.couponEffectiveTime = '无期限';
-    } else  {
-      this.couponEffectiveTime = e.effectiveTime + '天';
-    }
-    this.couponReviewSrv.queryCouponType({}).subscribe(
-      val => {
-        console.log(val);
-        val.data.forEach( v => {
-          if (e.couponType === v.settingCode) {
-            this.couponTypeName = v.settingName;
-          }
-        });
+    e.couponType = this.toolSrv.setValueToLabel(this.couponTypeOption, e.couponType);
+    e.usageState = this.toolSrv.setValueToLabel(this.userStatusOption, e.usageState);
+
+    this.couponReviewDetailOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'couponName', header: '优惠券名称'},
+          {field: 'couponType', header: '优惠券类型'},
+          {field: 'surname', header: '客户姓名'},
+          {field: 'mobilePhone', header: '客户电话'},
+          {field: 'money', header: '优惠金额'},
+          {field: 'propertyFee', header: '抵扣物业费金额'},
+          {field: 'balanceAmount', header: '剩余金额'},
+          {field: 'usageState', header: '使用状态'},
+          {field: 'pastDue', header: '过期状态'},
+          {field: 'effectiveTime', header: '有效时长'},
+          {field: 'dueTime', header: '物业费到期时间'},
+          {field: 'auditStatus', header: '审核状态'},
+          {field: 'startTime', header: '开始时间'},
+          {field: 'endTime', header: '结束时间'},
+          {field: 'remarks', header: '备注 '},
+        ],
       }
-    );
+    };
   }
 
   // couponreview
@@ -115,20 +119,36 @@ export class CouponReviewComponent implements OnInit {
       this.toolSrv.setToast('error', '操作错误', '请选择需要审核的项');
 
     } else if (this.couponReviewSelect.length === 1) {
-      this.couponReviewDialog = true;
+      this.reviewOption = {
+        width: '500',
+        dialog: true
+      };
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行审核');
     }
   }
-  public  refundReviewSureClick(): void {
-    if (this.reviewStatus === '通过') {
+  // 审核判断
+  public  couponReviewSureClick(e): void {
+    if (e === '通过') {
       this.couponReviewSrv.couponReviewPassById({id: this.couponReviewSelect[0].id}).subscribe(
         value => {
           if (value.status === '1000') {
             this.toolSrv.setToast('success' , '操作成功', value.message);
+            this.clearData();
             this.couponReviewInitialization();
-            this.couponReviewSelect = null;
-            this.couponReviewDialog = false;
+          } else {
+            this.toolSrv.setToast('error' , '操作失败', value.message);
+
+          }
+        }
+      );
+    } else if (e === '不通过') {
+      this.couponReviewSrv.couponReviewNoPassById({id: this.couponReviewSelect[0].id}).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success' , '操作成功', value.message);
+            this.clearData();
+            this.couponReviewInitialization();
           } else {
             this.toolSrv.setToast('error' , '操作失败', value.message);
 
@@ -136,34 +156,74 @@ export class CouponReviewComponent implements OnInit {
         }
       );
     } else {
-      this.couponReviewSrv.couponReviewNoPassById({id: this.couponReviewSelect[0].id}).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.toolSrv.setToast('success' , '操作成功', value.message);
-            this.couponReviewInitialization();
-            this.couponReviewSelect = null;
-            this.couponReviewDialog = false;
-          } else {
-            this.toolSrv.setToast('error' , '操作失败', value.message);
-
-          }
-        }
-      );
+      this.clearData();
     }
+  }
+  // 清除数据
+  public clearData(): void {
+    this.reviewOption.dialog = false;
+    this.couponReviewSelect = [];
   }
   // get couponReview Pagination
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;
+    this.nowPage = event;
+    this.queryCouponPageData();
+    this.couponReviewSelect = [];
+  }
+  // 设置表格
+  public  setTableOption(data1): void {
+    this.couponReviewOption = {
+      width: '101.4%',
+      header: {
+        data:   [
+          {field: 'roomCode', header: '房间代码'},
+          {field: 'couponName', header: '优惠券名称'},
+          {field: 'surname', header: '客户名称'},
+          {field: 'mobilePhone', header: '客户电话'},
+          {field: 'effectiveTime', header: '有效时长'},
+          {field: 'money', header: '金额'},
+          {field: 'auditStatus', header: '审核状态'},
+          {field: 'pastDue', header: '过期状态'},
+          {field: 'operating', header: '操作'}
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
+  }
 
-    this.couponReviewSrv.queryCouponReviewPageData({pageNo: event, pageSize: 10}).subscribe(
+  // 选择数据
+  public  selectData(e): void {
+      this.couponReviewSelect = e;
+  }
+
+  // 分页查询
+  public queryCouponPageData(): void {
+    this.couponReviewSrv.queryCouponReviewPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
       (value) => {
         console.log(value);
         this.loadingHide = true;
-        this.couponReviewTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-
+        if (value.status === '1000') {
+          value.data.contents.forEach( v => {
+            v.effectiveTime = (v.effectiveTime === 0 || v.effectiveTime === '0') ? '无期限': v.effectiveTime + '天';
+            v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
+            v.pastDue = this.toolSrv.setValueToLabel(this.pastDueOption, v.pastDue);
+          });
+          this.setTableOption(value.data.contents);
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '请求失败', value.message);
+        }
       }
     );
-    this.couponReviewSelect = [];
   }
+
+  // 审核信息
 }

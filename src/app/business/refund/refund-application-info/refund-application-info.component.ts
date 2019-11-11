@@ -3,6 +3,8 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {RefundApplicationInfo} from '../../../common/model/refund-applicationInfo.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {RefundService} from '../../../common/services/refund.service';
+import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
+import {FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'rbi-refund-application-info',
@@ -10,37 +12,31 @@ import {RefundService} from '../../../common/services/refund.service';
   styleUrls: ['./refund-application-info.component.less']
 })
 export class RefundApplicationInfoComponent implements OnInit {
-  public applicationInfoTableTitle: any;
-  public applicationInfoTableContent: any[];
-  public applicationInfoTableTitleStyle: any;
   public applicationInfoSelect: any[];
+  public applicationInfoOption: any;
+  // 状态值
+  public refundStatusOption = [];
+  public auditStatusOption = [];
+  public chargeTypeOption = [];
+  public paymentMethodOption = [];
   // 添加相关
   public applicationInfoAdd: any;
-  public  licensePlateColorOption: any[] = [];
-  public  licensePlateTypeOption: any[] = [];
-  public  applicationInfoOriginalTypeOption: any[] = [];
   // 修改相关
-  public applicationInfoModifayDialog: boolean;
-  public applicationInfoModify: any;
-  public licensePlateColorModify: any;
-  public licensePlateTypeModify: any;
+  // public applicationInfoModifayDialog: any;
+  public modifyApplication: RefundApplicationInfo = new RefundApplicationInfo();
+  public optionDialog: DialogModel = new DialogModel();
+  public form: FormValue[] = [];
+  public formgroup: FormGroup;
+  public formdata: any[];
   // 详情相关
+  public applicationDetailOption: any;
+
   public applicationInfoDetailDialog: boolean;
-  public applicationInfoDetail: RefundApplicationInfo = new RefundApplicationInfo();
-  public refundStatusDetail: any;
-  public paymentTypeDetail: any;
-  public SearchOption = {
-    village: [],
-    region: [],
-    building: [],
-    unit: []
-  };
   public option: any;
   public loadHidden = true;
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public nowPage = 1;
-  public roonCodeSelectOption: any[] = [];
 
   constructor(
     private applicationInfoSrv: RefundService,
@@ -52,60 +48,14 @@ export class RefundApplicationInfoComponent implements OnInit {
   }
   // initialization applicationInfo
   public applicationInfoInitialization(): void {
-    this.applicationInfoTableTitle = [
-      {field: 'orderId', header: '订单Id'},
-      {field: 'payerName', header: '缴费人姓名'},
-      {field: 'paymentMethod', header: '支付方式'},
-      {field: 'roomCode', header: '房间编号'},
-      {field: 'chargeName', header: '项目名称'},
-      {field: 'actualMoneyCollection', header: '实收金额'},
-      {field: 'auditStatus', header: '审核状态'},
-      {field: 'operating', header: '操作'},
-    ];
     this.loadHidden = false;
-    this.toolSrv.getAdminStatus('AUDIT_STATUS', (data) => {
-      if (data.length > 0) {
-        this.applicationInfoSrv.queryRefundApplicationInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-          val => {
-            if (val.status === '1000') {
-              this.loadHidden = true;
-              val.data.contents.forEach( h => {
-                data.forEach( v => {
-                  if (h.auditStatus.toString() === v.settingCode) {
-                    h.auditStatus = v.settingName;
-                  }
-                });
-              });
-              this.applicationInfoTableContent = val.data.contents;
-              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-            } else {
-              this.toolSrv.setToast('error', '请求失败', val.message);
-            }
-          }
-        );
-      } else {
-        this.applicationInfoSrv.queryRefundApplicationInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-          val => {
-            if (val.status === '1000') {
-              this.loadHidden = true;
-              this.applicationInfoTableContent = val.data.contents;
-              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-            } else {
-              this.toolSrv.setToast('error', '请求失败', val.message);
-            }
-          }
-        );
-      }
+    this.toolSrv.getAdmStatus([{settingType: 'REFUND_STATUS'}, {settingType: 'AUDIT_STATUS'}, {settingType: 'CHARGE_TYPE'}, {settingType: 'PAYMENT_METHOD'}], (data) => {
+       this.refundStatusOption = this.toolSrv.setListMap(data.REFUND_STATUS);
+       this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
+       this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
+       this.paymentMethodOption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
+       this.queryApplicationPageData();
     });
- /*   this.globalSrv.queryVillageInfo({}).subscribe(
-      (data) => {
-        data.data.forEach(v => {
-          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-        });
-      }
-    );*/
-    this.applicationInfoTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
-
   }
 /*  // query Village
   public VillageChange(e): void {
@@ -158,69 +108,172 @@ export class RefundApplicationInfoComponent implements OnInit {
 
   }*/
   //  applicationInfo detail
-  public applicationInfoDetailClick(e): void {
-    this.applicationInfoDetail = e;
-    this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-        data.forEach( v => {
-          if (this.applicationInfoDetail.paymentType.toString() === v.settingCode) {
-            this.paymentTypeDetail = v.settingName;
-          }
-        });
-    });
-    this.toolSrv.getAdminStatus('REFUND_STATUS', (data) => {
-        data.forEach( v => {
-          if (this.applicationInfoDetail.refundStatus.toString() === v.settingCode) {
-            this.refundStatusDetail = v.settingName;
-          }
-        });
-    });
-    this.applicationInfoDetail = e;
-    this.applicationInfoDetailDialog = true;
-  }
   // applicationInfo select
-  public  applicationInfoonRowSelect(e): void {
-    this.applicationInfoModify = e.data;
-  }
+  // public  applicationInfoonRowSelect(e): void {
+  //   this.applicationInfoModify = e.data;
+  // }
   // applicationInfo delete
-  public  applicationInfoDeleteClick(): void {
+  public  applicationInfoDeleteClick(e): void {
+    this.applicationDetailOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 2,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'organizationName', header: '组织名称'},
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'surname', header: '客户名称'},
+          {field: 'roomSize', header: '住房大小'},
+          {field: 'chargeName', header: '项目名称'},
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'mortgageAmount', header: '抵扣金额'},
+          {field: 'reasonForDeduction', header: '抵扣原因'},
+          {field: 'refundableAmount', header: '可退还金额'},
+          {field: 'deductionPropertyFee', header: '抵扣物业费金额'},
+          {field: 'transferCardAmount', header: '退还银行卡金额'},
+          {field: 'chargeUnit', header: '收费单位'},
+          {field: 'payerPhone', header: '缴费人手机号'},
+          {field: 'paymentMethod', header: '支付方式'},
+          {field: 'paymentType', header: '支付类型'},
+          {field: 'refundStatus', header: '退款状态'},
+          {field: 'startTime', header: '开始时间'},
+          {field: 'endTime', header: '结束时间'},
+          {field: 'delayTime', header: '延迟时长'},
+          {field: 'delayReason', header: '延期原因'},
+          {field: 'personLiable', header: '责任人'},
+          {field: 'personLiablePhone', header: '责任人电话'},
+          {field: 'responsibleAgencies', header: '负责机构'},
+          {field: 'remark', header: '申请退款备注 '},
+        ],
+      }
+    };
   }
   // modify applicationInfo
   public applicationInfoModifyClick(): void {
     if (this.applicationInfoSelect === undefined || this.applicationInfoSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.applicationInfoSelect.length === 1) {
-      this.applicationInfoModifayDialog = true;
+      this.modifyApplication = this.applicationInfoSelect[0];
+      console.log(this.applicationInfoSelect);
+      // this.applicationInfoModifayDialog = true;
+      this.modifyApplicationInfo();
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
     }
   }
+  public  modifyApplicationInfo(): void {
+    this.optionDialog = {
+      type: 'add',
+      title: '修改信息',
+      width: '800',
+      dialog: true
+    };
+    const list = ['refundableAmount', 'deductionPropertyFee', 'transferCardAmount'];
+    list.forEach(val => {
+      this.form.push({key: val, disabled: false, required: true, value: this.applicationInfoSelect[0][val]});
+    });
+    this.formgroup = this.toolSrv.setFormGroup(this.form);
+    console.log(this.formgroup);
+    this.formdata = [
+      {label: '可退还金额', type: 'input', name: 'refundableAmount', option: '', placeholder: '', disable: true},
+      {label: '退还银行卡金额', type: 'input', name: 'transferCardAmount', option: '', placeholder: ''},
+      {label: '抵扣物业费金额', type: 'input', name: 'deductionPropertyFee', option: '', placeholder: ''},
+    ];
+  }
   // clearData
   public clearData(): void {
     this.applicationInfoAdd = null;
-    this.applicationInfoModify = null;
-    this.licensePlateColorModify = null;
-    this.licensePlateTypeModify = null;
-    this.licensePlateTypeModify = null;
-    this.licensePlateColorOption = [];
-    this.licensePlateTypeOption = [];
-    this.applicationInfoOriginalTypeOption = [];
     this.applicationInfoSelect = [];
   }
   // Paging request
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
+    this.queryApplicationPageData();
+  }
+  // 查询申请的数据
+  public  queryApplicationPageData(): void {
     this.applicationInfoSrv.queryRefundApplicationInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
       value => {
+        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
-          this.applicationInfoTableContent = value.data.contents;
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+            value.data.contents.forEach( v => {
+              v.refundStatus = this.toolSrv.setValueToLabel(this.refundStatusOption, v.refundStatus);
+              v.paymentType = this.toolSrv.setValueToLabel(this.chargeTypeOption, v.paymentType);
+              v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
+              v.paymentMethod = this.toolSrv.setValueToLabel(this.paymentMethodOption, v.paymentMethod);
+            });
+            this.setTableOption(value.data.contents);
+            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {
           this.toolSrv.setToast('error', '查询失败', value.message);
         }
       }
     );
   }
+  // 设置表格
+  public  setTableOption(data1): void {
+    this.applicationInfoOption = {
+      width: '101.4%',
+      header: {
+        data: [
+          {field: 'orderId', header: '订单Id'},
+          {field: 'payerName', header: '缴费人姓名'},
+          {field: 'paymentMethod', header: '支付方式'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'chargeName', header: '项目名称'},
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'auditStatus', header: '审核状态'},
+          {field: 'operating', header: '操作'},
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
+  }
+  // info select
+  public  selectData(e): void {
+    this.applicationInfoSelect = e;
+  }
 
+  public eventClick(e): void {
+    if (e === 'false') {
+      this.optionDialog.dialog = false;
+    } else {
+      if (e.invalid === true) {
+        for (const eKey in e.value.value) {
+            this.modifyApplication[eKey] = e.value.value[eKey];
+        }
+        console.log(this.modifyApplication);
+      }
+
+      console.log(e);
+      // this.couponTotalAddSureClick();
+    }
+  }
+
+  public  btnEvent(e): void {
+      console.log(e);
+      this.formgroup = e.value;
+      if (e.name === 'transferCardAmount') {
+        this.formgroup.patchValue({deductionPropertyFee: e.value.value.refundableAmount - e.value.value.transferCardAmount});
+      } else {
+        this.formgroup.patchValue({transferCardAmount: e.value.value.refundableAmount - e.value.value.deductionPropertyFee});
+      }
+      // e.value.value[e.name] + e.
+  }
 }

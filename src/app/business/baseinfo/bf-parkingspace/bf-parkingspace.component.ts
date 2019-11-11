@@ -11,22 +11,24 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
   styleUrls: ['./bf-parkingspace.component.less']
 })
 export class BfParkingspaceComponent implements OnInit {
-  public parkingspaceTableTitle: any;
-  public parkingspaceTableContent: any[];
-  public parkingspaceTableTitleStyle: any;
   public parkingspaceSelect: any[];
+
+  public parkingSpaceOption: any;
+  // 下拉框列表
+  public parkSpaceNatureOption: any[] = [];
+  public parkSpaceTypeOption: any[] = [];
   // 添加相关
   public parkingspaceAddDialog: boolean;
   public parkingspaceAdd: AddParkingspace = new AddParkingspace();
   // 修改相关
   public parkingspaceModifayDialog: boolean;
   public parkingspaceModify: ModifyParkingspace = new ModifyParkingspace();
-  public parkSpaceNatureOption: any[] = [];
-  public parkSpaceTypeOption: any[] = [];
+
   public parkSpaceTypemodify: any;
   public parkSpaceNaturemodify: any;
   public parkSpaceCode: any;
   // 详情相关
+  public parkingSpaceDetailOption: any;
   public parkingspaceDetailDialog: boolean;
   public parkingspaceDetail: Parkingspace = new Parkingspace();
 
@@ -56,22 +58,15 @@ export class BfParkingspaceComponent implements OnInit {
 
   // initialization parkingspace
   public parkingspaceInitialization(): void {
-    this.parkingspaceTableTitle = [
-      {field: 'villageName', header: '小区名称'},
-      {field: 'regionName', header: '地块名称'},
-      {field: 'parkingSpaceCode', header: '车位编号'},
-      {field: 'parkingSpaceArea', header: '车位面积'},
-      {field: 'vehicleCapacity', header: '车位容车数量'},
-      {field: 'operating', header: '操作'},
-    ];
     this.loadHidden = false;
-    this.parkingSpaceSrv.queryParkingSpace({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      value => {
-        this.loadHidden = true;
-        this.parkingspaceTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-      }
-    );
+    this.toolSrv.getAdmStatus([{settingType: 'CWLX'}, {settingType: 'CWXZ'}], (data) => {
+       console.log(data);
+       this.parkSpaceNatureOption = this.toolSrv.setListMap(data.CWXZ);
+       this.parkSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
+       console.log(this.parkSpaceTypeOption);
+       console.log(this.parkSpaceNatureOption);
+    });
+    this.queryParkingSpacePageData();
     this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
         data.data.forEach(v => {
@@ -81,9 +76,7 @@ export class BfParkingspaceComponent implements OnInit {
         // this.villageplaceholder =  this.SearchOption.village[0].label;
       }
     );
-    this.parkingspaceTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
-
   public VillageChange(e): void {
     this.loadHidden = false;
     this.SearchOption.region = [];
@@ -116,29 +109,8 @@ export class BfParkingspaceComponent implements OnInit {
       }
     );
   }
-  // select building
-  public buildingChange(e): void {
-    this.SearchOption.unit = [];
-    this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach(v => {
-          this.SearchOption.unit.push({label: v.unitName, value: v.unitCode});
-        });
-      }
-    );
-  }
-  // select building
-  public unitChange(e): void {
-  }
-  // Parking information search
-  public parkingspaceSearchClick(): void {
-    // @ts-ignore
-    // console.log(this.input.nativeElement.value);
-    // console.log('这里是条件搜索');
-  }
   // show add parkingspace dialog
   public parkingspaceAddClick(): void {
-    this.getParkingInfo('', '');
     this.parkingspaceAddDialog = true;
   }
   // sure add parkingspace
@@ -162,23 +134,35 @@ export class BfParkingspaceComponent implements OnInit {
   }
    // show  parkingspace detail dialog
   public parkingspaceDetailClick(e): void {
-    this.parkingspaceDetail = e;
-    this.getParkingInfo(this.parkingspaceDetail.parkingSpaceType, this.parkingspaceDetail.parkingSpaceNature);
-    this.parkingspaceDetailDialog = true;
+    // this.parkingspaceDetail = e;
+    this.parkingSpaceDetailOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'organizationName', header: '组织名称'},
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'parkingSpaceCode', header: '车位编号'},
+          {field: 'parkingSpaceArea', header: '车位面积'},
+          {field: 'parkingSpaceType', header: '车位类型'},
+          {field: 'parkingSpaceNature', header: '车位性质'},
+          {field: 'vehicleCapacity', header: '车位容车数量'},
+        ],
+      }
+    };
 
-  }
-  // select parkingSpace
-  public  parkingspaceonRowSelect(e): void {
-    this.parkingspaceModify = e.data;
   }
   // show modify parkingspace dialog
    public parkingspaceModifyClick(): void {
-    this.parkSpaceTypeOption = [];
-    this.parkSpaceNatureOption = [];
     if (this.parkingspaceSelect === undefined || this.parkingspaceSelect.length === 0) {
      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.parkingspaceSelect.length === 1) {
-      this.getParkingInfo(this.parkingspaceModify.parkingSpaceType, this.parkingspaceModify.parkingSpaceNature);
+      this.parkingspaceModify = this.parkingspaceSelect[0];
       this.parkingspaceModifayDialog = true;
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
@@ -207,7 +191,7 @@ export class BfParkingspaceComponent implements OnInit {
     if (this.parkingspaceSelect === undefined || this.parkingspaceSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
-      this.toolSrv.setConfirmation('删除', `删除这${this.parkingspaceSelect.length}项`, ()=> {
+      this.toolSrv.setConfirmation('删除', `删除这${this.parkingspaceSelect.length}项`, () => {
         this.parkingspaceSelect.forEach( v => {
           this.deleteIds.push(v.id);
         });
@@ -238,35 +222,55 @@ export class BfParkingspaceComponent implements OnInit {
          }
     }
   }
-  // get parking info
-  public getParkingInfo(type, nature): void {
-    this.toolSrv.getNativeStatus('CWLX', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, type, (list, label) => {
-          this.parkSpaceTypeOption = list;
-          this.parkSpaceTypemodify = label;
-        });
-      }
-    });
-    this.toolSrv.getNativeStatus('CWXZ', (data) => {
-      if (data.length > 0) {
-        this.toolSrv.setDataFormat(data, nature, (list, label) => {
-          this.parkSpaceNatureOption = list;
-          this.parkSpaceNaturemodify = label;
-        });
-      }
-    });
-  }
   // paging query
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
+    this.queryParkingSpacePageData();
+    this.parkingspaceSelect = [];
+  }
+  public  queryParkingSpacePageData(): void {
     this.parkingSpaceSrv.queryParkingSpace({pageNo: this.nowPage, pageSize: 10}).subscribe(
       value => {
+        console.log(value);
         this.loadHidden = true;
-        this.parkingspaceTableContent = value.data.contents;
+        value.data.contents.forEach( v => {
+          v.parkingSpaceNature = this.toolSrv.setValueToLabel(this.parkSpaceNatureOption, v.parkingSpaceNature);
+          v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, v.parkingSpaceType);
+        });
+        // this.parkingspaceTableContent = value.data.contents;
+        this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );
+  }
+
+  // select data
+  public selectData(e): void {
+    this.parkingspaceSelect = e;
+  }
+  // 设置表格
+  public  setTableOption(data1): void {
+    this.parkingSpaceOption = {
+      width: '101.4%',
+      header: {
+        data: [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'parkingSpaceCode', header: '车位编号'},
+          {field: 'parkingSpaceArea', header: '车位面积'},
+          {field: 'vehicleCapacity', header: '车位容车数量'},
+          {field: 'operating', header: '操作'},
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
   }
 }

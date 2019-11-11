@@ -18,66 +18,33 @@
         <img class="bf-roombind-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
-      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">
-        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>
-        <p-dropdown [options]="SearchOption.village"  scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)"></p-dropdown>
-        <label style="color: #fff;margin-left: 0.5vw">地块：</label>
-        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)"></p-dropdown>
-        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>
-        <p-dropdown [options]="SearchOption.building"  scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)"></p-dropdown>
-        <label style="color: #fff;margin-left: 0.5vw">单元：</label>
-        <p-dropdown [options]="SearchOption.unit"   scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)"></p-dropdown>
-        <!--<label style="color: #fff;margin-left: 0.5vw">房间：</label>-->
-        <!--<p-dropdown [options]="SearchOption.room"  scrollHeight="100px" placeholder="请选择房间..."></p-dropdown>-->
-      </div>
+<!--      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">-->
+<!--        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>-->
+<!--        <p-dropdown [options]="SearchOption.village"  scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)"></p-dropdown>-->
+<!--        <label style="color: #fff;margin-left: 0.5vw">地块：</label>-->
+<!--        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)"></p-dropdown>-->
+<!--        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>-->
+<!--        <p-dropdown [options]="SearchOption.building"  scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)"></p-dropdown>-->
+<!--        <label style="color: #fff;margin-left: 0.5vw">单元：</label>-->
+<!--        <p-dropdown [options]="SearchOption.unit"   scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)"></p-dropdown>-->
+<!--        &lt;!&ndash;<label style="color: #fff;margin-left: 0.5vw">房间：</label>&ndash;&gt;-->
+<!--        &lt;!&ndash;<p-dropdown [options]="SearchOption.room"  scrollHeight="100px" placeholder="请选择房间..."></p-dropdown>&ndash;&gt;-->
+<!--      </div>-->
     </div>
     <!--//搜索-->
-    <div class="ui-inputgroup bf-roombind-header-search">
-      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">
-      <button id="disabled-btn" class="bf-roombind-header-btn-search" type="button"  (click)="roombindSearchClick()"  label="搜索">搜索</button>
-    </div>
+<!--    <div class="ui-inputgroup bf-roombind-header-search">-->
+<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
+<!--      <button id="disabled-btn" class="bf-roombind-header-btn-search" type="button"  (click)="roombindSearchClick()"  label="搜索">搜索</button>-->
+<!--    </div>-->
   </div>
   <!--表格-->
   <div class="bf-roombind-table">
-    <p-scrollPanel [style]="{width:'100%',height: '95%'}" styleClass="custombar">
-      <p-table [columns]="roombindTableTitle" [value]="roombindTableContent"  [(selection)]="roombindSelect" (onRowSelect)="roombindonRowSelect($event)">
-        <ng-template pTemplate="header" let-columns>
-          <tr >
-            <th style="width: 3em"  [ngStyle]="this.roombindTableTitleStyle">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th *ngFor="let col of columns"  [ngStyle]="this.roombindTableTitleStyle">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1);" >
-              {{rowData[col.field]}}
-            </td>
-            <td>
-              <button class="bf-roombind-table-Btn" (click)="roombindDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              {{rowData[col.field]}}
-            </td>
-            <td >
-              <button class="bf-roombind-table-Btn" (click)="roombindDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-scrollPanel>
-
+    <rbi-check-table-btn
+      [option]="tableOption"
+      [select]="roombindSelect"
+      (selectData)="selectData($event)"
+      (detail)="roombindDetailClick($event)">
+    </rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
   <p-dialog header="信息添加" [(visible)]="roombindAddDialog" [width]="800">
@@ -202,8 +169,9 @@
     </p-footer>
   </p-dialog>
   <!--详情弹窗-->
-  <p-dialog header="详细信息" [(visible)]="roombindDetailDialog" [width]="800">
-    <!--Content-->
+  <rbi-detail-pop [dialogOption]="detailOption"></rbi-detail-pop>
+<!--  <p-dialog header="详细信息" [(visible)]="roombindDetailDialog" [width]="800">
+    &lt;!&ndash;Content&ndash;&gt;
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh','text-align':'center'}">
       <div class="ui-g-6">
         <div class="ui-g-4">
@@ -256,11 +224,11 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <!--<button class="bf-roombind-dialog-Btn bf-roombind-dialog-Btn-sure" (click)="roombindModifySureClick()">确认</button>-->
+        &lt;!&ndash;<button class="bf-roombind-dialog-Btn bf-roombind-dialog-Btn-sure" (click)="roombindModifySureClick()">确认</button>&ndash;&gt;
         <button class="bf-roombind-dialog-Btn bf-roombind-dialog-Btn-false"  (click)="roombindDetailDialog=false;clearData()">取消</button>
       </div>
     </p-footer>
-  </p-dialog>
+  </p-dialog>-->
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

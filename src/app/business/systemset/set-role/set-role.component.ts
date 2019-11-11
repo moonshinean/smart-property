@@ -12,10 +12,10 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
   styleUrls: ['./set-role.component.less']
 })
 export class SetRoleComponent implements OnInit {
-  public roleTableTitle: any;
-  public roleTableContent: SetRole[];
-  public roleTableTitleStyle: any;
+
+  public roleTableContent: any;
   public roleSelect: SetRole[];
+  public roleOption: any;
   // 添加相关
   public roleAddDialog: boolean;
   public roleAdd: AddSetRole = new AddSetRole();
@@ -31,6 +31,7 @@ export class SetRoleComponent implements OnInit {
   public option: any;
   public setlimitCodeOption: any[] = [];
   public loadHidden = true;
+  public pageNo = 1;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private roleSrv: SetRoleService,
@@ -43,23 +44,7 @@ export class SetRoleComponent implements OnInit {
   // initialization role
   public  roleInitialization(): void {
     this.loadHidden = false;
-    this.roleTableTitle = [
-      {field: 'userId', header: '用户ID'},
-      {field: 'username', header: '用户名称'},
-      {field: 'realName', header: '真实姓名'},
-      {field: 'roleCode', header: '角色编码'},
-      {field: 'roleName', header: '角色名称'},
-      // {field: 'remark', header: '备注'},
-    ];
-    this.roleSrv.queryRoleList({pageNo: 1, pageSize: 10}).subscribe(
-      (value) => {
-        this.loadHidden = true;
-        this.roleTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-      }
-    );
-    this.roleTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
-
+    this.queryRolePageData();
   }
   // // condition search click
   // public  roleSearchClick(): void {
@@ -223,15 +208,47 @@ export class SetRoleComponent implements OnInit {
   }
   // paging query
   public  nowpageEventHandle(event: any): void {
-    this.roleSrv.queryRoleList({pageNo: event, pageSize: 10}).subscribe(
+    this.pageNo = event;
+    this.queryRolePageData();
+    this.roleSelect = [];
+  }
+
+  // 设置表格
+  public  setTableOption(data1): void {
+    this.roleOption = {
+      width: '101.4%',
+      header: {
+        data:   [
+          {field: 'userId', header: '用户ID'},
+          {field: 'username', header: '用户名称'},
+          {field: 'realName', header: '真实姓名'},
+          {field: 'roleCode', header: '角色编码'},
+          {field: 'roleName', header: '角色名称'},
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 1,
+      tableList:  []
+    };
+  }
+
+  public  selectData(e): void {
+    this.roleSelect = e;
+  }
+
+  public  queryRolePageData(): void {
+    this.roleSrv.queryRoleList({pageNo: this.pageNo, pageSize: 10}).subscribe(
       (value) => {
         this.loadHidden = true;
+        this.setTableOption(value.data.contents);
         this.roleTableContent = value.data.contents;
-        // console.log(this.roleTableContent);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        // console.log(123);
       }
     );
-    this.roleSelect = [];
   }
 }

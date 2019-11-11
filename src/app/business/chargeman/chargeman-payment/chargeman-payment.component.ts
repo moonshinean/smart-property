@@ -26,8 +26,8 @@ export class ChargemanPaymentComponent implements OnInit {
   @ViewChild('scrollpanel') scrollpanel: ElementRef;
   // public paymentTableTitle = ;
   public optionTable: any;
-  public paymentUploadFileOption: FileOption = new FileOption();
-  public uploadedFiles: any[] = [];
+  // public paymentUploadFileOption: FileOption = new FileOption();
+  // public uploadedFiles: any[] = [];
   // 上传详情记录相关
   public fileRecordoption: any;
   // public paymentTableContent: any;
@@ -126,7 +126,7 @@ export class ChargemanPaymentComponent implements OnInit {
     if (this.searchType === undefined) {
       if (this.SearchData.villageCode !== '') {
         this.queryData(this.SearchData);
-      }else {
+      } else {
         this.toolSrv.setToast('error', '操作错误', '请选择搜索方式');
       }
     } else if (this.searchType === 2) {
@@ -230,11 +230,11 @@ export class ChargemanPaymentComponent implements OnInit {
       if (monthStatus) {
         this.loadHidden = false;
         this.optonDialog = [];
-        this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
-          data.forEach(v => {
-            this.optonDialog.push({label: v.settingName, value: v.settingCode});
-          });
-        });
+        // this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
+        //   data.forEach(v => {
+        //     this.optonDialog.push({label: v.settingName, value: v.settingCode});
+        //   });
+        // });
         // console.log(this.paymentProject);
         this.paymentAddTitle.forEach(item => {
             item.value = this.paymentSelect[0][item.label];
@@ -492,33 +492,27 @@ export class ChargemanPaymentComponent implements OnInit {
   }
   // query data （搜索条件的搜索数据）
   public  queryData(searData): void {
-    this.toolSrv.getAdminStatus('SEX', (data) => {
-      // console.log(data);
-      this.toolSrv.getAdminStatus('ROOM_TYPE', (value) => {
-        // console.log(value);
-        this.paymentSrv.searchPaymentData(searData).subscribe(
-          (val) => {
-            if (val.status === '1000') {
-              this.loadHidden = true;
-              if (val.data.contents) {
-                val.data.contents.forEach( total => {
-                  total.sex = this.dataConversion(data, total.sex);
-                  total.roomType = this.dataConversion(value, total.roomType);
-                });
-                this.setTableOption(val.data.contents);
-                // }
-                this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-              } else {
-                this.toolSrv.setToast('success', '搜索成功', '数据为空');
-              }
-            } else {
-              this.toolSrv.setToast('error', '搜索失败', value.message);
-
-            }
+    this.paymentSrv.searchPaymentData(searData).subscribe(
+      (val) => {
+        if (val.status === '1000') {
+          this.loadHidden = true;
+          if (val.data.contents) {
+            // val.data.contents.forEach( total => {
+            //   total.sex = this.dataConversion(data, total.sex);
+            //   total.roomType = this.dataConversion(value, total.roomType);
+            // });
+            this.setTableOption(val.data.contents);
+            // }
+            this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+          } else {
+            this.toolSrv.setToast('success', '搜索成功', '数据为空');
           }
-        );
-      });
-    });
+        } else {
+          this.toolSrv.setToast('error', '搜索失败', val.message);
+
+        }
+      }
+    );
     this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
         data.data.forEach( v => {
@@ -529,33 +523,28 @@ export class ChargemanPaymentComponent implements OnInit {
   }
   // Paging query data （分页查询数据）
   public   queryDataPage(): void {
-    this.toolSrv.getAdminStatus('SEX', (data) => {
-      // console.log(data);
-      this.toolSrv.getAdminStatus('ROOM_TYPE', (value) => {
-        // console.log(value);
-        this.paymentSrv.searchPaymentData({pageNo: this.nowPage , pageSize: 10}).subscribe(
-          (val) => {
-            if (val.status === '1000') {
-              this.loadHidden = true;
-              val.data.contents.forEach( total => {
-                total.sex = this.dataConversion(data, total.sex);
-                total.roomType = this.dataConversion(value, total.roomType);
-              });
-              this.setTableOption(val.data.contents);
-              // }
-              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-            } else {
-              this.toolSrv.setToast('error', '请求错误', val.message);
-            }
-          }
-        );
-      });
-    });
+    this.paymentSrv.searchPaymentData({pageNo: this.nowPage , pageSize: 10}).subscribe(
+      (val) => {
+        if (val.status === '1000') {
+          this.loadHidden = true;
+          // val.data.contents.forEach( total => {
+          //   total.sex = this.dataConversion(data, total.sex);
+          //   total.roomType = this.dataConversion(value, total.roomType);
+          // });
+          this.setTableOption(val.data.contents);
+          // }
+          this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '请求错误', val.message);
+        }
+      }
+    );
     this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
-        data.data.forEach( v => {
-          this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-        });
+        console.log(data);
+        // data.data.forEach( v => {
+        //   this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
+        // });
       }
     );
   }

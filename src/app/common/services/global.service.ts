@@ -54,7 +54,7 @@ export class GlobalService {
 
   // query system status values
   public  queryNatchoose(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/setting/findAdmChoose`, pamars);
+    return this.http.post(environment.sysetUrl + `/setting/findNatChoose`, pamars);
   }
 
 }

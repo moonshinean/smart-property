@@ -92,7 +92,7 @@ export class LatepaymentOwnerComponent implements OnInit {
   }
 
   // set table data
-  public  setTableOption(data): void {
+  public  setTableOption(data1): void {
     this.optionTable = {
       width: '101.4%',
       header: {
@@ -108,7 +108,7 @@ export class LatepaymentOwnerComponent implements OnInit {
         style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
       },
       Content: {
-        data: data,
+        data: data1,
         styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
         styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
       },

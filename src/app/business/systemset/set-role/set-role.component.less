@@ -74,25 +74,27 @@
 
   //弹框按钮
   .set-role-dialog-Btn{
-    width: 4vw;
-    text-align: center;
+    width: 6vw;
+    //text-align: center;
     border-radius: 5px;
     height: 4vh;
     outline: none;
     color: #fff;
     border: 0;
+    margin-left: 2vw;
   }
   .set-role-dialog-Btn-sure{
-    background: #449D44;
-  }
-  .set-role-dialog-Btn-sure:hover{
-    background: #275D27;
+    background: #55AB7F
   }
   .set-role-dialog-Btn-false{
-    background: #F0AD4E;
+    background: #9E9E9E;
   }
-  .set-role-dialog-Btn-false:hover{
-    background: #956A29;
+  ::ng-deep .ui-dialog .ui-widget-content{
+    background: #DCDCDC;
+  }
+  ::ng-deep .ui-dialog-titlebar{
+    font-size: 1rem;
+    text-align: center;
   }
 }
 // 弹窗内容溢出

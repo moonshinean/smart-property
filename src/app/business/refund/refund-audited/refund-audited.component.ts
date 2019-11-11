@@ -130,24 +130,24 @@ export class RefundAuditedComponent implements OnInit {
   // detail refundAuditeInfo
   public refundAuditeDetailClick(e): void {
     this.refundAuditeDetail = e;
-    this.toolSrv.getAdminStatus('ARREARS_STATUS', (data) => {
-      if (data.length > 0) {
-          data.forEach( v => {
-          if (this.refundAuditeDetail.refundStatus.toString() === v.settingCode) {
-            this.refundStatusDetail = v.settingName;
-          }
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-      if (data.length > 0) {
-        data.forEach( v => {
-          if (this.refundAuditeDetail.refundStatus.toString() === v.settingCode) {
-            this.refundStatusDetail = v.settingName;
-          }
-        });
-      }
-    });
+    // this.toolSrv.getAdminStatus('ARREARS_STATUS', (data) => {
+    //   if (data.length > 0) {
+    //       data.forEach( v => {
+    //       if (this.refundAuditeDetail.refundStatus.toString() === v.settingCode) {
+    //         this.refundStatusDetail = v.settingName;
+    //       }
+    //     });
+    //   }
+    // });
+    // this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
+    //   if (data.length > 0) {
+    //     data.forEach( v => {
+    //       if (this.refundAuditeDetail.refundStatus.toString() === v.settingCode) {
+    //         this.refundStatusDetail = v.settingName;
+    //       }
+    //     });
+    //   }
+    // });
     this.refundAuditeDetailDialog = true;
   }
   // paging query

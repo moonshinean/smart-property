@@ -2,6 +2,10 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {HomeService} from '../../common/services/home.service';
 import {ActivatedRoute} from '@angular/router';
 import {LocalStorageService} from '../../common/services/local-storage.service';
+import {TreeNode} from '../../common/model/shared-model';
+import {DataTree} from '../../common/components/basic-dialog/dialog.model';
+import {GlobalService} from '../../common/services/global.service';
+import {SharedServiceService} from '../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-home',
@@ -13,17 +17,40 @@ export class HomeComponent implements OnInit {
   public sidbarHidden: boolean;
   public sidbarItem: any;
   public sidbarData: any;
+  public treeDialog = false;
+  public roomtree: any;
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode: '',
+    unitCode: '',
+    roomtCode: '',
+  };
+
+  public dataTrees: DataTree[];
+  public dataTree: DataTree = new DataTree();
+
   constructor(
     private homeSrv: HomeService,
     private route: ActivatedRoute,
     private localSrv: LocalStorageService,
+    private globalSrv: GlobalService,
+    private shareSrv: SharedServiceService
   ) { }
 
   ngOnInit() {
     if (this.route.snapshot.children[0].url[0].path === 'main') {
       this.sidbarHidden = true;
     }
-
+    this.globalSrv.queryTVillageTree().subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          this.roomtree = value.data;
+          this.dataTrees = this.initializeTree(this.roomtree);
+        }
+      }
+    );
   }
   // sidebar Hidden display
   public homeHiddenSidebar(e): void {
@@ -39,5 +66,35 @@ export class HomeComponent implements OnInit {
   public  homeSetMainStyle(e): void {
     // @ts-ignore
     this.mainStyle.nativeElement.style.marginLeft = e + 'vw';
+  }
+
+  public initializeTree(data): any {
+    // console.log(oneChild);
+    const oneChild = [];
+    for (let i = 0; i < data.length; i++) {
+      const childnode = new TreeNode();
+      childnode.value = data[i].code;
+      childnode.label = data[i].name;
+      if (data[i].villageChoose2DTO != null && data[i].villageChoose2DTO.length !== 0 ) {
+        childnode.children = this.initializeTree(data[i].villageChoose2DTO);
+      } else {
+        childnode.children = [];
+      }
+      oneChild.push(childnode);
+    }
+    return oneChild;
+  }
+
+  // Tree structure is not selected
+  public  treeOnNodeSelect(e): void {
+    console.log(e);
+    // e.
+  }
+
+  public mouserEnter(): void {
+      this.treeDialog = true;
+  }
+  public  dataTreeSureClick(): void {
+    this.shareSrv.emitChange('456');
   }
 }

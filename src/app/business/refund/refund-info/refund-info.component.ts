@@ -17,21 +17,26 @@ import {RefundService} from '../../../common/services/refund.service';
 export class RefundInfoComponent implements OnInit {
 
   public infoTableTitle: any;
-  public infoTableContent: any[];
+  public refundInfoOption: any;
   public infoTableTitleStyle: any;
   public infoSelect: any[];
   // 添加相关
   public infoAddDialog: boolean;
   public infoAdd: AddRefundInfo = new AddRefundInfo();
-  public ChargeSelectOption: any[] = [];
-  public paymentSelectOption: any[] = [];
-  public ChargetOption: any[] = [];
+
+  public chargeTypeOption = [];
+  public paymentMethodOption = [];
+  public refundStatusOption = [];
+
   public ChargetTypeName: any;
+  public ChargeSelectOption = [];
+  public ChargetOption = [];
   // public Statusoption: any;
   // 修改相关
   public infoModifayDialog: boolean;
   public infoModify: ModifyRefundInfo = new ModifyRefundInfo();
   // 详情相关
+  public infoDetailOption: any;
   public infoDetailDialog: boolean;
   public infoDetail: ModifyRefundInfo = new ModifyRefundInfo();
   public refundStatusDetail: any;
@@ -54,6 +59,8 @@ export class RefundInfoComponent implements OnInit {
   public esDate: any;
   public roonCodeSelectOption: any[] = [];
 
+  public pageRefundStatus = [];
+
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private infoSrv: RefundService,
@@ -70,47 +77,12 @@ export class RefundInfoComponent implements OnInit {
 
   // initialization info
   public infoInitialization(): void {
-    this.infoTableTitle = [
-      {field: 'orderId', header: '订单Id'},
-      {field: 'payerName', header: '缴费人姓名'},
-      {field: 'paymentMethod', header: '支付方式'},
-      {field: 'roomCode', header: '房间编号'},
-      {field: 'chargeName', header: '项目名称'},
-      {field: 'actualMoneyCollection', header: '实收金额'},
-      {field: 'refundStatus', header: '退款状态'},
-      {field: 'operating', header: '操作'},
-    ];
     this.esDate = this.toolSrv.esDate;
-    this.loadHidden = false;
-    this.toolSrv.getAdminStatus('REFUND_STATUS', (data) => {
-      if (data.length > 0) {
-        this.infoSrv.queryRefundInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-          val => {
-            this.loadHidden = true;
-            if (val.status === '1000') {
-              val.data.contents.forEach( h => {
-                data.forEach(v => {
-                  if (h.refundStatus.toString() === v.settingCode) {
-                    h.refundStatus = v.settingName;
-                  }
-                });
-              });
-              this.infoTableContent = val.data.contents;
-              this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-            } else {
-              this.toolSrv.setToast('error', '请求失败', val.message);
-            }
-          }
-        );
-      } else {
-        this.infoSrv.queryRefundInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-          val => {
-            this.loadHidden = true;
-            this.infoTableContent = val.data.contents;
-            this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-          }
-        );
-      }
+    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'}, {settingType: 'CHARGE_TYPE'}, {settingType: 'REFUND_STATUS'}, {settingType: 'PARMENT_TYPE'}], (data) => {
+        this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
+        this.paymentMethodOption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
+        this.refundStatusOption = this.toolSrv.setListMap(data.REFUND_STATUS);
+        this.queryPageData();
     });
     this.globalSrv.queryVillageInfo({}).subscribe(
       (data) => {
@@ -120,7 +92,7 @@ export class RefundInfoComponent implements OnInit {
         });
       }
     );
-    this.infoTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
+    // this.infoTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
 
   // query region
@@ -212,7 +184,7 @@ export class RefundInfoComponent implements OnInit {
             if (value.data.contents) {
               this.toolSrv.setToast('success', '搜索成功', value.message);
 
-              this.infoTableContent = value.data.contents;
+              this.setTableOption(value.data.contents);
             } else {
               this.toolSrv.setToast('success', '搜索成功', '数据为空');
             }
@@ -243,25 +215,25 @@ export class RefundInfoComponent implements OnInit {
   public  chargeSelectChange(e): void {
     this.infoAdd.chargeCode = e.value;
     this.ChargetOption.forEach( v => {
-      if (e.value === v.value) {
+      if (e.value.toString() === v.value.toString()) {
         this.infoAdd.chargeName = v.label;
         this.infoAdd.chargeUnit = v.chargeUnit;
         this.infoAdd.chargeType = v.chargeType;
         this.infoAdd.chargeStandard = v.chargeStandard;
+        this.infoModify.chargeName = v.label;
+        this.infoModify.chargeUnit = v.chargeUnit;
+        this.infoModify.chargeType = v.chargeType;
+        this.infoModify.chargeStandard = v.chargeStandard;
       }
     });
-    this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-        data.forEach( v => {
-          if (this.infoAdd.chargeType.toString() === v.settingCode) {
-            this.ChargetTypeName = v.settingName;
-          }
-        });
-    });
-    this.toolSrv.getAdminStatus('PAYMENT_METHOD', (data) => {
-        data.forEach( v => {
-          this.paymentSelectOption.push({label: v.settingName, value: v.settingName});
-        });
-    });
+    // this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
+    //     data.forEach( v => {
+    //       if (this.infoAdd.chargeType.toString() === v.settingCode) {
+    //         this.ChargetTypeName = v.settingName;
+    //       }
+    //     });
+    // });
+
   }
   // add info
   public infoAddClick(): void {
@@ -301,29 +273,52 @@ export class RefundInfoComponent implements OnInit {
   }
   //  info detail
   public infoDetailClick(e): void {
-    this.infoDetail = e;
-    this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-        this.toolSrv.setDataFormat(data, this.infoDetail.paymentType, (list, dataName) =>{
-          this.paymentTypeDetail = dataName;
-        });
-    });
-    this.toolSrv.getAdminStatus('REFUND_STATUS', (data) => {
-        this.toolSrv.setDataFormat(data, this.infoDetail.paymentType, (list, dataName) =>{
-          this.refundStatusDetail = dataName;
-        });
-    });
-    this.infoDetailDialog = true;
-
-  }
-  // info select
-  public  infoonRowSelect(e): void {
-    this.infoModify = e.data;
+    this.infoDetailOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 2,
+      title: '详情',
+      poplist: {
+        popContent: e,
+        popTitle:  [
+          {field: 'organizationName', header: '组织名称'},
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'unitName', header: '单元名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'surname', header: '客户名称'},
+          {field: 'roomSize', header: '住房大小'},
+          {field: 'chargeName', header: '项目名称'},
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'mortgageAmount', header: '抵扣金额'},
+          {field: 'reasonForDeduction', header: '抵扣原因'},
+          {field: 'refundableAmount', header: '可退还金额'},
+          {field: 'chargeUnit', header: '收费单位'},
+          {field: 'payerPhone', header: '缴费人手机号'},
+          {field: 'paymentMethod', header: '支付方式'},
+          {field: 'paymentType', header: '支付类型'},
+          {field: 'refundStatus', header: '退款状态'},
+          {field: 'startTime', header: '开始时间'},
+          {field: 'endTime', header: '结束时间'},
+          {field: 'delayTime', header: '延迟时长'},
+          {field: 'delayReason', header: '延期原因'},
+          {field: 'personLiable', header: '责任人'},
+          {field: 'personLiablePhone', header: '责任人电话'},
+          {field: 'responsibleAgencies', header: '负责机构'},
+          {field: 'remark', header: '申请退款备注 '},
+        ],
+      }
+    };
   }
   // modify info
   public infoModifyClick(): void {
     if (this.infoSelect === undefined || this.infoSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.infoSelect.length === 1) {
+      this.infoModify = this.infoSelect[0];
+      console.log(this.infoModify.refundStatus);
       if (this.infoModify.refundStatus === '未退') {
         this.infoSrv.quertyChargeInfo({}).subscribe(
           value => {
@@ -377,6 +372,8 @@ export class RefundInfoComponent implements OnInit {
   // sure modify info
   public infoModifySureClick(): void {
     this.toolSrv.setConfirmation('修改', '修改', () => {
+      this.infoModify.refundStatus = this.toolSrv.setLabelToValue(this.refundStatusOption, this.infoModify.refundStatus);
+      this.infoModify.paymentMethod = this.toolSrv.setLabelToValue(this.paymentMethodOption, this.infoModify.paymentMethod);
       this.infoModify.startTime = this.datePipe.transform(this.infoModify.startTime, 'yyyy-MM-dd');
       this.infoModify.dueTime = this.datePipe.transform(this.infoModify.dueTime, 'yyyy-MM-dd');
       this.infoSrv.updateRefundInfo(this.infoModify).subscribe(
@@ -387,8 +384,9 @@ export class RefundInfoComponent implements OnInit {
             this.clearData();
             this.infoInitialization();
           } else {
+            this.infoModify.refundStatus = this.toolSrv.setValueToLabel(this.refundStatusOption, this.infoModify.refundStatus);
+            this.infoModify.paymentMethod = this.toolSrv.setValueToLabel(this.paymentMethodOption, this.infoModify.paymentMethod);
             this.toolSrv.setToast('error', '操作失败', value.message);
-
           }
         }
       );
@@ -399,7 +397,7 @@ export class RefundInfoComponent implements OnInit {
     if (this.infoSelect === undefined || this.infoSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
-      this.toolSrv.setConfirmation('删除', '删除' +this.infoSelect.length + '项', () => {
+      this.toolSrv.setConfirmation('删除', '删除' + this.infoSelect.length + '项', () => {
         this.infoSelect.forEach( v => {
           this.deleteIds.push(v.id);
         });
@@ -422,9 +420,8 @@ export class RefundInfoComponent implements OnInit {
     this.infoAdd = new AddRefundInfo();
     this.infoModify = new ModifyRefundInfo();
     this.infoSelect = [];
-    this.ChargeSelectOption = [];
-    this.paymentSelectOption = [];
-    this.ChargetOption = [];
+    // this.ChargeSelectOption = [];
+    // this.ChargetOption = [];
     this.ChargetTypeName = null;
     this.SearchOption = {
       village: [],
@@ -438,12 +435,69 @@ export class RefundInfoComponent implements OnInit {
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
+    this.queryPageData();
+  }
+  public queryPageData(): void {
     this.infoSrv.queryRefundInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
-      value => {
+      val => {
+        console.log(val);
         this.loadHidden = true;
-        this.infoTableContent = value.data.contents;
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        if (val.status === '1000') {
+            val.data.contents.forEach( v => {
+              if (this.isOrNull(v.refundStatus)) {
+                v.refundStatus = this.toolSrv.setValueToLabel(this.refundStatusOption, v.refundStatus);
+              }
+              if (this.isOrNull(v.paymentMethod)) {
+                v.paymentMethod = this.toolSrv.setValueToLabel(this.paymentMethodOption, v.paymentMethod);
+
+              }
+              if (this.isOrNull(v.paymentType)) {
+                v.paymentType = this.toolSrv.setValueToLabel(this.chargeTypeOption, v.paymentType);
+
+              }
+            });
+          // this.infoTableContent = val.data.contents;
+            this.setTableOption(val.data.contents);
+            this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '请求失败', val.message);
+        }
       }
     );
+  }
+  public  isOrNull(data: any): boolean {
+      return (data !== null && data !== '' && data !== undefined);
+  }
+
+  // 设置表格
+  public  setTableOption(data1): void {
+    this.refundInfoOption = {
+      width: '101.4%',
+      header: {
+        data:   [
+          {field: 'orderId', header: '订单Id'},
+          {field: 'payerName', header: '缴费人姓名'},
+          {field: 'paymentMethod', header: '支付方式'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'chargeName', header: '项目名称'},
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'refundStatus', header: '退款状态'},
+          {field: 'operating', header: '操作'},
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
+  }
+
+  // info select
+  public  selectData(e): void {
+    this.infoSelect = e;
   }
 }

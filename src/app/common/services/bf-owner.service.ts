@@ -44,7 +44,7 @@ export class BfOwnerService {
     return  this.http.post(environment.sysetUrl + '/roomInfo/logout', body);
   }
   public  queryOwerInfoDetail(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/findOwnerDetail', body);
+    return  this.http.post(environment.sysetUrl + '/roomInfo/findCustomerDetail', body);
   }
   public  addRoomCodeInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/addRoom', body);

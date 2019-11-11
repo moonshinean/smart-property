@@ -14,36 +14,25 @@ import {defer} from 'rxjs';
 export class BfTollComponent implements OnInit {
 
   @ViewChild('input') input: Input;
-  public tollTableTitle: any;
+  public tableOption: any;
   public tollTableContent: Toll[];
   public tollTableTitleStyle: any;
   public tollSelect: Toll[] = [];
-  public moreTollMoreTitle = [
-    {field: 'id', header: '序号'},
-    {field: 'areaMin', header: '面积最小值'},
-    {field: 'areaMax', header: '面积最大值'},
-    {field: 'datedif', header: '缴费月数'},
-    {field: 'money', header: '金额'},
-    {field: 'discount', header: '折扣'},
-    {field: 'parkingSpaceNature', header: '车位性质'},
-    {field: 'parkingSpaceType', header: '车位类型'},
-    {field: 'operating', header: '操作'},
-  ]; // 数据
   // 添加相关
   public tollAddDialog: boolean;
   public tollAdd: AddToll[] = [];
   public tollAddinfo: AddToll = new AddToll();
   public tollMoreInfo: TollMoreInfo[] = [];
   public tollTitle: BfTollTitle = new BfTollTitle();
-  public tollAddoption = {
-    parkingSpaceNature: [],
-    parkingSpaceType: [],
-    datedif: []
-  };
+
+  // 状态相关
+  public parkingSpaceTypeOption: any[] = [];
+  public parkingSpaceNatureOption: any[] = [];
+  public datedifOption: any[] = [];
   public enableOption: any[] = [];
   public refundOption: any[] = [];
   public mustPayOption: any[] = [];
-  public optionTollType: any[] = [];
+  public chargeTypeOption: any[] = [];
   // 修改相关
   public tollModifyDialog: boolean;
   public tollModify: any[] = [];
@@ -54,10 +43,11 @@ export class BfTollComponent implements OnInit {
   public tollrefundMedify: any;
   public tollmustpayMedify: any;
   public tollChargeTypeMedify: any;
+  // 删除
   public ids: any[] = [];
   // 详情相关
   public tollDetailDialog: boolean;
-  public TollMoreTitleDetail = [
+  public moreTollMoreTitle = [
     {field: 'id', header: '序号'},
     {field: 'areaMin', header: '面积最小值'},
     {field: 'areaMax', header: '面积最大值'},
@@ -66,12 +56,13 @@ export class BfTollComponent implements OnInit {
     {field: 'discount', header: '折扣'},
     {field: 'parkingSpaceNature', header: '车位性质'},
     {field: 'parkingSpaceType', header: '车位类型'},
+    {field: 'operating', header: '操作'},
   ];
   // 其他相关
   public esDate: any; // 清除时钟
   public option: any; // 清除时钟
   public loadHidden = true;
-  public nowPage = 1;
+  public NOW_PAGE = 1;
   public deleteId: any[] = [];
   constructor(
     private toolSrv: PublicMethedService,
@@ -83,52 +74,21 @@ export class BfTollComponent implements OnInit {
 
   // initialization toll
   public  tollInitialization(): void {
-    this.tollTableTitle = [
-      {field: 'chargeCode', header: '项目编号'},
-      {field: 'chargeName', header: '项目名称'},
-      {field: 'chargeType', header: '项目类型'},
-      {field: 'chargeStandard', header: '收费单价'},
-      {field: 'chargeUnit', header: '收费单位'},
-      {field: 'enable', header: '是否启用'},
-      {field: 'operating', header: '操作'},
-    ];
     this.esDate = this.toolSrv.esDate;
-    this.getStatus();
-    this.getTollDownLoadInfo('', '', '', '', '');
-    const queryData = setInterval(() => {
-      this.loadHidden = false;
-      if (this.optionTollType.length > 0 && this.enableOption.length > 0) {
-        this.tollSrv.queryBfTollPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
-          value => {
-            console.log(value);
-            clearInterval(queryData);
-            if (value.status === '1000') {
-              this.loadHidden = true;
-              if (value.data.contents)  {
-                value.data.contents.forEach( v => {
-                  if (v.chargeType) {
-                    this.optionTollType.forEach( val => {
-                      if (v.chargeType.toString() === val.value) {
-                        v.chargeType = val.label;
-                      }
-                    });
-                  }
-                  if (v.enable !== null) {
-                    this.enableOption.forEach( val => {
-                      if (v.enable.toString() === val.value) {
-                        v.enable = val.label;
-                      }
-                    });
-                  }
-                });
-              }
-              this.tollTableContent = value.data.contents;
-              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-            }
-          }
-        );
-      }
-    }, 600);
+    this.toolSrv.getAdmStatus([{settingType: 'CHARGE_TYPE'},
+      {settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
+      {settingType: 'CWXZ'}, {settingType: 'CWLX'}, {settingType: 'MUST_PAY'},
+      {settingType: 'REFUND'}], (data) => {
+      // this.queryTollPageData();
+      this.enableOption = this.toolSrv.setListMap(data.ENABLED);
+      this.refundOption = this.toolSrv.setListMap(data.REFUND);
+      this.mustPayOption = this.toolSrv.setListMap(data.MUST_PAY);
+      this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
+      this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
+      this.parkingSpaceNatureOption = this.toolSrv.setListMap(data.DATEDIF);
+      this.datedifOption = this.toolSrv.setListMap(data.CWXZ);
+      this.queryTollPageData();
+    });
     this.settollTitleData();
     this.tollTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
@@ -138,8 +98,6 @@ export class BfTollComponent implements OnInit {
   }
   // add  toll
   public  tollAddClick(): void {
-    this.getStatus();
-    this.getTollDownLoadInfo('', '', '', '', '');
     this.tollAddDialog = true;
   }
   // sure add toll
@@ -191,7 +149,6 @@ export class BfTollComponent implements OnInit {
     if (this.tollSelect === undefined || this.tollSelect.length === 0 ) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.tollSelect.length === 1) {
-      this.getStatus();
       this.tollChargeTypeMedify = this.tollTitle.chargeType;
       this.tollEnableMedify = this.tollTitle.enable;
       const setInter = setInterval(() => {
@@ -206,19 +163,6 @@ export class BfTollComponent implements OnInit {
           }
         }
       }, 500);
-      this.toolSrv.getAdminStatus('REFUND', (data) => {
-        if (data) {
-          this.toolSrv.setDataFormat(data,this.tollTitle.refund, (list, label) => {
-            this.refundOption = list;
-            if ( label === null) {
-              this.tollrefundMedify = '请选择是否可退款';
-            } else {
-              this.tollrefundMedify = label;
-            }
-          });
-        }
-      });
-      this.getTollDownLoadInfo( '', '', '', '', '');
       const Time = setInterval( () => {
           clearInterval(Time);
           this.tollSrv.queryTollinfoDetail({chargeCode: this.tollSelect[0].chargeCode}).subscribe(
@@ -229,34 +173,6 @@ export class BfTollComponent implements OnInit {
               value.data.forEach( v => {
                 this.tollMoreInfo.push({areaMin: v.areaMin, areaMax: v.areaMax, money: v.money, datedif: v.datedif, discount: v.discount, parkingSpaceNature: v.parkingSpaceNature, parkingSpaceType: v.parkingSpaceType});
                 this.ids.push({id: v.id});
-                if (v.datedif !== null)  {
-                  this.tollAddoption.datedif.forEach( val => {
-                    if (v.datedif.toString() === val.value) {
-                      this.tollModifyData.datedif = val.label;
-                    }
-                  });
-                } else {
-                  this.tollModifyData.datedif = '请选择月数';
-                }
-                if (v.parkingSpaceType !== null && v.parkingSpaceType !== undefined && v.parkingSpaceType !== '') {
-                  this.tollAddoption.parkingSpaceType.forEach( val => {
-                    if (v.parkingSpaceType.toString() === val.value) {
-                      this.tollModifyData.parkingSpaceType = val.label;
-                    }
-                  });
-                }else {
-                  this.tollModifyData.parkingSpaceType = '请选择车位性质';
-
-                }
-                if (v.parkingSpaceNature !== null && v.parkingSpaceNature !== undefined && v.parkingSpaceNature !== '') {
-                  this.tollAddoption.parkingSpaceNature.forEach( val => {
-                    if (v.parkingSpaceNature.toString() === val.value) {
-                      this.tollModifyData.parkingSpaceNature = val.label;
-                    }
-                  });
-                } else {
-                  this.tollModifyData.parkingSpaceNature = '请选择车位类型';
-                }
                 this.tollModifyDatas.push(this.tollModifyData);
                 this.tollModifyData = new ModifyTollDrop();
               });
@@ -270,17 +186,11 @@ export class BfTollComponent implements OnInit {
   }
   // sure modify toll
   public  tollModifySureClick(): void {
-    this.optionTollType.forEach( val => {
-      if (this.tollTitle.chargeType.toString() === val.label) {
-        this.tollTitle.chargeType = val.value;
-      }
-    });
     this.enableOption.forEach( val => {
       if (this.tollTitle.enable.toString() === val.label) {
         this.tollTitle.enable = val.value;
       }
     });
-    console.log(this.tollTitle);
     this.toolSrv.setConfirmation('修改', '修改', () => {
       if (this.tollMoreInfo.length === 0) {
         this.tollSrv.updateTollInfo(this.tollTitle).subscribe(
@@ -350,64 +260,17 @@ export class BfTollComponent implements OnInit {
       });
     }
   }
-  // select toll
-  public  tollonRowSelect(e): void {
-    this.tollModify = e.data;
-    this.tollTitle = e.data;
-  }
   // show Detail Dialog
   public  toolDetailClick(e): void {
     this.tollTitle = e;
-    if (this.tollTitle.mustPay !== null ) {
-      this.mustPayOption.forEach(value => {
-        if (this.tollTitle.mustPay.toString() === value.value) {
-          this.tollmustpayMedify = value.label;
-        }
-      });
-    }
-    this.toolSrv.getAdminStatus('REFUND', (data) => {
-      if (data) {
-        this.toolSrv.setDataFormat(data, e.refund, (list, label) => {
-          this.tollrefundMedify = label;
+    this.tollSrv.queryTollinfoDetail({chargeCode: e.chargeCode}).subscribe(
+      value => {
+        value.data.forEach( v => {
+          this.tollModifyDatas.push(this.tollModifyData);
+          this.tollModifyData = new ModifyTollDrop();
         });
       }
-    });
-    this.getTollDownLoadInfo( e.chargeType, e.enable, '', '', '');
-    const detailData = setInterval(() => {
-        this.tollSrv.queryTollinfoDetail({chargeCode: e.chargeCode}).subscribe(
-          value => {
-            this.tollMoreInfo = [];
-            this.tollModifyDatas = [];
-            clearInterval(detailData);
-            value.data.forEach( v => {
-              this.tollMoreInfo.push({areaMin: v.areaMin, areaMax: v.areaMax, money: v.money, datedif: v.datedif, discount: v.discount, parkingSpaceNature: v.parkingSpaceNature, parkingSpaceType: v.parkingSpaceType});
-              if (v.datedif !== null && v.datedif !== undefined && v.datedif !== '')  {
-                this.tollAddoption.datedif.forEach( val => {
-                  if (v.datedif.toString() === val.value) {
-                    this.tollModifyData.datedif = val.label;
-                  }
-                });
-              }
-              if (v.parkingSpaceType !== null && v.parkingSpaceType !== undefined && v.parkingSpaceType !== '') {
-                this.tollAddoption.parkingSpaceType.forEach(val => {
-                  if (v.parkingSpaceType.toString() === val.value) {
-                    this.tollModifyData.parkingSpaceType = val.label;
-                  }
-                });
-              }
-              if (v.parkingSpaceNature !== null && v.parkingSpaceNature !== undefined && v.parkingSpaceNature !== '') {
-                this.tollAddoption.parkingSpaceNature.forEach(val => {
-                  if (v.parkingSpaceNature.toString() === val.value) {
-                    this.tollModifyData.parkingSpaceNature = val.label;
-                  }
-                });
-              }
-              this.tollModifyDatas.push(this.tollModifyData);
-              this.tollModifyData = new ModifyTollDrop();
-            });
-          }
-        );
-    }, 500);
+    );
     this.tollDetailDialog = true;
   }
   // Reset data
@@ -421,7 +284,6 @@ export class BfTollComponent implements OnInit {
       this.tollModifyDatas = [];
       this.modifytoll = [];
       this.ids = [];
-      this.tollAddoption = {parkingSpaceNature: [], parkingSpaceType: [], datedif: []};
       this.tollmustpayMedify = null;
       this.tollrefundMedify = null;
       this.tollEnableMedify = null;
@@ -454,46 +316,6 @@ export class BfTollComponent implements OnInit {
       );
     }
   }
-  // paging query
-  public  getTollDownLoadInfo(chargeType, enable, datedif, nature, type): void {
-    this.enableOption = [];
-    this.optionTollType = [];
-    this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-      if (data) {
-        this.toolSrv.setDataFormat(data, chargeType, (list, label) => {
-          this.optionTollType = list;
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus('ENABLED', (data) => {
-      if (data) {
-        this.toolSrv.setDataFormat(data, enable, (list, label) => {
-          this.enableOption = list;
-        });
-      }
-    });
-    this.toolSrv.getAdminStatus('DATEDIF', (data) => {
-      if (data) {
-        this.toolSrv.setDataFormat(data, datedif, (list, label) => {
-          this.tollAddoption.datedif = list;
-        });
-      }
-    });
-    this.toolSrv.getNativeStatus('CWXZ', (data) => {
-      if (data) {
-        this.toolSrv.setDataFormat(data, nature, (list, label) => {
-          this.tollAddoption.parkingSpaceNature = list;
-        });
-      }
-    });
-    this.toolSrv.getNativeStatus('CWLX', (data) => {
-      if (data) {
-        this.toolSrv.setDataFormat(data, type, (list, label) => {
-          this.tollAddoption.parkingSpaceType = list;
-        });
-      }
-    });
-  }
   // set tollTitledata
   public  settollTitleData(): void {
     this.tollTitle.chargeCode = '';
@@ -508,59 +330,55 @@ export class BfTollComponent implements OnInit {
   // paging query
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
-    this.nowPage = event;
-    this.getTollDownLoadInfo('', '', '', '', '');
-    const queryData = setInterval(() => {
-      this.loadHidden = false;
-      if (this.optionTollType.length > 0 && this.enableOption.length > 0) {
-        this.tollSrv.queryBfTollPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
-          value => {
-            console.log(value);
-            clearInterval(queryData);
-            if (value.status === '1000') {
-              this.loadHidden = true;
-              if (value.data.contents)  {
-                value.data.contents.forEach( v => {
-                  if (v.chargeType) {
-                    this.optionTollType.forEach( val => {
-                      if (v.chargeType.toString() === val.value) {
-                        v.chargeType = val.label;
-                      }
-                    });
-                  }
-                  if (v.enable !== null) {
-                    this.enableOption.forEach( val => {
-                      if (v.enable.toString() === val.value) {
-                        v.enable = val.label;
-                      }
-                    });
-                  }
-                });
-              }
-              this.tollTableContent = value.data.contents;
-              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-            }
-          }
-        );
-      }
-    }, 600);
+    this.NOW_PAGE = event;
+    this.queryTollPageData();
   }
-  public  getStatus(): void {
-    this.mustPayOption = [];
-    this.refundOption = [];
-    this.toolSrv.getAdminStatus('MUST_PAY' , (data) => {
-      if (data) {
-        data.forEach( v => {
-          this.mustPayOption.push({label: v.settingName, value: v.settingCode});
-        });
+  public queryTollPageData(): void {
+    this.tollSrv.queryBfTollPageInfo({pageNo: this.NOW_PAGE, pageSize: 10}).subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          this.loadHidden = true;
+          value.data.contents.forEach(v => {
+              v.chargeType = this.toolSrv.setValueToLabel(this.chargeTypeOption, v.chargeType);
+              v.enable = this.toolSrv.setValueToLabel(this.enableOption, v.enable);
+              v.refund = this.toolSrv.setValueToLabel(this.refundOption, v.refund);
+              v.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, v.mustPay);
+          });
+          this.setTableOption(value.data.contents);
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        }
       }
-    });
-    this.toolSrv.getAdminStatus('REFUND', (data) => {
-      if (data) {
-        data.forEach( v => {
-          this.refundOption.push({label: v.settingName, value: v.settingCode});
-        });
-      }
-    });
+    );
+  }
+
+  // select data (选择数据)
+  public  selectData(e): void {
+    this.tollSelect = e;
+  }
+  // set table data （设置列表数据）
+  public  setTableOption(data1): void {
+    this.tableOption = {
+      width: '101.4%',
+      header: {
+        data: [
+          {field: 'chargeCode', header: '项目编号'},
+          {field: 'chargeName', header: '项目名称'},
+          {field: 'chargeType', header: '项目类型'},
+          {field: 'chargeStandard', header: '收费单价'},
+          {field: 'chargeUnit', header: '收费单位'},
+          {field: 'enable', header: '是否启用'},
+          {field: 'operating', header: '操作'},
+        ],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
   }
 }

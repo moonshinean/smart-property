@@ -47,10 +47,10 @@
               <textarea rows="3" cols="4" pInputTextarea [placeholder]="dialogOption.poplist.popContent[item.field]" disabled></textarea>
             </div>
           </div>
-          <div class="ui-g-12" *ngIf="dialogOption.tableHidden">
+          <div class="ui-g-12" *ngIf="dialogOption.tableHidden === true">
             <h3>{{dialogOption.tablelist.title}}</h3>
           </div>
-          <div class="ui-g-12" *ngIf="dialogOption.tableHidden">
+          <div class="ui-g-12" *ngIf="dialogOption.tableHidden === true">
             <rbi-bf-table [option]="dialogOption.tablelist"></rbi-bf-table>
           </div>
         </div>

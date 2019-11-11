@@ -28,6 +28,7 @@ import { BfRoombindChangeitemComponent } from './bf-roombind-changeitem/bf-roomb
 import {PublicMethedService} from '../../common/public/public-methed.service';
 import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
 import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
+import {SharedServiceService} from '../../common/public/shared-service.service';
 
 @NgModule({
   declarations: [
