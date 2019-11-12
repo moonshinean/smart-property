@@ -4,6 +4,7 @@ export class TreeNode {
   label?: any;
   menuPermisFlag?: any;
   permisOrder?: any;
+  level?: any;
   router?: any;
   parentCode?: any;
   check?: any;

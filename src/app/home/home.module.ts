@@ -19,7 +19,7 @@ import {
 import {LoadingModule} from '../common/components/loading/loading.module';
 import {PublicMethedService} from '../common/public/public-methed.service';
 import {SharedServiceService} from '../common/public/shared-service.service';
-
+import {AppdragDirective} from '../common/directive/appdrag.directive';
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -27,6 +27,8 @@ import {SharedServiceService} from '../common/public/shared-service.service';
     BreadcrumbComponent,
     FooterComponent,
     SidebarComponent,
+    AppdragDirective,
+
   ],
   imports: [
     CommonModule,

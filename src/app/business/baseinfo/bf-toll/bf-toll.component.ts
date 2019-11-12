@@ -1,17 +1,18 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BfTollService} from '../../../common/services/bf-toll.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {AddToll, BfTollTitle, ModifyToll, ModifyTollDrop, Toll, TollMoreInfo} from '../../../common/model/bf-toll.model';
 import {validate} from 'codelyzer/walkerFactory/walkerFn';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
-import {defer} from 'rxjs';
+import {defer, Observable, Subscribable, Subscription} from 'rxjs';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-bf-toll',
   templateUrl: './bf-toll.component.html',
   styleUrls: ['./bf-toll.component.less']
 })
-export class BfTollComponent implements OnInit {
+export class BfTollComponent implements OnInit, OnDestroy {
 
   @ViewChild('input') input: Input;
   public tableOption: any;
@@ -64,12 +65,23 @@ export class BfTollComponent implements OnInit {
   public loadHidden = true;
   public NOW_PAGE = 1;
   public deleteId: any[] = [];
+  public tollSub: Subscription;
   constructor(
     private toolSrv: PublicMethedService,
-    private tollSrv: BfTollService
+    private tollSrv: BfTollService,
+    private shareSrv: SharedServiceService,
   ) { }
   ngOnInit() {
+    this.tollSub = this.shareSrv.changeEmitted$.subscribe(value => {
+      // console.log(123);
+      console.log(value);
+    });
+    // console.log(this.shareSrv.SearchData);
     this.tollInitialization();
+  }
+  ngOnDestroy(): void {
+    // 组件销毁时 取消订阅
+    this.tollSub.unsubscribe();
   }
 
   // initialization toll

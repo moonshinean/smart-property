@@ -13,7 +13,7 @@ export class BfOwnerService {
   ) { }
 
   public  queryOwerDataList(pamars): Observable<any> {
-      return this.http.post(environment.sysetUrl + `/roomInfo/findVByPage`, pamars);
+      return this.http.post(environment.sysetUrl + `/roomInfo/findOwnerAllByPage`, pamars);
   }
   // Conditional search unitinfo
   public  queryowerInfoList(pamars): Observable<any> {

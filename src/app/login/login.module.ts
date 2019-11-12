@@ -17,7 +17,7 @@ import {LoadingModule} from '../common/components/loading/loading.module';
     MessageModule,
     MessagesModule,
     LoadingModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [MessageService],
   exports: [

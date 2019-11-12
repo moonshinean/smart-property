@@ -1,20 +1,21 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {BfOwnerService} from '../../../common/services/bf-owner.service';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {AddOwner, ModifyOwner, OwerList, Owner, RoomTitle, SearchOwner} from '../../../common/model/bf-owner.model';
-import {C} from '@angular/cdk/typings/esm5/keycodes';
+import {ConfirmationService} from 'primeng/api';
+import {AddOwner, ModifyOwner, OwerList, RoomTitle, SearchOwner} from '../../../common/model/bf-owner.model';
 import {GlobalService} from '../../../common/services/global.service';
 import {DatePipe} from '@angular/common';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 import {Dropdown} from 'primeng/dropdown';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-bf-owner',
   templateUrl: './bf-owner.component.html',
   styleUrls: ['./bf-owner.component.less']
 })
-export class BfOwnerComponent implements OnInit {
+export class BfOwnerComponent implements OnInit, OnDestroy {
  @ViewChild('villageCode') villageCode: Dropdown;
   public ownerSelect: any;
   // 上传文件相关
@@ -42,6 +43,7 @@ export class BfOwnerComponent implements OnInit {
   public roomStatusOption: any[] = [];
   public renovationStatusOption: any[] = [];
   public sexOption: any[] = [];
+
   public owerMoreTitleDetail = [
     {field: 'surname', header: '客户姓氏'},
     {field: 'sex', header: '性别'},
@@ -88,25 +90,45 @@ export class BfOwnerComponent implements OnInit {
   public loadHidden = true;
   public deleteId: any[] = [];
   public nowPage = 1;
+  // 服务传参相关
+  public ownerSub: Subscription;
   constructor(
     private owerSrv: BfOwnerService,
     private globalSrv: GlobalService,
     private confirmationService: ConfirmationService,
     private toolSrv: PublicMethedService,
     private datePipe: DatePipe,
+    private sharedSrv: SharedServiceService
 
   ) { }
   ngOnInit() {
+    this.ownerSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        this.searchOwerData.level = value.data.level;
+        this.searchOwerData.code = value.data.code;
+        console.log(value);
+      }
+    );
     this.ownerInitialization();
+  }
+  ngOnDestroy(): void {
+    this.ownerSub.unsubscribe();
   }
 
   // initialization houseinfo
   public  ownerInitialization(): void {
+    this.toolSrv.getAdmStatus([{settingType: 'ROOM_TYPE'},
+      {settingType: 'ROOM_STATUS'}, {settingType: 'RENOVATION_STATUS'}, {settingType: 'SEX'}, {settingType: 'NORMAL_PAYMENT_STATUS'}, {settingType: 'IDENTITY' }], (data) => {
+      this.roomTypeOption = this.toolSrv.setListMap(data.ROOM_TYPE);
+      this.roomStatusOption = this.toolSrv.setListMap(data.ROOM_STATUS);
+      this.renovationStatusOption = this.toolSrv.setListMap(data.RENOVATION_STATUS);
+      this.sexOption = this.toolSrv.setListMap(data.SEX);
+      this.normalChargeOption = this.toolSrv.setListMap(data.NORMAL_PAYMENT_STATUS);
+      this.identityOption = this.toolSrv.setListMap(data.IDENTITY);
+      this.queryOwnerPageData();
+    });
     this.esDate = this.toolSrv.esDate;
     this.loadHidden = false;
-    // console.log('这里是信息的初始化');
-    // this.getOwnerAllData();
-    this.getownerDropdown();
     // this.globalSrv.queryVillageInfo({}).subscribe(
     //   (data) => {
     //     data.data.forEach( v => {
@@ -243,7 +265,7 @@ export class BfOwnerComponent implements OnInit {
         this.toolSrv.setToast('error', '操作错误', '请输入需要搜索的手机号');
       }
     } else {
-      if(this.inputSearchData !== '') {
+      if (this.inputSearchData !== '') {
         this.owerSrv.queryByroomCode({pageNo: 1, pageSize: 10, roomCode: this.inputSearchData}).subscribe(
           value => {
             console.log(value);
@@ -377,7 +399,7 @@ export class BfOwnerComponent implements OnInit {
     console.log(e);
     if (e.renovationStatus === '1') {
       this.ownerTimeDetailHide = false;
-    }else {
+    } else {
       this.ownerTimeDetailHide = true;
     }
     this.renovationStatusName = null;
@@ -592,9 +614,6 @@ export class BfOwnerComponent implements OnInit {
     }
   }
   // select houseinfo
-  public  owneronRowSelect(e): void {
-    this.roomTitle = e.data;
-  }
   // add more upload file Dialog
   public  addMoreClick(): void {
     this.UploadFileOption.width = '800';
@@ -715,61 +734,7 @@ export class BfOwnerComponent implements OnInit {
     }
     // this.paymentSelect = [];
   }
-  // get room Dropdown data
-  // public getRoomDropdownData(roomType, roomStatus, renovation): void {
-  //   this.toolSrv.getAdminStatus('ROOM_TYPE', (data) => {
-  //     if (data.length > 0) {
-  //       this.toolSrv.setDataFormat(data, roomType, (list, label) => {
-  //         this.roomTypeOption = list;
-  //         this.roomTypeName = label;
-  //       });
-  //     }
-  //   });
-  //   this.toolSrv.getAdminStatus('ROOM_STATUS', (data) => {
-  //     if (data.length > 0) {
-  //       this.toolSrv.setDataFormat(data, roomStatus, (list, label) => {
-  //         this.roomStatusOption = list;
-  //         this.roomStatusName = label;
-  //       });
-  //     }
-  //   });
-  //   this.toolSrv.getAdminStatus('RENOVATION_STATUS', (data) => {
-  //     if (data.length > 0) {
-  //       this.toolSrv.setDataFormat(data, renovation, (list, labelname) => {
-  //         this.renovationStatusOption = list;
-  //         this.renovationName = labelname;
-  //       });
-  //     }
-  //   });
-  // }
-  // get owner Dropdown data
-  public  getownerDropdown(): void {
-    this.toolSrv.getAdmStatus([{settingType: 'ROOM_TYPE'}, {settingType: 'ROOM_STATUS'}, {settingType: 'RENOVATION_STATUS'}, {settingType: 'SEX'}, {settingType: 'NORMAL_PAYMENT_STATUS'}, {settingType: 'IDENTITY' }], (data) => {
-          console.log(data);
-    });
-    // this.toolSrv.getAdminStatus( , (data) => {
-    //   if (data.length > 0) {
-    //     this.toolSrv.setDataFormat(data, sex, (list, label) => {
-    //       this.sexOption = list;
-    //     });
-    //   }
-    // });
-    // this.toolSrv.getAdminStatus( 'NORMAL_PAYMENT_STATUS', (data) => {
-    //   if (data.length > 0) {
-    //     this.toolSrv.setDataFormat(data, normal, (list, label) => {
-    //       this.normalChargeOption = list;
-    //     });
-    //   }
-    // });
-    // this.toolSrv.getAdminStatus( 'IDENTITY', (data) => {
-    //   if (data.length > 0) {
-    //      data.forEach( v => {
-    //       if (v.settingName !== '租客')
-    //         this.identityOption.push({label: v.settingName, value: v.settingCode});
-    //     });
-    //   }
-    // });
-  }
+
   // set roomtilt
   public  setRoomTitleData(): void {
     this.roomTitle.villageName = '';
@@ -865,27 +830,6 @@ export class BfOwnerComponent implements OnInit {
     //   }
     // }, 400);
   }
-
-// //  搜索分页查询
-//   public  getOwnerAllData(): void {
-//     this.searchOwerData.pageNo = this.nowPage;
-//     this.searchOwerData.pageSize = 10;
-//     this.searchOwerData.villageCode = '';
-//     this.searchOwerData.regionCode = '';
-//     this.searchOwerData.buildingCode = '';
-//     this.searchOwerData.unitCode = '';
-//     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
-//       (value) => {
-//         console.log(value);
-//         this.loadHidden = true;
-//         this.setTableOption(value.data.contents);
-//         // this.ownerTableContent = ;
-//         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-//       }
-//     );
-//   }
-
-
   // 设置表格数据
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
@@ -916,5 +860,18 @@ export class BfOwnerComponent implements OnInit {
   // select data
   public  selectData(e): void {
     this.ownerSelect = e;
+  }
+
+  public  queryOwnerPageData(): void {
+    this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
+      (value) => {
+        console.log(value);
+        this.loadHidden = true;
+        if (value.data.contents) {
+          this.setTableOption(value.data.contents);
+        }
+        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+      }
+    );
   }
 }

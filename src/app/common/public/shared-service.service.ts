@@ -5,10 +5,14 @@ import {Subject} from 'rxjs';
   providedIn: 'root'
 })
 export class SharedServiceService {
+  // public SearchData: any;
   constructor() {
+    // this.changeEmitted$.subscribe(value => {
+    //   this.SearchData = value;
+    // });
   }
   // Observable string sources
-  private emitChangeSource = new Subject<any>();
+    emitChangeSource = new Subject<any>();
   // Observable string streams
    changeEmitted$ = this.emitChangeSource.asObservable();
   // Service message commands

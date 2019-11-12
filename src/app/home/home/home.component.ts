@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {HomeService} from '../../common/services/home.service';
 import {ActivatedRoute} from '@angular/router';
 import {LocalStorageService} from '../../common/services/local-storage.service';
@@ -19,12 +19,19 @@ export class HomeComponent implements OnInit {
   public sidbarData: any;
   public treeDialog = false;
   public roomtree: any;
+
+  public imageHidden = true;
+
   public SearchData = {
     villageCode: '',
     regionCode: '',
     buildingCode: '',
     unitCode: '',
     roomtCode: '',
+    data: {
+      level: '',
+      code: '',
+    }
   };
 
   public dataTrees: DataTree[];
@@ -35,7 +42,7 @@ export class HomeComponent implements OnInit {
     private route: ActivatedRoute,
     private localSrv: LocalStorageService,
     private globalSrv: GlobalService,
-    private shareSrv: SharedServiceService
+    private shareSrv: SharedServiceService,
   ) { }
 
   ngOnInit() {
@@ -54,8 +61,8 @@ export class HomeComponent implements OnInit {
   }
   // sidebar Hidden display
   public homeHiddenSidebar(e): void {
-
     this.sidbarHidden = e;
+    this.imageHidden = false;
   }
 
   // sidebar data
@@ -75,6 +82,7 @@ export class HomeComponent implements OnInit {
       const childnode = new TreeNode();
       childnode.value = data[i].code;
       childnode.label = data[i].name;
+      childnode.level = data[i].level;
       if (data[i].villageChoose2DTO != null && data[i].villageChoose2DTO.length !== 0 ) {
         childnode.children = this.initializeTree(data[i].villageChoose2DTO);
       } else {
@@ -87,14 +95,52 @@ export class HomeComponent implements OnInit {
 
   // Tree structure is not selected
   public  treeOnNodeSelect(e): void {
-    console.log(e);
-    // e.
+    // tslint:disable-next-line:forin
+    for (const key in this.SearchData){
+      if (key !== 'data') {
+        this.SearchData[key] = '';
+      } else {
+        this.SearchData[key].level = '';
+        this.SearchData[key].code = '';
+      }
+    }
+
+    this.SearchData.data.level = e.node.level;
+    this.SearchData.data.code = e.node.value;
+    this.setSearhData(e.node);
+    console.log(this.SearchData);
+  }
+
+  public  setSearhData(data): any {
+    switch (data.level) {
+      case '1': this.SearchData.villageCode = data.value; break;
+      case '2': this.SearchData.regionCode = data.value; break;
+      case '3': this.SearchData.buildingCode = data.value; break;
+      case '4': this.SearchData.unitCode = data.value; break;
+      case '5': this.SearchData.roomtCode = data.value; break;
+      default: break;
+    }
+    if (data.parent !== undefined) {
+      this.setSearhData(data.parent);
+    }
   }
 
   public mouserEnter(): void {
       this.treeDialog = true;
   }
   public  dataTreeSureClick(): void {
-    this.shareSrv.emitChange('456');
+    this.shareSrv.emitChange(this.SearchData);
+  }
+
+  public  changeTheme(): void {
+    document.body.style.setProperty('--bgc-them', '#55AA80');
+    // localStorage.setItem('--bgc-them', '')
+    // console.log(less);
+    // less.modifyVars({
+    //     '@background': '#ffffff',
+    //     '@color': '#ffffff'
+    //   }).then(() => {
+    //     console.log(123);
+    // });
   }
 }

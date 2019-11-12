@@ -25,9 +25,10 @@ import {PersionalModule} from './persional/persional.module';
     LoginModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, // 拦截器进入
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, // 拦截器进入
     {provide: LocationStrategy, useClass: HashLocationStrategy},
-    ],
+  ],
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

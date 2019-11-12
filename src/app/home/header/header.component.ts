@@ -7,7 +7,7 @@ import {ConfirmationService} from 'primeng/api';
 import {HeaderService} from '../../common/services/header.service';
 import {PublicMethedService} from '../../common/public/public-methed.service';
 import {LoginService} from '../../common/services/login.service';
-
+// import less from 'less';
 @Component({
   selector: 'rbi-header',
   templateUrl: './header.component.html',
@@ -147,5 +147,6 @@ export class HeaderComponent implements OnInit {
       );
     });
   }
+
 
 }
