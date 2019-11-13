@@ -20,6 +20,7 @@ import {LoadingModule} from '../common/components/loading/loading.module';
 import {PublicMethedService} from '../common/public/public-methed.service';
 import {SharedServiceService} from '../common/public/shared-service.service';
 import {AppdragDirective} from '../common/directive/appdrag.directive';
+import {BfOwnerComponent} from '../business/baseinfo/bf-owner/bf-owner.component';
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -28,7 +29,6 @@ import {AppdragDirective} from '../common/directive/appdrag.directive';
     FooterComponent,
     SidebarComponent,
     AppdragDirective,
-
   ],
   imports: [
     CommonModule,

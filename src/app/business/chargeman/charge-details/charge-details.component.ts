@@ -13,18 +13,18 @@ import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.m
 })
 export class ChargeDetailsComponent implements OnInit {
 
-  public ChargedetailTableTitle =  [
-    {field: 'orderId', header: '订单编号'},
-    {field: 'villageName', header: '小区名称'},
-    {field: 'roomCode', header: '房间编号'},
-    {field: 'payerName', header: '缴费人'},
-    {field: 'payerPhone', header: '缴费人电话'},
-    {field: 'paymentMethod', header: '支付方式'},
-    {field: 'actualTotalMoneyCollection', header: '缴费金额'},
-    {field: 'idt', header: '缴费时间'},
-    {field: 'operating', header: '操作'},
-  ];
-  public detailsTableContent: any;
+  // public ChargedetailTableTitle =  [
+  //   {field: 'orderId', header: '订单编号'},
+  //   {field: 'villageName', header: '小区名称'},
+  //   {field: 'roomCode', header: '房间编号'},
+  //   {field: 'payerName', header: '缴费人'},
+  //   {field: 'payerPhone', header: '缴费人电话'},
+  //   {field: 'paymentMethod', header: '支付方式'},
+  //   {field: 'actualTotalMoneyCollection', header: '缴费金额'},
+  //   {field: 'idt', header: '缴费时间'},
+  //   {field: 'operating', header: '操作'},
+  // ];
+  // public detailsTableContent: any;
   public detailsTableTitleStyle: any;
   public option: any;
   public detailsDialogTableTitle = [
@@ -89,14 +89,10 @@ export class ChargeDetailsComponent implements OnInit {
   // initialization details
   public  detailsInitialization(): void {
     this.loadHidden = false;
-    // this.toolSrv.getAdminStatus('PAYMENT_METHOD' , (data) => {
-    //   if (data.length > 0) {
-    //     data.forEach( v =>  {
-    //       this.chargeStatusoption.push({label: v.settingName, value: v.settingCode}) ;
-    //     });
-    //     this.queryData();
-    //   }
-    // });
+    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'}] , (data) => {
+      this.chargeStatusoption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
+      this.queryData();
+    });
     this.detailsTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
  // condition search click
@@ -156,7 +152,7 @@ export class ChargeDetailsComponent implements OnInit {
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-   this.queryData();
+    this.queryData();
 
   }
 
@@ -166,7 +162,7 @@ export class ChargeDetailsComponent implements OnInit {
    this.uploadFileOption.files = [];
   }
   // set table data （设置列表数据）
-  public  setTableOption(data): void {
+  public  setTableOption(data1): void {
     this.optionTable = {
       width: '100%',
       header: {
@@ -183,7 +179,7 @@ export class ChargeDetailsComponent implements OnInit {
         style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
       },
       Content: {
-        data: data,
+        data: data1,
         styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
         styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
       },
@@ -221,12 +217,12 @@ export class ChargeDetailsComponent implements OnInit {
               }
             };
             this.uploadFileOption.files = [];
-          }else {
+          } else {
             this.toolSrv.setToast('error', '操作失败', value.message);
           }
         }
       );
-    }else {
+    } else {
       this.toolSrv.setToast('error', '操作错误', '请选择文件');
     }
 
@@ -238,15 +234,9 @@ export class ChargeDetailsComponent implements OnInit {
         console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
-          if (value.data.contents) {
-            value.data.contents.forEach( val => {
-              this.chargeStatusoption.forEach( v => {
-                if (val.paymentMethod === v.value) {
-                  val.paymentMethod = v.label;
-                }
-              });
-            });
-          }
+          value.data.contents.forEach( v => {
+            v.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, v.paymentMethod);
+          });
           this.setTableOption(value.data.contents);
         }
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};

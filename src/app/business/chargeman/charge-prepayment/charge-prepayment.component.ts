@@ -11,8 +11,7 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
 export class ChargePrepaymentComponent implements OnInit {
 
   public prepaymentTableTitle: any;
-  public prepaymentTableContent: any;
-  public prepaymentTableTitleStyle: any;
+
   public prepaymentSelect: any;
   // 缴费相关
   // public projectSelectDialog: boolean;
@@ -24,7 +23,8 @@ export class ChargePrepaymentComponent implements OnInit {
   public nowPage = 1;
   public detailData = [];
   public prepaymentDetail: any;
-  public chargeStatusOption: any[] = [];
+
+  public chargeTypeOption: any[] = [];
   public invalidStateOption: any[] = [];
   public paymentMethodOption: any[] = [];
   public refundStatusOption: any[] = [];
@@ -51,20 +51,15 @@ export class ChargePrepaymentComponent implements OnInit {
 
   // initialization prepayment
   public  prepaymentInitialization(): void {
-    // console.log('这里是信息的初始化');
-    this.prepaymentTableTitle = [
-      {field: 'id', header: '序号'},
-      {field: 'roomCode', header: '房间号'},
-      {field: 'paymentMethod', header: '支付方式'},
-      {field: 'preferentialAmount', header: '预缴金额'},
-      {field: 'payerName', header: '预缴人'},
-      {field: 'idt', header: '缴费时间'},
-      {field: 'operating', header: '操作'}
-    ];
     this.loadHidden = false;
-    this.getAllStatus();
-    this.prepaymentTableContent = [];
-    this.prepaymentTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
+    this.toolSrv.getAdmStatus([{settingType: 'CHARGE_TYPE'},
+      {settingType: 'INVALID_STATE'}, {settingType: 'PAYMENT_METHOD'}, {settingType: 'REFUND_STATUS'}], (data) => {
+      this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
+      this.invalidStateOption = this.toolSrv.setListMap(data.INVALID_STATE);
+      this.paymentMethodOption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
+      this.refundStatusOption = this.toolSrv.setListMap(data.REFUND_STATUS);
+      this.queryData(this.nowPage);
+    });
     // console.log(this.prepaymentSelect);
   }
   // condition search click
@@ -149,22 +144,21 @@ export class ChargePrepaymentComponent implements OnInit {
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.getAllStatus();
 
     this.prepaymentSelect = [];
   }
 
-  public  queryData(event): void {
+  public queryData(event): void {
     this.prepaymentSrv.queryPrepaymentPage({pageNo: event , pageSize: 10}).subscribe(
       (value) => {
         this.loadHidden = true;
         if (value.status === '1000') {
           if (value.data.contents) {
             value.data.contents.forEach(v => {
-                v.chargeStatus =  this.setData(this.chargeStatusOption, v.chargeStatus);
-                v.invalidState = this.setData(this.invalidStateOption, v.invalidState);
-                v.paymentMethod = this.setData(this.paymentMethodOption, v.paymentMethod);
-                v.refundStatus = this.setData(this.refundStatusOption, v.refundStatus);
+                v.chargeStatus =  this.toolSrv.setValueToLabel(this.chargeTypeOption, v.chargeStatus);
+                v.invalidState =  this.toolSrv.setValueToLabel(this.invalidStateOption, v.invalidState);
+                v.paymentMethod =  this.toolSrv.setValueToLabel(this.paymentMethodOption, v.paymentMethod);
+                v.refundStatus =  this.toolSrv.setValueToLabel(this.refundStatusOption, v.refundStatus);
               }
             );
             // console.log();
@@ -177,62 +171,28 @@ export class ChargePrepaymentComponent implements OnInit {
       }
     );
   }
-  public  getAllStatus(): void {
-      // this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-      //   if (data.length > 0 ) {
-      //     data.forEach (val => {
-      //       this.chargeStatusOption.push({label: val.settingName, value: val.settingCode});
-      //     });
-      //   }
-      //   this.toolSrv.getAdminStatus('INVALID_STATE', (value) => {
-      //     if (value.length > 0 ) {
-      //       value.forEach (val => {
-      //         this.invalidStateOption.push({label: val.settingName, value: val.settingCode});
-      //       });
-      //     }
-      //     this.toolSrv.getAdminStatus('PAYMENT_METHOD', (datavalue) => {
-      //       if (datavalue.length > 0 ) {
-      //         datavalue.forEach (val => {
-      //           this.paymentMethodOption.push({label: val.settingName, value: val.settingCode});
-      //         });
-      //       }
-      //       this.toolSrv.getAdminStatus('REFUND_STATUS', (datastatus) => {
-      //         if (datastatus.length > 0 ) {
-      //           datastatus.forEach (val => {
-      //             this.refundStatusOption.push({label: val.settingName, value: val.settingCode});
-      //           });
-      //         }
-      //         this.queryData(this.nowPage);
-      //       });
-      //     });
-      //   });
-      // });
-      //
-
-
-  }
-  public  setData(data , label): any {
-      data.forEach( v => {
-         if (label.toString() === v.value) {
-           label  = v.label;
-         }
-      });
-      return label;
-  }
   public  selectData(e): void {
       this.prepaymentSelect = e;
   }
 
   // set table data （设置列表数据）
-  public  setTableOption(data): void {
+  public  setTableOption(data1): void {
     this.optionTable = {
       width: '100%',
       header: {
-        data:  this.prepaymentTableTitle,
+        data:  [
+          {field: 'id', header: '序号'},
+          {field: 'roomCode', header: '房间号'},
+          {field: 'paymentMethod', header: '支付方式'},
+          {field: 'preferentialAmount', header: '预缴金额'},
+          {field: 'payerName', header: '预缴人'},
+          {field: 'idt', header: '缴费时间'},
+          {field: 'operating', header: '操作'}
+        ],
         style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
       },
       Content: {
-        data: data,
+        data: data1,
         styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
         styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
       },

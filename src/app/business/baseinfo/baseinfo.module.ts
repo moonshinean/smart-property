@@ -33,14 +33,7 @@ import {SharedServiceService} from '../../common/public/shared-service.service';
 @NgModule({
   declarations: [
     BaseinfoComponent,
-    BfTollComponent,
     BfOwnerComponent,
-    BfVehicleComponent,
-    BfStaffComponent,
-    BfTenantinfoComponent,
-    BfParkingspaceComponent,
-    BfCouponComponent,
-    BfRoombindChangeitemComponent,
   ],
   imports: [
     CommonModule,

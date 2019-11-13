@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
     }
     this.globalSrv.queryTVillageTree().subscribe(
       value => {
-        console.log(value);
+        // console.log(value);
         if (value.status === '1000') {
           this.roomtree = value.data;
           this.dataTrees = this.initializeTree(this.roomtree);
@@ -96,7 +96,7 @@ export class HomeComponent implements OnInit {
   // Tree structure is not selected
   public  treeOnNodeSelect(e): void {
     // tslint:disable-next-line:forin
-    for (const key in this.SearchData){
+    for (const key in this.SearchData) {
       if (key !== 'data') {
         this.SearchData[key] = '';
       } else {
@@ -108,7 +108,6 @@ export class HomeComponent implements OnInit {
     this.SearchData.data.level = e.node.level;
     this.SearchData.data.code = e.node.value;
     this.setSearhData(e.node);
-    console.log(this.SearchData);
   }
 
   public  setSearhData(data): any {

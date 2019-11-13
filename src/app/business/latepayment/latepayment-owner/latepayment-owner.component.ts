@@ -40,10 +40,6 @@ export class LatepaymentOwnerComponent implements OnInit {
   ngOnInit() {
     this.searchOwerData.pageNo = 1;
     this.searchOwerData.pageSize = 10;
-    this.searchOwerData.villageCode = '';
-    this.searchOwerData.regionCode = '';
-    this.searchOwerData.buildingCode = '';
-    this.searchOwerData.unitCode = '';
     this.queryData(this.searchOwerData);
     // this.toolSrv.getNativeStatus('SEX', (value) => {
     //   value.data.forEach( v => {

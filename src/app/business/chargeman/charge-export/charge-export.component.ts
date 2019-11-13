@@ -16,6 +16,9 @@ export class ChargeExportComponent implements OnInit {
   public exportTableTitle: any;
   public exportTableContent: any;
   public exportTableTitleStyle: any;
+
+  public optionTable: any;
+
   public exportSelect: any;
   public exportTypeOption = [];
   public exportCode = null;
@@ -63,10 +66,8 @@ export class ChargeExportComponent implements OnInit {
         });
       }
     );
-    this.exportTableContent = [];
     this.exportRequestData.endTime = null;
     this.exportRequestData.startTime = null;
-    this.exportTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
   // select exportType
   public exportTypeChange(e): void {
@@ -232,7 +233,7 @@ export class ChargeExportComponent implements OnInit {
         (value) => {
           if (value.status === '1000') {
             if (value.data.contents) {
-              this.exportTableContent = value.data.contents;
+              this.setTableOption(value.data.contents);
             }
             this.loadHidden = true;
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -245,5 +246,32 @@ export class ChargeExportComponent implements OnInit {
     return name.replace(/\_(\w)/g, (all, letter) => {
       return letter.toUpperCase();
     });
+  }
+
+  // set table data （设置列表数据）
+  public  setTableOption(data1): void {
+    this.optionTable = {
+      width: '100%',
+      header: {
+        data:  [
+          {field: 'orderId', header: '订单编号'},
+          {field: 'villageName', header: '小区名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'payerName', header: '缴费人'},
+          {field: 'payerPhone', header: '缴费人电话'},
+          {field: 'paymentMethod', header: '支付方式'},
+          {field: 'actualTotalMoneyCollection', header: '缴费金额'},
+          {field: 'idt', header: '缴费时间'},
+          {field: 'operating', header: '操作'}],
+        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+      },
+      Content: {
+        data: data1,
+        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+      },
+      type: 2,
+      tableList:  [{label: '详情', color: '#6A72A1'}]
+    };
   }
 }

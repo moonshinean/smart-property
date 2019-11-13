@@ -22,7 +22,12 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public UploadFileOption: FileOption = new FileOption();
   public uploadRecordOption: any;
   // 查询相关
-  public searchOwerData: SearchOwner = new SearchOwner();
+  public searchOwerData = {
+    pageSize: 10,
+    pageNo: 1,
+    code: '',
+    level: ''
+  };
   // public SearchOption = {village: [], region: [], building: [], unit: []};
   public inputSearchData = '';
   public searchType = 0;
@@ -102,11 +107,14 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
 
   ) { }
   ngOnInit() {
+    // this.searchOwerData.pageNo = 1;
+    // this.searchOwerData.pageSize = 10;
     this.ownerSub = this.sharedSrv.changeEmitted$.subscribe(
       value => {
         this.searchOwerData.level = value.data.level;
         this.searchOwerData.code = value.data.code;
         console.log(value);
+        this.queryOwnerPageData();
       }
     );
     this.ownerInitialization();
@@ -219,34 +227,33 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   // condition search click
   public  ownerSearchClick(): void {
     if (this.searchType === 0) {
-      if ( this.searchOwerData.villageCode !== '' ) {
-        this.loadHidden = false;
-        this.searchOwerData.pageNo = 1;
-        this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
-          (value) => {
-            this.loadHidden = true;
-            this.setTableOption(value.data.contents);
-            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-          }
-        );
-      } else {
-        this.toolSrv.setToast('error', '操作错误', '请选择或输入搜索条件');
-      }
+      // if ( this.searchOwerData.villageCode !== '' ) {
+      //   this.loadHidden = false;
+      //   this.searchOwerData.pageNo = 1;
+      //   this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
+      //     (value) => {
+      //       this.loadHidden = true;
+      //       this.setTableOption(value.data.contents);
+      //       this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+      //     }
+      //   );
+      // } else {
+      //   this.toolSrv.setToast('error', '操作错误', '请选择或输入搜索条件');
+      // }
     } else if (this.searchType === 1) {
-      if ( this.searchOwerData.villageCode !== '' ) {
-        this.loadHidden = false;
-        this.searchOwerData.pageNo = 1;
-        this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
-          (value) => {
-            this.loadHidden = true;
-            this.setTableOption(value.data.contents);
-            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-          }
-        );
-      } else {
-          // this.getOwnerAllData();
-          this.inputSearchData = '';
-      }
+      // if ( this.searchOwerData.villageCode !== '' ) {
+      //   this.loadHidden = false;
+      //   this.searchOwerData.pageNo = 1;
+      //   this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
+      //     (value) => {
+      //       this.loadHidden = true;
+      //       this.setTableOption(value.data.contents);
+      //       this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+      //     }
+      //   );
+      // } else {
+      //     this.inputSearchData = '';
+      // }
     } else if (this.searchType === 2) {
       if (this.inputSearchData !== '') {
         this.owerSrv.queryByMobileNumber({pageNo: 1, pageSize: 10, mobilePhone: this.inputSearchData}).subscribe(
@@ -707,32 +714,8 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     this.loadHidden = false;
     this.nowPage = event;
     this.searchOwerData.pageNo = this.nowPage;
-    if (this.searchOwerData.villageCode !== '' || this.searchOwerData.regionCode !== '' || this.searchOwerData.buildingCode !== '' || this.searchOwerData.unitCode !== '') {
-      this.owerSrv.queryowerInfoList(this.searchOwerData).subscribe(
-        (value) => {
-          this.loadHidden = true;
-          if (value.data.contents) {
-            this.setTableOption(value.data.contents);
-          }
-          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        }
-      );
-    } else {
-      this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
-        (value) => {
-          this.loadHidden = true;
-          if (value.status === '1000') {
-            if (value.data.contents) {
-              this.setTableOption(value.data.contents);
-            }
-            this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-          } else {
-            this.toolSrv.setToast('error', '操作错误', value.message);
-          }
-        }
-      );
-    }
-    // this.paymentSelect = [];
+    this.queryOwnerPageData();
+    this.ownerSelect = [];
   }
 
   // set roomtilt
@@ -865,7 +848,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  queryOwnerPageData(): void {
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
       (value) => {
-        console.log(value);
         this.loadHidden = true;
         if (value.data.contents) {
           this.setTableOption(value.data.contents);

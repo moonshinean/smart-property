@@ -11,7 +11,7 @@ import { ChargemanPaymentComponent } from './chargeman-payment/chargeman-payment
 import {
   ButtonModule, CalendarModule, CheckboxModule, ConfirmationService,
   ConfirmDialogModule,
-  DialogModule, DropdownModule, InputTextareaModule,
+  DialogModule, DropdownModule, InputSwitchModule, InputTextareaModule,
   InputTextModule,
   MessageModule, MessageService,
   MessagesModule, RadioButtonModule,
@@ -63,7 +63,8 @@ import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dial
     InputTextareaModule,
     LoadingModule,
     BasicTableModule,
-    BasicDialogModule
+    BasicDialogModule,
+    InputSwitchModule
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

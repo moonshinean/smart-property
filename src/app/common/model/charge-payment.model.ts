@@ -12,7 +12,7 @@ export class Patyment {
   roomCode?: any; // 组织id
   roomSize?: any; // 组织id
   minMonth?: any; // 最小月份
-  userId?: any; // 组织id
+  customerUserId?: any; // 组织id
   mobilePhone?: any; // 组织id
   surname?: any; // 组织id
   dueTime?: any; // 组织id
@@ -26,11 +26,15 @@ export class ChargeItem {
   datedif?: any; // 项目类型
   check?: any; // 选中状态
   minMonth?: any; // 最小月数
+  chargeStandards?: any; // 金额下拉框
+  chargeStandard?: any; // 金额
 }
 // 项目选择提交
 export class ChargeItemData {
   roomSize?: any; // 房间面积
   dueTime?: any; // 物业费到期时间
+  customerUserId?: any; // 客户id
+  surplus?: any; // 用户余额
   roomCode?: any; // 房屋编号
   chargeItem?: ChargeItems[] = [];
 
@@ -40,7 +44,9 @@ export class ChargeItems {
   chargeCode?: any; // 项目编号
   chargeName?: any; // 项目名称
   chargeType?: any; // 项目类型
-  datedif?: any; // 项目月数
+  datedif?: any; // 项目类型
+  // chargeStandards?: any; // 金额下拉框
+  chargeStandard?: any; // 金额
 }
 
 // 增加订单
@@ -87,6 +93,7 @@ export class ChargeItemDetail {
   usageAmount?: any; // 使用量
   currentReadings?: any; // 当前读数
   lastReading?: any; // 上次读数
+  stateOfArrears?: any; // 上次读数
 }
 export class LiquidatedDamages {
   dueTimeFront?: any;

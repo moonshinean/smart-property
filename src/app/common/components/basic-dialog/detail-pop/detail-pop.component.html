@@ -4,8 +4,8 @@
       <!--Content-->
       <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
           <div class="ui-g-6" *ngFor="let item of dialogOption.poplist.popTitle">
-            <div class="ui-g-4">
-              <label>{{item.header}}</label>
+            <div class="ui-g-4" style="text-align: right">
+              <label>{{item.header}}：</label>
             </div>
             <div class="ui-g-8" style="text-align: center" *ngIf="item.field !== 'remarks'">
               <span>{{dialogOption.poplist.popContent[item.field]}}</span>
