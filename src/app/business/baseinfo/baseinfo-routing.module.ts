@@ -9,7 +9,7 @@ const routes: Routes = [
     children: [
       {path: 'toll', loadChildren: './bf-toll/bf-toll.module#BfTollModule'},
       // {path: 'owner', loadChildren: './bf-owner/bf-owner.module#BfOwnerModule'},
-      {path: 'owner', component: BfOwnerComponent},
+      {path: 'owner', component: BfOwnerComponent, data: {preload: true}},
       {path: 'vehicle', loadChildren: './bf-vehicle/bf-vehicle.module#BfVehicleModule'},
       {path: 'staff', loadChildren: './bf-staff/bf-staff.module#BfStaffModule'},
       {path: 'tenantinfo', loadChildren: './bf-tenantinfo/bf-tenantinfo.module#BfTenantinfoModule'},

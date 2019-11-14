@@ -256,32 +256,30 @@ export class ChargemanPaymentComponent implements OnInit {
   }
   // sure  payment (缴费确认)
   public  paymentSureClick(): void {
-    if (this.paymentOrderAdd.paymentMethod === undefined || this.paymentOrderAdd.payerName === undefined || this.paymentOrderAdd.payerPhone === undefined) {
+    if (this.paymentOrderAdd.paymentMethod === undefined) {
         this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
     } else {
-      if (this.phoneErrorToast) {
         this.loadHidden = false;
-        // this.paymentOrderAdd.roomSize = this.paymentSelect[0].roomSize;
-        this.paymentOrderAdd.organizationId = this.paymentSelect[0].organizationId;
-        this.paymentOrderAdd.organizationName = this.paymentSelect[0].organizationName;
-        this.paymentOrderAdd.villageName = this.paymentSelect[0].villageName;
-        this.paymentOrderAdd.villageCode = this.paymentSelect[0].villageCode;
-        this.paymentOrderAdd.villageName = this.paymentSelect[0].villageName;
-        this.paymentOrderAdd.regionCode = this.paymentSelect[0].regionCode;
-        this.paymentOrderAdd.regionName = this.paymentSelect[0].regionName;
-        this.paymentOrderAdd.buildingCode = this.paymentSelect[0].buildingCode;
-        this.paymentOrderAdd.buildingName = this.paymentSelect[0].buildingName;
-        this.paymentOrderAdd.unitCode = this.paymentSelect[0].unitCode;
-        this.paymentOrderAdd.unitName = this.paymentSelect[0].unitName;
-        this.paymentOrderAdd.roomCode = this.paymentSelect[0].roomCode;
-        this.paymentOrderAdd.roomSize = this.paymentSelect[0].roomSize;
-        this.paymentOrderAdd.surname = this.paymentSelect[0].surname;
-        this.paymentOrderAdd.mobilePhone = this.paymentSelect[0].mobilePhone;
+        const listKey = ['organizationId', 'villageName',
+          'villageCode', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode',
+          'unitName', 'roomCode', 'roomSize', 'surname', 'mobilePhone',
+          'customerUserId'];
+
+        for (const key of listKey) {
+          this.paymentOrderAdd[key] = this.paymentSelect[0][key];
+        }
+        this.paymentOrderAdd.payerPhone = this.paymentOrderAdd.payerPhone === undefined ? '' : this.paymentOrderAdd.payerPhone;
+        this.paymentOrderAdd.payerName = this.paymentOrderAdd.payerName === undefined ? '' : this.paymentOrderAdd.payerName;
+        this.paymentOrderAdd.remark = this.paymentOrderAdd.remark === undefined ? '' : this.paymentOrderAdd.remark;
         this.paymentOrderAdd.amountTotalReceivable = this.paymentActualTotal;
         this.paymentOrderAdd.actualTotalMoneyCollection = this.paymentTotle;
-        this.paymentOrderAdd.chargeItemCostDTO = this.paymentItemData;
-        this.paymentOrderAdd.surplus = this.Balance;
-        this.paymentOrderAdd.surplus = this.Balance;
+        // this.paymentOrderAdd.
+        this.paymentOrderAdd.chargeItemCostDTO = this.paymentItemData.map( v => {
+          v.stateOfArrears = v.stateOfArrears === false ? 0 : 1;
+          return v;
+        });
+        this.paymentOrderAdd.costDeduction = this.deductionDamagesData;
+        this.paymentOrderAdd.correctedAmount = this.Balance;
         console.log(this.paymentOrderAdd);
         this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
           (value) => {
@@ -314,9 +312,9 @@ export class ChargemanPaymentComponent implements OnInit {
             }
           }
         );
-      } else {
-        this.toolSrv.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
-      }
+      // } else {
+      //   this.toolSrv.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
+      // }
     }
   }
   // Display charging items selection pop-up window (展示项目选择弹窗)

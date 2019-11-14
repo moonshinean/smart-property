@@ -51,7 +51,7 @@
           <label for="addchargeType">项目类型：</label>
         </div>
         <div class="ui-g-8">
-          <p-dropdown  id="addchargeType" [options]="optionTollType" scrollHeight="100px" placeholder="请选择项目类型..." [(ngModel)]="tollTitle.chargeType"></p-dropdown>
+          <p-dropdown  id="addchargeType" [options]="chargeTypeOption" scrollHeight="100px" placeholder="请选择项目类型..." [(ngModel)]="tollTitle.chargeType"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -87,36 +87,36 @@
         </div>
       </div>
       <div class="ui-g-12">
-        <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
-          <p-table [columns]="moreTollMoreTitle" [value]="tollMoreInfo" >
-            <ng-template pTemplate="header" let-columns>
-              <tr >
-                <th *ngFor="let col of columns;let i = index">
-                  {{col.header}}
-                </th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-              <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF'}">
-                <td [ngStyle]="{'text-align': 'center'}">
-                  {{rowIndex+1}}
-                </td>
-                <td  *ngFor="let col of columns.slice(1,columns.length - 1)" >
-                  <div *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' " style="border: 0;background: #FFFFFF; text-align: center">
-                    <p-dropdown [options]="tollAddoption[col.field]" scrollHeight="100px" placeholder="请选择项目类型..." [(ngModel)]="rowData[col.field]"></p-dropdown>
-                    <!--<input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">-->
-                  </div>
-                  <div *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">
-                    <input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">
-                  </div>
-                </td>
-                <td [ngStyle]="{'text-align': 'center'}">
-                  <button class="bf-toll-Modifydialog-Btn"  (click)="deleteTollMoreClick(rowIndex, rowData)">删除</button>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </p-scrollPanel>
+<!--        <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">-->
+<!--          <p-table [columns]="moreTollMoreTitle" [value]="tollMoreInfo" >-->
+<!--            <ng-template pTemplate="header" let-columns>-->
+<!--              <tr >-->
+<!--                <th *ngFor="let col of columns;let i = index">-->
+<!--                  {{col.header}}-->
+<!--                </th>-->
+<!--              </tr>-->
+<!--            </ng-template>-->
+<!--            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">-->
+<!--              <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF'}">-->
+<!--                <td [ngStyle]="{'text-align': 'center'}">-->
+<!--                  {{rowIndex+1}}-->
+<!--                </td>-->
+<!--                <td  *ngFor="let col of columns.slice(1,columns.length - 1)" >-->
+<!--                  <div *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' " style="border: 0;background: #FFFFFF; text-align: center">-->
+<!--                    <p-dropdown [options]="tollAddoption[col.field]" scrollHeight="100px" placeholder="请选择项目类型..." [(ngModel)]="rowData[col.field]"></p-dropdown>-->
+<!--                    &lt;!&ndash;<input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">&ndash;&gt;-->
+<!--                  </div>-->
+<!--                  <div *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">-->
+<!--                    <input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">-->
+<!--                  </div>-->
+<!--                </td>-->
+<!--                <td [ngStyle]="{'text-align': 'center'}">-->
+<!--                  <button class="bf-toll-Modifydialog-Btn"  (click)="deleteTollMoreClick(rowIndex, rowData)">删除</button>-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--            </ng-template>-->
+<!--          </p-table>-->
+<!--        </p-scrollPanel>-->
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4">
@@ -192,35 +192,35 @@
         </div>
       </div>
       <div class="ui-g-12">
-        <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
-          <p-table [columns]="moreTollMoreTitle" [value]="tollMoreInfo" >
-            <ng-template pTemplate="header" let-columns>
-              <tr >
-                <th *ngFor="let col of columns">
-                  {{col.header}}
-                </th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-              <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF'}">
-                <td [ngStyle]="{'text-align': 'center'}">
-                  {{rowIndex+1}}
-                </td>
-                <td  *ngFor="let col of columns.slice(1,columns.length - 1); let i = index" >
-                  <div *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' " style="border: 0;background: #FFFFFF; text-align: center">
-                    <p-dropdown [options]="tollAddoption[col.field]" scrollHeight="100px" [placeholder]="tollModifyDatas[rowIndex][col.field]" [(ngModel)]="rowData[col.field]"></p-dropdown>
-                  </div>
-                  <div *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">
-                    <input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">
-                  </div>
-                </td>
-                <td [ngStyle]="{'text-align': 'center'}">
-                  <button class="bf-toll-Modifydialog-Btn"  (click)="deleteTollMoreClick(rowIndex, rowData)">删除</button>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </p-scrollPanel>
+<!--        <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">-->
+<!--          <p-table [columns]="moreTollMoreTitle" [value]="tollMoreInfo" >-->
+<!--            <ng-template pTemplate="header" let-columns>-->
+<!--              <tr >-->
+<!--                <th *ngFor="let col of columns">-->
+<!--                  {{col.header}}-->
+<!--                </th>-->
+<!--              </tr>-->
+<!--            </ng-template>-->
+<!--            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">-->
+<!--              <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF'}">-->
+<!--                <td [ngStyle]="{'text-align': 'center'}">-->
+<!--                  {{rowIndex+1}}-->
+<!--                </td>-->
+<!--                <td  *ngFor="let col of columns.slice(1,columns.length - 1); let i = index" >-->
+<!--                  <div *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' " style="border: 0;background: #FFFFFF; text-align: center">-->
+<!--                    <p-dropdown [options]="tollAddoption[col.field]" scrollHeight="100px" [placeholder]="tollModifyDatas[rowIndex][col.field]" [(ngModel)]="rowData[col.field]"></p-dropdown>-->
+<!--                  </div>-->
+<!--                  <div *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">-->
+<!--                    <input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">-->
+<!--                  </div>-->
+<!--                </td>-->
+<!--                <td [ngStyle]="{'text-align': 'center'}">-->
+<!--                  <button class="bf-toll-Modifydialog-Btn"  (click)="deleteTollMoreClick(rowIndex, rowData)">删除</button>-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--            </ng-template>-->
+<!--          </p-table>-->
+<!--        </p-scrollPanel>-->
 
       </div>
       <div class="ui-g-6">

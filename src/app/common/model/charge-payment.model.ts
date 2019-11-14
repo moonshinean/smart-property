@@ -72,9 +72,10 @@ export class ChargePaymentAddOrder {
   amountTotalReceivable?: any; // 总应收金额
   actualTotalMoneyCollection?: any; // 总实收金额
   surplus?: any; // 修正金额
+  correctedAmount?: any; // 修正金额
   remark?: any; // 备注
   chargeItemCostDTO?: ChargeItemDetail[] = []; // 项目收费明细
-  liquidatedDamages?: LiquidatedDamages[] = []; // 项目收费明细
+  costDeduction?: CostDeduction[] = []; // 项目收费明细
 }
 // 项 目 收 费 详 情
 export class ChargeItemDetail {
@@ -95,11 +96,18 @@ export class ChargeItemDetail {
   lastReading?: any; // 上次读数
   stateOfArrears?: any; // 上次读数
 }
-export class LiquidatedDamages {
-  dueTimeFront?: any;
-  dueTimeAfter?: any;
-  days?: any;
-  amountMoney?: any;
+export class CostDeduction {
+  orderId?: any;
+  deductionItem?: any;
+  deductionMoney?: any;
+  deductionStatus?: any;
+  deductionCode?: any;
+  deductionOrderId?: any;
+  deductionMethod?: any;
+  deductionDueTime?: any;
+  deductibledMoney?: any;
+  surplusDeductibleMoney?: any;
+  amountDeductedThisTime?: any;
 }
 export  class SearchData {
   villageCode: any;

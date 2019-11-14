@@ -6,6 +6,8 @@ import {catchError, mergeMap, tap, timeout} from 'rxjs/operators';
 import {GlobalService} from './global.service';
 import {Router} from '@angular/router';
 import {LocalStorageService} from './local-storage.service';
+import { Store } from '@ngrx/store';
+import {AppState} from '../../store/loadstatus.state';
 const DEFAULTTIMEOUT = 3000000;
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -14,6 +16,7 @@ export class AuthInterceptor implements HttpInterceptor {
     private globalService: GlobalService,
     private router: Router,
     private localSessionStorage: LocalStorageService,
+    private store: Store<AppState>
   ) {}
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // return this.prod_http(req, next);
@@ -24,6 +27,8 @@ export class AuthInterceptor implements HttpInterceptor {
     }
   }
   public debug_http(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // 修改请求状态
+    this.store.dispatch({type: 'false'});
     if (req.url === environment.loginUrl + '/login') {
       this.clonedRequest = req.clone({
         url: req.url,
@@ -38,7 +43,6 @@ export class AuthInterceptor implements HttpInterceptor {
         url: req.url,
         headers: req.headers
           .set('appkey', this.localSessionStorage.get('appkey'))
-        // .set('appkey', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJBUFAiLCJpc3MiOiJTZXJ2aWNlIiwiZXhwIjoxNTU5MDU1NDQ0LCJ1c2VySWQiOiIxNTU4NDkyMzY0NDMzNTUiLCJpYXQiOjE1NTkwMTIyNDR9.uF14iNrkqX61cIBVxSq7wJ-GUwQAOUvpTSWdXiB_MGY')
       });
     } else {
       this.clonedRequest = req.clone({
@@ -53,8 +57,8 @@ export class AuthInterceptor implements HttpInterceptor {
       timeout(DEFAULTTIMEOUT),
       tap((event: any) => {
         if (event.status === 200) {
-          // if (event.body.status === '1000') {
-              return of(event);
+          this.store.dispatch({type: 'true'});
+          return of(event);
         }
         return EMPTY;
       },

@@ -10,7 +10,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {LoginModule} from './login/login.module';
 import {PersionalModule} from './persional/persional.module';
-
+import { counterReducer } from './store/loadstatus.reducers';
+import {StoreModule} from '@ngrx/store';
+import {LoadingModule} from './common/components/loading/loading.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +24,10 @@ import {PersionalModule} from './persional/persional.module';
     BrowserAnimationsModule,
     HttpClientModule,
     PersionalModule,
-    LoginModule
+    LoginModule,
+    LoadingModule,
+    // 加入状态管理器
+    StoreModule.forRoot({loadhidden: counterReducer})
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, // 拦截器进入

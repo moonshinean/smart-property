@@ -9,7 +9,7 @@ const routes: Routes = [
     component: HomeComponent,
     children: [
       {path: 'main', loadChildren: '../business/main/main.module#MainModule'},
-      {path: 'baseinfo', loadChildren: '../business/baseinfo/baseinfo.module#BaseinfoModule'},
+      {path: 'baseinfo', loadChildren: '../business/baseinfo/baseinfo.module#BaseinfoModule' , data: {preload: true}},
       {path: 'charge', loadChildren: '../business/chargeman/chargeman.module#ChargemanModule'},
       {path: 'assoc', loadChildren: '../business/association/association.module#AssociationModule'},
       {path: 'monitor', loadChildren: '../business/monitor/monitor.module#MonitorModule'},

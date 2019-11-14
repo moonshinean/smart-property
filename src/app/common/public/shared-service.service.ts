@@ -5,11 +5,11 @@ import {Subject} from 'rxjs';
   providedIn: 'root'
 })
 export class SharedServiceService {
-  // public SearchData: any;
+  public SearchData: any;
   constructor() {
-    // this.changeEmitted$.subscribe(value => {
-    //   this.SearchData = value;
-    // });
+    this.changeEmitted$.subscribe(value => {
+      this.SearchData = value;
+    });
   }
   // Observable string sources
     emitChangeSource = new Subject<any>();

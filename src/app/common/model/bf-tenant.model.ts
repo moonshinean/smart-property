@@ -58,14 +58,6 @@ export class ModifyTenant {
   normalPaymentStatus?: any;
 }
 
-export class SearchTenant {
-  villageCode?: any;
-  regionCode?: string; // 地块编号
-  buildingCode?: string; // 楼栋编号
-  unitCode?: string; // 单元编号
-  pageNo?: any;
-  pageSize: any;
-}
 
 export class RoomTitle {
   villageName?: any;

@@ -92,7 +92,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public cleanTimer: any; // 清除时钟
   public option: any;
   public esDate: any;
-  public loadHidden = true;
   public deleteId: any[] = [];
   public nowPage = 1;
   // 服务传参相关
@@ -136,7 +135,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       this.queryOwnerPageData();
     });
     this.esDate = this.toolSrv.esDate;
-    this.loadHidden = false;
     // this.globalSrv.queryVillageInfo({}).subscribe(
     //   (data) => {
     //     data.data.forEach( v => {
@@ -259,7 +257,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
         this.owerSrv.queryByMobileNumber({pageNo: 1, pageSize: 10, mobilePhone: this.inputSearchData}).subscribe(
           value => {
             if (value.status === '1000') {
-              this.loadHidden = true;
               this.setTableOption(value.data.contents);
               this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
             } else {
@@ -268,7 +265,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           }
         );
       } else {
-        this.loadHidden = true;
         this.toolSrv.setToast('error', '操作错误', '请输入需要搜索的手机号');
       }
     } else {
@@ -277,7 +273,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           value => {
             console.log(value);
             if (value.status === '1000') {
-              this.loadHidden = true;
               this.setTableOption(value.data.contents);
               this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
             } else {
@@ -286,7 +281,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           }
         );
       } else {
-        this.loadHidden = true;
         this.toolSrv.setToast('error', '操作错误', '请输入需要搜索的房间号');
       }
     }
@@ -366,7 +360,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   // submit owner and roomInfo
   public  owerInfoAddClick(): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
-      this.loadHidden = false;
       if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
         this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
       }
@@ -390,7 +383,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       delete this.ownerAdd.villageCode;
       this.owerSrv.addSingleOwerInfo(this.ownerAdd).subscribe(
         value => {
-          this.loadHidden = true;
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', '添加成功');
             this.selectOwerInfo(value.data);
@@ -501,7 +493,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  owerInfoModifyClick(): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
       let flagBole = true;
-      this.loadHidden = false;
       if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
         this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
       }
@@ -548,7 +539,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       if (flagBole) {
         this.owerSrv.addSingleOwerInfo(this.ownerAdd).subscribe(
           value => {
-            this.loadHidden = true;
             if (value.status === '1000') {
               this.toolSrv.setToast('success', '操作成功', '修改成功');
               this.selectOwerInfo(value.data);
@@ -603,13 +593,11 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
       this.toolSrv.setConfirmation('删除', `删除这${this.ownerSelect.length}项`, () => {
-        this.loadHidden = false;
         this.ownerSelect.forEach( v => {
           this.deleteId.push({roomCode: v.roomCode});
         });
         this.owerSrv.deleteRoomInfo({data: this.deleteId}).subscribe(
           value => {
-            this.loadHidden = true;
             if (value.status === '1000') {
               this.toolSrv.setToast('success', '操作成功', value.message);
               this.ownerInitialization();
@@ -631,11 +619,9 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  ownerUploadSureClick(e): void {
     console.log(e.getAll('file').length !== 0);
     if (e.getAll('file').length !== 0) {
-      this.loadHidden = false;
       this.owerSrv.uploadOwerInfoFile(e).subscribe(
         (value) => {
           if (value.status === '1000') {
-            this.loadHidden = true;
             // this.uploadedFiles = [];
             this.UploadFileOption.files = [];
             this.uploadRecordOption = {
@@ -667,7 +653,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
             this.ownerInitialization();
           } else {
             console.log(123);
-            this.loadHidden = true;
             this.toolSrv.setToast('error', '上传失败', value.message);
           }
         }
@@ -711,7 +696,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
  }
   // paging query
   public  nowpageEventHandle(event: any): void {
-    this.loadHidden = false;
     this.nowPage = event;
     this.searchOwerData.pageNo = this.nowPage;
     this.queryOwnerPageData();
@@ -848,7 +832,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  queryOwnerPageData(): void {
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
       (value) => {
-        this.loadHidden = true;
         if (value.data.contents) {
           this.setTableOption(value.data.contents);
         }

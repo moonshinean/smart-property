@@ -21,6 +21,8 @@
     "@angular/platform-browser": "~7.2.0",
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
+    "@ngrx/store": "^8.5.1",
+    "@types/croppie": "^2.5.3",
     "core-js": "^2.5.4",
     "echarts": "^4.2.1",
     "font-awesome": "^4.7.0",

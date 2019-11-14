@@ -10,7 +10,7 @@ export class BfTenantinfoService {
 
   constructor(private http: HttpClient) { }
   public  queryTenantDataList(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/roomInfo/findCustomerAllByPage`, pamars);
+    return this.http.post(environment.sysetUrl + `/customer/findCustomerAllByPage`, pamars);
   }
   // Conditional search unitinfo
   public  queryTenantInfoList(pamars): Observable<any> {
