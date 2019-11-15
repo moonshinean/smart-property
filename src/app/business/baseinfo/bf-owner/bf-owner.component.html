@@ -53,91 +53,91 @@
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >小区名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="villageOption"  scrollHeight="100px" placeholder="请选择小区..."  [(ngModel)]="roomTitle.villageName" ></p-dropdown>
+          <p-dropdown [options]="villageOption"  scrollHeight="100px" placeholder="请选择小区..."  [(ngModel)]="roomInfo.villageName" ></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label>地块名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入地块名称..." [(ngModel)]="roomTitle.regionName">
+          <input  type="text" pInputText placeholder="请输入地块名称..." [(ngModel)]="roomInfo.regionName">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >楼栋名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入楼栋名称..." [(ngModel)]="roomTitle.buildingName">
+          <input  type="text" pInputText placeholder="请输入楼栋名称..." [(ngModel)]="roomInfo.buildingName">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >单元名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomTitle.unitName">
+          <input  type="text" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.unitName">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label for="addroomCode">房间编号：</label>
         </div>
         <div class="ui-g-8">
-          <input id="addroomCode" type="text" pInputText placeholder="请输入房间编号..." [(ngModel)]="roomTitle.roomCode">
+          <input id="addroomCode" type="text" pInputText placeholder="请输入房间编号..." [(ngModel)]="roomInfo.roomCode">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label for="addroomSize">房屋面积：</label>
         </div>
         <div class="ui-g-8">
-          <input id="addroomSize" type="text" pInputText placeholder="请输入房屋面积..." [(ngModel)]="roomTitle.roomSize">
+          <input id="addroomSize" type="text" pInputText placeholder="请输入房屋面积..." [(ngModel)]="roomInfo.roomSize">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right" >
           <label >房屋类型：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomTypeOption"  scrollHeight="100px" placeholder="请选择房屋类型..."  [(ngModel)]="roomTitle.roomType" ></p-dropdown>
+          <p-dropdown [options]="roomTypeOption"  scrollHeight="100px" placeholder="请选择房屋类型..."  [(ngModel)]="roomInfo.roomType" ></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >房屋状态：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" placeholder="请选择房间状态..." [(ngModel)]="roomTitle.roomStatus"></p-dropdown>
+          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" placeholder="请选择房间状态..." [(ngModel)]="roomInfo.roomStatus"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >装修情况：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" placeholder="请选择装修情况..." [(ngModel)]="roomTitle.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
+          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" placeholder="请选择装修情况..." [(ngModel)]="roomInfo.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6"  [hidden]="timeHide">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >装修开始日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomTitle.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" ></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" ></p-calendar>
         </div>
       </div>
       <div class="ui-g-6" [hidden]="timeHide">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >装修结束日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomTitle.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" ></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" ></p-calendar>
         </div>
       </div>
       <div class="ui-g-12" >
@@ -162,7 +162,7 @@
                    {{rowData[col.field]}}
                 </td>
                 <td [ngStyle]="{'text-align': 'center'}">
-                  <button class="bf-owner-Modifydialog-Btn"  (click)="deleteOwerMoreClick(rowData)">删除</button>
+                  <button class="bf-owner-Modifydialog-Btn"  (click)="deleteOwerMoreClick(rowIndex)">删除</button>
                 </td>
               </tr>
             </ng-template>
@@ -171,14 +171,14 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="addMoreOwerClick()">添加</button>
+          <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="addOwerClick()">添加</button>
         </div>
       </div>
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerAddSureClick()">确认</button>
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerAddDialog=false;clearData();">取消</button>
+        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerAddDialog=false">取消</button>
       </div>
     </p-footer>
   </p-dialog>
@@ -187,91 +187,91 @@
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >小区名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText  disabled placeholder="请输小区名称" [(ngModel)]="roomTitle.villageName">
+          <input  type="text" pInputText  disabled placeholder="请输小区名称" [(ngModel)]="roomInfo.villageName">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label>地块名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText  disabled placeholder="请输地块名称"  [(ngModel)]="roomTitle.regionName">
+          <input  type="text" pInputText  disabled placeholder="请输地块名称"  [(ngModel)]="roomInfo.regionName">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >楼栋名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText disabled  placeholder="请输入楼栋名称" [(ngModel)]="roomTitle.buildingName">
+          <input  type="text" pInputText disabled  placeholder="请输入楼栋名称" [(ngModel)]="roomInfo.buildingName">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >单元名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText disabled placeholder="请输入单元名称" [(ngModel)]="roomTitle.unitName">
+          <input  type="text" pInputText disabled placeholder="请输入单元名称" [(ngModel)]="roomInfo.unitName">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label for="addroomCode">房间编号：</label>
         </div>
         <div class="ui-g-8">
-          <input  type="text" pInputText disabled placeholder="请输入房间编号..." [(ngModel)]="roomTitle.roomCode">
+          <input  type="text" pInputText disabled placeholder="请输入房间编号..." [(ngModel)]="roomInfo.roomCode">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label for="addroomSize">房屋面积：</label>
         </div>
         <div class="ui-g-8">
-          <input  type="text" pInputText  placeholder="请输入房屋面积..." [(ngModel)]="roomTitle.roomSize">
+          <input  type="text" pInputText  placeholder="请输入房屋面积..." [(ngModel)]="roomInfo.roomSize">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >房屋类型：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomTypeOption"  scrollHeight="100px" [placeholder]="roomTypeName"  [(ngModel)]="roomTitle.roomType"></p-dropdown>
+          <p-dropdown [options]="roomTypeOption"  scrollHeight="100px" [placeholder]="roomTypeName"  [(ngModel)]="roomInfo.roomType"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >房屋状态：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" [placeholder]="roomStatusName"  [(ngModel)]="roomTitle.roomStatus" ></p-dropdown>
+          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" [placeholder]="roomStatusName"  [(ngModel)]="roomInfo.roomStatus" ></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >装修情况：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" [placeholder]="renovationName" [(ngModel)]="roomTitle.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
+          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" [placeholder]="renovationName" [(ngModel)]="roomInfo.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6"  [hidden]="timeHide">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >装修开始日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomTitle.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6" [hidden]="timeHide">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >装修结束日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomTitle.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-12">
@@ -305,113 +305,32 @@
       </div>
       <div class="ui-g-12">
         <div class="ui-g-6">
-          <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="addMoreOwerClick()">添加</button>
+          <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="addOwerClick()">添加</button>
           <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-modify" (click)="modifyMoreOwerClick()">修改</button>
         </div>
       </div>
     </div>
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerModifySureClick()">确认</button>
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerModifayDialog=false; clearData()">取消</button>
       </div>
     </p-footer>
   </p-dialog>
   <!--详情弹窗-->
-  <p-dialog header="详细信息" [(visible)]="ownerDetailDialog" [width]="1100">
+  <p-dialog header="详细信息" [(visible)]="ownerDetailDialog" [width]="1100" class="owerDetail">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh','text-align':'center'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>小区名称：</label>
+      <div class="ui-g-6" *ngFor="let item of owerMoreDetailDetail">
+        <div class="ui-g-4" style="text-align: right">
+          <label>{{item.label}}：</label>
         </div>
         <div class="ui-g-8">
-          <span >{{roomTitle.villageName}}</span>
+          <span >{{item.value}}</span>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>地块名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roomTitle.regionName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>楼栋名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roomTitle.buildingName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>单元名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roomTitle.unitName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >房间编号：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roomTitle.roomCode}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >房屋面积：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roomTitle.roomSize}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6" >
-        <div class="ui-g-4">
-          <label >房屋类型：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{roomTypeName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >房屋状态：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{roomStatusName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >装修情况：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{renovationName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6" [hidden]="ownerTimeDetailHide">
-        <div class="ui-g-4">
-          <label >装修开始日期：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{roomTitle.renovationStartTime}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6" [hidden]="ownerTimeDetailHide">
-        <div class="ui-g-4">
-          <label >装修结束日期：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{roomTitle.renovationStartTime}}</span>
-        </div>
-      </div>
-
       <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
-        <p-table [columns]="owerMoreDetailTitleDetail" [value]="ownerList"  [(selection)]="ownerUserSelect" [style]="{'width': '100%'}">
+        <p-table [columns]="ownerRoomCodeDetailTitle" [value]="roomList"  [(selection)]="ownerUserSelect" [style]="{'width': '100%'}">
           <ng-template pTemplate="header" let-columns>
             <tr >
               <th *ngFor="let col of columns" [ngStyle]="{'height': '5vh'}">
@@ -430,7 +349,7 @@
       </p-scrollPanel>
     </div>
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerModifySureClick()">确认</button>-->
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerDetailDialog=false;clearData()">取消</button>
       </div>
@@ -448,21 +367,13 @@
           <input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="ownerinfo.surname">
         </div>
       </div>
-<!--      <div class="ui-g-6">-->
-<!--        <div class="ui-g-4">-->
-<!--          <label>客户性别：</label>-->
-<!--        </div>-->
-<!--        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-<!--          <p-dropdown [options]="sexOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="ownerinfo.sex"></p-dropdown>-->
-
-<!--        </div>-->
-<!--      </div>-->
       <div class="ui-g-6">
         <div class="ui-g-4">
           <label >客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone">
+          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone" [pKeyFilter]="toolSrv.verifyPhone"  [pValidateOnly]="true">
+          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(ownerinfo.mobilePhone === undefined || ownerinfo.mobilePhone === '')? !toolSrv.verifyPhone.test(ownerinfo.mobilePhone): toolSrv.verifyPhone.test(ownerinfo.mobilePhone)"></p-message>
         </div>
       </div>
       <div class="ui-g-6">
@@ -478,7 +389,8 @@
           <label >身份号码：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.idNumber">
+          <input  type="text" pInputText placeholder="请输入身份号码..." [(ngModel)]="ownerinfo.idNumber" [pKeyFilter]="toolSrv.verifyIdNumber"  [pValidateOnly]="true">
+          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(ownerinfo.idNumber === undefined || ownerinfo.idNumber === '')? !this.toolSrv.verifyIdNumber.test(ownerinfo.idNumber): toolSrv.verifyIdNumber.test(ownerinfo.idNumber)"></p-message>
         </div>
       </div>
       <div class="ui-g-6">
@@ -486,7 +398,7 @@
           <label for="addroomSize">是否正常缴费：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择注销状态..."  [(ngModel)]="ownerinfo.normalPaymentStatus"></p-dropdown>
+          <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择常缴费状态..."  [(ngModel)]="ownerinfo.normalPaymentStatus"></p-dropdown>
         </div>
       </div>
 
@@ -495,7 +407,7 @@
           <label >物业费开始计费时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="ownerinfo.startBillingTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="ownerinfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">
@@ -503,7 +415,7 @@
           <label >实际交房时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="ownerinfo.realRecyclingHomeTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="ownerinfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">

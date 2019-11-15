@@ -30,9 +30,6 @@ export class BfOwnerService {
   public  addSingleOwerInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/addSingleOwner', body);
   }
-  public  queryOwerInfoAllStatus(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/setting/findAdminChoose', body);
-  }
   public  updateOwerInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/updateOwner', body);
   }
@@ -44,10 +41,10 @@ export class BfOwnerService {
     return  this.http.post(environment.sysetUrl + '/roomInfo/logout', body);
   }
   public  queryOwerInfoDetail(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/findCustomerDetail', body);
+    return  this.http.post(environment.sysetUrl + '/owner/findOwnerDetail', body);
   }
-  public  addRoomCodeInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/addRoom', body);
+  public  addRoomCodeAndOwnerInfo(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/owner/addOwner', body);
   }
   public  queryUploadDetail(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/excel/findLog', body);

@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
     }
     this.globalSrv.queryTVillageTree().subscribe(
       value => {
-        // console.log(value);
+        console.log(value);
         if (value.status === '1000') {
           this.roomtree = value.data;
           this.dataTrees = this.initializeTree(this.roomtree);

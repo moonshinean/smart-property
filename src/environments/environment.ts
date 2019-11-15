@@ -17,8 +17,8 @@ export const environment = {
   // chargeUrl: 'http://120.78.156.30:8849/cloud_house_interactive',
   chargeUrl: 'http://120.78.156.30:8849/cloud_house_interactive',
   // chargeUrl: 'http://192.168.28.139:8849/cloud_house_interactive',
-  // sysetUrl: 'http://120.78.156.30:8847/cloud_house_admin',
   sysetUrl: 'http://120.78.156.30:8847/cloud_house_admin',
+  // sysetUrl: 'http://192.168.28.184:8847/cloud_house_admin',
 };
 
 /*

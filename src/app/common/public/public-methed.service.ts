@@ -21,6 +21,11 @@ export class PublicMethedService {
     today: '今天',
     clear: '清除'
   };
+  public verifyPhone: RegExp = /^1[37458]\d{9}$/;
+  public verifyIdNumber: RegExp = /^[1-9][0-9]{5}(19|20)[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|31)|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))[0-9]{3}([0-9]|x|X)$/;
+  public verifyIdNumber1: RegExp = /^((\s?[A-Za-z])|([A-Za-z]{2}))\d{6}(\([0−9aA]\)|[0-9aA])$/;   // 香港
+  public verifyIdNumber2: RegExp = /^[a-zA-Z][0-9]{9}$/; // 台湾
+  public verifyIdNumber3: RegExp = /^[1|5|7][0-9]{6}\([0-9Aa]\)/; // 澳门
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,

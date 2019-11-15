@@ -10,7 +10,7 @@ import { BfStaffComponent } from './bf-staff/bf-staff.component';
 import {
   ButtonModule, CalendarModule, ConfirmationService, ConfirmDialogModule,
   DialogModule, DropdownModule, FileUploadModule,
-  InputTextModule,
+  InputTextModule, KeyFilterModule,
   MessageModule,
   MessageService,
   MessagesModule, RadioButtonModule,
@@ -57,7 +57,8 @@ import {SharedServiceService} from '../../common/public/shared-service.service';
     TreeModule,
     ReactiveFormsModule,
     BasicTableModule,
-    BasicDialogModule
+    BasicDialogModule,
+    KeyFilterModule
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

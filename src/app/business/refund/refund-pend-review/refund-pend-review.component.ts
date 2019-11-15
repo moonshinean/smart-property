@@ -190,7 +190,7 @@ export class RefundPendReviewComponent implements OnInit {
   }
 
   public  queryRefundPendReviewPageData(): void {
-    this.refundPendReviewSrv.queryRefundAuditedPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.refundPendReviewSrv.queryRefundPendPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
       (value) => {
         console.log(value);
         this.loadingHide = true;

@@ -16,7 +16,6 @@ import {Subscription} from 'rxjs';
   styleUrls: ['./bf-owner.component.less']
 })
 export class BfOwnerComponent implements OnInit, OnDestroy {
- @ViewChild('villageCode') villageCode: Dropdown;
   public ownerSelect: any;
   // 上传文件相关
   public UploadFileOption: FileOption = new FileOption();
@@ -38,16 +37,18 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public ownerAddDialog: boolean;
   public ownerAdd: AddOwner = new AddOwner();
   // public ownerAdd: AddOwner = new AddOwner();
-  public roomTitle: RoomTitle = new RoomTitle();
+  public roomInfo: RoomTitle = new RoomTitle();
   public ownerList: OwerList[] = [];
   public timeHide = true;
   public ownerTimeDetailHide = true;
-
+  // 状态相关
   public roomTypeOption: any[] = [];
   public villageOption: any[] = [];
   public roomStatusOption: any[] = [];
   public renovationStatusOption: any[] = [];
   public sexOption: any[] = [];
+
+  // 表单效验
 
   public owerMoreTitleDetail = [
     {field: 'surname', header: '客户姓氏'},
@@ -60,14 +61,23 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     {field: 'remarks', header: '备注'},
     {field: 'operating', header: '操作'},
   ];
-  public owerMoreDetailTitleDetail = [
-    {field: 'surname', header: '客户姓氏'},
-    {field: 'sex', header: '性别'},
-    {field: 'mobilePhone', header: '客户电话'},
-    {field: 'identity', header: '身份'},
-    {field: 'normalPaymentStatus', header: '是否正常缴费'},
-    {field: 'startBillingTime', header: '物业费开始既费时间'},
-    {field: 'remarks', header: '备注'},
+  // 详情相关
+  public owerMoreDetailDetail = [
+    {field: 'surname', label: '客户姓氏', value: ''},
+    {field: 'sex', label: '性别'},
+    {field: 'mobilePhone', label: '客户电话', value: ''},
+    {field: 'identity', label: '身份', value: ''},
+    {field: 'normalPaymentStatus', label: '是否正常缴费', value: ''},
+    {field: 'startBillingTime', label: '物业费开始既费时间', value: ''},
+    {field: 'remarks', label: '备注', value: ''},
+  ];
+  public roomList: any;
+  public ownerRoomCodeDetailTitle = [
+    {field: 'buildingName', header: '楼栋名称'},
+    {field: 'roomCode', header: '房间编号'},
+    {field: 'roomType', header: '房间类型'},
+    {field: 'roomSize', header: '房间面积'},
+    {field: 'identity', header: '客户身份'},
   ];
   public ownertableOption: any;
   // 业主信息相关
@@ -106,8 +116,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
 
   ) { }
   ngOnInit() {
-    // this.searchOwerData.pageNo = 1;
-    // this.searchOwerData.pageSize = 10;
     this.ownerSub = this.sharedSrv.changeEmitted$.subscribe(
       value => {
         this.searchOwerData.level = value.data.level;
@@ -125,101 +133,33 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   // initialization houseinfo
   public  ownerInitialization(): void {
     this.toolSrv.getAdmStatus([{settingType: 'ROOM_TYPE'},
-      {settingType: 'ROOM_STATUS'}, {settingType: 'RENOVATION_STATUS'}, {settingType: 'SEX'}, {settingType: 'NORMAL_PAYMENT_STATUS'}, {settingType: 'IDENTITY' }], (data) => {
+      {settingType: 'ROOM_STATUS'}, {settingType: 'RENOVATION_STATUS'},
+      {settingType: 'SEX'}, {settingType: 'NORMAL_PAYMENT_STATUS'}, {settingType: 'IDENTITY' }], (data) => {
       this.roomTypeOption = this.toolSrv.setListMap(data.ROOM_TYPE);
       this.roomStatusOption = this.toolSrv.setListMap(data.ROOM_STATUS);
       this.renovationStatusOption = this.toolSrv.setListMap(data.RENOVATION_STATUS);
       this.sexOption = this.toolSrv.setListMap(data.SEX);
       this.normalChargeOption = this.toolSrv.setListMap(data.NORMAL_PAYMENT_STATUS);
-      this.identityOption = this.toolSrv.setListMap(data.IDENTITY);
+      this.identityOption = this.toolSrv.setListMap(data.IDENTITY).filter(v => {
+        return (v.value !== '3' && v.value !== '6');
+      });
       this.queryOwnerPageData();
     });
+    this.globalSrv.queryVillageInfo({}).subscribe(
+      (data) => {
+        console.log(data);
+        this.villageOption = data.data.map( v => {
+          return {label: v.villageName, value: v.villageCode};
+        });
+        console.log(this.villageOption);
+      }
+    );
     this.esDate = this.toolSrv.esDate;
-    // this.globalSrv.queryVillageInfo({}).subscribe(
-    //   (data) => {
-    //     data.data.forEach( v => {
-    //       this.SearchOption.village.push({label: v.villageName, value: v.villageCode});
-    //       this.villageOption.push({label: v.villageName, value:  v.villageCode});
-    //     });
-    //   }
-    // );
-    // console.log(this.roomTitle);
   }
-  // village change function
-  // public  VillageChange(e): void {
-  //   // console.log(this.test);
-  //   this.loadHidden = false;
-  //   this.searchOwerData.villageCode = '';
-  //   this.searchOwerData.regionCode = '';
-  //   this.searchOwerData.buildingCode = '';
-  //   this.searchOwerData.unitCode = '';
-  //   this.SearchOption.region = [];
-  //   this.SearchOption.building = [];
-  //   this.SearchOption.unit = [];
-  //   this.searchOwerData.villageCode = e.value;
-  //
-  //   this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
-  //       (value) => {
-  //         this.loadHidden = true;
-  //         value.data.forEach( v => {
-  //           this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
-  //         });
-  //       }
-  //     );
-  // }
-  // // region change function
-  // public  regionChange(e): void {
-  //   this.loadHidden = false;
-  //   this.searchOwerData.regionCode = '';
-  //   this.searchOwerData.buildingCode = '';
-  //   this.searchOwerData.unitCode = '';
-  //   this.searchOwerData.regionCode = e.value;
-  //   this.SearchOption.building = [];
-  //   this.SearchOption.unit = [];
-  //   this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
-  //     (value) => {
-  //       value.data.forEach( v => {
-  //         this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
-  //       });
-  //       this.loadHidden = true;
-  //
-  //     }
-  //   );
-  // }
-  // // building change function
-  // public  buildingChange(e): void {
-  //   this.searchOwerData.unitCode = '';
-  //   this.SearchOption.unit = [];
-  //   this.searchOwerData.buildingCode = e.value;
-  //   this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
-  //     (value) => {
-  //       value.data.forEach( v => {
-  //         this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
-  //       });
-  //     }
-  //   );
-  // }
-  // // unit change function
-  // public  unitChange(e): void {
-  //   this.searchOwerData.unitCode = '';
-  //   this.searchOwerData.unitCode = e.value;
-  // }
   // search type
   public  searchTypeChange(): void {
     if (this.searchType !== 1 && this.searchType !== 0) {
       console.log(123);
-      // this.searchOwerData.villageCode = '';
-      // this.searchOwerData.regionCode = '';
-      // this.searchOwerData.buildingCode = '';
-      // this.searchOwerData.unitCode = '';
-      // this.SearchOption.village = [];
-      // this.SearchOption.region = [];
-      // this.SearchOption.building = [];
-      // this.SearchOption.unit = [];
-      this.villageCode.value = '';
-      this.villageCode.selectedOption = [];
-      // this.SearchOption.village = this.villageOption;
-      console.log(this.villageCode);
     }
   }
   // condition search click
@@ -290,130 +230,122 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       // console.log(e);
       if (e.value === '1') {
         this.timeHide = false;
-        this.roomTitle.renovationStartTime = '';
-        this.roomTitle.renovationDeadline = '';
+        this.roomInfo.renovationStartTime = '';
+        this.roomInfo.renovationDeadline = '';
       } else {
         this.timeHide = true;
-        this.roomTitle.renovationStartTime = '';
-        this.roomTitle.renovationDeadline = '';
+        this.roomInfo.renovationStartTime = '';
+        this.roomInfo.renovationDeadline = '';
       }
   }
   // show add owner box
   public  ownerAddClick(): void {
-    this.roomTitle = new RoomTitle();
-    this.setRoomTitleData();
+    this.roomInfo = new RoomTitle();
+    // this.setroomInfoData();
     // this.getRoomDropdownData('', '', '');
     this.ownerAddDialog = true;
   }
   // sure add houser and owner info
   public  ownerAddSureClick(): void {
+    const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'roomType', 'roomStatus'];
+    const addroomVerifyStaus = addRoomKeyList.every( v => {
+      return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
+    });
+    if (!addroomVerifyStaus) {
+       this.addQuest();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '信息未填写完整');
+    }
+  }
+
+  public  addQuest(): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
-      if (this.ownerList.length === 0 ) {
-        if (this.roomTitle.renovationStartTime !== '') {
-          this.roomTitle.renovationStartTime = this.datePipe.transform(this.roomTitle.renovationStartTime, 'yyyy-MM-dd');
-        }
-        if (this.roomTitle.renovationDeadline !== '') {
-          this.roomTitle.renovationDeadline = this.datePipe.transform(this.roomTitle.renovationDeadline, 'yyyy-MM-dd');
-        }
-        this.owerSrv.addRoomCodeInfo(this.roomTitle).subscribe(
-          value => {
-            if (value.status === '1000') {
-              this.toolSrv.setToast('success', '操作成功', value.message);
-              this.ownerAddDialog = false;
-              this.clearData();
-              this.ownerInitialization();
-            } else  {
-              this.toolSrv.setToast('error', '操作失败', value.message);
+      const addOwnerList = this.ownerList.map( v => {
+          v.identity = this.toolSrv.setLabelToValue(this.identityOption, v.identity);
+          v.normalPaymentStatus = this.toolSrv.setLabelToValue(this.normalChargeOption, v.normalPaymentStatus);
+          return v;
+      });
+      this.roomInfo.renovationStartTime = this.datePipe.transform(this.roomInfo.renovationStartTime, 'yyyy-MM-dd');
+      this.roomInfo.renovationDeadline = this.datePipe.transform(this.roomInfo.renovationDeadline, 'yyyy-MM-dd');
+      console.log(addOwnerList);
+      console.log(this.roomInfo);
+      this.owerSrv.addRoomCodeAndOwnerInfo({room: this.roomInfo, owner: addOwnerList}).subscribe(
+            value => {
+              console.log(value);
+              if (value.status === '1000') {
+                this.queryOwnerPageData();
+                this.toolSrv.setToast('success', '操作成功', value.message);
+                this.ownerAddDialog = false;
+              } else {
+                this.toolSrv.setToast('error', '操作失败', value.message);
+              }
             }
-          }
-        );
-      } else {
-        this.ownerAddDialog = false;
-        this.clearData();
-        this.ownerInitialization();
-        this.toolSrv.setToast('success', '操作成功', '操作成功');
-      }
+      );
     });
   }
-  // delete OwerInfo
+  // 从业主列表里删除业主信息删除业主信息
   public  deleteOwerMoreClick(e): void {
-    this.owerSrv.deleteOwerInfo({roomCode: e.roomCode, userId: e.userId}).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.toolSrv.setToast('success', '请求成功', value.message);
-            this.selectOwerInfo(e.roomCode);
-          } else {
-            this.toolSrv.setToast('error', '请求失败', value.message);
-          }
-        }
-      );
+    this.ownerList.splice(e, 1);
+    this.toolSrv.setToast('success', '操作成功', '删除成功');
   }
-  public  addMoreOwerClick(): void {
-    this.ownerinfo = new OwerList();
-    this.setownerInfo();
-    this.sexOption = [];
-    this.normalChargeOption = [];
-    this.identityOption = [];
-    // this.getownerDropdown('', '');
+  public  addOwerClick(): void {
     this.ownerDialog = true;
   }
   // submit owner and roomInfo
   public  owerInfoAddClick(): void {
-    this.toolSrv.setConfirmation('增加', '增加', () => {
-      if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
-        this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
-      }
-      if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
-        this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
-      }
-      if (this.ownerinfo.hasOwnProperty('realRecyclingHomeTime') && this.ownerinfo.realRecyclingHomeTime !== '') {
-        this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform( this.ownerinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
-      }
-      for (const key in this.roomTitle) {
-        this.ownerAdd[key] = this.roomTitle[key];
-      }
-      for (const key in this.ownerinfo) {
-        this.ownerAdd[key] = this.ownerinfo[key];
-      }
-      this.ownerAdd.startBillingTime = this.datePipe.transform(this.ownerAdd.startBillingTime, 'yyyy-MM-dd');
-      this.ownerAdd.roomCode = this.ownerAdd.roomCode.slice(this.ownerAdd.roomCode.lastIndexOf('-') + 1, this.ownerAdd.roomCode.length);
-      delete this.ownerAdd.buildingCode;
-      delete this.ownerAdd.unitCode;
-      delete this.ownerAdd.regionCode;
-      delete this.ownerAdd.villageCode;
-      this.owerSrv.addSingleOwerInfo(this.ownerAdd).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.toolSrv.setToast('success', '操作成功', '添加成功');
-            this.selectOwerInfo(value.data);
-            this.ownerDialog = false;
-          } else {
-            this.toolSrv.setToast('error', '操作失败', value.message);
-          }
-        });
+    console.log(this.ownerinfo);
+    const ownerVertifyKeylist = ['surname', 'idNumber', 'mobilePhone', 'identity',
+      'realRecyclingHomeTime', 'startBillingTime', 'normalPaymentStatus'];
+    const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
+       return (this.ownerinfo[v] === '' || this.ownerinfo[v] === undefined || this.ownerinfo[v] === null);
     });
+    if (!ownerInfoStatus) {
+         // if (this.toolSrv.verifyPhone.test(this.ownerinfo.mobilePhone)) {
+         //    if (this.toolSrv.verifyIdNumber.test(this.ownerinfo.idNumber)) {
+              this.ownerInfoSetValueToOwnerList();
+         //    } else {
+         //      this.toolSrv.setToast('error', '添加失败', '请输入正确的身份证号');
+         //    }
+         // } else {
+         //   this.toolSrv.setToast('error', '添加失败', '请输入正确的手机号');
+         // }
+
+    } else {
+      this.toolSrv.setToast('error', '添加失败', '信息未填写完整');
+    }
+  }
+
+  // 将添加的业主信息set到业主列表中
+  public  ownerInfoSetValueToOwnerList(): void {
+    // 将业主信息状态转换为可以别的中文格式
+    // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
+    this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform( this.ownerinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
+    this.ownerinfo.startBillingTime = this.datePipe.transform( this.ownerinfo.startBillingTime , 'yyyy-MM-dd');
+    // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
+    this.ownerinfo.identity = this.toolSrv.setValueToLabel(this.identityOption, this.ownerinfo.identity);
+    this.ownerinfo.normalPaymentStatus = this.toolSrv.setValueToLabel(this.normalChargeOption, this.ownerinfo.normalPaymentStatus);
+    // 添加业主信息到列表中
+    this.ownerList.push(this.ownerinfo);
+    this.ownerDialog = false;
+    this.ownerinfo = new OwerList();
   }
   // detail ownerInfo
   public  ownerDetailClick(e): void {
-    console.log(e);
-    if (e.renovationStatus === '1') {
-      this.ownerTimeDetailHide = false;
-    } else {
-      this.ownerTimeDetailHide = true;
-    }
-    this.renovationStatusName = null;
-    this.identityOption = [];
-    this.sexOption = [];
-    this.normalChargeOption = [];
-    this.roomTitle = e;
-    for (const roomTitleKey in this.roomTitle) {
-      if (this.roomTitle[roomTitleKey] === null) {
-         this.roomTitle[roomTitleKey] = '';
+    this.owerSrv.queryOwerInfoDetail({roomCode: e.roomCode, customerUserId: e.customerUserId}).subscribe(value => {
+      if (value.status === '1000') {
+        this.owerMoreDetailDetail = this.owerMoreDetailDetail.map(v => {
+             v.value = e[v.field];
+             return v;
+          });
+        value.data.roomInfo.forEach(val => {
+          val.roomType = this.toolSrv.setValueToLabel(this.roomTypeOption,  val.roomType);
+          val.identity = this.toolSrv.setValueToLabel(this.identityOption, val.identity);
+        });
+        this.roomList = value.data.roomInfo;
+        this.ownerDetailDialog = true;
       }
-    }
-    // this.getRoomDropdownData(this.roomTitle.roomType, this.roomTitle.roomStatus, this.roomTitle.renovationStatus);
-    this.selectOwerInfo(this.roomTitle.roomCode);
-    this.ownerDetailDialog = true;
+    });
+
   }
   // modify owner
   public ownerModifyClick(): void {
@@ -421,52 +353,13 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.ownerSelect.length === 1) {
       this.renovationStatusName = null;
-      for (const roomTitleKey in this.ownerSelect[0]) {
-        if (this.ownerSelect[0][roomTitleKey] === null ) {
-          this.roomTitle[roomTitleKey] = '';
+      for (const roomInfoKey in this.ownerSelect[0]) {
+        if (this.ownerSelect[0][roomInfoKey] === null ) {
+          this.roomInfo[roomInfoKey] = '';
         } else {
-          this.roomTitle[roomTitleKey] = this.ownerSelect[0][roomTitleKey];
+          this.roomInfo[roomInfoKey] = this.ownerSelect[0][roomInfoKey];
         }
       }
-      // this.toolSrv.getAdminStatus('ROOM_TYPE', (data) => {
-      //   if (data.length > 0) {
-      //     this.toolSrv.setDataFormat(data, this.roomTitle.roomType, (list, label) => {
-      //       this.roomTypeOption = list;
-      //       this.roomTypeName = label;
-      //       if (this.roomTypeName === '') {
-      //         this.roomTypeName = '请选择房屋类型';
-      //       }
-      //     });
-      //   }
-      // });
-      // this.toolSrv.getAdminStatus('ROOM_STATUS', (data) => {
-      //   if (data.length > 0) {
-      //     this.toolSrv.setDataFormat(data,  this.roomTitle.roomStatus, (list, label) => {
-      //       this.roomStatusOption = list;
-      //       this.roomStatusName = label;
-      //       if (this.roomStatusName === '') {
-      //         this.roomStatusName = '请选择房屋状态';
-      //       }
-      //     });
-      //   }
-      // });
-      // this.toolSrv.getAdminStatus('RENOVATION_STATUS', (data) => {
-      //   if (data.length > 0) {
-      //       this.toolSrv.setDataFormat(data, this.roomTitle.renovationStatus, (list, labelname) => {
-      //         this.renovationStatusOption = list;
-      //         this.renovationName = labelname;
-      //         if ( this.renovationName === '') {
-      //           this.renovationName = '请选择装修状态';
-      //           this.timeHide = true;
-      //         } else if (this.renovationName === '已装修') {
-      //           this.timeHide = false;
-      //         } else {
-      //           this.timeHide = true;
-      //         }
-      //       });
-      //     }
-      // });
-      this.selectOwerInfo(this.roomTitle.roomCode);
       this.ownerModifayDialog = true;
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
@@ -493,17 +386,17 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  owerInfoModifyClick(): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
       let flagBole = true;
-      if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
-        this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
+      if (this.roomInfo.hasOwnProperty('renovationDeadline') && this.roomInfo.renovationDeadline !== '' ) {
+        this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
       }
-      if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
-        this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
+      if (this.roomInfo.hasOwnProperty('renovationStartTime') && this.roomInfo.renovationStartTime !== '') {
+        this.roomInfo.renovationStartTime = this.datePipe.transform( this.roomInfo.renovationStartTime , 'yyyy-MM-dd');
       }
       if (this.ownerinfo.hasOwnProperty('realRecyclingHomeTime') && this.ownerinfo.realRecyclingHomeTime !== '') {
         this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform(this.ownerinfo.realRecyclingHomeTime, 'yyyy-MM-dd');
       }
-      for (const key in this.roomTitle) {
-        this.ownerAdd[key] = this.roomTitle[key];
+      for (const key in this.roomInfo) {
+        this.ownerAdd[key] = this.roomInfo[key];
       }
       for (const ownerinfoKey in this.ownerinfo) {
         if (this.ownerinfo[ownerinfoKey] === '') {
@@ -541,7 +434,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           value => {
             if (value.status === '1000') {
               this.toolSrv.setToast('success', '操作成功', '修改成功');
-              this.selectOwerInfo(value.data);
               // this.clearData();
               this.ownerModifyDialog = false;
             } else {
@@ -557,28 +449,28 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  ownerModifySureClick(): void {
     this.toolSrv.setConfirmation('修改', '修改', () => {
       if (this.ownerList.length === 0 ) {
-        if (this.roomTitle.hasOwnProperty('renovationDeadline') && this.roomTitle.renovationDeadline !== '' ) {
-          this.roomTitle.renovationDeadline = this.datePipe.transform( this.roomTitle.renovationDeadline , 'yyyy-MM-dd');
+        if (this.roomInfo.hasOwnProperty('renovationDeadline') && this.roomInfo.renovationDeadline !== '' ) {
+          this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
         }
-        if (this.roomTitle.hasOwnProperty('renovationStartTime') && this.roomTitle.renovationStartTime !== '') {
-          this.roomTitle.renovationStartTime = this.datePipe.transform( this.roomTitle.renovationStartTime , 'yyyy-MM-dd');
+        if (this.roomInfo.hasOwnProperty('renovationStartTime') && this.roomInfo.renovationStartTime !== '') {
+          this.roomInfo.renovationStartTime = this.datePipe.transform( this.roomInfo.renovationStartTime , 'yyyy-MM-dd');
         }
         if (this.ownerinfo.hasOwnProperty('realRecyclingHomeTime') && this.ownerinfo.realRecyclingHomeTime !== '') {
           this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform( this.ownerinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
         }
-        this.roomTitle.roomCode = this.roomTitle.roomCode.slice(this.roomTitle.roomCode.lastIndexOf('-') + 1, this.roomTitle.roomCode.length);
-        this.owerSrv.addRoomCodeInfo(this.roomTitle).subscribe(
-          value => {
-            if (value.status === '1000') {
-              this.toolSrv.setToast('success', '操作成功', value.message);
-              this.ownerModifayDialog = false;
-              this.clearData();
-              this.ownerInitialization();
-            } else  {
-              this.toolSrv.setToast('error', '操作失败', value.message);
-            }
-          }
-        );
+        this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length);
+        // this.owerSrv.addRoomCodeInfo(this.roomInfo).subscribe(
+        //   value => {
+        //     if (value.status === '1000') {
+        //       this.toolSrv.setToast('success', '操作成功', value.message);
+        //       this.ownerModifayDialog = false;
+        //       this.clearData();
+        //       this.ownerInitialization();
+        //     } else  {
+        //       this.toolSrv.setToast('error', '操作失败', value.message);
+        //     }
+        //   }
+        // );
       } else {
         this.ownerModifayDialog = false;
         this.clearData();
@@ -617,7 +509,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // upload file
   public  ownerUploadSureClick(e): void {
-    console.log(e.getAll('file').length !== 0);
     if (e.getAll('file').length !== 0) {
       this.owerSrv.uploadOwerInfoFile(e).subscribe(
         (value) => {
@@ -687,7 +578,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
      this.renovationName = null;
      this.sexName = null;
      this.ownerSelect = [];
-     this.roomTitle = new RoomTitle();
+     this.roomInfo = new RoomTitle();
      this.ownerList = [];
      this.ownerinfo = new OwerList();
      this.ownerUserSelect = [];
@@ -703,100 +594,20 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
 
   // set roomtilt
-  public  setRoomTitleData(): void {
-    this.roomTitle.villageName = '';
-    this.roomTitle.roomCode = '';
-    this.roomTitle.regionName = '';
-    this.roomTitle.unitName = '';
-    this.roomTitle.buildingName = '';
-    this.roomTitle.roomStatus = '';
-    this.roomTitle.renovationStatus = '';
-    this.roomTitle.roomType = '';
-    this.roomTitle.roomSize = '';
-    this.roomTitle.renovationStartTime = '';
-    this.roomTitle.renovationDeadline = '';
-  }
+  // public  setroomInfoData(): void {
+  //   this.roomInfo.villageName = '';
+  //   this.roomInfo.roomCode = '';
+  //   this.roomInfo.regionName = '';
+  //   this.roomInfo.unitName = '';
+  //   this.roomInfo.buildingName = '';
+  //   this.roomInfo.roomStatus = '';
+  //   this.roomInfo.renovationStatus = '';
+  //   this.roomInfo.roomType = '';
+  //   this.roomInfo.roomSize = '';
+  //   this.roomInfo.renovationStartTime = '';
+  //   this.roomInfo.renovationDeadline = '';
+  // }
   // set owner
-  public  setownerInfo(): void {
-    this.ownerinfo.identity = '';
-    this.ownerinfo.startBillingTime = '';
-    this.ownerinfo.mobilePhone = '';
-    this.ownerinfo.sex = '';
-    this.ownerinfo.normalPaymentStatus = '';
-    this.ownerinfo.surname = '';
-  }
-  // isOrChinese
-  public  selectOwerInfo(code): void {
-    this.sexOption = [];
-    this.normalChargeOption = [];
-    this.identityOption = [];
-    this.ownerUserSelect = [];
-    // this.owerSrv.queryOwerInfoAllStatus({settingType: 'SEX'}).subscribe(
-    //   value => {
-    //     value.data.forEach( v => {
-    //       this.sexOption.push({label: v.settingName, value: v.settingCode});
-    //     });
-    //   }
-    // );
-    // this.owerSrv.queryOwerInfoAllStatus({settingType: 'NORMAL_PAYMENT_STATUS'}).subscribe(
-    //   value => {
-    //     value.data.forEach( v => {
-    //       this.normalChargeOption.push({label: v.settingName, value: v.settingCode});
-    //     });
-    //   }
-    // );
-    // this.owerSrv.queryOwerInfoAllStatus({settingType: 'IDENTITY'}).subscribe(
-    //   value => {
-    //     value.data.forEach( v => {
-    //       if (v.settingName !== '租客')
-    //         this.identityOption.push({label: v.settingName, value: v.settingCode});
-    //     });
-    //   }
-    // );
-    // const setTime = setInterval(() => {
-    //   if (this.sexOption.length > 0 && this.normalChargeOption.length && this.normalChargeOption.length > 0){
-    //     this.owerSrv.queryOwerInfoDetail({roomCode: code}).subscribe(
-    //       value => {
-    //         this.ownerList = [];
-    //         clearInterval(setTime);
-    //
-    //         if (value.status === '1000') {
-    //           value.data.forEach( v => {
-    //             for (const key in  v) {
-    //               this.ownerinfo[key] = v[key];
-    //             }
-    //             if (this.ownerinfo.sex != null ) {
-    //               this.sexOption.forEach(val => {
-    //                 if (this.ownerinfo.sex.toString() === val.value.toString()) {
-    //                   this.ownerinfo.sex = val.label;
-    //                 }
-    //               });
-    //             }
-    //             if (this.ownerinfo.normalPaymentStatus != null)  {
-    //               this.normalChargeOption.forEach(val => {
-    //                 if (this.ownerinfo.normalPaymentStatus.toString() === val.value.toString()) {
-    //                   this.ownerinfo.normalPaymentStatus = val.label;
-    //                 }
-    //               });
-    //             }
-    //             if (this.ownerinfo.identity != null){
-    //               this.identityOption.forEach(val => {
-    //                 if (this.ownerinfo.identity.toString() === val.value.toString()) {
-    //                   this.ownerinfo.identity = val.label;
-    //                 }
-    //               });
-    //             }
-    //             this.ownerList.push(this.ownerinfo);
-    //             this.ownerinfo = new OwerList();
-    //           });
-    //         } else {
-    //           this.toolSrv.setToast('error', '操作错误', '用户信息数据错误');
-    //         }
-    //       }
-    //     );
-    //   }
-    // }, 400);
-  }
   // 设置表格数据
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
@@ -804,13 +615,14 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       width: '101.4%',
       header: {
         data:  [
-          {field: 'villageName', header: '小区名称'},
-          {field: 'regionName', header: '地块名称'},
           {field: 'buildingName', header: '楼栋名称'},
-          {field: 'unitName', header: '单元名称'},
           {field: 'roomCode', header: '房间编号'},
-          {field: 'roomSize', header: '房间大小'},
-          // {field: 'roomStatus', header: '房间使用状态'},
+          {field: 'roomType', header: '房间类型'},
+          {field: 'roomSize', header: '建筑面积'},
+          {field: 'surname', header: '客户名称'},
+          {field: 'identity', header: '客户身份'},
+          {field: 'sex', header: '客户性别'},
+          {field: 'mobilePhone', header: '客户电话'},
           {field: 'operating', header: '操作'}
         ],
         style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
@@ -833,7 +645,14 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
       (value) => {
         if (value.data.contents) {
-          this.setTableOption(value.data.contents);
+          console.log(value.data);
+          this.setTableOption(value.data.contents.map(v => {
+            v.sex = this.toolSrv.setValueToLabel(this.sexOption, v.sex);
+            v.identity = this.toolSrv.setValueToLabel(this.identityOption, v.identity);
+            v.roomType = this.toolSrv.setValueToLabel(this.roomTypeOption, v.roomType);
+            v.normalPaymentStatus = this.toolSrv.setValueToLabel(this.normalChargeOption, v.normalPaymentStatus);
+            return v;
+          }));
         }
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }

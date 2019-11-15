@@ -19,9 +19,9 @@ export class LoadingComponent implements OnInit {
     this.count$ = store.pipe(select('loadhidden'));
   }
   ngOnInit(): void {
-    this.count$.subscribe(value => {
-      console.log(value);
-    });
+    // this.count$.subscribe(value => {
+    //   console.log(value);
+    // });
   }
 
 }

@@ -891,10 +891,8 @@ export class BfTenantinfoComponent implements OnInit {
   }
 
   public  queryTerantinfoPageData(): void {
-    console.log(this.searchTenantData);
     this.tenantSrv.queryTenantDataList(this.searchTenantData).subscribe(
       (value) => {
-        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
           if (value.data.contents) {
