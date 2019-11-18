@@ -35,13 +35,13 @@
             <label >月数</label>
           </div>
           <div class="ui-g-4" [hidden]="!(item.chargeWay === 1)">
-            <p-spinner size="30" [(ngModel)]="item.datedif" min="1" [max]="12"></p-spinner>
+            <p-spinner size="30" [(ngModel)]="item.datedif" min="1" [max]="36"></p-spinner>
           </div>
           <div class="ui-g-2" [hidden]="!(item.chargeWay === 2)">
             <label >张数</label>
           </div>
           <div class="ui-g-4" [hidden]="!(item.chargeWay === 2)">
-            <p-spinner size="30" [(ngModel)]="item.datedif" min="1" [max]="12"></p-spinner>
+            <p-spinner size="30" [(ngModel)]="item.datedif" min="1" [max]="1000000"></p-spinner>
           </div>
           <div class="ui-g-2" [hidden]="!(item.chargeWay === 3)">
             <label >选择金额</label>
@@ -68,20 +68,19 @@
         <h3>业主信息</h3>
       </div>
       <div class="ui-g-12">
-        <div class="ui-g-4" *ngFor="let item of paymentAddTitle">
-          <div class="ui-g-6" >
-            <label >{{item.name}}:</label>
+        <div class="ui-g-6" *ngFor="let item of paymentAddTitle" style="line-height: 2vh">
+          <div class="ui-g-4" style="text-align: right" >
+            <label>{{item.name}}:</label>
           </div>
-          <div class="ui-g-6">
-            <label >{{item.value}}</label>
+          <div class="ui-g-8 span" >
+            <span>{{item.value}}</span>
           </div>
         </div>
-        <!--<div class="ui-g-4"><a href=""><ins><h5>查看违约金</h5></ins></a></div>-->
       </div>
       <div class="ui-g-12" [hidden]=" deductionDamagesStatus === 0">
         <h3>抵扣项目</h3>
       </div>
-        <div class="ui-g-12" [hidden]=" deductionDamagesStatus === 0">
+      <div class="ui-g-12" [hidden]=" deductionDamagesStatus === 0">
           <p-table [columns]="deductionDamagesTitle" [value]="deductionDamagesData"  [scrollable]="true"  scrollHeight="48vh"  [(selection)]="deductionDamagesSelect">
             <ng-template pTemplate="header" let-columns>
               <tr >
@@ -93,12 +92,12 @@
                 </th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
               <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
                 <td style="width: 3em">
-                  <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                  <p-tableCheckbox [value]="rowData" (click)="checkClickData(rowIndex)"></p-tableCheckbox>
                 </td>
-                <td  *ngFor="let col of columns" >
+                <td  *ngFor="let col of columns" style="word-break: break-word">
                   {{rowData[col.field]}}
                 </td>
               </tr>
@@ -121,17 +120,31 @@
             </ng-template>
             <ng-template pTemplate="header" let-columns>
               <tr >
-                <th *ngFor="let col of columns" >
+                <th *ngFor="let col of columns">
                   {{col.header}}
                 </th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
               <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
-                  <td *ngFor="let col of columns.slice(0, columns.length -1)">
+                  <td *ngFor="let col of columns.slice(0, columns.length -4)" style="word-break: break-word">
                     {{rowData[col.field]}}
                   </td>
-                  <td pEditableColumn *ngFor="let col of columns.slice(columns.length -1, columns.length)">
+                  <td  pEditableColumn *ngFor="let col of columns.slice(columns.length -4, columns.length-3)">
+                    <p-cellEditor *ngIf="rowData.splitState === 2">
+                      <ng-template pTemplate="input">
+                        <p-dropdown [options]="rowData['ownerSelection']" [(ngModel)]="rowData[col.field]" [style]="{'width':'100%'}" (onChange)="changeSurname(rowData[col.field], rowIndex)"></p-dropdown>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{rowData[col.field]}}
+                      </ng-template>
+                    </p-cellEditor>
+                    <span *ngIf="rowData.splitState !== 2">{{rowData[col.field]}}</span>
+                  </td>
+                  <td *ngFor="let col of columns.slice(columns.length -3, columns.length-2)" style="word-break: break-word">
+                    {{rowData[col.field]}}
+                  </td>
+                  <td pEditableColumn *ngFor="let col of columns.slice(columns.length -2, columns.length-1)">
                     <p-cellEditor>
                       <ng-template pTemplate="input">
                         <p-inputSwitch  [(ngModel)]="rowData[col.field]"  (onChange)="stateOfArrearChange(rowData[col.field], rowIndex)"></p-inputSwitch>
@@ -140,6 +153,10 @@
                         {{rowData[col.field] === true? '欠费': '未欠费'}}
                       </ng-template>
                     </p-cellEditor>
+                  </td >
+                  <td *ngFor="let col of columns.slice(columns.length -1, columns.length)" style="word-break: break-word">
+                    <button class="chargeman-payment-dialog-Btn" style="background: #55AB7F;height: 3vh" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState !== 1 && rowData.startTime !== null">拆分</button>
+                    <button class="chargeman-payment-dialog-Btn" style="background: #DCDCDC;height: 3vh" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState === 1 || rowData.startTime === null" disabled>拆分</button>
                   </td>
               </tr>
             </ng-template>
@@ -150,14 +167,13 @@
          <div class="ui-g-9">
          </div>
         <div class="ui-g-3">
-          <div >总计: <span [ngStyle]="{'font-size':'1.2rem'}">￥{{paymentTotle}}</span></div>
+          <div >总计: <span [ngStyle]="{'font-size':'1.2rem'}">￥{{this.paymentMoney}}</span></div>
         </div>
       </div>
       <div class="ui-g-12">
         <h3>收费信息</h3>
       </div>
-
-        <div class="ui-g-6" style="line-height:  3vh">
+      <div class="ui-g-6" style="line-height:  3vh">
           <div class="ui-g-3"  style="text-align: right">
             <label >应收账单：</label>
           </div>
@@ -173,7 +189,7 @@
             >{{paymentTotle}}</span>
           </div>
         </div>
-        <div class="ui-g-6" style="line-height:  3vh">
+      <div class="ui-g-6" style="line-height:  3vh">
             <div class="ui-g-3" style="text-align: right">
               <label >实收账单：</label>
             </div>
@@ -181,7 +197,7 @@
               <input  type="text" pInputText (input)="getBalance($event)"  [(ngModel)]="this.paymentMoney">
             </div>
         </div>
-        <div class="ui-g-6" style="line-height:  3vh">
+      <div class="ui-g-6" style="line-height:  3vh">
             <div class="ui-g-3" style="text-align: right">
               <label >缴费方式：</label>
             </div>
@@ -189,7 +205,7 @@
               <p-dropdown [options]="paymentMethodOption" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择支付方式..." (onChange)="payTypeChage($event)"></p-dropdown>
             </div>
         </div>
-        <div class="ui-g-6" style="line-height:  3vh">
+      <div class="ui-g-6" style="line-height:  3vh">
             <div class="ui-g-3" style="text-align: right">
                 <label >修正金额：</label>
               </div>
@@ -204,7 +220,7 @@
                 >￥{{Balance}}</span>
             </div>
         </div>
-        <div class="ui-g-6" style="line-height:  3vh">
+      <div class="ui-g-6" style="line-height:  3vh">
           <div class="ui-g-3" style="text-align: right">
             <label for="payerName">缴费人：</label>
           </div>
@@ -212,7 +228,7 @@
             <input  id="payerName"  type="text" pInputText placeholder="请输入缴费人..." [(ngModel)]="paymentOrderAdd.payerName">
           </div>
         </div>
-        <div class="ui-g-6" style="line-height:  3vh">
+      <div class="ui-g-6" style="line-height:  3vh">
           <div class="ui-g-3" style="text-align: right">
             <label for="payerPhone">缴费人电话：</label>
           </div>
@@ -221,14 +237,14 @@
             <span style="color: red" [hidden]="phoneErrorToast">手机号格式错误</span>
           </div>
         </div>
-        <div class="ui-g-6" style="line-height:  3vh">
-            <div class="ui-g-3" style="text-align: right">
+      <div class="ui-g-6" style="line-height:  3vh">
+      <div class="ui-g-3" style="text-align: right">
               <label for="remark">备注：</label>
             </div>
-            <div class="ui-g-7" style="text-align: left">
+      <div class="ui-g-7" style="text-align: left">
               <textarea id="remark" pInputTextarea [(ngModel)]="paymentOrderAdd.remark" [rows]="2" [cols]="30"></textarea>
             </div>
-        </div>
+      </div>
       </div>
     </p-scrollPanel>
     <p-footer>
@@ -238,9 +254,31 @@
       </div>
     </p-footer>
   </p-dialog>
+
+  <p-dialog header="费用拆分" [(visible)]="costSplitDialog" [width]="600" [closable]="false">
+    <!--Content-->
+    <div class="ui-g ui-fluid" style="line-height: 4vh">
+      <!--报表显示数据-->
+      <div class="ui-g-12">
+        <div class="ui-g-6">
+          <div class="ui-g-5" style="text-align: right">
+            <label>选择拆分时间:</label>
+          </div>
+          <div class="ui-g-7">
+            <p-calendar  placeholder="物业费开始计费时间..." [readonlyInput]="true" dateFormat="yy-mm-dd" [minDate]="minDate" [maxDate]="maxDate"  [locale]="esDate" [(ngModel)]="costSplitData.spiltTime"></p-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" (click)="costSplitSure()">确 认</button>
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" (click)="costSplitDialog = false;">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
   <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
 <!--  <rbi-file-pop [UploadFileOption]="paymentUploadFileOption" (event)="uploadFileSureClick($event)"></rbi-file-pop>-->
   <rbi-upload-file-record [uploadRecordOption]="fileRecordoption"></rbi-upload-file-record>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
-  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

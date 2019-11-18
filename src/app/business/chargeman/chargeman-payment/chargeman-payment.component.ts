@@ -1,19 +1,21 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService} from 'primeng/api';
 import {ChargePaymentService} from '../../../common/services/charge-payment.service';
 import {
-  ChargeItem, ChargeItemData, ChargeItemDetail, ChargeItems, ChargePaymentAddOrder, Patyment, SearchData
+  ChargeItem, ChargeItemData, ChargeItemDetail, ChargeItems, ChargePaymentAddOrder, CostSplitData, Patyment, SearchData
 } from '../../../common/model/charge-payment.model';
 import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
+import {Subscription} from 'rxjs';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'rbi-chargeman-payment',
   templateUrl: './chargeman-payment.component.html',
   styleUrls: ['./chargeman-payment.component.less'],
 })
-export class ChargemanPaymentComponent implements OnInit {
-
+export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public optionTable: any;
   public roomTypeOption: any[] = [];
   public paymentMethodOption: any[] = [];
@@ -40,6 +42,7 @@ export class ChargemanPaymentComponent implements OnInit {
     {field: 'payerName', header: '缴费人姓名'},
     {field: 'payerPhone', header: '缴费人手机号'},
     {field: 'stateOfArrears', header: '欠费状态'},
+    {field: 'operating', header: '操作'},
     // {field: 'totle', header: '合计'},
   ];
   // 抵扣项目列表
@@ -50,6 +53,8 @@ export class ChargemanPaymentComponent implements OnInit {
     {field: 'deductibledMoney', header: '已抵扣金额'},
     {field: 'surplusDeductibleMoney', header: '剩余可抵扣金额'},
     {field: 'amountDeductedThisTime', header: '本次抵扣金额'},
+    {field: 'discount', header: '折扣'},
+    {field: 'deductionRecord', header: '抵扣记录'},
   ];
   // 违约金信息列表内容
   public  deductionDamagesData: any;
@@ -68,7 +73,7 @@ export class ChargemanPaymentComponent implements OnInit {
   // 缴费相关
   public projectSelectDialog: boolean;
   public paymentDialog: boolean;
-  public paymentTotle = 0; // 总计金额
+  public paymentTotle =  0; // 总计金额
   public paymentActualTotal = 0; // 实收总计
   public paymentMoney = 0; //
   public Balance = 0;
@@ -92,31 +97,55 @@ export class ChargemanPaymentComponent implements OnInit {
   ];
   public searchType: any;
   public searchData: any;
-  public optonDialog = [];
   public nowPage = 1;
   public paymentOrderAdd: ChargePaymentAddOrder  = new ChargePaymentAddOrder();
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public option: any;
   public phoneErrorToast = true;
-  public loadHidden = true;
+  public esDate: any;
   // ccRegex: RegExp = /[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/;
   // public msgs: Message[] = []; // 消息弹窗
+  public paymentItemListIndex: any;
+  // 费用拆分
+  public ownerOption: any[] = [];
+  public ownerList: any[] = [];
+  public costSplitDialog: boolean;
+  public minDate: Date = new Date();
+  public maxDate: Date = new Date();
+  public costSplitData: CostSplitData =  new CostSplitData();
+  public paymentSub: Subscription;
   constructor(
     private paymentSrv: ChargePaymentService,
     private confirmationService: ConfirmationService,
     private globalSrv: GlobalService,
-    private  toolSrv: PublicMethedService
-  ) { }
+    private  toolSrv: PublicMethedService,
+    private datePipe: DatePipe,
+    private  sharedSrv: SharedServiceService
+  ) {}
   ngOnInit() {
+    this.paymentSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        console.log(value);
+      }
+    );
+
     this.SearchDataClear();
     this.SearchData.mobilePhone = '';
     this.SearchData.roomCode = '';
+    this.SearchData.pageNo = 1;
+    this.SearchData.pageSize = 10;
     this.paymentInitialization();
   }
+  ngOnDestroy(): void {
+    // 取消订阅
+    this.paymentSub.unsubscribe();
+  }
+
   // Initialize the charge record（初始化收费记录）
   public  paymentInitialization(): void {
-    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'},
+     this.esDate = this.toolSrv.esDate;
+     this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'},
       {settingType: 'ROOM_TYPE'}, {settingType: 'SEX'}], (data) => {
        console.log(data);
        this.roomTypeOption = this.toolSrv.setListMap(data.ROOM_TYPE);
@@ -124,30 +153,26 @@ export class ChargemanPaymentComponent implements OnInit {
        this.sexOption = this.toolSrv.setListMap(data.SEX);
        this.queryPaymentPage();
     });
-    this.loadHidden = false;
     // this.paymentTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
   // condition search 条件搜索）
   public  paymentSearchClick(): void {
     if (this.searchType === undefined) {
       if (this.SearchData.villageCode !== '') {
-        this.queryData(this.SearchData);
+        // this.queryData(this.SearchData);
       } else {
         this.toolSrv.setToast('error', '操作错误', '请选择搜索方式');
       }
     } else if (this.searchType === 2) {
       this.SearchDataClear();
       this.SearchData.mobilePhone = this.searchData;
-      this.loadHidden = false;
       // this.SearchOption = {}
-      this.queryData(this.SearchData);
+      // this.queryData(this.SearchData);
     } else if (this.searchType === 3) {
       this.SearchDataClear();
       this.SearchData.roomCode = this.searchData;
       this.SearchData.mobilePhone = '';
-
-      this.loadHidden = false;
-      this.queryData(this.SearchData);
+      // this.queryData(this.SearchData);
     } else {
       this.nowPage = 1;
       this.searchData = '';
@@ -162,10 +187,6 @@ export class ChargemanPaymentComponent implements OnInit {
      this.SearchData.regionCode = '';
      this.SearchData.villageCode = '';
    }
-  // select building (选择楼栋)
-  public  buildingChange(e): void {
-    this.SearchData.buildingCode = e.value;
-  }
   // sure selectPreject payment （选择项目确认）
   public  paymentProjectSureClick(): void {
     // 获取选中的收费项目
@@ -179,9 +200,23 @@ export class ChargemanPaymentComponent implements OnInit {
         this.payItemDetail[key] = this.paymentSelect[0][key];
       }
       this.payItemDetail.chargeItem = list.map( v => {
-         return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: v.datedif, chargeStandard: v.chargeStandard};
+         return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType,
+           datedif: v.datedif, chargeStandard: v.chargeStandard};
       });
-      console.log(this.payItemDetail);
+      // 查询拆分业主
+      this.paymentSrv.getUserInfoByRoomCode({roomCode: this.paymentSelect[0].roomCode}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+             this.ownerList = value.data;
+             value.data.forEach( v => {
+               this.ownerOption.push({label: v.surname, value: v.surname});
+             });
+          } else {
+            this.toolSrv.setToast('error', '查询失败', value.message);
+          }
+        }
+      );
       // 计费请求
       this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(value => {
           console.log(value);
@@ -193,9 +228,10 @@ export class ChargemanPaymentComponent implements OnInit {
             });
             this.deductionDamagesData = value.data.costDeduction;
             // 获取抵扣项目勾选中的抵扣项目
-            this.deductionDamagesSelect = value.data.costDeduction.filter(v =>{
+            this.deductionDamagesSelect = value.data.costDeduction.filter(v => {
                return v.deductionStatus === 1;
             });
+            // console.log(this.deductionDamagesSelect);
             this.paymentAddTitle.forEach(v => {
                v.value = this.paymentSelect[0][v.label];
             });
@@ -211,60 +247,16 @@ export class ChargemanPaymentComponent implements OnInit {
     } else {
       this.toolSrv.setToast('error', '操作错误', '请选择收费项目');
     }
-
-
-        // this.paymentProject.forEach(value => {
-        //   if (value.check === 1) {
-        //     this.payItemDetail.chargeItem.push({chargeCode: value.chargeCode, chargeName: value.chargeName, chargeType: value.chargeType, datedif: value.datedif});
-        //   }
-        // });
-    //     this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(
-    //       (value) => {
-    //         if (value.status === '1000') {
-    //           this.paymentItemData = value.data.cost;
-    //           if (value.data.cost.length > 4) {
-    //             this.chargeScrollPanelStyle = {width: '100%', height: '20vh'};
-    //           } else  {
-    //             this.chargeScrollPanelStyle = {width: '100%'};
-    //           }
-    //           this.liquidatedDamagesStatus = value.data.lateFeeStatus;
-    //           if (value.data.lateFeeStatus === 1) {
-    //             if (value.data.lateFeeStatus > 4) {
-    //               this.liquidatedDamagesStyle = {width: '100%', height: '20vh'};
-    //             } else {
-    //               this.chargeScrollPanelStyle = {width: '100%'};
-    //             }
-    //             this.liquidatedDamagesData = value.data.lateFee;
-    //           }
-    //           this.loadHidden = true;
-    //           this.paymentTotle = 0;
-    //           this.paymentItemData.forEach( v => {
-    //             this.paymentTotle = this.paymentTotle + v.actualMoneyCollection;
-    //             this.paymentActualTotal = this.paymentActualTotal + v.amountReceivable;
-    //           });
-    //           this.paymentTotle = Number(this.paymentTotle.toFixed(2));
-    //           this.paymentMoney = this.paymentTotle;
-    //         } else {
-    //           this.toolSrv.setToast('error', '操作错误', value.message);
-    //         }
-    //       }
-    //     );
-    //     this.paymentDialog = true;
-    //     this.projectSelectDialog = false;
-    //   }
-    // }
   }
   // sure  payment (缴费确认)
   public  paymentSureClick(): void {
     if (this.paymentOrderAdd.paymentMethod === undefined) {
         this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
     } else {
-        this.loadHidden = false;
         const listKey = ['organizationId', 'villageName',
           'villageCode', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode',
-          'unitName', 'roomCode', 'roomSize', 'surname', 'mobilePhone',
+          'unitName', 'roomCode', 'roomSize', 'surname', 'mobilePhone', 'idNumber',
           'customerUserId'];
-
         for (const key of listKey) {
           this.paymentOrderAdd[key] = this.paymentSelect[0][key];
         }
@@ -274,7 +266,7 @@ export class ChargemanPaymentComponent implements OnInit {
         this.paymentOrderAdd.amountTotalReceivable = this.paymentActualTotal;
         this.paymentOrderAdd.actualTotalMoneyCollection = this.paymentTotle;
         // this.paymentOrderAdd.
-        this.paymentOrderAdd.chargeItemCostDTO = this.paymentItemData.map( v => {
+        this.paymentOrderAdd.billDetailedDOArrayList = this.paymentItemData.map( v => {
           v.stateOfArrears = v.stateOfArrears === false ? 0 : 1;
           return v;
         });
@@ -283,7 +275,6 @@ export class ChargemanPaymentComponent implements OnInit {
         console.log(this.paymentOrderAdd);
         this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
           (value) => {
-            this.loadHidden = true;
             if (value.status === '1000') {
               this.confirmationService.confirm({
                 message: `是否打印单据吗？`,
@@ -322,40 +313,27 @@ export class ChargemanPaymentComponent implements OnInit {
     if (this.paymentSelect === undefined || this.paymentSelect.length === 0 ) {
       this.toolSrv.setToast('error', '请求错误', '请选择需要缴费的项');
     } else if (this.paymentSelect.length === 1) {
-      this.loadHidden = false;
+      console.log(this.paymentSelect);
       this.paymentSrv.searchChargeItem({roomCode: this.paymentSelect[0].roomCode}).subscribe(
         (value) => {
-          console.log(value);
           value.data.forEach( v => {
             if (v.chargeWay === 4) {
               this.selectCheckChargeItemList.push(v.chargeName);
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 1, minMonth: 1,  chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: v.chargeStandard});
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName,
+                chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 1, minMonth: 1,
+                chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: v.chargeStandard});
             } else  if (v.chargeWay === 3) {
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: 0, chargeWay: v.chargeWay, check: 0, minMonth: 1,  chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: JSON.parse(v.chargeStandards)[0].value});
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName,
+                chargeType: v.chargeType, datedif: 0, chargeWay: v.chargeWay, check: 0, minMonth: 1,
+                chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: JSON.parse(v.chargeStandards)[0].value});
             } else  {
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 0, minMonth: 1,  chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: v.chargeStandard});
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName,
+                chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 0, minMonth: 1,
+                chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: v.chargeStandard});
             }
-            // console.log(JSON.parse(v.chargeStandards));
-              // let flag = true;
-              // this.paymentProject.forEach(item => {
-              //   if (v.chargeName === item.chargeName) {
-              //     flag = false;
-              //   }
-              // });
-              // if (flag) {
-                // if ( v.chargeType === '1' || v.chargeType === '2' || v.chargeType === '3') {
-                //   if (this.paymentSelect[0].minMonth === 0) {
-                //     this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: this.paymentSelect[0].minMonth + 1, chargeWay: v.chargeWay, check: 0, minMonth: this.paymentSelect[0].minMonth, chargeStandards: v.chargeStandards, chargeStandard: v.chargeStandard });
-                //   } else {
-                //     this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: this.paymentSelect[0].minMonth, chargeWay: v.chargeWay, check: 0, minMonth: this.paymentSelect[0].minMonth,  chargeStandards: v.chargeStandards, chargeStandard: v.chargeStandard});
-                //   }
-                // } else {
-                // }
-              // }
             }
           );
           this.projectSelectDialog = true;
-          this.loadHidden = true;
         }
       );
     } else {
@@ -374,7 +352,6 @@ export class ChargemanPaymentComponent implements OnInit {
   public  paymentAddProjectClick(): void {
     this.addPayProject = true;
     this.projectSelectDialog = true;
-    this.loadHidden = false;
     this.paymentSrv.searchChargeItem({roomCode: this.paymentSelect[0].roomCode}).subscribe(
       (value) => {
         value.data.forEach( v => {
@@ -385,13 +362,28 @@ export class ChargemanPaymentComponent implements OnInit {
               }
           });
           if (flag) {
-            if ( v.chargeType === '1' || v.chargeType === '2' || v.chargeType === '3') {
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: this.paymentSelect[0].minMonth, chargeWay: v.chargeWay, check: 0, minMonth: this.paymentSelect[0].minMonth });
+            if (v.chargeType === '1' || v.chargeType === '2' || v.chargeType === '3') {
+              this.paymentProject.push({
+                chargeCode: v.chargeCode,
+                chargeName: v.chargeName,
+                chargeType: v.chargeType,
+                datedif: this.paymentSelect[0].minMonth,
+                chargeWay: v.chargeWay,
+                check: 0,
+                minMonth: this.paymentSelect[0].minMonth
+              });
             } else {
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 0, minMonth: 1});
+              this.paymentProject.push({
+                chargeCode: v.chargeCode,
+                chargeName: v.chargeName,
+                chargeType: v.chargeType,
+                datedif: 1,
+                chargeWay: v.chargeWay,
+                check: 0,
+                minMonth: 1
+              });
             }
           }
-          this.loadHidden = true;
         }
        );
       }
@@ -401,7 +393,9 @@ export class ChargemanPaymentComponent implements OnInit {
   // Cancel payment
   public  paymentFaleseClick(): void {
     this.paymentDialog = false;
+    this.ownerList = [];
     this.selectCheckChargeItemList = [];
+    this.deductionDamagesSelect = [];
     this.InitializationAllpayData();
 
   }
@@ -424,17 +418,15 @@ export class ChargemanPaymentComponent implements OnInit {
 
     } else {
       this.InitializationAllpayData();
-      this.loadHidden = false;
       this.projectSelectDialog = false;
     }
   }
   // paging query
   public  nowpageEventHandle(event: any): void {
-    this.loadHidden = false;
     this.nowPage = event;
     this.SearchData.pageNo = event;
     if (this.searchType === undefined) {
-      this.queryData(this.SearchData);
+      // this.queryData(this.SearchData);
     } else {
       // this.queryDataPage();
     }
@@ -457,41 +449,41 @@ export class ChargemanPaymentComponent implements OnInit {
     this.paymentOrderAdd = new ChargePaymentAddOrder();
     this.Balance = 0;
     this.paymentSelect = [];
-    this.paymentInitialization();
+    // this.paymentInitialization();
     this.payItemDetail = new ChargeItemData();
     this.paymentProject = [];
+    this.deductionDamagesSelect = [];
+    this.deductionDamagesData = [];
   }
   // query data （搜索条件的搜索数据）
-  public  queryData(searData): void {
-    this.paymentSrv.searchPaymentData(searData).subscribe(
-      (val) => {
-        if (val.status === '1000') {
-          this.loadHidden = true;
-          if (val.data.contents) {
-            val.data.contents.forEach( t => {
-              t.sex = this.toolSrv.setValueToLabel(this.sexOption, t.sex);
-              t.roomType = this.toolSrv.setValueToLabel(this.roomTypeOption, t.roomType);
-            });
-            this.setTableOption(val.data.contents);
-            // }
-            this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
-          } else {
-            this.toolSrv.setToast('success', '搜索成功', '数据为空');
-          }
-        } else {
-          this.toolSrv.setToast('error', '搜索失败', val.message);
-
-        }
-      }
-    );
-  }
+  // public  queryData(searData): void {
+  //   // this.paymentSrv.searchPaymentData(searData).subscribe(
+  //   //   (val) => {
+  //   //     if (val.status === '1000') {
+  //   //       if (val.data.contents) {
+  //   //         val.data.contents.forEach( t => {
+  //   //           t.sex = this.toolSrv.setValueToLabel(this.sexOption, t.sex);
+  //   //           t.roomType = this.toolSrv.setValueToLabel(this.roomTypeOption, t.roomType);
+  //   //         });
+  //   //         this.setTableOption(val.data.contents);
+  //   //         // }
+  //   //         this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+  //   //       } else {
+  //   //         this.toolSrv.setToast('success', '搜索成功', '数据为空');
+  //   //       }
+  //   //     } else {
+  //   //       this.toolSrv.setToast('error', '搜索失败', val.message);
+  //   //
+  //   //     }
+  //   //   }
+  //   // );
+  // }
   // Paging query data （分页查询数据）
   public   queryPaymentPage(): void {
-    this.paymentSrv.searchPaymentData({pageNo: this.nowPage , pageSize: 10}).subscribe(
+    this.paymentSrv.searchPaymentData(this.SearchData).subscribe(
       (val) => {
         console.log(val);
         if (val.status === '1000') {
-          this.loadHidden = true;
           val.data.contents.forEach( t => {
             t.sex = this.toolSrv.setValueToLabel(this.sexOption, t.sex);
             t.roomType = this.toolSrv.setValueToLabel(this.roomTypeOption, t.roomType);
@@ -568,9 +560,95 @@ export class ChargemanPaymentComponent implements OnInit {
   }
 
   public  stateOfArrearChange(value, index): void {
-    console.log(value);
-    console.log(this.paymentItemData);
     this.paymentItemData[index].stateOfArrears = (value === true);
+    this.getTotalBalaceData();
+  }
+  public  costSplitClick(e, index): void {
+      this.paymentItemListIndex = index;
+      this.costSplitData = e;
+      this.costSplitData.spiltTime = e.startTime;
+      this.setDate(e.startTime, this.minDate);
+      this.setDate(e.dueTime, this.maxDate);
+      this.costSplitDialog = true;
+  }
+  public  costSplitSure(): void {
+    this.costSplitData.spiltTime = this.datePipe.transform(this.costSplitData.spiltTime, 'yyyy-MM-dd');
+    this.costSplitData.stateOfArrears = this.costSplitData.stateOfArrears === true ? 1 : 0 ;
+    console.log(this.costSplitData);
+    this.paymentSrv.getCostSplitBill(this.costSplitData).subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          this.paymentItemData.splice( this.paymentItemListIndex, 1);
+          console.log(this.paymentItemData);
+          const costSplitList = value.data.map( v => {
+            v.stateOfArrears = v.stateOfArrears !== 0;
+            v.ownerSelection = this.ownerOption;
+            return v;
+         });
+          // this.paymentItemData = this.paymentItemData.concat(costSplitList);
+          this.paymentItemData.unshift(...costSplitList);
+          console.log(this.paymentItemData);
+        }
+      }
+    );
+  }
+  // 设置最大时间和最小时间
+  public  setDate(data, time): void {
+    const Year = data.slice(0, data.indexOf('-'));
+    const Month = data.slice(data.indexOf('-') + 1, data.lastIndexOf('-'));
+    const Day = data.slice(data.lastIndexOf('-') + 1, data.length);
+    time.setFullYear(Number(Year));
+    time.setMonth(Number(Month) - 1);
+    time.setDate(Number(Day));
+  }
+
+  public  changeSurname(name, index): void {
+    this.ownerList.forEach(v => {
+      if (name === v.surname) {
+        this.paymentItemData[index].payerPhone = v.mobilePhone;
+        this.paymentItemData[index].customerUserId = v.customerUserId;
+      }
+    });
+  }
+
+  public  checkClickData(index): void {
+      console.log(index);
+      this.deductionDamagesData[index].deductionStatus =  this.deductionDamagesData[index].deductionStatus === 0 ? 1 : 0;
+      this.getTotalBalaceData();
+      // this.deductionDamagesSelect = [];
+  }
+  public  getTotalBalaceData(): void {
+    this.paymentItemData =  this.paymentItemData.map( v => {
+      v.stateOfArrears = v.stateOfArrears === false ? 0 : 1;
+      return v;
+    });
+    console.log(this.deductionDamagesData);
+    this.paymentSrv.getTotalBalace({costDeduction: this.deductionDamagesData, billDetailedDOArrayList: this.paymentItemData, actualTotalMoneyCollection: this.paymentMoney}).subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          // 费用明细的列表
+          // this.deductionDamagesSelect = [];
+          this.paymentItemData = value.data.billDetailedDOArrayList.map( v => {
+            v.stateOfArrears = v.stateOfArrears !== 0;
+            return v;
+          });
+          this.deductionDamagesData = value.data.costDeduction;
+          // 获取抵扣项目勾选中的抵扣项目
+          this.deductionDamagesSelect = value.data.costDeduction.filter(v => {
+            return v.deductionStatus === 1;
+          });
+          // console.log(this.deductionDamagesSelect);
+          this.paymentAddTitle.forEach(v => {
+            v.value = this.paymentSelect[0][v.label];
+          });
+          this.paymentMoney = value.data.actualTotalMoneyCollection;
+        } else {
+
+        }
+      }
+    );
   }
 }
 

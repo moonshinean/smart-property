@@ -139,11 +139,14 @@ export class RefundNoComponent implements OnInit {
     if (Number(this.ApplicationRefund.transferCardAmount) + Number(this.ApplicationRefund.deductionPropertyFee) === Number(this.ApplicationRefund.refundableAmount)) {
       this.refundNoSrv.applicationRefund(this.ApplicationRefund).subscribe(
         value => {
+          console.log(value);
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', '申请退款成功');
             this.RefundDialog = false;
             this.ApplicationRefund = new ApplicationRefund();
             this.refundNoInitialization();
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
           }
         }
       );

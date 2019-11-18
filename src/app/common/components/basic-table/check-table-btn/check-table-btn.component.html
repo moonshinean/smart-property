@@ -53,7 +53,7 @@
             <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
           </td>
           <td  *ngFor="let col of columns?.slice(0, columns?.length-1)" >
-            {{rowData[col.field]}}
+            <span style="word-wrap:break-word">{{rowData[col.field]}}</span>
           </td>
           <td >
             <button class="check-table-btn-detail" (click)="DetailClick(rowData)" *ngFor="let item of option.tableList" [ngStyle]="{'background': item.color}">{{item.label}}</button>
@@ -64,7 +64,7 @@
             <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
           </td>
           <td  *ngFor="let col of columns.slice(0, columns.length-1)" >
-            {{rowData[col.field]}}
+            <span style="word-wrap:break-word">{{rowData[col.field]}}</span>
           </td>
           <td >
             <button class="check-table-btn-detail" (click)="DetailClick(rowData)"  *ngFor="let item of option.tableList"  [ngStyle]="{'background': item.color}">{{item.label}}</button>

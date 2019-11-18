@@ -30,7 +30,19 @@ export class ChargePaymentService {
   public  getPayDocument(pamars): Observable<any> {
      return this.http.post(environment.chargeUrl + `/cash/register/printBilles`, pamars);
   }
+  // 费用拆分
+  public  getCostSplitBill(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/cash/register/cost_split`, pamars);
+  }
 
+  // 根据房间查看所有的客户信息
+  public  getUserInfoByRoomCode(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/owner/findCustomerByRoomCode`, pamars);
+  }
+  // 根据房间查看所有的客户信息
+  public  getTotalBalace(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/cash/register/expense_deduction_re_sum`, pamars);
+  }
   // 导入旧账单
   public importOldBills(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/cash/register/importOldBills`, pamars);

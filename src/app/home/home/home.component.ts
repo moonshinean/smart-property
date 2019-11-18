@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
   public treeDialog = false;
   public roomtree: any;
 
-  public imageHidden = true;
+  public imageHidden = false;
 
   public SearchData = {
     villageCode: '',
@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit {
   // sidebar Hidden display
   public homeHiddenSidebar(e): void {
     this.sidbarHidden = e;
-    this.imageHidden = false;
+    // this.imageHidden = false;
   }
 
   // sidebar data
@@ -132,7 +132,10 @@ export class HomeComponent implements OnInit {
   }
 
   public  changeTheme(): void {
-    document.body.style.setProperty('--bgc-them', '#55AA80');
+    const home = document.getElementById('home');
+    home.style.setProperty('--bgc-theme', '#3B76DA');
+    home.style.setProperty('--ft-sidebar-theme', 'write', 'important');
+    home.style.setProperty('--ft-sidebar-hover-theme', '#000');
     // localStorage.setItem('--bgc-them', '')
     // console.log(less);
     // less.modifyVars({

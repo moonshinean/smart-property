@@ -16,6 +16,9 @@ export class Patyment {
   mobilePhone?: any; // 组织id
   surname?: any; // 组织id
   dueTime?: any; // 组织id
+  idNumber?: any; // 组织id
+  id?: any; // 组织id
+  pid?: any; // 组织id
 }
 // 项目选则状态记录
 export class ChargeItem {
@@ -74,7 +77,7 @@ export class ChargePaymentAddOrder {
   surplus?: any; // 修正金额
   correctedAmount?: any; // 修正金额
   remark?: any; // 备注
-  chargeItemCostDTO?: ChargeItemDetail[] = []; // 项目收费明细
+  billDetailedDOArrayList?: ChargeItemDetail[] = []; // 项目收费明细
   costDeduction?: CostDeduction[] = []; // 项目收费明细
 }
 // 项 目 收 费 详 情
@@ -95,6 +98,9 @@ export class ChargeItemDetail {
   currentReadings?: any; // 当前读数
   lastReading?: any; // 上次读数
   stateOfArrears?: any; // 上次读数
+  payerPhone?: any;
+  payerName?: any;
+  customerUserId?: any;
 }
 export class CostDeduction {
   orderId?: any;
@@ -118,4 +124,41 @@ export  class SearchData {
   pageNo: any;
   pageSize: any;
   mobilePhone: any;
+}
+
+// 拆分金额
+export  class CostSplitData {
+  spiltTime?: any;
+  billDetailedId?: any;
+  orderId?: any;
+  chargeCode?: any;
+  chargeName?: any;
+  chargeType?: any;
+  chargeStandard?: any;
+  chargeStandards?: any;
+  chargeUnit?: any;
+  datedif?: any;
+  discount?: any;
+  parkingSpaceNature?: any;
+  parkingSpaceType?: any;
+  amountReceivable?: any;
+  actualMoneyCollection?: any;
+  usageAmount?: any;
+  currentReadings?: any;
+  lastReading?: any;
+  startTime?: any;
+  dueTime?: any;
+  stateOfArrears?: any;
+  originalStateOfArrears?: any;
+  payerPhone?: any;
+  payerName?: any;
+  payerUserId?: any;
+  deductibleMoney?: any;
+  deductibledMoney?: any;
+  amountDeductedThisTime?: any;
+  surplusDeductibleMoney?: any;
+  deductionRecord?: any;
+  code?: any;
+  parentCode?: any;
+  splitState?: any;
 }

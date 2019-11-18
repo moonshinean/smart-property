@@ -7,35 +7,26 @@
   <div class="bf-owner-header">
     <div class=" ui-g-12">
       <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-add" (click)="ownerAddClick()">
-        <img class="bf-owner-header-img-add" src="assets/images/ic_add.png" alt="">
+        <img class="bf-owner-header-img" src="assets/images/ic_add.png" alt="">
         <span>增 加</span>
       </div>
       <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-modify" (click)="ownerModifyClick()">
-        <img class="bf-owner-header-img-modify" src="assets/images/ic_modify.png" alt="">
+        <img class="bf-owner-header-img bf-owner-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
       <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-delete" (click)="ownerDeleteClick()">
-        <img class="bf-owner-header-img-delete" src="assets/images/ic_delete.png" alt="">
+        <img class="bf-owner-header-img" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
-<!--      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">-->
-<!--        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>-->
-<!--        <p-dropdown [options]="SearchOption.village"  #villageCode scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)" [style]="{'width': '5vw'}"></p-dropdown>-->
-<!--        <label style="color: #fff;margin-left: 0.5vw">地块：</label>-->
-<!--        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)" [style]="{'width': '5vw'}"></p-dropdown>-->
-<!--        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>-->
-<!--        <p-dropdown [options]="SearchOption.building"  scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)" [style]="{'width': '5vw'}"></p-dropdown>-->
-<!--        <label style="color: #fff;margin-left: 0.5vw">单元：</label>-->
-<!--        <p-dropdown [options]="SearchOption.unit"   scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)" [style]="{'width': '5vw'}"></p-dropdown>-->
-<!--&lt;!&ndash;        <label style="color: #fff;margin-left: 0.5vw">选择搜索方式：</label>&ndash;&gt;-->
-<!--        &lt;!&ndash;<label style="color: #fff;margin-left: 0.5vw">房间：</label>&ndash;&gt;-->
-<!--        &lt;!&ndash;<p-dropdown [options]="SearchOption.room"  scrollHeight="100px" placeholder="请选择房间..."></p-dropdown>&ndash;&gt;-->
-<!--     </div>-->
+      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-import" (click)="addMoreFileClick()">
+        <img class="bf-owner-header-img" src="assets/images/ic_add.png" alt="">
+        <span>导 入</span>
+      </div>
     </div>
     <!--//搜索-->
     <div class="ui-inputgroup bf-owner-header-search">
-      <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选搜索方式..." (onChange)="searchTypeChange()" [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入手机号" style="width: 7vw" [(ngModel)]="inputSearchData">
+      <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选查看范围..." (onChange)="searchTypeChange()" [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入需要搜索的值" style="width: 7vw" [(ngModel)]="inputSearchData">
       <button id="disabled-btn" class="bf-owner-header-btn-search" type="button"  (click)="ownerSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>
@@ -239,7 +230,7 @@
           <label >房屋类型：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomTypeOption"  scrollHeight="100px" [placeholder]="roomTypeName"  [(ngModel)]="roomInfo.roomType"></p-dropdown>
+          <p-dropdown [options]="roomTypeOption"  scrollHeight="100px"  [(ngModel)]="roomInfo.roomType"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -247,7 +238,7 @@
           <label >房屋状态：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" [placeholder]="roomStatusName"  [(ngModel)]="roomInfo.roomStatus" ></p-dropdown>
+          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px"   [(ngModel)]="roomInfo.roomStatus" ></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -255,7 +246,7 @@
           <label >装修情况：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" [placeholder]="renovationName" [(ngModel)]="roomInfo.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
+          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" [(ngModel)]="roomInfo.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6"  [hidden]="timeHide">
@@ -313,7 +304,7 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerModifySureClick()">确认</button>
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerModifayDialog=false; clearData()">取消</button>
+        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerModifyFalseDialog()">取消</button>
       </div>
     </p-footer>
   </p-dialog>
@@ -351,7 +342,7 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerModifySureClick()">确认</button>-->
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerDetailDialog=false;clearData()">取消</button>
+        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerDetailDialog=false">取消</button>
       </div>
     </p-footer>
   </p-dialog>
@@ -511,7 +502,7 @@
   </p-dialog>
 
 
-  <button class="bf-owner-dialog-Btn bf-owner-bottom-Btn" (click)="addMoreClick()" >批量导入</button>
+<!--  <button class="bf-owner-dialog-Btn bf-owner-bottom-Btn" (click)="addMoreFileClick()" >批量导入</button>-->
   <rbi-file-pop [UploadFileOption]="UploadFileOption" (event)="ownerUploadSureClick($event)"></rbi-file-pop>
   <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>

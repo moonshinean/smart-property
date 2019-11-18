@@ -16,12 +16,12 @@ export class BfOwnerService {
       return this.http.post(environment.sysetUrl + `/owner/findOwnerAllByPage`, pamars);
   }
   // Conditional search unitinfo
-  public  queryowerInfoList(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/roomInfo/findAllByPage`, pamars);
+  public  queryOwerInfoListByCondition(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/owner/findOwnerByCondition`, pamars);
   }
   // upload owerInfo file
   public  uploadOwerInfoFile(body): Observable<any> {
-    return  this.http.post(environment.chargeUrl + '/owner/import', body);
+    return  this.http.post(environment.sysetUrl + '/owner/import', body);
     // return  this.http.post('/recieveMessage', body);
   }
   public  addOwerInfo(body): Observable<any> {

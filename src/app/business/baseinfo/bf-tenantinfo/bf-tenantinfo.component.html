@@ -23,7 +23,7 @@
     <div class="ui-inputgroup bf-tenant-header-search">
       <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选搜索方式..." (onChange)="searchTypeChange()" [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
       <input type="text" pInputText placeholder="请输入手机号" style="width: 7vw" [(ngModel)]="inputSearchData">
-      <button id="disabled-btn" class="bf-tenant-header-btn-search" type="button"  (click)="tenantSearchClick()"  label="搜索">搜索</button>
+      <button id="disabled-btn" class="bf-tenant-header-btn-search" type="button"   label="搜索">搜索</button>
     </div>
   </div>
   <!--表格-->
