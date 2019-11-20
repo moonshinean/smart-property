@@ -1,26 +1,21 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {RefundService} from '../../../common/services/refund.service';
+import {ThemeService} from '../../../common/public/theme.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-refund-already',
   templateUrl: './refund-already.component.html',
   styleUrls: ['./refund-already.component.less']
 })
-export class RefundAlreadyComponent implements OnInit {
+export class RefundAlreadyComponent implements OnInit, OnDestroy {
 
 
+  public alreadyContents: any;
   public alreadySelect: any[];
   public alreadyOption: any;
-  // 添加相关
-  // public alreadyAdd: any;
-  // public  licensePlateColorOption: any[] = [];
-  // public  licensePlateTypeOption: any[] = [];
-  // public  alreadyOriginalTypeOption: any[] = [];
-  // 修改相关
-  // public alreadyModify: any;
-  // public licensePlateColorModify: any;
-  // public licensePlateTypeModify: any;
+
   // 详情相关
   public alreadyDetailOption: any;
 
@@ -40,17 +35,41 @@ export class RefundAlreadyComponent implements OnInit {
   public nowPage = 1;
   public roonCodeSelectOption: any[] = [];
 
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private alreadySrv: RefundService,
-    private toolSrv: PublicMethedService
+    private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService,
   ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.alreadyContents);
+      }
+    );
   }
 
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.alreadyInitialization();
   }
-
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
+  }
   // initialization already
   public alreadyInitialization(): void {
     this.loadHidden = false;
@@ -139,6 +158,7 @@ export class RefundAlreadyComponent implements OnInit {
               }
             );
           }
+          this.alreadyContents = value.data.contents;
           this.setTableOption(value.data.contents);
         } else  {
           this.toolSrv.setToast('error', '查询失败', value.message);
@@ -162,15 +182,15 @@ export class RefundAlreadyComponent implements OnInit {
           {field: 'actualMoneyCollection', header: '实收金额'},
           {field: 'operating', header: '操作'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 

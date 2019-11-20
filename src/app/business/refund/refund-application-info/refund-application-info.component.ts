@@ -1,17 +1,20 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {RefundApplicationInfo} from '../../../common/model/refund-applicationInfo.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {RefundService} from '../../../common/services/refund.service';
 import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
 import {FormGroup} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-refund-application-info',
   templateUrl: './refund-application-info.component.html',
   styleUrls: ['./refund-application-info.component.less']
 })
-export class RefundApplicationInfoComponent implements OnInit {
+export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
+  public applicationContents: any;
   public applicationInfoSelect: any[];
   public applicationInfoOption: any;
   // 状态值
@@ -37,14 +40,38 @@ export class RefundApplicationInfoComponent implements OnInit {
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public nowPage = 1;
-
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   constructor(
     private applicationInfoSrv: RefundService,
     private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService,
   ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.applicationContents);
+      }
+    );
   }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.applicationInfoInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
   // initialization applicationInfo
   public applicationInfoInitialization(): void {
@@ -211,6 +238,7 @@ export class RefundApplicationInfoComponent implements OnInit {
               v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
               v.paymentMethod = this.toolSrv.setValueToLabel(this.paymentMethodOption, v.paymentMethod);
             });
+            this.applicationContents = value.data.contents;
             this.setTableOption(value.data.contents);
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {
@@ -234,15 +262,15 @@ export class RefundApplicationInfoComponent implements OnInit {
           {field: 'auditStatus', header: '审核状态'},
           {field: 'operating', header: '操作'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
   // info select
@@ -267,7 +295,6 @@ export class RefundApplicationInfoComponent implements OnInit {
   }
 
   public  btnEvent(e): void {
-      console.log(e);
       this.formgroup = e.value;
       if (e.name === 'transferCardAmount') {
         this.formgroup.patchValue({deductionPropertyFee: e.value.value.refundableAmount - e.value.value.transferCardAmount});

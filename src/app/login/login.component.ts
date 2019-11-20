@@ -14,16 +14,15 @@ import {C} from '@angular/cdk/typings/keycodes';
 })
 export class LoginComponent implements OnInit{
 
-  @ViewChild('btn') btn: HTMLElement;
   public item: any[] = [];
   public loadHidden = true;
   public userLogin: FormGroup;
+  public btnClickFlag = 0;
   constructor(
     public loginSrv: LoginService,
     private route: Router,
     private localSessionStorage: LocalStorageService,
     private toolSrv: PublicMethedService,
-    private eventManager: EventManager
   ) {
   }
 
@@ -44,10 +43,13 @@ export class LoginComponent implements OnInit{
   // user click event
   public  userLoginClick(user): void {
     if (!this.userLogin.invalid) {
+      if (this.btnClickFlag === 0) {
+        this.btnClickFlag = 1;
         this.loadHidden = false;
         this.localSessionStorage.set('username', user.value.username);
         this.localSessionStorage.set('password', user.value.password);
         this.login(user.value.username, user.value.password);
+      }
     } else {
       this.toolSrv.setToast('error', '登录失败', '用户名或密码不能为空');
     }
@@ -67,8 +69,8 @@ export class LoginComponent implements OnInit{
           });
           this.localSessionStorage.setObject('item', this.item);
           this.localSessionStorage.setObject('sidebarItem', 1);
-
           this.route.navigate(['/home/main']);
+          this.btnClickFlag = 0;
           // this.userLogin.removeControl('username');
           // this.userLogin.removeControl('password');
         } else {

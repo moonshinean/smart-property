@@ -10,7 +10,7 @@
      <img src="assets/images/cloud.png" class="header-titlebar-titleimg">
      <span class="header-titlebar-titlename">物业管理智慧策略系统</span>
      <div class="header-titlebar-bar" #headerbar>
-        <span class="header-titlebar-bar-barspan" *ngFor="let item of item; let i = index" (click)="spanBarClick($event, i)"  [ngStyle]="{'color':item.color}">{{item.title}}</span>
+        <span  *ngFor="let item of item; let i = index" (click)="spanBarClick($event, i)"  [ngStyle]="{'color':item.color}">{{item.title}}</span>
      </div>
   </div>
   <p-messages  [closable]="true" [style]="{'position':'fixed','left': '0', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>

@@ -20,7 +20,7 @@ export class CouponService {
     return this.http.post(environment.chargeUrl + `/coupon/findCouponPage`, pamars);
   }
   public queryCouponUserInfo(pamars): Observable<any> {
-    return this.http.post(environment.chargeUrl + `/customer/findByMobilePhone`, pamars);
+    return this.http.post(environment.chargeUrl + `/customer/findByRoomCode`, pamars);
   }
   public queryCouponList(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/coupon/findByOrganizationId`, pamars);

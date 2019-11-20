@@ -6,6 +6,7 @@ import {validate} from 'codelyzer/walkerFactory/walkerFn';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {defer, Observable, Subscribable, Subscription} from 'rxjs';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-bf-toll',
@@ -13,8 +14,6 @@ import {SharedServiceService} from '../../../common/public/shared-service.servic
   styleUrls: ['./bf-toll.component.less']
 })
 export class BfTollComponent implements OnInit, OnDestroy {
-
-  @ViewChild('input') input: Input;
   public tableOption: any;
   public tollTableContent: Toll[];
   public tollTableTitleStyle: any;
@@ -66,16 +65,38 @@ export class BfTollComponent implements OnInit, OnDestroy {
   public NOW_PAGE = 1;
   public deleteId: any[] = [];
   public tollSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   constructor(
     private toolSrv: PublicMethedService,
     private tollSrv: BfTollService,
     private shareSrv: SharedServiceService,
-  ) { }
+    private themeSrv: ThemeService,
+  ) {
+    this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.tollTableContent);
+      }
+    );
+  }
   ngOnInit() {
     this.tollSub = this.shareSrv.changeEmitted$.subscribe(value => {
       // console.log(123);
       console.log(value);
     });
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     // console.log(this.shareSrv.SearchData);
     this.tollInitialization();
   }
@@ -357,6 +378,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
               v.refund = this.toolSrv.setValueToLabel(this.refundOption, v.refund);
               v.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, v.mustPay);
           });
+          this.tollTableContent = value.data.contents;
           this.setTableOption(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         }
@@ -382,15 +404,15 @@ export class BfTollComponent implements OnInit, OnDestroy {
           {field: 'enable', header: '是否启用'},
           {field: 'operating', header: '操作'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 }

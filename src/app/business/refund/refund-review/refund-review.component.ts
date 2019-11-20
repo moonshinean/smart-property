@@ -1,17 +1,20 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {ModifyRefundInfo} from '../../../common/model/refund-info.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {RefundService} from '../../../common/services/refund.service';
+import {ThemeService} from '../../../common/public/theme.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-refund-review',
   templateUrl: './refund-review.component.html',
   styleUrls: ['./refund-review.component.less']
 })
-export class RefundReviewComponent implements OnInit {
+export class RefundReviewComponent implements OnInit, OnDestroy {
 
   public refundReviewSelect: any;
+  public refundReviewContents: any;
 
   public refundReviewOption: any;
 
@@ -29,25 +32,42 @@ export class RefundReviewComponent implements OnInit {
   public loadingHide = true;
   // 审核状态
   public reviewOption: any;
-  public reviewStatus = '通过';
-  public refundReviewDialog: boolean;
-  // public SearchOption = {
-  //   village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
-  //   region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
-  //   building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
-  //   unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
-  //   room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
-  // };
 
   public nowPage = 1;
+
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   constructor(
     private refundReviewSrv: RefundService,
     private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService
   ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.refundReviewContents);
+      }
+    );
   }
 
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.refundReviewInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
 
   // initialization houseinfo
@@ -179,6 +199,7 @@ export class RefundReviewComponent implements OnInit {
             v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
           }
         });
+        this.refundReviewContents = value.data.contents;
         this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
@@ -199,15 +220,15 @@ export class RefundReviewComponent implements OnInit {
           {field: 'auditStatus', header: '审核状态'},
           {field: 'operating', header: '操作'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 

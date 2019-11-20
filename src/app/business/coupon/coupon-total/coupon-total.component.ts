@@ -1,29 +1,52 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {AddCouponTotal, SearchCoupon} from '../../../common/model/coupon-total.model';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AddCouponTotal} from '../../../common/model/coupon-total.model';
 import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {CouponService} from '../../../common/services/coupon.service';
 import {Dropdown} from 'primeng/dropdown';
 import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
 import {FormGroup} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-coupon-total',
   templateUrl: './coupon-total.component.html',
   styleUrls: ['./coupon-total.component.less']
 })
-export class CouponTotalComponent implements OnInit {
+export class CouponTotalComponent implements OnInit, OnDestroy {
   public couponTotalOption: any;
   public couponTotalSelect = [];
+  public couponTableContent: any;
 
   public couponTotalDetailOption: any;
   // 添加相关
   public couponTotalAddDialog: boolean;
   public AddcouponTotal: AddCouponTotal = new AddCouponTotal();
-  // 条件查询
-  public SearchCoupon: SearchCoupon = new SearchCoupon();
-  public esDate: any;
+  // 搜索相关
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public SearchCoupon = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchType = 0;
+  public searchData =  '';
   // 其他相关
+  public esDate: any;
   public deleteIds: any[] = [];
   public cleanTimer: any; // 清除时钟
   public option: any;
@@ -44,24 +67,67 @@ export class CouponTotalComponent implements OnInit {
 
 
   public nowPage = 1;
-  public couponTypeName: any;
-  public couponMoney: any;
-  public couponEffectiveTime: any;
+  // 树结构订阅
+  public couponSub: Subscription;
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private couponTotalSrv: CouponService,
     private globalSrv: GlobalService,
-    private toolSrv: PublicMethedService
+    private toolSrv: PublicMethedService,
+    private  sharedSrv: SharedServiceService,
+    private themeSrv: ThemeService,
   ) {
+    this.couponSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchCoupon[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchCoupon.pageNo = 1;
+        this.reslveSearchData();
+        this.queryCouponDataPage();
+      }
+    );
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.couponTableContent);
+      }
+    );
   }
 
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
+    if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.sharedSrv.SearchData) {
+        if (key !== 'data') {
+          this.SearchCoupon[key] = this.sharedSrv.SearchData[key];
+        }
+      }
+    }
     this.couponTotalInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
+    this.couponSub.unsubscribe();
   }
   // initialization houseinfo
   public couponTotalInitialization(): void {
-    this.SearchCoupon.pageNo = 1;
-    this.SearchCoupon.pageSize = 10;
     this.esDate = this.toolSrv.esDate;
     this.AddcouponTotal.mobilePhone = null;
     this.AddcouponTotal.roomCode = null;
@@ -73,7 +139,6 @@ export class CouponTotalComponent implements OnInit {
       this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
       this.pastDueOption = this.toolSrv.setListMap(data.PAST_DUE);
       this.userStatusOption = this.toolSrv.setListMap(data.USE_STATUS);
-      // console.log(this.userStatusOption);
       this.queryCouponDataPage();
     });
     this.couponTotalSrv.queryCouponList({}).subscribe(
@@ -86,66 +151,49 @@ export class CouponTotalComponent implements OnInit {
 
   }
   public couponTotalSearchClick(): void {
-    if ((this.SearchCoupon.buildingCode === '' || this.SearchCoupon.buildingCode === undefined) && (this.SearchCoupon.mobilePhone === undefined || this.SearchCoupon.mobilePhone === '')) {
-      this.nowPage = 1;
-      this.queryCouponDataPage();
-    } else if (this.SearchCoupon.buildingCode !== '' && this.SearchCoupon.buildingCode !== undefined) {
-      this.SearchCoupon.pageNo = 1;
-      this.SearchCoupon.pageSize = 10;
-      this.SearchCoupon.mobilePhone = '';
-      this.loadingHide = false;
-      this.couponTotalSrv.queryCouponPageData(this.SearchCoupon).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.loadingHide = true;
-            if (value.data.contents) {
-              this.setTableOption(value.data.contents);
-              this.toolSrv.setToast('success', '搜索成功', value.message);
-              this.clearSearchOption();
-
-            } else {
-              this.toolSrv.setToast('success', '搜索成功', '数据为空');
-
-            }
-          } else {
-            this.toolSrv.setToast('error', '搜索失败', value.message);
-
-          }
-        }
-      );
-    } else if (this.SearchCoupon.mobilePhone !== '' && this.SearchCoupon.mobilePhone !== undefined) {
-      this.SearchCoupon.pageNo = 1;
-      this.SearchCoupon.pageSize = 10;
-      this.loadingHide = false;
-      this.couponTotalSrv.queryCouponPageData(this.SearchCoupon).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.loadingHide = true;
-            if (value.data.contents) {
-              this.setTableOption(value.data.contents);
-              this.toolSrv.setToast('success', '搜索成功', value.message);
-              this.clearSearchOption();
-            } else {
-              this.toolSrv.setToast('success', '搜索成功', '数据为空');
-            }
-          } else {
-            this.toolSrv.setToast('error', '搜索失败', value.message);
-
-          }
-        }
-      );
+    if (this.searchData !== '') {
+       this.selectSearchType();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
     }
   }
-  public clearSearchOption(): void {
-      this.SearchCoupon.villageCode = '';
-      this.SearchCoupon.regionCode = '';
-      this.SearchCoupon.unitCode = '';
-      this.SearchCoupon.buildingCode = '';
-      this.SearchCoupon.roomCode = '';
-      this.SearchCoupon.mobilePhone = '';
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+              this.queryCouponDataPage(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchCoupon.mobilePhone = this.searchData; this.queryCouponDataPage(); break;
+      case 2: this.setSearData('roomCode'); this.SearchCoupon.roomCode = this.searchData; this.queryCouponDataPage(); break;
+      case 3: this.setSearData('surname'); this.SearchCoupon.surname = this.searchData;  this.queryCouponDataPage(); break;
+      case 4: this.setSearData('idNumber'); this.SearchCoupon.idNumber = this.searchData; this.queryCouponDataPage(); break;
+      default:
+              break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchCoupon) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchCoupon[serchKey] = '';
+      }
+    }
+  }
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchCoupon.mobilePhone = '';
+    this.SearchCoupon.surname = '';
+    this.SearchCoupon.idNumber = '';
   }
   // add coupon
   public couponTotalAddClick(): void {
+     if (this.SearchCoupon.roomCode !== '') {
+       console.log(this.SearchCoupon);
+       this.getUserInfo(this.SearchCoupon.roomCode);
+     } else {
+       this.toolSrv.setToast('error', '操作错误', '请选择房间');
+     }
+  }
+  public  showCouponDialog(data): void {
     this.optionDialog = {
       type: 'add',
       title: '添加信息',
@@ -155,13 +203,22 @@ export class CouponTotalComponent implements OnInit {
     const list = ['villageCode', 'villageName', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode', 'unitName',
       'roomCode', 'couponCode', 'couponName', 'userId', 'surname', 'mobilePhone', 'money', 'effectiveTime', 'couponType',
       'remarks'];
+    const roomList = ['villageCode', 'villageName', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode', 'unitName',
+      'roomCode'];
     list.forEach(val => {
+      if (val === 'mobilePhone' || val === 'surname' || val === 'userId') {
+        this.form.push({key: val, disabled: false, required: true, value: data[val]});
+      } else if (roomList.includes(val)) {
+        this.form.push({key: val, disabled: false, required: true, value: this.SearchCoupon[val]});
+      } else {
         this.form.push({key: val, disabled: false, required: true, value: ''});
+
+      }
     });
     this.formgroup = this.toolSrv.setFormGroup(this.form);
     this.formdata = [
-      {label: '客户电话', type: 'input', name: 'mobilePhone', option: '', placeholder: '请输入客户电话'},
-      {label: '房间号', type: 'tree', name: 'roomCode', option: '', placeholder: '请选择房间'},
+      {label: '客户电话', type: 'input', name: 'mobilePhone', option: '', placeholder: '请输入客户电话', disable: true},
+      {label: '房间号', type: 'input', name: 'roomCode', option: '', placeholder: '请选择房间', disable: true},
       {label: '客户名称', type: 'input', name: 'surname', option: '', placeholder: '请输入客户名称',  disable: true},
       {label: '优惠卷', type: 'dropdown', name: 'couponCode', option: this.couponOption, placeholder: '请选择优惠券'},
       {label: '优惠金额', type: 'input', name: 'money', option: '', placeholder: '', disable: true},
@@ -171,24 +228,29 @@ export class CouponTotalComponent implements OnInit {
     ];
   }
   // search userInfo
-  public getUserInfo(): void {
-      if (this.AddcouponTotal.mobilePhone !== null && this.AddcouponTotal.roomCode !== null) {
-         this.couponTotalSrv.queryCouponUserInfo({roomCode: this.AddcouponTotal.roomCode, mobilePhone: this.AddcouponTotal.mobilePhone}).subscribe(
-           value => {
-             this.AddcouponTotal.surname = value.data.customerInfoDO.surname;
-             this.AddcouponTotal.userId = value.data.customerInfoDO.userId;
-           }
-         );
-      }
+  public getUserInfo(data): void {
+     this.couponTotalSrv.queryCouponUserInfo({roomCode: data}).subscribe(
+       value => {
+         console.log(value);
+         if (value.status === '1000') {
+           this.showCouponDialog(value.data);
+         } else {
+           this.toolSrv.setToast('error', '请求错误', '查询业主失败');
+         }
+       }
+     );
   }
   // sure add houseinfo
   public couponTotalAddSureClick(): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
+      console.log(this.AddcouponTotal);
+      this.AddcouponTotal.effectiveTime = this.AddcouponTotal.effectiveTime === '无期限' ? 0 :
+        this.AddcouponTotal.effectiveTime.slice(this.AddcouponTotal.effectiveTime.length - 1, this.AddcouponTotal.effectiveTime.length);
       this.couponTotalSrv.addCouponInfo(this.AddcouponTotal).subscribe(
         value => {
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', value.message);
-            this.couponTotalInitialization();
+            this.queryCouponDataPage();
             this.couponTotalAddDialog = false;
             this.clearData();
           } else {
@@ -212,7 +274,7 @@ export class CouponTotalComponent implements OnInit {
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', value.message);
             this.couponTotalInitialization();
-          }else {
+          } else {
             this.toolSrv.setToast('error', '操作失败', value.message);
           }
         }
@@ -224,23 +286,18 @@ export class CouponTotalComponent implements OnInit {
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;
     this.nowPage = event;
-    this.queryCouponDataPage();
+    this.selectSearchType();
     this.couponTotalSelect = [];
   }
   // clear data
   public clearData(): void {
-    this.AddcouponTotal = new AddCouponTotal();
-    this.couponTypeName = null;
-    this.couponMoney = null;
-    this.couponEffectiveTime = null;
-  }
+    this.AddcouponTotal = new AddCouponTotal();}
 
   public selectData(e): void {
       this.couponTotalSelect = e;
   }
   // detail couponTotalInfo
   public detailClick(e): void {
-    // console.log(e);
     e.couponType = this.toolSrv.setValueToLabel(this.couponTypeOption, e.couponType);
     e.usageState = this.toolSrv.setValueToLabel(this.userStatusOption, e.usageState);
     this.couponTotalDetailOption = {
@@ -294,29 +351,30 @@ export class CouponTotalComponent implements OnInit {
           {field: 'pastDue', header: '过期状态'},
           {field: 'operating', header: '操作'}
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 
   // query couponTotal data
   public  queryCouponDataPage(): void {
-    this.couponTotalSrv.queryCouponPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.couponTotalSrv.queryCouponPageData(this.SearchCoupon).subscribe(
       (value) => {
         this.loadingHide = true;
         if (value.status === '1000') {
           value.data.contents.forEach( h => {
-            h.effectiveTime = (h.effectiveTime === '0' || h.effectiveTime === 0 )? '无期限' :  h.effectiveTime + '天';
+            h.effectiveTime = (h.effectiveTime === '0' || h.effectiveTime === 0 ) ? '无期限' :  h.effectiveTime + '天';
             h.pastDue = this.toolSrv.setValueToLabel(this.pastDueOption, h.pastDue);
             h.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, h.auditStatus);
           });
+          this.couponTableContent = value.data.contents;
           this.setTableOption(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         }  else  {
@@ -331,9 +389,8 @@ export class CouponTotalComponent implements OnInit {
     if (e === 'false') {
       this.optionDialog.dialog = false;
     } else {
-      for (const eKey in e.value) {
-        const a = eKey;
-        this.AddcouponTotal[a] = e.value[eKey];
+      for (const eKey in e.value.value) {
+        this.AddcouponTotal[eKey] = e.value.value[eKey];
       }
       this.couponTotalAddSureClick();
     }
@@ -342,21 +399,11 @@ export class CouponTotalComponent implements OnInit {
   public blurClick(e): void {
     if ( this.formgroup.value[e.name] !== '') {
       this.formgroup = e.value;
-      if (e.name === 'mobilePhone') {
-        this.couponTotalSrv.queryCouponUserInfo({mobilePhone: this.formgroup.value[e.name]}).subscribe(
-          value => {
-            if (value.status === '1000') {
-              this.roomtree = value.data.roomTree;
-              if (value.data.customerInfoDO) {
-                this.formgroup.patchValue({surname: value.data.customerInfoDO.surname, userId: value.data.customerInfoDO.userId});
-              }
-            }
-          }
-        );
-      } else if (e.name === 'couponCode') {
+      if (e.name === 'couponCode') {
         this.couponTotalSrv.queryCouponInfo({couponCode: this.formgroup.value.couponCode}).subscribe(
           value => {
-            this.formgroup.patchValue({effectiveTime: (value.data.effectiveTime === 0 || value.data.effectiveTime === '0') ? '无期限' : value.data.effectiveTime + '天' , money: value.data.money});
+            this.formgroup.patchValue({effectiveTime: (value.data.effectiveTime === 0 ||
+                value.data.effectiveTime === '0') ? '无期限' : value.data.effectiveTime + '天' , money: value.data.money});
             this.couponTotalSrv.queryCouponType({}).subscribe(
               val => {
                 val.data.forEach(v => {

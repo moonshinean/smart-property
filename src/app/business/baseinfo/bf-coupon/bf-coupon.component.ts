@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AddCoupon, Coupon, ModifyCoupon} from '../../../common/model/charge-coupon.model';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ChargeCouponService} from '../../../common/services/charge-coupon.service';
@@ -8,16 +8,19 @@ import {Dropdown} from 'primeng/primeng';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
 import {FormGroup} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-bf-coupon',
   templateUrl: './bf-coupon.component.html',
   styleUrls: ['./bf-coupon.component.less']
 })
-export class BfCouponComponent implements OnInit {
+export class BfCouponComponent implements OnInit, OnDestroy {
   // @ViewChild('file') file: Input;
   public couponTableTitle: any;
   public couponSelect: ModifyBfCoupon[] = [];
+  public couponTableContent: any;
   // 添加相关
   public couponAdd: AddBfCoupon = new AddBfCoupon();
   // public couponAdd: any;
@@ -48,16 +51,42 @@ export class BfCouponComponent implements OnInit {
   public modifyChargeName: any;
   public modifyEffectiveTime: any;
   public nowPage = 1;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
+  public themeSub: Subscription;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private toolSrv: PublicMethedService,
-    private couponSrv: BfCouponService
-  ) { }
+    private couponSrv: BfCouponService,
+    private themeSrv: ThemeService
+  ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.couponTableContent);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     // this.esDate = this.toolSrv.esDate;
     this.couponInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
 
   // initialization houseinfo
@@ -302,15 +331,15 @@ export class BfCouponComponent implements OnInit {
       width: '101.4%',
       header: {
         data:  this.couponTableTitle,
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
   // Paging query data （分页查询数据）
@@ -329,6 +358,7 @@ export class BfCouponComponent implements OnInit {
             item.effectiveTime = (item.effectiveTime === '0') ? '无期限' : item.effectiveTime + '天';
             // }
           });
+          this.couponTableContent = values.data.contents;
           this.setTableOption(values.data.contents);
           this.option = {total: values.data.totalRecord, row: values.data.pageSize, nowpage:  values.data.pageNo};
         } else {
@@ -362,4 +392,6 @@ export class BfCouponComponent implements OnInit {
       // if ()
     }
   }
+
+
 }

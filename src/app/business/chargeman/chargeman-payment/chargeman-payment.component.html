@@ -13,8 +13,8 @@
     <!--搜索-->
     <div class="ui-inputgroup chargeman-payment-header-search">
       <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>
-      <p-dropdown [options]="searchOption" placeholder="请选择搜索方式.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入业主手机号.."  [(ngModel)]="searchData">
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入需要搜索的值.."  [(ngModel)]="searchData">
       <button id="disabled-btn" class="chargeman-payment-header-btn-search" type="button"  (click)="paymentSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>
@@ -95,7 +95,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
               <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
                 <td style="width: 3em">
-                  <p-tableCheckbox [value]="rowData" (click)="checkClickData(rowIndex)"></p-tableCheckbox>
+                  <p-tableCheckbox [value]="rowData" (click)="checkClickData(rowData, rowIndex)"></p-tableCheckbox>
                 </td>
                 <td  *ngFor="let col of columns" style="word-break: break-word">
                   {{rowData[col.field]}}

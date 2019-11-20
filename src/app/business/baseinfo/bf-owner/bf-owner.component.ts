@@ -9,6 +9,7 @@ import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.m
 import {Dropdown} from 'primeng/dropdown';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
 import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-bf-owner',
@@ -19,6 +20,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
 
   @ViewChild('roomType') roomtype: Dropdown;
   public ownerSelect: any;
+  public tableContent: any;
   // 上传文件相关
   public UploadFileOption: FileOption = new FileOption();
   public uploadRecordOption: any;
@@ -109,6 +111,13 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public esDate: any;
   public deleteId: any[] = [];
   public nowPage = 1;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // 服务传参相关
   public ownerSub: Subscription;
   constructor(
@@ -117,18 +126,36 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     public toolSrv: PublicMethedService,
     private datePipe: DatePipe,
-    private sharedSrv: SharedServiceService
-
-  ) { }
-  ngOnInit() {
+    private sharedSrv: SharedServiceService,
+    private themeSrv: ThemeService,
+  ) {
     this.ownerSub = this.sharedSrv.changeEmitted$.subscribe(
       value => {
         this.searchOwerData.level = value.data.level;
         this.searchOwerData.code = value.data.code;
-        console.log(value);
         this.queryOwnerPageData();
       }
     );
+    this.themeSrv.changeEmitted$.subscribe(
+      value => {
+      this.table.tableheader = value.table.header;
+      this.table.tableContent = value.table.content;
+      this.table.detailBtn = value.table.detailBtn;
+      this.setTableOption(this.tableContent);
+      }
+    );
+  }
+  ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      console.log(this.themeSrv.setTheme);
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
+    if (this.sharedSrv.SearchData !== undefined) {
+      this.searchOwerData.level = this.sharedSrv.SearchData.data.level;
+      this.searchOwerData.code = this.sharedSrv.SearchData.data.code;
+    }
     this.ownerInitialization();
   }
   ngOnDestroy(): void {
@@ -304,7 +331,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
               return val;
             });
             this.ownerDetailDialog = true;
-          }else {
+          } else {
             this.toolSrv.setToast('error', '操作错误', value.message);
           }
     });
@@ -587,15 +614,15 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           {field: 'idNumber', header: '身份证号'},
           {field: 'operating', header: '操作'}
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
   // select data
@@ -609,7 +636,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
         if (value.status === '1000') {
           this.setQueryDataValueToLabel(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        }else {
+        } else {
           this.toolSrv.setToast('error', '查询失败', value.message)
         }
       }
@@ -630,7 +657,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // 设置值转成名字
   public  setQueryDataValueToLabel(list): void {
-    this.setTableOption(list.map(v => {
+    this.tableContent = list.map(v => {
       v.sex = this.toolSrv.setValueToLabel(this.sexOption, v.sex);
       v.identity = this.toolSrv.setValueToLabel(this.identityOption, v.identity);
       v.roomType = this.toolSrv.setValueToLabel(this.roomTypeOption, v.roomType);
@@ -638,6 +665,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       v.normalPaymentStatus = this.toolSrv.setValueToLabel(this.normalChargeOption, v.normalPaymentStatus);
       v.renovationStatus = this.toolSrv.setValueToLabel(this.renovationStatusOption, v.renovationStatus);
       return v;
-    }));
+    });
+    this.setTableOption(this.tableContent);
   }
 }

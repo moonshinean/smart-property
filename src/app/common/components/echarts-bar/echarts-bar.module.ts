@@ -5,6 +5,7 @@ import { EchartsBarPortlineComponent } from './echarts-bar-portline/echarts-bar-
 import { EchartsBarPortComponent } from './echarts-bar-port/echarts-bar-port.component';
 import { EchartsBarLargeComponent } from './echarts-bar-large/echarts-bar-large.component';
 import {NgxEchartsModule} from 'ngx-echarts';
+import {ThemeService} from '../../public/theme.service';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import {NgxEchartsModule} from 'ngx-echarts';
     EchartsBarPortlineComponent,
     EchartsBarPortComponent,
     EchartsBarLargeComponent
-  ]
+  ],
+  // providers: [ThemeService]
 })
 export class EchartsBarModule { }

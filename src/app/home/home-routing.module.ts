@@ -10,7 +10,7 @@ const routes: Routes = [
     children: [
       {path: 'main', loadChildren: '../business/main/main.module#MainModule'},
       {path: 'baseinfo', loadChildren: '../business/baseinfo/baseinfo.module#BaseinfoModule' , data: {preload: true}},
-      {path: 'charge', loadChildren: '../business/chargeman/chargeman.module#ChargemanModule'},
+      {path: 'charge', loadChildren: '../business/chargeman/chargeman.module#ChargemanModule', data: {preload: true}},
       {path: 'system', loadChildren: '../business/systemset/systemset.module#SystemsetModule'},
       {path: 'coupon', loadChildren: '../business/coupon/coupon.module#CouponModule'},
       {path: 'refund', loadChildren: '../business/refund/refund.module#RefundModule'},

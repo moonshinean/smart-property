@@ -1,15 +1,17 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ApplicationRefund} from '../../../common/model/refund-no.model';
 import {ModifyRefundInfo} from '../../../common/model/refund-info.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {RefundService} from '../../../common/services/refund.service';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-refund-no',
   templateUrl: './refund-no.component.html',
   styleUrls: ['./refund-no.component.less']
 })
-export class RefundNoComponent implements OnInit {
+export class RefundNoComponent implements OnInit, OnDestroy {
   public refundNoTableTitle: any;
   public refundNoTableContent: any[];
   public refundNoTableTitleStyle: any;
@@ -28,25 +30,40 @@ export class RefundNoComponent implements OnInit {
   public RefundDialog: any;
   public ApplicationRefund: ApplicationRefund = new ApplicationRefund();
   public refundReason: any;
-  // public msgs: Message[] = []; // 消息弹窗
-  // public SearchOption = {
-  //   village: [],
-  //   region: [],
-  //   building: [],
-  //   unit: []
-  // };
   public option: any;
   public loadHidden = true;
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // 其他相关
   // public cleanTimer: any; // 清除时钟
   public nowPage = 1;
   constructor(
     private refundNoSrv: RefundService,
     private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService,
   ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.refundNoTableTitleStyle = {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'};
+      }
+    );
   }
 
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.refundNoInitialization();
   }
 
@@ -71,8 +88,11 @@ export class RefundNoComponent implements OnInit {
       this.queryRefundNoInfoPageData();
     });
 
-    this.refundNoTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
+    this.refundNoTableTitleStyle = {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'};
 
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
 
 /*  // village change

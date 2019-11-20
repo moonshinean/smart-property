@@ -75,6 +75,8 @@ export class AuthInterceptor implements HttpInterceptor {
       );
   }
    public prod_http(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+     // 修改请求状态
+     this.store.dispatch({type: 'false'});
      if (req.url === environment.loginUrl + '/login') {
        this.clonedRequest = req.clone({
          url: req.url,
@@ -103,7 +105,9 @@ export class AuthInterceptor implements HttpInterceptor {
        timeout(DEFAULTTIMEOUT),
        tap((event: any) => {
            if (event.status === 200) {
-               return of(event);
+             // 修改请求状态
+             this.store.dispatch({type: 'true'});
+             return of(event);
            }
            return EMPTY;
          },

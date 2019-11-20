@@ -45,18 +45,18 @@ export class AddCouponTotal {
   surname?: string; // 客户姓名
   mobilePhone?: string; // 客户电话
   money?: string; // 	优惠金额
-  effectiveTime?: string; // 		有效时长
+  effectiveTime?: any; // 		有效时长
   couponType?: string; // 优惠卷类型
   remarks?: string; // 备注
   chargeCode?: string; // 收费项目编号
 }
-export class SearchCoupon {
-  villageCode: any;
-  unitCode: any;
-  regionCode: any;
-  buildingCode: any;
-  roomCode: any;
-  pageNo: any;
-  pageSize: any;
-  mobilePhone: any;
-}
+// export class SearchCoupon {
+//   villageCode: any;
+//   unitCode: any;
+//   regionCode: any;
+//   buildingCode: any;
+//   roomCode: any;
+//   pageNo: any;
+//   pageSize: any;
+//   mobilePhone: any;
+// }

@@ -4,6 +4,7 @@ import {CheckboxModule, InputTextModule, MessageModule, MessageService, Messages
 import {LoginComponent} from './login.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoadingModule} from '../common/components/loading/loading.module';
+import {PublicMethedService} from '../common/public/public-methed.service';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,7 @@ import {LoadingModule} from '../common/components/loading/loading.module';
     LoadingModule,
     FormsModule,
   ],
-  providers: [MessageService],
+  providers: [MessageService, PublicMethedService],
   exports: [
     LoginComponent
   ]

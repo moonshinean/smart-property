@@ -51,7 +51,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':this.table.tableContent[0].background,'color':this.table.tableContent[0].color,'text-align': 'center','height':'2vw'}">
             <td>
               <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
             </td>
@@ -68,7 +68,7 @@
               </span>
             </td>
           </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
+          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':this.table.tableContent[1].background,'color':this.table.tableContent[1].color,'text-align': 'center','height':'2vw'}">
             <td>
               <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
             </td>

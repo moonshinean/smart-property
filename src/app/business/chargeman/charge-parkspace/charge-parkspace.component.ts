@@ -1,17 +1,18 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ChargeParkspaceService} from '../../../common/services/charge-parkspace.service';
 import {GlobalService} from '../../../common/services/global.service';
 import { CalculateCostData, ChargeParkSpaceModel} from '../../../common/model/charge-parkSpace.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-charge-parkspace',
   templateUrl: './charge-parkspace.component.html',
   styleUrls: ['./charge-parkspace.component.less']
 })
-export class ChargeParkspaceComponent implements OnInit {
-
+export class ChargeParkspaceComponent implements OnInit, OnDestroy {
   public parkspaceTableTitle: any;
   public parkspaceTableContent: any[];
   public parkspaceTableTitleStyle: any;
@@ -71,15 +72,40 @@ export class ChargeParkspaceComponent implements OnInit {
   public cleanTimer: any; // 清除时钟
   public nowPage = 1;
   // public msgs: Message[] = []; // 消息弹窗
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   constructor(
     private chargeParkspaceSrv: ChargeParkspaceService,
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
-  ) { }
+    private themeSrv: ThemeService
+  ) {
+    this.themeSub = this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.parkspaceTableContent);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.parkspaceInitialization();
   }
-
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
+  }
   // initialization parkspace
   public  parkspaceInitialization(): void {
     this.parkspaceAdd.rentalRenewalStatus = 0;
@@ -538,7 +564,7 @@ export class ChargeParkspaceComponent implements OnInit {
     this.chargeParkspaceSrv.queryChargeParkSpacePageInfo({pageNo: this.nowPage, pageSize: 10 }).subscribe(
       value => {
         this.loadHidden = true;
-        // this.parkspaceTableContent = value.data.contents;
+        this.parkspaceTableContent = value.data.contents;
         this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
@@ -555,15 +581,15 @@ export class ChargeParkspaceComponent implements OnInit {
       width: '100%',
       header: {
         data:  this.parkspaceTableTitle,
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 }

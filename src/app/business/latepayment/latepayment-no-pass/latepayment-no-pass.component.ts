@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LatePaymentQueryData} from '../../../common/model/latepayment.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {LatePaymentService} from '../../../common/services/late-payment.service';
 import {BtnOption} from '../../../common/components/header-btn/headerData.model';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-latepayment-no-pass',
   templateUrl: './latepayment-no-pass.component.html',
   styleUrls: ['./latepayment-no-pass.component.less']
 })
-export class LatepaymentNoPassComponent implements OnInit {
+export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
 
+  public latePaymentNoContents: any;
   public optionTable: any;
   public SearchData: LatePaymentQueryData = new LatePaymentQueryData();
   // 详情相关
@@ -53,20 +56,42 @@ export class LatepaymentNoPassComponent implements OnInit {
   // 其他相关
   public pageOption: any;
   public loadHidden = true;
+
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private toolSrv: PublicMethedService,
-    private lateSrv: LatePaymentService
-  ) { }
+    private lateSrv: LatePaymentService,
+    private themeSrv: ThemeService,
+  ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.latePaymentNoContents);
+      }
+    );
+  }
   ngOnInit() {
-    this.btnOption.btnlist = [
-      // {label: '新增', src: 'assets/images/ic_add.png', style: {background: '#55AB7F', marginLeft: '2vw'} },
-      // {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '1vw'} },
-      // {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#A84847', marginLeft: '1vw'} },
-      // {label: '审核', src: '', style: {background: '#55AB7F', marginLeft: '2vw'} },
-    ];
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
+    this.btnOption.btnlist = [];
     this.btnOption.searchHidden = true;
     this.lateNopassInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
   // Initialize lateNopass data
   public  lateNopassInitialization(): void {
@@ -82,7 +107,7 @@ export class LatepaymentNoPassComponent implements OnInit {
     this.queryData(this.SearchData);
   }
   // set table data
-  public  setTableOption(data): void {
+  public  setTableOption(data1): void {
     this.optionTable = {
       width: '101.4%',
       header: {
@@ -98,15 +123,15 @@ export class LatepaymentNoPassComponent implements OnInit {
           {field: 'month', header: '缴费月数'},
           {field: 'operating', header: '操作'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
-        data: data,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        data: data1,
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
   // set detail dialog data
@@ -164,6 +189,7 @@ export class LatepaymentNoPassComponent implements OnInit {
         console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
+          this.latePaymentNoContents = value.data.contents;
           this.setTableOption(value.data.contents);
           this.pageOption = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {

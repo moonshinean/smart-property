@@ -6,12 +6,13 @@
     .Payment {
       width: 25vw;
       height: 40vh;
-      background: #33353C;
+      background: var(--main-bgc);
       position: absolute;
       border-radius: 10px;
+      box-shadow: 3px 6px 10px var(--main-box-shodow);
       h4 {
         margin-left: 17vw;
-        color: #E6E6E7;
+        color: var(--main-title);
         font-weight: bold;
       }
     }
@@ -51,7 +52,7 @@
       }
       h4 {
         margin-left: 19vw;
-        color: #E6E6E7;
+        color: var(--main-title);
         font-weight: bold;
       }
       .list_event {
@@ -60,16 +61,17 @@
         //margin-top: 3vh;
         //margin-left: 0.5vw;
         div {
-          background: #646464;
+          background: var(--main-event-item);
           border-radius: 10px;
           width: 24vw;
           height: 5vh;
           margin-top: 0.5vh;
           margin-left: 0.5vw;
           line-height: 5vh;
-          color: #DEDEDE;
+          color: var(--main-event-ft);
           .event_text{
             margin-left: 1vw;
+            word-break: break-word;
           }
         }
       }

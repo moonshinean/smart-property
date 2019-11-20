@@ -1,4 +1,6 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {ThemeService} from '../../../public/theme.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-echarts-bar-port',
@@ -6,26 +8,35 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
   styleUrls: ['./echarts-bar-port.component.less']
 })
 export class EchartsBarPortComponent implements OnInit, OnChanges {
+
   public optionsport: any;
   @Input() public data: any;
   @Input() public title: any;
+  @Input() public themeColor: any;
 
-  constructor() {
+  constructor(
+  ) {
+
   }
 
   ngOnInit() {
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.themeColor);
+    console.log(this.title);
+    console.log(this.data);
     this.optionsport = {
-
-      backgroundColor: '#33353C',
-      color: ['#5699E0', '#1F6EC0', '#1D65AD', '#17528F', '#103B63'],
+      backgroundColor: this.themeColor.background,
+      color: this.themeColor.colorList,
       legend: {
         data: this.title,
         // itemWidth: 15,
         itemHeight: 10,
         top: '0',
+        // orient: 'vertical',
         textStyle: {
-          color: '#ccc',
+          color: this.themeColor.legendcolor,
           // fontSize:'1px'
         },
       },
@@ -47,21 +58,21 @@ export class EchartsBarPortComponent implements OnInit, OnChanges {
           type: 'pie',
           radius: '70%',
           center: ['50%', '60%'],
-          data: this.data.sort(function(a, b) {
+          data: this.data.sort( function(a, b) {
             return a.value - b.value;
           }),
           roseType: 'radius',
           label: {
             normal: {
               textStyle: {
-                color: 'rgba(255, 255, 255, 0.7)'
+                color: this.themeColor.labelColor
               }
             }
           },
           labelLine: {
             normal: {
               lineStyle: {
-                color: 'rgba(255, 255, 255, 0.3)'
+                color: this.themeColor.labelLineColor
               },
               smooth: 0.2,
               length: 10,
@@ -70,28 +81,18 @@ export class EchartsBarPortComponent implements OnInit, OnChanges {
           },
           itemStyle: {
             normal: {
-              color: '#5699E0',
+              color: this.themeColor.itemStyle,
               shadowBlur: 200,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
+              shadowColor: this.themeColor.itemShodow
             }
           },
-
           animationType: 'scale',
           animationEasing: 'elasticOut',
-          // animationDelay: function (idx) {
-          //   return Math.random() * 200;
-          // }
         }
       ]
     };
-
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
     // this.optionSport();
-
   }
-
   // public  optionSport(): void {
   //   this.optionsport  = {
   //     backgroundColor: '#33353C',

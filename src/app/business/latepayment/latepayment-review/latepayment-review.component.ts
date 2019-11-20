@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LatePaymentQueryData} from '../../../common/model/latepayment.model';
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {LatePaymentService} from '../../../common/services/late-payment.service';
 import {BtnOption} from '../../../common/components/header-btn/headerData.model';
+import {ThemeService} from '../../../common/public/theme.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-latepayment-review',
   templateUrl: './latepayment-review.component.html',
   styleUrls: ['./latepayment-review.component.less']
 })
-export class LatepaymentReviewComponent implements OnInit {
+export class LatepaymentReviewComponent implements OnInit, OnDestroy {
 
+  public latepaymentReviewContent: any;
   public optionTable: any;
   public latereviewSelect = [];
   // 基础按钮相关
@@ -57,12 +60,35 @@ export class LatepaymentReviewComponent implements OnInit {
   // 其他相关
   public pageOption: any;
   public loadHidden = true;
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private toolSrv: PublicMethedService,
-    private lateSrv: LatePaymentService
-  ) { }
+    private lateSrv: LatePaymentService,
+    private themeSrv: ThemeService,
+  ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.latepaymentReviewContent);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.btnOption.btnlist = [
       // {label: '新增', src: 'assets/images/ic_add.png', style: {background: '#55AB7F', marginLeft: '2vw'} },
       // {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '1vw'} },
@@ -71,6 +97,9 @@ export class LatepaymentReviewComponent implements OnInit {
     ];
     this.btnOption.searchHidden = true;
     this.latereviewInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
   // Initialize latereview data
   public  latereviewInitialization(): void {
@@ -101,7 +130,7 @@ export class LatepaymentReviewComponent implements OnInit {
     }
   }
   // set table data
-  public  setTableOption(data): void {
+  public  setTableOption(data1): void {
     this.optionTable = {
       width: '101.4%',
       header: {
@@ -117,15 +146,15 @@ export class LatepaymentReviewComponent implements OnInit {
           {field: 'month', header: '缴费月数'},
           {field: 'operating', header: '操作'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
-        data: data,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        data: data1,
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
   // set detail dialog data
@@ -183,6 +212,7 @@ export class LatepaymentReviewComponent implements OnInit {
         // console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
+          this.latepaymentReviewContent = value.data.contents;
           this.setTableOption(value.data.contents);
           this.pageOption = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {

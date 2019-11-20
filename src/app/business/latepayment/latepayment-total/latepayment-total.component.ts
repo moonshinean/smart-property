@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {LatePaymentService} from '../../../common/services/late-payment.service';
 import {LatePaymentQueryData, ModifyLatePayment} from '../../../common/model/latepayment.model';
@@ -6,14 +6,17 @@ import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.m
 import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
 import {FormGroup} from '@angular/forms';
 import {BtnOption} from '../../../common/components/header-btn/headerData.model';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-latepayment-total',
   templateUrl: './latepayment-total.component.html',
   styleUrls: ['./latepayment-total.component.less']
 })
-export class LatepaymentTotalComponent implements OnInit {
+export class LatepaymentTotalComponent implements OnInit, OnDestroy {
 
+  public latepaymentContent: any;
   public optionTable: any;
   public latetotleSelect = [];
   // 基础按钮相关
@@ -37,12 +40,36 @@ export class LatepaymentTotalComponent implements OnInit {
   public optionDialog: DialogModel = new DialogModel();
   public pageOption: any;
   public loadHidden = true;
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
+
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private toolSrv: PublicMethedService,
-    private lateSrv: LatePaymentService
-  ) { }
+    private lateSrv: LatePaymentService,
+    private themeSrv: ThemeService,
+  ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.latepaymentContent);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.btnOption.btnlist = [
       // {label: '新增', src: 'assets/images/ic_add.png', style: {background: '#55AB7F', marginLeft: '2vw'} },
       {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '2vw'} },
@@ -51,6 +78,9 @@ export class LatepaymentTotalComponent implements OnInit {
     ];
     this.btnOption.searchHidden = true;
     this.latetotleInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
   // Initialize latetotle data
   public  latetotleInitialization(): void {
@@ -198,15 +228,15 @@ export class LatepaymentTotalComponent implements OnInit {
           {field: 'month', header: '缴费月数'},
           {field: 'operating', header: '操作'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
   // set detail dialog data
@@ -295,6 +325,7 @@ export class LatepaymentTotalComponent implements OnInit {
       value => {
         this.loadHidden = true;
         if (value.status === '1000') {
+          this.latepaymentContent = value.data.contents;
           this.setTableOption(value.data.contents);
           this.pageOption = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {

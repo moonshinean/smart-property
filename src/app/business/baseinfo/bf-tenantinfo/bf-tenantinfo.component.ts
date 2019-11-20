@@ -8,6 +8,7 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 import {Dropdown} from 'primeng/dropdown';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
+import {ThemeService} from '../../../common/public/theme.service';
 
 
 @Component({
@@ -18,6 +19,7 @@ import {SharedServiceService} from '../../../common/public/shared-service.servic
 export class BfTenantinfoComponent implements OnInit {
   public tenantSelect: any;
   public tenantTableOption: any;
+  public tableContent: any;
   // 查询相关
   public searchTenantData = {
     pageSize: 10,
@@ -99,6 +101,13 @@ export class BfTenantinfoComponent implements OnInit {
   public esDate: any;
   public loadHidden = true;
   public deleteId: any[] = [];
+  public table = {
+    tableheader: {background: '#282A31', color: '#DEDEDE'},
+    tableContent: [
+      {background: '#33353C', color: '#DEDEDE'},
+      {background: '#2E3037', color: '#DEDEDE'}],
+    detailBtn: '#6A72A1'
+  };
   // public mobileNumber = '';
   public nowPage = 1;
   // public msgs: Message[] = []; // 消息弹窗
@@ -109,10 +118,23 @@ export class BfTenantinfoComponent implements OnInit {
     private globalSrv: GlobalService,
     private datePipe: DatePipe,
     private shareSrv: SharedServiceService,
+    private themeSrv: ThemeService,
   ) {
-
+    this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.tableContent);
+      }
+    );
   }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.shareSrv.changeEmitted$.subscribe(value => {
       this.searchTenantData.level = value.data.level;
       this.searchTenantData.code = value.data.code;
@@ -868,7 +890,7 @@ export class BfTenantinfoComponent implements OnInit {
     this.tenantTableOption = {
       width: '101.4%',
       header: {
-        data:   [
+        data: [
           {field: 'villageName', header: '小区名称'},
           {field: 'regionName', header: '地块名称'},
           {field: 'buildingName', header: '楼栋名称'},
@@ -878,15 +900,25 @@ export class BfTenantinfoComponent implements OnInit {
           // {field: 'roomStatus', header: '房间使用状态'},
           {field: 'operating', header: '操作'}
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {
+          background: this.table.tableContent[0].background,
+          color: this.table.tableContent[0].color,
+          textAlign: 'center',
+          height: '2vw'
+        },
+        styletwo: {
+          background: this.table.tableContent[1].background,
+          color: this.table.tableContent[1].color,
+          textAlign: 'center',
+          height: '2vw'
+        },
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList: [{label: '详情', color: this.table.detailBtn}]
     };
   }
 
@@ -896,6 +928,7 @@ export class BfTenantinfoComponent implements OnInit {
         this.loadHidden = true;
         if (value.status === '1000') {
           if (value.data.contents) {
+            this.tableContent = value.data.contents;
             this.setTableOption(value.data.contents);
           }
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};

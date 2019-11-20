@@ -1,16 +1,17 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {GlobalService} from '../../../common/services/global.service';
 import {AddRoomBindChargeItem, ModifyRoomBindChargeItem} from '../../../common/model/bf-roomBindChargeItem.model';
 import {BfRoomBindChargeitemService} from '../../../common/services/bf-room-bind-chargeitem.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {ThemeService} from '../../../common/public/theme.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-bf-roombind-changeitem',
   templateUrl: './bf-roombind-changeitem.component.html',
   styleUrls: ['./bf-roombind-changeitem.component.less']
 })
-export class BfRoombindChangeitemComponent implements OnInit {
-
+export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
 
   @ViewChild('input') input: Input;
   // @ViewChild('file') file: Input;
@@ -38,16 +39,41 @@ export class BfRoombindChangeitemComponent implements OnInit {
   public esDate: any;
   public loadHidden = true;
   public deleteId: any[] = [];
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
+  public themeSub: Subscription;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private roomBindChargeSrv: BfRoomBindChargeitemService,
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
-  ) { }
+    private themeSrv: ThemeService
+  ) {
+   this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.roombindTableContent);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.roombindInitialization();
   }
-
+  ngOnDestroy(): void {
+     this.themeSub.unsubscribe();
+  }
   // initialization houseinfo
   public  roombindInitialization(): void {
     this.loadHidden = false;
@@ -361,15 +387,15 @@ export class BfRoombindChangeitemComponent implements OnInit {
           {field: 'chargeCode', header: '缴费项目'},
           {field: 'operating', header: '操作'}
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 
@@ -386,6 +412,7 @@ export class BfRoombindChangeitemComponent implements OnInit {
               }
             });
           });
+          this.roombindTableContent = val.data.contens;
           this.setTableOption(val.data.contents);
           this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
         } else {

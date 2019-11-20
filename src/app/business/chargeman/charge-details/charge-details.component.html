@@ -24,11 +24,13 @@
         <!--</div>-->
       <!--</div>-->
 
-      <!--搜索-->
-<!--      <div class="ui-inputgroup charge-details-header-search">-->
-<!--        <input type="text" pInputText placeholder="请输入缴费人">-->
-<!--        <button id="disabled-btn" class="charge-details-header-btn-search" type="button"  (click)="detailsSearchClick()"  label="搜索">搜索</button>-->
-<!--      </div>-->
+<!--      搜索-->
+      <div class="ui-inputgroup charge-details-header-search">
+        <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>
+        <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
+        <input type="text" pInputText placeholder="请输入需要搜索的值"  [(ngModel)]="searchData">
+        <button id="disabled-btn" class="charge-details-header-btn-search" type="button"  (click)="detailsSearchClick()"  label="搜索">搜索</button>
+      </div>
     </div>
   <!--<button class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" style="position: absolute;top: 18.7vh;right: 5vw;z-index: 10000">搜索</button>-->
     <!--表格-->
@@ -156,7 +158,5 @@
   <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
   <rbi-file-pop [UploadFileOption]="uploadFileOption" (event)="uploadFileSureClick($event)"></rbi-file-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
-  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
-
 </div>
 

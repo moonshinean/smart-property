@@ -38,8 +38,9 @@
   <p-dialog header="信息添加" [(visible)]="tollAddDialog" [width]="1000" (onHide)="clearData()">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+      <div class="ui-g-12"></div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addchargeCode">项目名称：</label>
         </div>
         <div class="ui-g-8">
@@ -47,15 +48,15 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addchargeType">项目类型：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown  id="addchargeType" [options]="chargeTypeOption" scrollHeight="100px" placeholder="请选择项目类型..." [(ngModel)]="tollTitle.chargeType"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4"  style="text-align: right">
           <label for="addchargeUnit">收费单位：</label>
         </div>
         <div class="ui-g-8">
@@ -63,7 +64,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4"  style="text-align: right">
           <label for="addchargeStandard">收费单价：</label>
         </div>
         <div class="ui-g-8">
@@ -71,7 +72,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4"  style="text-align: right">
           <label >是否可退款：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -79,7 +80,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4"  style="text-align: right">
           <label >是否必缴：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">

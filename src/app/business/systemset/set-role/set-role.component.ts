@@ -1,17 +1,19 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {GlobalService} from '../../../common/services/global.service';
 import {AddSetRole, ModifySetRole, SetRole} from '../../../common/model/set-role.model';
 import {SetRoleService} from '../../../common/services/set-role.service';
 import {isObjectFlagSet} from 'tslint';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-set-role',
   templateUrl: './set-role.component.html',
   styleUrls: ['./set-role.component.less']
 })
-export class SetRoleComponent implements OnInit {
+export class SetRoleComponent implements OnInit, OnDestroy {
 
   public roleTableContent: any;
   public roleSelect: SetRole[];
@@ -32,15 +34,41 @@ export class SetRoleComponent implements OnInit {
   public setlimitCodeOption: any[] = [];
   public loadHidden = true;
   public pageNo = 1;
+
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private roleSrv: SetRoleService,
-    private toolSrv: PublicMethedService
-  ) { }
+    private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService
+  ) {
+    this.themeSub = this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.roleTableContent);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.roleInitialization();
   }
-
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
+  }
   // initialization role
   public  roleInitialization(): void {
     this.loadHidden = false;
@@ -225,12 +253,12 @@ export class SetRoleComponent implements OnInit {
           {field: 'roleCode', header: '角色编码'},
           {field: 'roleName', header: '角色名称'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 1,
       tableList:  []
@@ -245,8 +273,8 @@ export class SetRoleComponent implements OnInit {
     this.roleSrv.queryRoleList({pageNo: this.pageNo, pageSize: 10}).subscribe(
       (value) => {
         this.loadHidden = true;
-        this.setTableOption(value.data.contents);
         this.roleTableContent = value.data.contents;
+        this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );

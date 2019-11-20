@@ -11,7 +11,7 @@ export class PagingComponent implements OnInit, OnChanges {
   @Input() public option = new PagingOption();
   @Output() public pageClick = new EventEmitter<number>();
   public totalPage: number;
-  public nowPage : number;
+  public nowPage: number;
   public showPaging = true;
   public skpPage: number;
   constructor() { }

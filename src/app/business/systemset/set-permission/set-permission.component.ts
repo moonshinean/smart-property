@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, Dropdown, MessageService} from 'primeng/primeng';
 
 import {GlobalService} from '../../../common/services/global.service';
@@ -6,13 +6,15 @@ import {SetPermissionService} from '../../../common/services/set-permission.serv
 import {AddSetPermission, ModifySetPermission, PermitDTO, SetPermission} from '../../../common/model/set-peimission.model';
 import {TreeNode} from '../../../common/model/shared-model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-set-permission',
   templateUrl: './set-permission.component.html',
   styleUrls: ['./set-permission.component.less']
 })
-export class SetPermissionComponent implements OnInit {
+export class SetPermissionComponent implements OnInit, OnDestroy {
   public permissionOption: any;
   public permissionTableContent = [];
   public permissionSelect: SetPermission[];
@@ -34,13 +36,40 @@ export class SetPermissionComponent implements OnInit {
   public setlimitCodeOption: any[] = [];
   public loadHidden = true;
   public pageNo = 1;
+
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private permissionSrv: SetPermissionService,
-    private toolSrv: PublicMethedService
-  ) { }
+    private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService
+  ) {
+    this.themeSub = this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.permissionTableContent);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.permissionInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
 
   // Initialize permission data
@@ -287,12 +316,12 @@ export class SetPermissionComponent implements OnInit {
           {field: 'roleName', header: '角色名称'},
           {field: 'title', header: '权限名称'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 1,
       tableList:  []

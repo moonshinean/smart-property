@@ -1,25 +1,30 @@
 
 .check-table-btn {
   .check-table-btn-detail {
-      width: 6vw;
+      width: 5vw;
       text-align: center;
       border-radius: 5px;
-      height: 3.5vh;
+      height: 3vh;
       outline: none;
       color: #fff;
       border: 0;
-      background: #6A72A1;
+      background: var(--table-detail);
       cursor:pointer;
     }
-    .check-table-btn-detail:hover{
-      background: #50588E;
-    }
+    //.check-table-btn-detail:hover{
+    //  background: #50588E;
+    //}
   ::ng-deep .ui-table-scrollable-body::-webkit-scrollbar {
+    display: inline;
+    //position: absolute;
+  }
+  ::ng-deep .ui-table-scrollable-header::-webkit-scrollbar{
     display: none;
   }
-  ::ng-deep .ui-table-scrollable-header-box {
-    margin-right: 0;
-  }
+  //::ng-deep .ui-table .ui-table-scrollable-body-table{
+  //  padding-right: 10vw;
+  //  //background: #3A7ADF;
+  //}
   ::ng-deep .ui-table .ui-table-thead>tr >th{
     border: 0;
 

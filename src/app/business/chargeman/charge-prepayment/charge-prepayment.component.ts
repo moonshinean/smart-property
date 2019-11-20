@@ -1,16 +1,19 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ChargePrepaymentService} from '../../../common/services/charge-prepayment.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-charge-prepayment',
   templateUrl: './charge-prepayment.component.html',
   styleUrls: ['./charge-prepayment.component.less']
 })
-export class ChargePrepaymentComponent implements OnInit {
+export class ChargePrepaymentComponent implements OnInit, OnDestroy {
 
-  public prepaymentTableTitle: any;
+
+  public prepaymentTableContnt: any;
 
   public prepaymentSelect: any;
   // 缴费相关
@@ -31,22 +34,40 @@ export class ChargePrepaymentComponent implements OnInit {
 
   public optionTable: any;
   public detailOption: any;
-  // public SearchOption = {
-  //   village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
-  //   region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
-  //   building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
-  //   unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
-  //   room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
-  // };
-  // public msgs: Message[] = []; // 消息弹窗
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   constructor(
     // private messageService: MessageService,
     private prepaymentSrv: ChargePrepaymentService,
     private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService
     // private confirmationService: ConfirmationService,
-  ) { }
+  ) {
+    this.themeSub = this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.paymentTableContnt);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.prepaymentInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
 
   // initialization prepayment
@@ -162,6 +183,7 @@ export class ChargePrepaymentComponent implements OnInit {
               }
             );
             // console.log();
+            this.prepaymentTableContnt = value.data.contents;
             this.setTableOption(value.data.contents);
           }
         } else {
@@ -189,15 +211,15 @@ export class ChargePrepaymentComponent implements OnInit {
           {field: 'idt', header: '缴费时间'},
           {field: 'operating', header: '操作'}
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 }

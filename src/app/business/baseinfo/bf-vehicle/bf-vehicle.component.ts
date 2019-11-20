@@ -1,5 +1,5 @@
 
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BfVehicleService} from '../../../common/services/bf-vehicle.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {AddVehicle, ModifyVehicle, Vehicle} from '../../../common/model/bf-vehicle.model';
@@ -7,14 +7,17 @@ import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
 import {FormGroup} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-bf-vehicle',
   templateUrl: './bf-vehicle.component.html',
   styleUrls: ['./bf-vehicle.component.less']
 })
-export class BfVehicleComponent implements OnInit {
+export class BfVehicleComponent implements OnInit, OnDestroy {
   public vehicleTableTitle: any;
+  public vehicleTableContent: any;
   public vehicleTableTitleStyle: any;
   public vehicleSelect: any[] = [];
   public tableOption: any;
@@ -55,18 +58,42 @@ export class BfVehicleComponent implements OnInit {
   public nowPage = 1;
   public roonCodeSelectOption: any[] = [];
 
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private toolSrv: PublicMethedService,
     private vehicleSrv: BfVehicleService,
     private globalSrv: GlobalService,
+    private themeSrv: ThemeService,
   ) {
+    this.themeSub = this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.vehicleTableContent);
+      }
+    );
   }
 
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.vehicleInitialization();
   }
-
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
+  }
   // initialization vehicle
   public vehicleInitialization(): void {
     this.vehicleTableTitle = [
@@ -316,17 +343,27 @@ export class BfVehicleComponent implements OnInit {
     this.tableOption = {
       width: '101.4%',
       header: {
-        data:  this.vehicleTableTitle,
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        data: this.vehicleTableTitle,
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {
+          background: this.table.tableContent[0].background,
+          color: this.table.tableContent[0].color,
+          textAlign: 'center',
+          height: '2vw'
+        },
+        styletwo: {
+          background: this.table.tableContent[1].background,
+          color: this.table.tableContent[1].color,
+          textAlign: 'center',
+          height: '2vw'
+        },
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
-    };
+      tableList: [{label: '详情', color: this.table.detailBtn}]
+    }
   }
   // query Data (查询数据)
   public  queryVehicleQuerydata(page): void {
@@ -336,6 +373,7 @@ export class BfVehicleComponent implements OnInit {
           () => {
           console.log(value);
           this.loadHidden = true;
+          this.vehicleTableContent = value.data.contents;
           this.setTableOption(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         });

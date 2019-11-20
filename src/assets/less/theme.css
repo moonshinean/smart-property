@@ -1,6 +1,31 @@
-body{
-  --bgc-theme: #33353C;
-  --ft-sidebar-theme: #8F9198;
-  --ft-sidebar-hover-theme: #3A79DD;
-  --bgc-sidbarMunu: #3A7ADF;
+:root{
+  /*背景颜色*/
+  --bgc-theme: '';
+  /*侧边栏组件*/
+  --ft-sidebar-theme: '';
+  --ft-sidebar-hover-theme: '';
+  --bgc-sidbarMunu: '';
+  /*底部组件*/
+  --footer-ft: '';
+  --footer-bgc: '';
+  /*body*/
+  --body-bgc: '';
+  /*模块*/
+  --mokuai-bgc: '';
+  /*详情按钮*/
+  --table-detail: '';
+  /* 分页*/
+  --paging-bgc: '';
+  --paging-ft: '';
+  --paging-input: '';
+/*  头部背景颜色*/
+  --header-bgc: '';
+
+/*  main主页事件颜色*/
+  --main-event-item: '';
+  --main-event-ft: '';
+  --main-bgc: '';
+  --main-title: '';
+  --main-box-shodow: '';
+
 }

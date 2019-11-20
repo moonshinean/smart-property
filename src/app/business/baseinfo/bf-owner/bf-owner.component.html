@@ -26,7 +26,7 @@
     <!--//搜索-->
     <div class="ui-inputgroup bf-owner-header-search">
       <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选查看范围..." (onChange)="searchTypeChange()" [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入需要搜索的值" style="width: 7vw" [(ngModel)]="inputSearchData">
+      <input type="text" pInputText placeholder="请输入需要搜索的值" [(ngModel)]="inputSearchData">
       <button id="disabled-btn" class="bf-owner-header-btn-search" type="button"  (click)="ownerSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>

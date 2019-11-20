@@ -1,18 +1,21 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {GlobalService} from '../../../common/services/global.service';
 import {CouponAudited} from '../../../common/model/coupon-audited.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {CouponService} from '../../../common/services/coupon.service';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-coupon-audited',
   templateUrl: './coupon-audited.component.html',
   styleUrls: ['./coupon-audited.component.less']
 })
-export class CouponAuditedComponent implements OnInit {
+export class CouponAuditedComponent implements OnInit, OnDestroy {
 
   public couponAuditedOption: any;
   public couponAuditedSelect: any;
+  public couponAuditedContents: any;
 
   // 详情相关
   public couponAuditedDetailOption: any;
@@ -26,14 +29,39 @@ export class CouponAuditedComponent implements OnInit {
   public loadingHide = true;
   public nowPage = 1;
   // public msgs: Message[] = []; // 消息弹窗
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   constructor(
     private couponAuditedSrv: CouponService,
-    private toolSrv: PublicMethedService
+    private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService,
   ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.couponAuditedContents);
+      }
+    );
   }
 
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.couponAuditedInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
 
   // initialization houseinfo
@@ -155,15 +183,15 @@ export class CouponAuditedComponent implements OnInit {
           {field: 'money', header: '金额'},
           {field: 'operating', header: '操作'}
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 
@@ -181,6 +209,7 @@ export class CouponAuditedComponent implements OnInit {
           v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
           v.pastDue = this.toolSrv.setValueToLabel(this.pastDueOption, v.pastDue);
         });
+        this.couponAuditedContents = value.data.contents;
         this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }

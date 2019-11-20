@@ -1,28 +1,28 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import { graphic, registerMap } from 'echarts';
+import {ThemeService} from '../../../public/theme.service';
+import {Subscription} from 'rxjs';
 @Component({
   selector: 'rbi-echarts-pie-general',
   templateUrl: './echarts-pie-general.component.html',
   styleUrls: ['./echarts-pie-general.component.less']
 })
-export class EchartsPieGeneralComponent implements OnInit {
+export class EchartsPieGeneralComponent implements OnInit, OnChanges {
+
   @Input() public lineData: any;
   @Input() public barData: any;
   @Input() public data: any;
+  @Input() public themeColor: any;
   public option: any;
-  constructor() { }
+  constructor(
+  ) {
+  }
   ngOnInit() {
-    // var lineData = ['600','600','600','600','600','600','600'];
-    // var barData = [];
-    // for (var i = 0; i < 7; i++) {
-    //
-    //   var b = Math.random() * 500;
-    //   var d = Math.random() * 300;
-    //   barData.push(b);
-    //   var date = ['周一','周二','周三','周四','周五','周六','周日'];
-    // }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
     this.option = {
-      backgroundColor: '#33353C',
+      backgroundColor: this.themeColor.background,
       grid: {
         top: '12',
         bottom: '24',
@@ -34,7 +34,7 @@ export class EchartsPieGeneralComponent implements OnInit {
           type: 'shadow',
           label: {
             show: true,
-            backgroundColor: '#333'
+            backgroundColor: this.themeColor.tipcolor
           }
         }
       },
@@ -42,16 +42,22 @@ export class EchartsPieGeneralComponent implements OnInit {
         data: this.data,
         axisLine: {
           lineStyle: {
-            color: '#ccc'
+            color: this.themeColor.axislineColor
           }
+        },
+        nameTextStyle: {
+          color: this.themeColor.axislabelColor
         }
       },
       yAxis: {
         splitLine: {show: false},
         axisLine: {
           lineStyle: {
-            color: '#ccc'
+            color: this.themeColor.axislineColor
           }
+        },
+        nameTextStyle: {
+          color: this.themeColor.axislabelColor
         }
       },
       series: [ {
@@ -63,9 +69,10 @@ export class EchartsPieGeneralComponent implements OnInit {
             barBorderRadius: 10,
             color: new graphic.LinearGradient(
               0, 0, 0, 1,
+              // this.themeColor.lineGradientColor
               [
-                {offset: 0, color: '#5194D8'},
-                {offset: 1, color: '#133E64'}
+                {offset: 0, color: this.themeColor.lineGradientColor[0]},
+                {offset: 1, color: this.themeColor.lineGradientColor[1]}
               ]
             ),
           },
@@ -79,7 +86,7 @@ export class EchartsPieGeneralComponent implements OnInit {
         barWidth: 20,
         itemStyle: {
           normal: {
-            color: '#4D4C52'
+            color: this.themeColor.linebgc
           }
         },
         z: -8,
@@ -87,5 +94,4 @@ export class EchartsPieGeneralComponent implements OnInit {
       }]
     };
   }
-
 }

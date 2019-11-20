@@ -93,7 +93,7 @@
             <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
           </td>
           <td  *ngFor="let col of columns.slice(0, columns.length-1)" >
-            <span *ngIf="rowData['minMonth'] > 0" style="color: red">{{rowData[col.field]}}</span>
+            <span *ngIf="rowData['minMonth'] > 0" style="color: #f44204">{{rowData[col.field]}}</span>
             <span *ngIf="rowData['minMonth'] === 0" >
               <span *ngIf="col.field !== 'minMonth'">{{rowData[col.field]}}</span>
               <span *ngIf="col.field === 'minMonth'">未欠费</span>
@@ -108,7 +108,7 @@
             <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
           </td>
           <td  *ngFor="let col of columns.slice(0, columns.length-1)" >
-            <span *ngIf="rowData['minMonth'] > 0" style="color: red">{{rowData[col.field]}}</span>
+            <span *ngIf="rowData['minMonth'] > 0" style="color: #f44204">{{rowData[col.field]}}</span>
             <span *ngIf="rowData['minMonth'] === 0" >
               <span *ngIf="col.field !== 'minMonth'">{{rowData[col.field]}}</span>
               <span *ngIf="col.field === 'minMonth'">未欠费</span>

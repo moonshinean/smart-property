@@ -6,6 +6,7 @@ import {Location} from '@angular/common';
 import {LocalStorageService} from '../../common/services/local-storage.service';
 import {HomeService} from '../../common/services/home.service';
 import {PublicMethedService} from '../../common/public/public-methed.service';
+import {ThemeService} from '../../common/public/theme.service';
 @Component({
   selector: 'rbi-sidebar',
   templateUrl: './sidebar.component.html',
@@ -21,6 +22,8 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
   public ItemData = [];
   public flag: boolean;
   public cleanTimer: any; // 清除时钟
+  public ft = '#8F9198';
+  public ftHover = '#3A79DD';
   // public items: MenuItem[];
   constructor(
     private router: Router,
@@ -29,38 +32,22 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
     private homeSrv: HomeService,
     private messageService: MessageService,
     private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService
 
   ) {
+    this.themeSrv.changeEmitted$.subscribe(value => {
+      console.log(value);
+      this.ftHover = value.siderbar.ftHover;
+      this.ft  = value.siderbar.ft;
+      this.sidebarRouterStatus(this.url);
+    });
   }
 
   ngOnInit() {
-    // if (this.localSrv.getObject('sidebarItem') === '' || this.localSrv.getObject('sidebarItem') === null ) {
-    //   this.ItemData = this.toolSrv.ItemData;
-    //   this.localSrv.getObject('item').forEach(v => {
-    //     this.ItemData.forEach( h => {
-    //       if (v.title === h.title) {
-    //         this.items = [];
-    //         this.homeSrv.getChildrenRouter({parentCode: v.permisCode}).subscribe(
-    //           (value) => {
-    //             value.data.forEach( data => {
-    //               h.routingItem.forEach( val => {
-    //                 if (val.label === data.title) {
-    //                   this.sidebarItem.push({parentCode: data.parentCode, label: data.title });
-    //                   h.item.push(val);
-    //                   this.flag = false;
-    //                 }
-    //               });
-    //             });
-    //             this.localSrv.setObject('sidebarItem', this.ItemData);
-    //           }
-    //         );
-    //       }
-    //     });
-    //   });
-    // } else {
-    //   // this.ItemData = []
-    //   this.ItemData = this.localSrv.getObject('sidebarItem');
-    // }
+    if(this.themeSrv.setTheme !== undefined) {
+      this.ftHover = this.themeSrv.setTheme.siderbar.ftHover;
+      this.ft  = this.themeSrv.setTheme.siderbar.ft;
+    }
   }
 
   // change the text Color
@@ -68,12 +55,12 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
     const li = document.getElementsByClassName('ui-panelmenu-header-link');
     for (let i  = 0 ; i < li.length; i++) {
       // @ts-ignore
-      li[i].style.color = '#8F9198';
+      li[i].style.color = this.ft;
     }
     if (e.target.className === 'ui-menuitem-text') {
-      e.path[1].style.color = '#3A79DD';
+      e.path[1].style.color = this.ftHover;
     } else {
-      e.path[0].style.color = '#3A79DD';
+      e.path[0].style.color = this.ftHover;
     }
   }
 
@@ -102,14 +89,14 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           if (prop.routerLink.toString().split('/', 4)[3].indexOf(url) === 0) {
             const li = document.getElementsByClassName('ui-panelmenu-header-link');
             // @ts-ignore
-            li[position - 1].style.color = '#3A7ADF';
+            li[position - 1].style.color = this.ftHover;
             for (let i = position; i < li.length; i++) {
               // @ts-ignore
-              li[i].style.color = '#8F9198';
+              li[i].style.color = this.ft;
             }
             for (let i = 0; i < position - 1; i++) {
               // @ts-ignore
-              li[i].style.color = '#8F9198';
+              li[i].style.color = this.ft;
             }
           }
         });

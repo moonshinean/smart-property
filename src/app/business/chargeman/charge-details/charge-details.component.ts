@@ -1,32 +1,23 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ChargeDetailsService} from '../../../common/services/charge-details.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ChargeDetail, ItemDetail} from '../../../common/model/charge-detail.model';
 import {ChargeItemDetail} from '../../../common/model/charge-payment.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
+import {Subscription} from 'rxjs';
+import {ThemeService} from '../../../common/public/theme.service';
 
 @Component({
   selector: 'rbi-charge-details',
   templateUrl: './charge-details.component.html',
   styleUrls: ['./charge-details.component.less']
 })
-export class ChargeDetailsComponent implements OnInit {
+export class ChargeDetailsComponent implements OnInit, OnDestroy {
 
-  // public ChargedetailTableTitle =  [
-  //   {field: 'orderId', header: '订单编号'},
-  //   {field: 'villageName', header: '小区名称'},
-  //   {field: 'roomCode', header: '房间编号'},
-  //   {field: 'payerName', header: '缴费人'},
-  //   {field: 'payerPhone', header: '缴费人电话'},
-  //   {field: 'paymentMethod', header: '支付方式'},
-  //   {field: 'actualTotalMoneyCollection', header: '缴费金额'},
-  //   {field: 'idt', header: '缴费时间'},
-  //   {field: 'operating', header: '操作'},
-  // ];
-  // public detailsTableContent: any;
-  public detailsTableTitleStyle: any;
   public option: any;
+  public paymentDetailTableContnt: any;
   public detailsDialogTableTitle = [
     {field: 'chargeName', header: '项目名称'},
     {field: 'chargeStandard', header: '标准单价'},
@@ -49,14 +40,27 @@ export class ChargeDetailsComponent implements OnInit {
   public uploadFileOption: FileOption = new FileOption();
   public uploadRecordOption: any;
   public optionTable: any;
-  // public SearchOption = {
-
-  //   village: [{label: '未来城', value: '1'}, {label: '云城尚品', value: '2'}],
-  //   region: [{label: 'A3组团', value: '1'}, {label: 'A4组团', value: '2'}, {label: 'A5组团', value: '3'}, {label: 'A6组团', value: '4'}],
-  //   building: [{label: '一栋', value: '1'}, {label: '二栋', value: '2'}, {label: '三栋', value: '3'}, {label: '四栋', value: '4'}],
-  //   unit: [{label: '一单元', value: '1'}, {label: '二单元', value: '2'}, {label: '三单元', value: '3'}, {label: '四单元', value: '4'}],
-  //   room: [{label: '2104', value: '1'}, {label: '2106', value: '2'}, {label: '2107', value: '3'}, {label: '2108', value: '4'}],
-  // };
+  // 搜索相关
+  public searchType = 0;
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchData = '';
   // 缴费相关
   // public projectSelectDialog: boolean;
   public chargeStatusoption: any[] = [];
@@ -76,14 +80,65 @@ export class ChargeDetailsComponent implements OnInit {
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public loadHidden = true;
-
-  // public msgs: Message[] = []; // 消息弹窗
+  // 树结构订阅
+  public detailSub: Subscription;
+  // 切换主题
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   constructor(
     private chargeDetailSrv: ChargeDetailsService,
     private toolSrv: PublicMethedService,
-  ) { }
+    private  sharedSrv: SharedServiceService,
+    private themeSrv: ThemeService
+  ) {
+    this.themeSub = this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.paymentDetailTableContnt);
+      }
+    );
+    this.detailSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchData[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchData.pageNo = 1;
+        this.reslveSearchData();
+        this.queryData();
+      }
+    );
+  }
   ngOnInit() {
+    if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.sharedSrv.SearchData) {
+        if (key !== 'data') {
+          this.SearchData[key] = this.sharedSrv.SearchData[key];
+          // console.log(key);
+        }
+      }
+      // this
+    }
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.detailsInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
+    // 取消订阅
+    this.detailSub.unsubscribe();
   }
 
   // initialization details
@@ -93,14 +148,44 @@ export class ChargeDetailsComponent implements OnInit {
       this.chargeStatusoption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
       this.queryData();
     });
-    this.detailsTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
+  }
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchData.mobilePhone = '';
+    this.SearchData.surname = '';
+    this.SearchData.idNumber = '';
   }
  // condition search click
   public  detailsSearchClick(): void {
-    // @ts-ignore
-    // console.log(this.input.nativeElement.value);
-    // console.log('这里是条件搜索');
+    this.nowPage = this.SearchData.pageNo = 1;
+    if (this.searchData !== '') {
+      this.selectSearchType();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    }
   }
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+              this.queryData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryData(); break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryData();break;
+      case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryData(); break;
+      default:
+        break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchData) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchData[serchKey] = '';
+      }
+    }
+  }
+
   // sure modify details
   public  detailsSureClick(): void {
     this.loadHidden = false;
@@ -152,8 +237,7 @@ export class ChargeDetailsComponent implements OnInit {
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.queryData();
-
+    this.selectSearchType();
   }
 
   public  uploadFileClick(): void {
@@ -176,15 +260,15 @@ export class ChargeDetailsComponent implements OnInit {
           {field: 'actualTotalMoneyCollection', header: '缴费金额'},
           {field: 'idt', header: '缴费时间'},
           {field: 'operating', header: '操作'}],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
   public  uploadFileSureClick(e): void {
@@ -207,12 +291,12 @@ export class ChargeDetailsComponent implements OnInit {
                     {field: 'result', header: '结果'},
                     {field: 'remarks', header: '备注'},
                   ],
-                  style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+                  style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
                 },
                 tableContent: {
                   data: value.data.logOldBillsDOS,
-                  styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
-                  styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+                  styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+                  styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
                 }
               }
             };
@@ -229,7 +313,7 @@ export class ChargeDetailsComponent implements OnInit {
   }
 
   public  queryData(): void {
-    this.chargeDetailSrv.queryChargeDataPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.chargeDetailSrv.queryChargeDataPage(this.SearchData).subscribe(
       (value) => {
         console.log(value);
         this.loadHidden = true;
@@ -237,6 +321,7 @@ export class ChargeDetailsComponent implements OnInit {
           value.data.contents.forEach( v => {
             v.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, v.paymentMethod);
           });
+          this.paymentDetailTableContnt = value.data.contents;
           this.setTableOption(value.data.contents);
         }
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};

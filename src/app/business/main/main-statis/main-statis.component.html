@@ -3,19 +3,19 @@
     <div class="statis">
       <div class="Payment">
         <h4>事件类型统计</h4>
-        <rbi-echarts-bar-port [data]="Bardata" [title]="Bartitle"></rbi-echarts-bar-port>
+        <rbi-echarts-bar-port [data]="Bardata" [title]="Bartitle" [themeColor]="this.themePieColor"></rbi-echarts-bar-port>
       </div>
       <div class="Payment first">
-        <img src="assets/images/ic_refrue.png" alt=""  (click)="refresh($event)">
-        <!--<img src="http://www.gyrbi.com/SmartProperty/assets/images/ic_refrue.png" alt=""  (click)="refresh($event)">-->
-        <span class="bar_text">点击刷新</span>
+<!--        <img src="assets/images/ic_refrue.png" alt=""  (click)="refresh($event)">-->
+<!--        &lt;!&ndash;<img src="http://www.gyrbi.com/SmartProperty/assets/images/ic_refrue.png" alt=""  (click)="refresh($event)">&ndash;&gt;-->
+<!--        <span class="bar_text">点击刷新</span>-->
         <h4>本周缴费统计</h4>
-        <rbi-echarts-pie-general [barData]="piedata.barData" [lineData]="piedata.lineData" [data]="piedata.data"></rbi-echarts-pie-general>
+        <rbi-echarts-pie-general  [themeColor]="this.themeBarColor" [barData]="piedata.barData" [lineData]="piedata.lineData" [data]="piedata.data"></rbi-echarts-pie-general>
       </div>
       <div class="Payment second">
         <!--<img src="http://www.gyrbi.com/SmartProperty/assets/images/ic_jiantou.png" alt="" >-->
-        <img src="assets/images/ic_jiantou.png" alt="" >
-        <span class="pie_text">历史记录</span>
+<!--        <img src="assets/images/ic_jiantou.png" alt="" >-->
+<!--        <span class="pie_text">历史记录</span>-->
         <h4>事件记录</h4>
         <div class="list_event">
           <p-scrollPanel [style]="{width:'110%',height: '97%'}" styleClass="custombar">

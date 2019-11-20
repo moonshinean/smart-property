@@ -101,6 +101,7 @@ export class ChargeItemDetail {
   payerPhone?: any;
   payerName?: any;
   customerUserId?: any;
+  // arrearsType?: any;
 }
 export class CostDeduction {
   orderId?: any;

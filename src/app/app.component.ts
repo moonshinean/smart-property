@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {PublicMethedService} from './common/public/public-methed.service';
 
 @Component({
   selector: 'rbi-root',
@@ -6,5 +7,4 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  title = 'Intelligent-networkR';
 }

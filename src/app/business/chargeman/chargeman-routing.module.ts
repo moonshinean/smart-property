@@ -1,27 +1,22 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {ChargemanComponent} from './chargeman/chargeman.component';
-import {ChargeDetailsComponent} from './charge-details/charge-details.component';
-import {ChargeExportComponent} from './charge-export/charge-export.component';
-import {ChargePrepaymentComponent} from './charge-prepayment/charge-prepayment.component';
-import {ChargeHistoricalreportComponent} from './charge-historicalreport/charge-historicalreport.component';
 import {ChargemanPaymentComponent} from './chargeman-payment/chargeman-payment.component';
-import {ChargeParkspaceComponent} from './charge-parkspace/charge-parkspace.component';
 
 const routes: Routes = [
   {
     path: '',
     component: ChargemanComponent,
     children: [
-      {path: 'details', component: ChargeDetailsComponent},
+      {path: 'details', loadChildren: './charge-details/charge-details.module#ChargeDetailsModule'},
       // {path: 'record', component: ChargeRecordComponent},
-      {path: 'export', component: ChargeExportComponent},
+      {path: 'export', loadChildren: './charge-export/charge-export.module#ChargeExportModule'},
       // {path: 'margin', component: ChargeMarginComponent},
-      {path: 'payment', component: ChargemanPaymentComponent},
+      {path: 'payment', component: ChargemanPaymentComponent,  data: {preload: true}},
       // {path: 'arrears', component: ChargeArrearsComponent},
-      {path: 'prepayment', component: ChargePrepaymentComponent},
-      {path: 'historicalreport', component: ChargeHistoricalreportComponent},
-      {path: 'parkspace', component: ChargeParkspaceComponent},
+      {path: 'prepayment', loadChildren: './charge-prepayment/charge-prepayment.module#ChargePrepaymentModule'},
+      {path: 'historicalreport', loadChildren: './charge-historicalreport/charge-historicalreport.module#ChargeHistoricalreportModule'},
+      {path: 'parkspace', loadChildren: './charge-parkspace/charge-parkspace.module#ChargeParkspaceModule'},
     ]
   }
 ];

@@ -1,17 +1,20 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {CouponReview} from '../../../common/model/coupon-review.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {CouponService} from '../../../common/services/coupon.service';
+import {ThemeService} from '../../../common/public/theme.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-coupon-review',
   templateUrl: './coupon-review.component.html',
   styleUrls: ['./coupon-review.component.less']
 })
-export class CouponReviewComponent implements OnInit {
+export class CouponReviewComponent implements OnInit, OnDestroy {
 
   public couponReviewTableTitle: any;
   public couponReviewSelect: any;
+  public couponReviewContent: any;
   // 添加相关
   public esDate: any;
   // 审核相关
@@ -32,16 +35,42 @@ export class CouponReviewComponent implements OnInit {
   public couponReviewDetailOption: any;
   // 审核相关
   public reviewOption: any;
+
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private couponReviewSrv: CouponService,
-    private toolSrv: PublicMethedService
+    private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService,
   ) {
+    this.themeSub = this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.couponReviewContent);
+      }
+    );
   }
 
   ngOnInit() {
     this.esDate = this.toolSrv.esDate;
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.couponReviewInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
 
   // initialization houseinfo
@@ -187,15 +216,15 @@ export class CouponReviewComponent implements OnInit {
           {field: 'pastDue', header: '过期状态'},
           {field: 'operating', header: '操作'}
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 
@@ -216,6 +245,7 @@ export class CouponReviewComponent implements OnInit {
             v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
             v.pastDue = this.toolSrv.setValueToLabel(this.pastDueOption, v.pastDue);
           });
+          this.couponReviewContent = value.data.contents;
           this.setTableOption(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {

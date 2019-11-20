@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {AddStaff, DepartTree, ModifyStaff, Staff} from '../../../common/model/bf-staff.model';
 import {BfStaffService} from '../../../common/services/bf-staff.service';
@@ -6,13 +6,16 @@ import {TreeNode} from '../../../common/model/shared-model';
 import {DatePipe} from '@angular/common';
 import {last} from 'rxjs/operators';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {ThemeService} from '../../../common/public/theme.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-bf-staff',
   templateUrl: './bf-staff.component.html',
   styleUrls: ['./bf-staff.component.less']
 })
-export class BfStaffComponent implements OnInit {
+export class BfStaffComponent implements OnInit, OnDestroy {
+
 
   public staffTableTitle: any;
   public staffTableContent: Staff[];
@@ -51,13 +54,39 @@ export class BfStaffComponent implements OnInit {
   public departDialog: boolean;
   public departTrees: DepartTree[];
   public departTree: any;
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   constructor(
     private staffSrv: BfStaffService,
     private toolSrv: PublicMethedService,
     private datePipe: DatePipe,
-  ) { }
+    private themeSrv: ThemeService
+  ) {
+    this.themeSub = this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.staffTableContent);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.staffInitialization();
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
 
   // initialization staff
@@ -255,6 +284,7 @@ export class BfStaffComponent implements OnInit {
               v.politicalStatus = this.toolSrv.setValueToLabel(this.politicalStatusOption, v.politicalStatus);
               v.educationalBackground = this.toolSrv.setValueToLabel(this.educationalOption, v.educationalBackground);
             });
+            this.staffTableContent = value.data.contents;
             this. setTableOption(value.data.contents);
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
           }
@@ -279,15 +309,15 @@ export class BfStaffComponent implements OnInit {
           {field: 'enabled', header: '可用状态'},
           {field: 'operating', header: '操作'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
 }

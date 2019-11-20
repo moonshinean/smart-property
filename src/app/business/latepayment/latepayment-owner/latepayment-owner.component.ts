@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {BfOwnerService} from '../../../common/services/bf-owner.service';
 import {LatePaymentService} from '../../../common/services/late-payment.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
@@ -7,13 +7,16 @@ import {DialogModel, FormValue} from '../../../common/components/basic-dialog/di
 import {FormGroup} from '@angular/forms';
 import {CalaPaymentData} from '../../../common/model/latepayment.model';
 import {DatePipe} from '@angular/common';
+import {ThemeService} from '../../../common/public/theme.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-latepayment-owner',
   templateUrl: './latepayment-owner.component.html',
   styleUrls: ['./latepayment-owner.component.less']
 })
-export class LatepaymentOwnerComponent implements OnInit {
+export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
+  public tableContents: any;
   public optionTable: any;
   public ownerSelect: any[] = [];
   // 详情相关
@@ -30,14 +33,39 @@ export class LatepaymentOwnerComponent implements OnInit {
   public optionDialog: DialogModel = new DialogModel();
   // 查询相关
   public searchOwerData: SearchOwner = new SearchOwner();
+
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
+
   constructor(
     private ownerSrv: BfOwnerService,
     private lateSrv: LatePaymentService,
     private toolSrv: PublicMethedService,
-    private datePipe: DatePipe
-  ) { }
+    private datePipe: DatePipe,
+    private themeSrv: ThemeService,
+  ) {
+    this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.tableContents);
+      }
+    );
+  }
 
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.searchOwerData.pageNo = 1;
     this.searchOwerData.pageSize = 10;
     this.queryData(this.searchOwerData);
@@ -57,6 +85,9 @@ export class LatepaymentOwnerComponent implements OnInit {
     //     this.sexOption.push({label: v.settingName, value: v.settingCode});
     //   });
     // });
+  }
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
   }
 
   // 计算违约金
@@ -101,15 +132,15 @@ export class LatepaymentOwnerComponent implements OnInit {
           {field: 'roomSize', header: '房间大小'},
           {field: 'operating', header: '操作'}
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 2,
-      tableList:  [{label: '详情', color: '#6A72A1'}]
+      tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
   // query fata
@@ -121,6 +152,7 @@ export class LatepaymentOwnerComponent implements OnInit {
       value => {
         this.loadHidden = true;
         if (value.status === '1000') {
+          this.tableContents = value.data.contents;
           this.setTableOption(value.data.contents);
           this.pageOption = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {

@@ -6,6 +6,7 @@ import {Subject} from 'rxjs';
 })
 export class SharedServiceService {
   public SearchData: any;
+  // public setTheme: any;
   constructor() {
     this.changeEmitted$.subscribe(value => {
       this.SearchData = value;
@@ -19,4 +20,7 @@ export class SharedServiceService {
   public emitChange(change: any): void {
     this.emitChangeSource.next(change);
   }
+  // public  setBarTheme(change: any): void {
+  //   this.emitChangeSource.next(change);
+  // }
 }

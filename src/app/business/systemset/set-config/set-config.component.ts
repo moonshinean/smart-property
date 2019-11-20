@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {GlobalService} from '../../../common/services/global.service';
 import {Addconfig, Modifyconfig, SetConfig} from '../../../common/model/set-config.model';
@@ -6,13 +6,15 @@ import {SetConfigService} from '../../../common/services/set-config.service';
 import {isObjectFlagSet} from 'tslint';
 import {Dropdown} from 'primeng/primeng';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {ThemeService} from '../../../common/public/theme.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-set-config',
   templateUrl: './set-config.component.html',
   styleUrls: ['./set-config.component.less']
 })
-export class SetConfigComponent implements OnInit {
+export class SetConfigComponent implements OnInit, OnDestroy {
   @ViewChild('addSetType') addSetType: Dropdown;
   @ViewChild('input') input: Input;
   public configTableTitle: any;
@@ -35,15 +37,40 @@ export class SetConfigComponent implements OnInit {
   public setTypeOption: any[] = [];
   public loadHidden = true;
   public nowPage = 1;
+  public themeSub: Subscription;
+  public table = {
+    tableheader: {background: '', color: ''},
+    tableContent: [
+      {background: '', color: ''},
+      {background: '', color: ''}],
+    detailBtn: ''
+  };
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private configService: SetConfigService,
     private toolSrv: PublicMethedService,
-  ) { }
+    private themeSrv: ThemeService
+  ) {
+    this.themeSub = this.themeSrv.changeEmitted$.subscribe(
+      value => {
+        this.table.tableheader = value.table.header;
+        this.table.tableContent = value.table.content;
+        this.table.detailBtn = value.table.detailBtn;
+        this.setTableOption(this.configTableContent);
+      }
+    );
+  }
   ngOnInit() {
+    if (this.themeSrv.setTheme !== undefined) {
+      this.table.tableheader = this.themeSrv.setTheme.table.header;
+      this.table.tableContent = this.themeSrv.setTheme.table.content;
+      this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
     this.configInitialization();
   }
-
+  ngOnDestroy(): void {
+    this.themeSub.unsubscribe();
+  }
   // initialization config
   public  configInitialization(): void {
     this.loadHidden = false;
@@ -200,12 +227,12 @@ export class SetConfigComponent implements OnInit {
           {field: 'settingName', header: '设置名称'},
           {field: 'settingType', header: '设置类型'},
         ],
-        style: {background: '#282A31', color: '#DEDEDE', height: '6vh'}
+        style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
         data: data1,
-        styleone: {background: '#33353C', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
-        styletwo: {background: '#2E3037', color: '#DEDEDE', textAlign: 'center', height: '2vw'},
+        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
+        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
       type: 1,
       tableList:  []
@@ -237,6 +264,7 @@ export class SetConfigComponent implements OnInit {
      (value) => {
        this.loadHidden = true;
        if (value.status === '1000') {
+         this.configTableContent = value.data.contents;
          this.setTableOption( value.data.contents);
          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
        } else {

@@ -9,6 +9,7 @@ import {EchartsPieModule} from '../../common/components/echarts-pie/echarts-pie.
 import {TableModule} from 'primeng/table';
 import {ScrollPanelModule} from 'primeng/primeng';
 import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
+import {PublicMethedService} from '../../common/public/public-methed.service';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import {BasicTableModule} from '../../common/components/basic-table/basic-table.
     TableModule,
     ScrollPanelModule,
     BasicTableModule
-  ]
+  ],
+  providers: [PublicMethedService]
 })
 export class MainModule { }

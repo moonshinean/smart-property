@@ -7,6 +7,7 @@ import {ConfirmationService} from 'primeng/api';
 import {HeaderService} from '../../common/services/header.service';
 import {PublicMethedService} from '../../common/public/public-methed.service';
 import {LoginService} from '../../common/services/login.service';
+import {ThemeService} from '../../common/public/theme.service';
 // import less from 'less';
 @Component({
   selector: 'rbi-header',
@@ -28,17 +29,19 @@ export class HeaderComponent implements OnInit {
   public url: any = null;
   public username: any;
   public item: any[] = [];
+  public ft = '';
+  public ftHover =  '';
   public items = [
-    {router: '/home/main', title: '首页', color: '#fff'},
-    {router: '/home/baseinfo/owner', title: '基础信息', color: '#fff'},
+    {router: '/home/main', title: '首页', color: this.ft},
+    {router: '/home/baseinfo/owner', title: '基础信息', color: this.ft},
     // {router: '/home/assoc/assocstaff', title: '关联设置', color: '#fff'},
-    {router: '/home/charge/payment', title: '收费管理', color: '#fff'},
+    {router: '/home/charge/payment', title: '收费管理', color: this.ft},
     // {router: '/home/monitor/log', title: '运行事件监视', color: '#fff'},
     // {router: '/home/chat', title: '在线客服', color: '#fff'},
-    {router: '/home/coupon/total', title: '优惠券', color: '#fff'},
-    {router: '/home/refund/info', title: '退款', color: '#fff'},
-    {router: '/home/system/config', title: '系统设置', color: '#fff'},
-    {router: '/home/latepayment/latepaytotle', title: '违约金', color: '#fff'},
+    {router: '/home/coupon/total', title: '优惠券', color: this.ft},
+    {router: '/home/refund/info', title: '退款', color: this.ft},
+    {router: '/home/system/config', title: '系统设置', color: this.ft},
+    {router: '/home/latepayment/latepaytotle', title: '违约金', color: this.ft},
   ];
 
   constructor(
@@ -50,11 +53,23 @@ export class HeaderComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private loginOutSrv: LoginService,
     private headerSrv: HeaderService,
-    private toolSrv: PublicMethedService
+    private toolSrv: PublicMethedService,
+    private themeSrv: ThemeService
   ) {
+    this.themeSrv.changeEmitted$.subscribe(value => {
+      this.ftHover = value.headerbar.ftHover;
+      this.ft  = value.headerbar.ft;
+      this.UrlActivateStatus(this.url);
+    });
   }
 
   ngOnInit() {
+    console.log(this.themeSrv.setTheme);
+    if (this.themeSrv.setTheme !== undefined) {
+      this.ftHover = this.themeSrv.setTheme.headerbar.ftHover;
+      this.ft  = this.themeSrv.setTheme.headerbar.ft;
+    }
+    console.log(this.ftHover);
     this.item = [];
     this.headerSrv.getUserInfo().subscribe(
       value => {
@@ -71,6 +86,7 @@ export class HeaderComponent implements OnInit {
       });
     });
     this.url = this.location.path().split('/', 3)[2];
+    console.log(this.url);
     this.UrlActivateStatus(this.url);
     // Slightly get the route
     this.router.events.subscribe(
@@ -91,7 +107,7 @@ export class HeaderComponent implements OnInit {
     // @ts-ignore
     for (let i = 0; i < this.headerbar.nativeElement.children.length; i++) {
       // @ts-ignore
-      this.headerbar.nativeElement.children[i].style.color = '#fff';
+      this.headerbar.nativeElement.children[i].style.color = this.ft;
     }
     if (e.target.innerHTML === '首页' || e.target.innerHTML === '在线客服') {
       this.barHidden = true;
@@ -112,7 +128,7 @@ export class HeaderComponent implements OnInit {
     this.sidbarSetData(e.target.innerHTML);
     this.mainStyle.emit(this.mainMaginLeft);
     this.hiddenSidBar.emit(this.barHidden);
-    e.path[0].style.color = '#3A7ADF';
+    e.path[0].style.color = this.ftHover;
   }
 
   // View route activation
@@ -120,10 +136,11 @@ export class HeaderComponent implements OnInit {
     // console.log(url);
     this.item.map((prop) => {
       if (prop.router.split('/', 3)[2].indexOf(url) === 0) {
-        prop.color = '#3A7ADF';
+        prop.color = this.ftHover;
         this.sidbarSetData(prop.title);
       }
     });
+    console.log(this.item);
   }
 
   // emit sidebar navigation data
@@ -147,6 +164,4 @@ export class HeaderComponent implements OnInit {
       );
     });
   }
-
-
 }
