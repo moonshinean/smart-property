@@ -38,7 +38,7 @@
       <rbi-check-table-btn (detail)="detailsDialogClick($event)" [option]="optionTable"></rbi-check-table-btn>
     </div>
    <!--详情弹框-->
-  <p-dialog header="费用详情" [(visible)]="detailsDialog" [width]="800" >
+  <p-dialog header="费用详情" [(visible)]="detailsDialog" [width]="1100" >
       <!--Content-->
       <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
          <div class="ui-g ui-fluid">
@@ -47,20 +47,20 @@
         </div>
         <div class="ui-g-12">
           <div class="ui-g-6" *ngFor="let item of detailsAddTitle">
-            <div class="ui-g-6" >
+            <div class="ui-g-6" style="text-align: right">
               <label >{{item.name}}:</label>
             </div>
-            <div class="ui-g-6">
-              <label >{{item.value}}<span *ngIf="item.name ==='客户名称'">先生</span> <span *ngIf="item.name ==='建筑面积'">平米</span></label>
+            <div class="ui-g-6 span">
+              <span >{{item.value}}<span *ngIf="item.name ==='客户名称'">先生</span> <span *ngIf="item.name ==='建筑面积'">平米</span></span>
             </div>
           </div>
         </div>
-        <div class="ui-g-12" [hidden]="liquidatedDamagesContent=== null">
-          <h3>违约金信息</h3>
+        <div class="ui-g-12" [hidden]="deductioContent.length === 0">
+          <h3>抵扣信息</h3>
         </div>
-        <div class="ui-g-12" [hidden]="liquidatedDamagesContent=== null">
+        <div class="ui-g-12"  [hidden]="deductioContent.length === 0">
           <p-scrollPanel [style]="liquidatedDamagesStyle" styleClass="custombar">
-            <p-table [columns]="liquidatedDamagesTitle" [value]="liquidatedDamagesContent">
+            <p-table [columns]="deductioTitle" [value]="deductioContent">
               <ng-template pTemplate="header" let-columns>
                 <tr >
                   <th *ngFor="let col of columns" >
@@ -71,7 +71,7 @@
               <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                 <tr [pSelectableRow]="rowData"  [ngStyle]="{'text-align':'center'}">
                   <td  *ngFor="let col of columns" >
-                    <span *ngIf="col.header === '应收金额' || col.header === '实收金额'">￥</span>{{rowData[col.field]}}
+                    <span style="word-break: break-word">{{rowData[col.field]}}</span>
                   </td>
                 </tr>
               </ng-template>
@@ -82,8 +82,13 @@
           <h3>缴费信息</h3>
         </div>
         <div class="ui-g-12">
-          <p-scrollPanel [style]="detailsProjectStyle" styleClass="custombar">
-            <p-table [columns]="detailsDialogTableTitle" [value]="detailsProject">
+<!--          <p-scrollPanel [style]="detailsProjectStyle" styleClass="custombar">-->
+            <p-table [columns]="paymentDialogTableTitle" [value]="detailsPaymentProject"  [scrollable]="true">
+              <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                  <col *ngFor="let col of columns" style="width:150px">
+                </colgroup>
+              </ng-template>
               <ng-template pTemplate="header" let-columns>
                 <tr >
                   <th *ngFor="let col of columns" >
@@ -94,62 +99,63 @@
               <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                 <tr [pSelectableRow]="rowData"  [ngStyle]="{'text-align':'center'}">
                   <td  *ngFor="let col of columns" >
-                    <span *ngIf="col.header === '应收金额' || col.header === '实收金额'">￥</span>{{rowData[col.field]}}
+                    <span style="word-break: break-word" *ngIf="col.field !== 'stateOfArrears'">{{rowData[col.field]}}</span>
+                    <span style="word-break: break-word" *ngIf="col.field  === 'stateOfArrears'">{{rowData[col.field]===0? '未欠费': '已欠费'}}</span>
                   </td>
                 </tr>
               </ng-template>
             </p-table>
-          </p-scrollPanel>
+<!--          </p-scrollPanel>-->
         </div>
         <div class="ui-g-12">
          <h3>收费信息</h3>
         </div>
         <div class="ui-g-12" [ngStyle]="{'line-height':'3vh'}">
-          <div class="ui-g-4">
-            <div class="ui-g-5">
+          <div class="ui-g-6">
+            <div class="ui-g-6">
               <label>缴费人：</label>
             </div>
-            <div class="ui-g-7">
-              <label>{{chargeDetails.payerName}}</label>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span>{{chargeDetails.payerName}}</span>
             </div>
           </div>
-          <div class="ui-g-4">
+          <div class="ui-g-6">
             <div class="ui-g-6">
               <label >应收账单：</label>
             </div>
-            <div class="ui-g-6">
-              <label >￥{{chargeDetails.amountTotalReceivable}}</label>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span >￥{{chargeDetails.amountTotalReceivable}}</span>
             </div>
           </div>
-          <div class="ui-g-4">
-            <div class="ui-g-5">
+          <div class="ui-g-6">
+            <div class="ui-g-6">
               <label >实收账单：</label>
             </div>
-            <div class="ui-g-7">
-              <label>￥{{chargeDetails.actualTotalMoneyCollection}}</label>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span>￥{{chargeDetails.actualTotalMoneyCollection}}</span>
             </div>
           </div>
-          <div class="ui-g-4">
-            <div class="ui-g-5">
+          <div class="ui-g-6">
+            <div class="ui-g-6">
               <label >缴费类型：</label>
             </div>
-            <div class="ui-g-7" >
-              <label>{{chargeDetails.paymentMethod}}</label>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span>{{chargeDetails.paymentMethod}}</span>
             </div>
           </div>
-          <div class="ui-g-4">
+          <div class="ui-g-6">
             <div class="ui-g-6">
               <label >修正金额：</label>
             </div>
-            <div class="ui-g-6">
-              <label >{{chargeDetails.surplus}}</label>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span >{{chargeDetails.surplus}}</span>
             </div>
           </div>
         </div>
       </div>
       </p-scrollPanel>
       <p-footer>
-        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
           <button class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" (click)="detailsSureClick()">打印单据</button>
           <button class="charge-details-dialog-Btn charge-details-dialog-Btn-false" (click)="detailsFaleseClick()">取 消</button>
         </div>

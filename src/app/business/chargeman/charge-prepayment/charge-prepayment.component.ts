@@ -54,7 +54,7 @@ export class ChargePrepaymentComponent implements OnInit, OnDestroy {
         this.table.tableheader = value.table.header;
         this.table.tableContent = value.table.content;
         this.table.detailBtn = value.table.detailBtn;
-        this.setTableOption(this.paymentTableContnt);
+        this.setTableOption(this.prepaymentTableContnt);
       }
     );
   }

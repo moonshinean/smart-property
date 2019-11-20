@@ -1,8 +1,6 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ChargeDetailsService} from '../../../common/services/charge-details.service';
-import {ConfirmationService, MessageService} from 'primeng/api';
-import {ChargeDetail, ItemDetail} from '../../../common/model/charge-detail.model';
-import {ChargeItemDetail} from '../../../common/model/charge-payment.model';
+import {ChargeDetail} from '../../../common/model/charge-detail.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
@@ -18,24 +16,34 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
 
   public option: any;
   public paymentDetailTableContnt: any;
-  public detailsDialogTableTitle = [
+  public paymentDialogTableTitle = [
     {field: 'chargeName', header: '项目名称'},
     {field: 'chargeStandard', header: '标准单价'},
-    {field: 'datedif', header: '月数'},
+    {field: 'chargeUnit', header: '单位'},
     {field: 'discount', header: '折扣'},
-    {field: 'startTime', header: '开始期间'},
-    {field: 'dueTime', header: '结束期间'},
+    {field: 'datedif', header: '月/张数'},
     {field: 'amountReceivable', header: '应收金额'},
     {field: 'actualMoneyCollection', header: '实收金额'},
-    // {field: 'totle', header: '合计'},
+    {field: 'usageAmount', header: '使用量'},
+    {field: 'currentReadings', header: '当前读数'},
+    {field: 'lastReading', header: '上次读数'},
+    {field: 'startTime', header: '开始计费时间'},
+    {field: 'dueTime', header: '结束计费时间'},
+    {field: 'payerName', header: '缴费人姓名'},
+    {field: 'payerPhone', header: '缴费人手机号'},
+    {field: 'stateOfArrears', header: '欠费状态'},
   ];
-  public liquidatedDamagesTitle = [
-    {field: 'dueTimeFront', header: '季度初'},
-    {field: 'dueTimeAfter', header: '季度末'},
-    {field: 'days', header: '欠费天数'},
-    {field: 'amountMoney', header: '金额'},
+  public deductioTitle = [
+    {field: 'deductionItem', header: '抵扣项目'},
+    {field: 'deductibleMoney', header: '抵扣金额'},
+    {field: 'deductionMethod', header: '抵扣方式'},
+    {field: 'deductibledMoney', header: '已抵扣金额'},
+    {field: 'surplusDeductibleMoney', header: '剩余可抵扣金额'},
+    {field: 'amountDeductedThisTime', header: '本次抵扣金额'},
+    {field: 'discount', header: '折扣'},
+    {field: 'deductionRecord', header: '抵扣记录'},
   ];
-  public liquidatedDamagesContent: any[] = [];
+  public deductioContent: any[] = [];
   public liquidatedDamagesStyle: any;
   public uploadFileOption: FileOption = new FileOption();
   public uploadRecordOption: any;
@@ -67,14 +75,24 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   public detailsDialog: boolean;
   public nowPage = 1;
   // 初始化项目
-  public detailsProject: any;
+  public detailsPaymentProject: any;
   public detailsProjectStyle: any;
   public detailsAddTitle =  [
-    {name: '房间号码', value: 'A3-34'},
-    {name: '建筑面积', value: '123平米'},
-    {name: '客户名称', value: '张三'},
-    {name: '手机号码', value: '213490234'},
+    {name: '房间代码', value: '', label: 'roomCode'},
+    {name: '建筑面积', value: '', label: 'roomSize'},
+    {name: '客户名称', value: '', label: 'surname'},
+    {name: '手机号码', value: '', label: 'mobilePhone'},
+    {name: '物业费到期时间', value: '', label: 'dueTime'},
+    {name: '账户余额', value: '', label: 'surplus'},
   ];
+  // public paymentAddTitle =  [
+  //   {name: '房间代码', value: '', label: 'roomCode'},
+  //   {name: '建筑面积', value: '', label: 'roomSize'},
+  //   {name: '客户名称', value: '', label: 'surname'},
+  //   {name: '手机号码', value: '', label: 'mobilePhone'},
+  //   {name: '物业费到期时间', value: '', label: 'dueTime'},
+  //   {name: '账户余额', value: '', label: 'surplus'},
+  // ];
   // 详情相关
   public chargeDetails: ChargeDetail = new ChargeDetail();
   // 其他相关
@@ -171,7 +189,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
               this.queryData(); break;
       case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryData(); break;
       case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryData(); break;
-      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryData();break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryData(); break;
       case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryData(); break;
       default:
         break;
@@ -206,37 +224,40 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   }
   // charge item detail
   public  detailsDialogClick(e): void {
-     this.chargeDetails = e;
-     this.detailsProject =  JSON.parse(e.detailed);
-     this.liquidatedDamagesContent  =  JSON.parse(e.liquidatedDamages);
+    this.queryDetail(e.orderId);
+    //  this.chargeDetails = e;
+    //  this.detailsProject =  JSON.parse(e.detailed);
+    //  this.liquidatedDamagesContent  =  JSON.parse(e.liquidatedDamages);
      this.detailsDialog = true;
-     this.detailsAddTitle.forEach( v => {
-       if (v.name === '房间编号') {
-         v.value = e.roomCode;
-       } else if (v.name === '建筑面积') {
-         v.value = e.roomSize;
-       } else if (v.name === '客户名称') {
-         v.value = e.surname;
-       } else if (v.name === '手机号码') {
-         v.value = e.mobilePhone;
-       }
-     });
-     if (this.liquidatedDamagesContent !== null && this.liquidatedDamagesContent.length <= 4) {
-       this.liquidatedDamagesStyle = {width: '100%'};
-     } else {
-       this.liquidatedDamagesStyle = {width: '100%', height: '20vh'};
-
-     }
-    if (this.detailsProject.length <= 4) {
-      this.detailsProjectStyle = {width: '100%'};
-    } else {
-      this.detailsProjectStyle = {width: '100%', height: '20vh'};
-    }
+    //  this.detailsAddTitle.forEach( v => {
+    //    if (v.name === '房间编号') {
+    //      v.value = e.roomCode;
+    //    } else if (v.name === '建筑面积') {
+    //      v.value = e.roomSize;
+    //    } else if (v.name === '客户名称') {
+    //      v.value = e.surname;
+    //    } else if (v.name === '手机号码') {
+    //      v.value = e.mobilePhone;
+    //    }
+    //  });
+    //  if (this.liquidatedDamagesContent !== null && this.liquidatedDamagesContent.length <= 4) {
+    //    this.liquidatedDamagesStyle = {width: '100%'};
+    //  } else {
+    //    this.liquidatedDamagesStyle = {width: '100%', height: '20vh'};
+    //
+    //  }
+    // if (this.detailsProject.length <= 4) {
+    //   this.detailsProjectStyle = {width: '100%'};
+    // } else {
+    //   this.detailsProjectStyle = {width: '100%', height: '20vh'};
+    // }
   }
+
   // paging query
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
+    this.SearchData.pageNo = event;
     this.selectSearchType();
   }
 
@@ -312,6 +333,25 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
 
   }
 
+  // 查找数据
+  public  queryDetail(data): void {
+      this.chargeDetailSrv.queryBillDetail({orderId: data}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+               this.chargeDetails = value.data.bill;
+               this.detailsPaymentProject = value.data.billDetailedDOS;
+               this.deductioContent = value.data.costDeductionDOS;
+               this.detailsAddTitle.forEach( v => {
+                 v.value = this.chargeDetails[v.label];
+               });
+          } else {
+
+          }
+        }
+      );
+  }
+  // 分页查询
   public  queryData(): void {
     this.chargeDetailSrv.queryChargeDataPage(this.SearchData).subscribe(
       (value) => {
