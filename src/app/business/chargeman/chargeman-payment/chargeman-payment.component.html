@@ -12,7 +12,7 @@
     </div>
     <!--搜索-->
     <div class="ui-inputgroup chargeman-payment-header-search">
-      <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>
+<!--      <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>-->
       <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
       <input type="text" pInputText placeholder="请输入需要搜索的值.."  [(ngModel)]="searchData">
       <button id="disabled-btn" class="chargeman-payment-header-btn-search" type="button"  (click)="paymentSearchClick()"  label="搜索">搜索</button>
@@ -23,7 +23,7 @@
     <rbi-check-table-btn [option]="optionTable" [select]="paymentSelect" (detail)="detailClick($event)" (selectData)="selectData($event)"></rbi-check-table-btn>
   </div>
   <!--项目弹窗-->
-     <p-dialog header="项目选择" [(visible)]="projectSelectDialog" [width]="500" [focusOnShow]="false" [transitionOptions]="'200ms'" [closable]="false">
+  <p-dialog header="项目选择" [(visible)]="projectSelectDialog" [width]="500" [focusOnShow]="false" [transitionOptions]="'200ms'" [closable]="false">
     <!--Content-->
        <p-scrollPanel [style]="{width:'100%',height: '45vh'}" styleClass="custombar">
          <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
@@ -48,6 +48,13 @@
           </div>
           <div class="ui-g-4" [hidden]="!(item.chargeWay === 3)">
             <p-dropdown [options]="item.chargeStandards"  scrollHeight="100px"  [(ngModel)]="item.chargeStandard" [style]="{'width':'6vw','line-height': '2vh'}"></p-dropdown>
+          </div>
+          <div class="ui-g-2" [hidden]="!(item.chargeWay === 5)">
+            <label>金额</label>
+          </div>
+          <div class="ui-g-4" [hidden]="!(item.chargeWay === 5)">
+            <input pInputText  [(ngModel)]="item.chargeStandard" [style]="{'width':'6vw','line-height': '2vh'}" >
+
           </div>
         </div>
       </div>
@@ -111,16 +118,16 @@
           <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" style="width: 6vw;float: right" (click)="paymentAddProjectClick()">编辑项目</button>
       </div>
       <div class="ui-g-12">
-<!--        <p-scrollPanel [style]="chargeScrollPanelStyle" styleClass="custombar" >-->
-          <p-table   [columns]="paymentDialogTableTitle" [value]="paymentItemData"  [scrollable]="true">
+<!--        <p-scrollPanel [style]="chargeScrollPanelStyle" styleClass="custombar"[style]="{width: '49vw'}" >-->
+          <p-table   [columns]="paymentDialogTableTitle" [value]="paymentItemData"  [scrollable]="true" [resizableColumns]="true">
             <ng-template pTemplate="colgroup" let-columns>
               <colgroup>
-                <col *ngFor="let col of columns" style="width:150px">
+                <col *ngFor="let col of columns" style="width:180px">
               </colgroup>
             </ng-template>
             <ng-template pTemplate="header" let-columns>
-              <tr >
-                <th *ngFor="let col of columns">
+              <tr>
+                <th *ngFor="let col of columns" >
                   {{col.header}}
                 </th>
               </tr>
@@ -207,7 +214,7 @@
         </div>
       <div class="ui-g-6" style="line-height:  3vh">
             <div class="ui-g-3" style="text-align: right">
-                <label >修正金额：</label>
+                <label >预存金额：</label>
               </div>
             <div class="ui-g-7" style="text-align: left">
                 <span style="border: 1px solid #A6A6A6;width: 100%;

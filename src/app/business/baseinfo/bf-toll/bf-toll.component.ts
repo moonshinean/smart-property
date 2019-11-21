@@ -24,7 +24,6 @@ export class BfTollComponent implements OnInit, OnDestroy {
   public tollAddinfo: AddToll = new AddToll();
   public tollMoreInfo: TollMoreInfo[] = [];
   public tollTitle: BfTollTitle = new BfTollTitle();
-
   // 状态相关
   public parkingSpaceTypeOption: any[] = [];
   public parkingSpaceNatureOption: any[] = [];
@@ -43,10 +42,43 @@ export class BfTollComponent implements OnInit, OnDestroy {
   public tollrefundMedify: any;
   public tollmustpayMedify: any;
   public tollChargeTypeMedify: any;
+  public setOptionList = {
+    datedif: '',
+    parkingSpaceNature: '',
+    parkingSpaceType: ''
+  };
+  // 搜索相关
+  public searchType = 0;
+  public SearchTypeOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '业主姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
   // 删除
   public ids: any[] = [];
   // 详情相关
   public tollDetailDialog: boolean;
+  public detailTollTitle = [
+    {field: 'chargeName', name: '项目名称', value: ''},
+    {field: 'chargeType', name: '项目类型', value: ''},
+    {field: 'chargeUnit', name: '项目单位', value: ''},
+    {field: 'chargeStandard', name: '收费单价', value: ''},
+    {field: 'refund', name: '是否可退款', value: ''},
+    {field: 'enable', name: '启用状态', value: ''},
+    {field: 'mustPay', name: '是否必缴', value: ''},
+  ];
+  public detailTollList: any[] = [];
+  public TollMoreTitleDetail = [
+    {field: 'id', header: '序号'},
+    {field: 'areaMin', header: '面积最小值'},
+    {field: 'areaMax', header: '面积最大值'},
+    {field: 'datedif', header: '缴费月数'},
+    {field: 'money', header: '金额'},
+    {field: 'discount', header: '折扣'},
+    {field: 'parkingSpaceNature', header: '车位性质'},
+    {field: 'parkingSpaceType', header: '车位类型'}
+  ];
   public moreTollMoreTitle = [
     {field: 'id', header: '序号'},
     {field: 'areaMin', header: '面积最小值'},
@@ -72,6 +104,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+
   constructor(
     private toolSrv: PublicMethedService,
     private tollSrv: BfTollService,
@@ -87,9 +120,9 @@ export class BfTollComponent implements OnInit, OnDestroy {
       }
     );
   }
+
   ngOnInit() {
     this.tollSub = this.shareSrv.changeEmitted$.subscribe(value => {
-      // console.log(123);
       console.log(value);
     });
     if (this.themeSrv.setTheme !== undefined) {
@@ -100,13 +133,14 @@ export class BfTollComponent implements OnInit, OnDestroy {
     // console.log(this.shareSrv.SearchData);
     this.tollInitialization();
   }
+
   ngOnDestroy(): void {
     // 组件销毁时 取消订阅
     this.tollSub.unsubscribe();
   }
 
   // initialization toll
-  public  tollInitialization(): void {
+  public tollInitialization(): void {
     this.esDate = this.toolSrv.esDate;
     this.toolSrv.getAdmStatus([{settingType: 'CHARGE_TYPE'},
       {settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
@@ -117,31 +151,53 @@ export class BfTollComponent implements OnInit, OnDestroy {
       this.refundOption = this.toolSrv.setListMap(data.REFUND);
       this.mustPayOption = this.toolSrv.setListMap(data.MUST_PAY);
       this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
-      this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
-      this.parkingSpaceNatureOption = this.toolSrv.setListMap(data.DATEDIF);
-      this.datedifOption = this.toolSrv.setListMap(data.CWXZ);
+      this.setOptionList.parkingSpaceType = this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
+      this.setOptionList.parkingSpaceNature = this.parkingSpaceNatureOption = this.toolSrv.setListMap(data.CWXZ);
+      this.setOptionList.datedif = this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
       this.queryTollPageData();
     });
     this.settollTitleData();
-    this.tollTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
+    this.tollTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
+
   // condition search click
-  public  tollSearchClick(): void {
+  public tollSearchClick(): void {
     // @ts-ignore
   }
+
+  // 判断搜索条件
+  public searchJudgment(page): void {
+    switch (this.searchType) {
+      case 0:
+        this.queryTollPageData();
+        break;
+      // case 1:  this.setCondition('phone', '请输入需要搜索的手机号', page); break;
+      // case 2:  this.setCondition('roomCode', '请输入需要搜索的房间号', page); break;
+      // case 3:  this.setCondition('surname', '请输入需要搜索的客户名称', page); break;
+      // case 4:  this.setCondition('idNumber', '请输入需要搜索的身份证号', page); break;
+      default:
+        break;
+    }
+  }
+
+  // public  setCondition(confition, message, pageNo): void {
+  //   if (this.inputSearchData !== '') {
+  //     this.queryOwnerPageByCondition(confition, this.inputSearchData, pageNo);
+  //   } else {
+  //     this.toolSrv.setToast('error', '操作错误', message);
+  //   }
+  // }
   // add  toll
-  public  tollAddClick(): void {
+  public tollAddClick(): void {
     this.tollAddDialog = true;
   }
+
   // sure add toll
-  public  tollAddSureClick(): void {
-    console.log(this.tollTitle);
+  public tollAddSureClick(): void {
     this.toolSrv.setConfirmation('增加', '增加', () => {
-      if  (this.tollMoreInfo.length === 0) {
-        console.log(this.tollTitle);
-        this.tollSrv.queryTollAdd(this.tollTitle).subscribe(
+        this.tollSrv.queryTollAdd({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
           value => {
-            if (value.status === '1000')  {
+            if (value.status === '1000') {
               this.toolSrv.setToast('success', '操作成功', value.message);
               this.tollInitialization();
               this.tollAddDialog = false;
@@ -151,75 +207,24 @@ export class BfTollComponent implements OnInit, OnDestroy {
             }
           }
         );
-      } else {
-        this.tollMoreInfo.forEach( v => {
-          for (const Key in this.tollTitle) {
-            const name = Key;
-            this.tollAddinfo[name] =  this.tollTitle[Key];
-          }
-          for (const vKey in v) {
-            const vName = vKey;
-            this.tollAddinfo[vName] = v[vKey];
-          }
-          this.tollAdd.push(this.tollAddinfo);
-          this.tollAddinfo = new AddToll();
-        });
-        this.tollSrv.addBfTollInfo({data: this.tollAdd}).subscribe(
-          value =>  {
-            if (value.status === '1000')  {
-              this.toolSrv.setToast('success', '操作成功', value.message);
-              this.tollInitialization();
-              this.tollAddDialog = false;
-              this.clearData();
-            }
-          }
-        );
-      }
     });
   }
+
   // modify toll
-  public  tollModifyClick(): void {
-    if (this.tollSelect === undefined || this.tollSelect.length === 0 ) {
+  public tollModifyClick(): void {
+    if (this.tollSelect === undefined || this.tollSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.tollSelect.length === 1) {
-      this.tollChargeTypeMedify = this.tollTitle.chargeType;
-      this.tollEnableMedify = this.tollTitle.enable;
-      const setInter = setInterval(() => {
-        if (this.mustPayOption.length > 0) {
-          clearInterval(setInter);
-          if (this.tollTitle.mustPay !== null)  {
-            this.mustPayOption.forEach(value => {
-              if (this.tollTitle.mustPay.toString() === value.value) {
-                this.tollmustpayMedify = value.label;
-              }
-            });
-          }
-        }
-      }, 500);
-      const Time = setInterval( () => {
-          clearInterval(Time);
-          this.tollSrv.queryTollinfoDetail({chargeCode: this.tollSelect[0].chargeCode}).subscribe(
-            value => {
-              this.tollMoreInfo = [];
-              this.tollModifyDatas = [];
-              this.ids = [];
-              value.data.forEach( v => {
-                this.tollMoreInfo.push({areaMin: v.areaMin, areaMax: v.areaMax, money: v.money, datedif: v.datedif, discount: v.discount, parkingSpaceNature: v.parkingSpaceNature, parkingSpaceType: v.parkingSpaceType});
-                this.ids.push({id: v.id});
-                this.tollModifyDatas.push(this.tollModifyData);
-                this.tollModifyData = new ModifyTollDrop();
-              });
-            }
-          );
-      }, 100);
-      this.tollModifyDialog = true;
+      this.getTollDetailInfo(this.tollSelect[0].chargeCode, 'modify');
+
     } else {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     }
   }
+
   // sure modify toll
-  public  tollModifySureClick(): void {
-    this.enableOption.forEach( val => {
+  public tollModifySureClick(): void {
+    this.enableOption.forEach(val => {
       if (this.tollTitle.enable.toString() === val.label) {
         this.tollTitle.enable = val.value;
       }
@@ -239,11 +244,11 @@ export class BfTollComponent implements OnInit, OnDestroy {
           }
         );
       } else {
-          this.modifytoll = [];
-          this.tollMoreInfo.forEach( (v, index) => {
+        this.modifytoll = [];
+        this.tollMoreInfo.forEach((v, index) => {
           for (const Key in this.tollTitle) {
-            this.tollAddinfo[Key] =  this.tollTitle[Key];
-           }
+            this.tollAddinfo[Key] = this.tollTitle[Key];
+          }
           for (const vKey in v) {
             this.tollAddinfo[vKey] = v[vKey];
           }
@@ -270,19 +275,20 @@ export class BfTollComponent implements OnInit, OnDestroy {
       }
     });
   }
+
   // delete toll
-  public  tollDeleteClick(): void {
+  public tollDeleteClick(): void {
     if (this.tollSelect === undefined || this.tollSelect.length === 0) {
-      this.toolSrv.setToast('error',  '操作错误', '请选择需要删除的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
       this.toolSrv.setConfirmation('删除', `删除这${this.tollSelect.length}项`, () => {
-        this.tollSelect.forEach( v => {
+        this.tollSelect.forEach(v => {
           this.deleteId.push({chargeCode: v.chargeCode});
         });
         this.tollSrv.deleteTollinfo({data: this.deleteId}).subscribe(
           value => {
             if (value.status === '1000') {
-              this.toolSrv.setToast('success',  '操作成功', '添加成功' + value.message);
+              this.toolSrv.setToast('success', '操作成功', '添加成功' + value.message);
               this.clearData();
               this.tollInitialization();
             } else {
@@ -293,43 +299,62 @@ export class BfTollComponent implements OnInit, OnDestroy {
       });
     }
   }
+
   // show Detail Dialog
-  public  toolDetailClick(e): void {
+  public toolDetailClick(e): void {
     this.tollTitle = e;
-    this.tollSrv.queryTollinfoDetail({chargeCode: e.chargeCode}).subscribe(
-      value => {
-        value.data.forEach( v => {
-          this.tollModifyDatas.push(this.tollModifyData);
-          this.tollModifyData = new ModifyTollDrop();
-        });
-      }
-    );
-    this.tollDetailDialog = true;
+    this.detailTollTitle.forEach( v => {
+      v.value = e[v.field];
+    });
+    console.log(e);
+    this.getTollDetailInfo(e.chargeCode, 'detail');
+
+
+    // this.tollSrv.queryTollinfoDetail({chargeCode: e.chargeCode}).subscribe(
+    //   value => {
+    //     value.data.forEach( v => {
+    //       this.tollModifyDatas.push(this.tollModifyData);
+    //       this.tollModifyData = new ModifyTollDrop();
+    //     });
+    //   }
+    // );
+    // this.tollDetailDialog = true;
   }
+
   // Reset data
-  public  clearData(): void {
-      this.tollAdd = [];
-      this.tollMoreInfo = [];
-      this.tollAddinfo = new AddToll();
-      this.tollTitle = new BfTollTitle();
-      this.tollSelect = [];
-      this.tollModifyData = new ModifyTollDrop();
-      this.tollModifyDatas = [];
-      this.modifytoll = [];
-      this.ids = [];
-      this.tollmustpayMedify = null;
-      this.tollrefundMedify = null;
-      this.tollEnableMedify = null;
-      this.tollChargeTypeMedify = null;
+  public clearData(): void {
+    this.tollAdd = [];
+    this.tollMoreInfo = [];
+    this.tollAddinfo = new AddToll();
+    this.tollTitle = new BfTollTitle();
+    this.tollSelect = [];
+    this.tollModifyData = new ModifyTollDrop();
+    this.tollModifyDatas = [];
+    this.modifytoll = [];
+    this.ids = [];
+    this.tollmustpayMedify = null;
+    this.tollrefundMedify = null;
+    this.tollEnableMedify = null;
+    this.tollChargeTypeMedify = null;
   }
+
   // Add a piece of data
-  public  addMoreTollClick(): void {
-      this.tollMoreInfo.push({areaMin: '', areaMax: '', money: '', datedif: '', discount: '10', parkingSpaceNature: '', parkingSpaceType: ''});
-      this.tollModifyData.datedif = '请选择月数';
-      this.tollModifyData.parkingSpaceNature = '请选择车位性质';
-      this.tollModifyData.parkingSpaceType = '请选择车位类型';
-      this.tollModifyDatas.push(this.tollModifyData);
+  public addMoreTollClick(): void {
+    this.tollMoreInfo.push({
+      areaMin: '',
+      areaMax: '',
+      money: '',
+      datedif: '',
+      discount: '10',
+      parkingSpaceNature: '',
+      parkingSpaceType: ''
+    });
+    this.tollModifyData.datedif = '请选择月数';
+    this.tollModifyData.parkingSpaceNature = '请选择车位性质';
+    this.tollModifyData.parkingSpaceType = '请选择车位类型';
+    this.tollModifyDatas.push(this.tollModifyData);
   }
+
   // delete moreTollMore
   public deleteTollMoreClick(index, e): void {
     if (index + 1 > this.ids.length) {
@@ -349,8 +374,9 @@ export class BfTollComponent implements OnInit, OnDestroy {
       );
     }
   }
+
   // set tollTitledata
-  public  settollTitleData(): void {
+  public settollTitleData(): void {
     this.tollTitle.chargeCode = '';
     this.tollTitle.enable = '';
     this.tollTitle.chargeType = '';
@@ -360,23 +386,24 @@ export class BfTollComponent implements OnInit, OnDestroy {
     this.tollTitle.chargeName = '';
     this.tollTitle.id = '';
   }
+
   // paging query
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.NOW_PAGE = event;
     this.queryTollPageData();
   }
+
   public queryTollPageData(): void {
     this.tollSrv.queryBfTollPageInfo({pageNo: this.NOW_PAGE, pageSize: 10}).subscribe(
       value => {
         console.log(value);
         if (value.status === '1000') {
-          this.loadHidden = true;
           value.data.contents.forEach(v => {
-              v.chargeType = this.toolSrv.setValueToLabel(this.chargeTypeOption, v.chargeType);
-              v.enable = this.toolSrv.setValueToLabel(this.enableOption, v.enable);
-              v.refund = this.toolSrv.setValueToLabel(this.refundOption, v.refund);
-              v.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, v.mustPay);
+            v.chargeType = this.toolSrv.setValueToLabel(this.chargeTypeOption, v.chargeType);
+            v.enable = this.toolSrv.setValueToLabel(this.enableOption, v.enable);
+            v.refund = this.toolSrv.setValueToLabel(this.refundOption, v.refund);
+            v.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, v.mustPay);
           });
           this.tollTableContent = value.data.contents;
           this.setTableOption(value.data.contents);
@@ -387,11 +414,12 @@ export class BfTollComponent implements OnInit, OnDestroy {
   }
 
   // select data (选择数据)
-  public  selectData(e): void {
+  public selectData(e): void {
     this.tollSelect = e;
   }
+
   // set table data （设置列表数据）
-  public  setTableOption(data1): void {
+  public setTableOption(data1): void {
     this.tableOption = {
       width: '101.4%',
       header: {
@@ -408,11 +436,53 @@ export class BfTollComponent implements OnInit, OnDestroy {
       },
       Content: {
         data: data1,
-        styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
-        styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
+        styleone: {
+          background: this.table.tableContent[0].background,
+          color: this.table.tableContent[0].color,
+          textAlign: 'center',
+          height: '2vw'
+        },
+        styletwo: {
+          background: this.table.tableContent[1].background,
+          color: this.table.tableContent[1].color,
+          textAlign: 'center',
+          height: '2vw'
+        },
       },
       type: 2,
-      tableList:  [{label: '详情', color: this.table.detailBtn}]
+      tableList: [{label: '详情', color: this.table.detailBtn}]
     };
   }
+
+  // 收费项目详情信息查询
+  public getTollDetailInfo(data, type): void {
+    this.tollSrv.getTolldetail({chargeCode: data}).subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          if (type === 'detail') {
+            this.detailTollList = value.data.chargeDetail.map( v => {
+              v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
+              v.parkingSpaceNature = this.toolSrv.setValueToLabel(this.parkingSpaceNatureOption, v.parkingSpaceNature);
+              v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceNature);
+              return v;
+            });
+            this.tollDetailDialog = true;
+          } else {
+            this.tollMoreInfo =   value.data.chargeDetail;
+            this.tollTitle = value.data.chargeItem;
+            this.tollTitle.chargeType = this.tollTitle.chargeType.toString();
+            this.tollTitle.refund = this.tollTitle.refund.toString();
+            this.tollTitle.enable = this.tollTitle.enable.toString();
+            this.tollTitle.mustPay = this.tollTitle.mustPay.toString();
+            console.log(this.chargeTypeOption);
+            this.tollModifyDialog = true;
+            // console.log(this.tollMoreInfo);
+          }
+        } else {
+          this.toolSrv.setToast('error', '请求错误', value.message)
+        }
+      }
+    );
+  };
 }

@@ -82,17 +82,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {name: '建筑面积', value: '', label: 'roomSize'},
     {name: '客户名称', value: '', label: 'surname'},
     {name: '手机号码', value: '', label: 'mobilePhone'},
-    {name: '物业费到期时间', value: '', label: 'dueTime'},
-    {name: '账户余额', value: '', label: 'surplus'},
   ];
-  // public paymentAddTitle =  [
-  //   {name: '房间代码', value: '', label: 'roomCode'},
-  //   {name: '建筑面积', value: '', label: 'roomSize'},
-  //   {name: '客户名称', value: '', label: 'surname'},
-  //   {name: '手机号码', value: '', label: 'mobilePhone'},
-  //   {name: '物业费到期时间', value: '', label: 'dueTime'},
-  //   {name: '账户余额', value: '', label: 'surplus'},
-  // ];
   // 详情相关
   public chargeDetails: ChargeDetail = new ChargeDetail();
   // 其他相关
@@ -345,8 +335,9 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
                this.detailsAddTitle.forEach( v => {
                  v.value = this.chargeDetails[v.label];
                });
+               this.chargeDetails.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, this.chargeDetails.paymentMethod);
           } else {
-
+            this.toolSrv.setToast('error', '请求错误', value.message);
           }
         }
       );

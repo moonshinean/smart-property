@@ -120,7 +120,7 @@
     background: #9E9E9E;
   }
   ::ng-deep .ui-dialog-content{
-    overflow: visible !important;
+    overflow: visible ;
   }
   ::ng-deep .ui-dialog .ui-widget-content{
     background: #DCDCDC;
@@ -132,6 +132,12 @@
   ::ng-deep.ui-table .ui-table-tbody > tr.ui-state-highlight {
     background: #F9F9F9;
     color: #000;
+  }
+  ::ng-deep ,.ui-table-scrollable-body {
+    overflow: auto;
+  }
+  ::ng-deep  .ui-table  .ui-table-tbody>tr>td {
+    overflow: visible !important;
   }
 }
 

@@ -64,12 +64,10 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.themeSrv.setTheme);
     if (this.themeSrv.setTheme !== undefined) {
       this.ftHover = this.themeSrv.setTheme.headerbar.ftHover;
       this.ft  = this.themeSrv.setTheme.headerbar.ft;
     }
-    console.log(this.ftHover);
     this.item = [];
     this.headerSrv.getUserInfo().subscribe(
       value => {
@@ -86,7 +84,6 @@ export class HeaderComponent implements OnInit {
       });
     });
     this.url = this.location.path().split('/', 3)[2];
-    console.log(this.url);
     this.UrlActivateStatus(this.url);
     // Slightly get the route
     this.router.events.subscribe(
@@ -140,7 +137,6 @@ export class HeaderComponent implements OnInit {
         this.sidbarSetData(prop.title);
       }
     });
-    console.log(this.item);
   }
 
   // emit sidebar navigation data

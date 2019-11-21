@@ -56,6 +56,7 @@ export class SetConfigComponent implements OnInit, OnDestroy {
         this.table.tableheader = value.table.header;
         this.table.tableContent = value.table.content;
         this.table.detailBtn = value.table.detailBtn;
+        console.log(this.table);
         this.setTableOption(this.configTableContent);
       }
     );

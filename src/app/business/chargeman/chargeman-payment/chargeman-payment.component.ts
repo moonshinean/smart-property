@@ -66,10 +66,10 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public dialogOption: any;
   // 收费项目选择确认查找详细数据
   public payItemDetail: ChargeItemData = new ChargeItemData();
-  public chargeScrollPanelStyle: any;
   // 缴费相关
   public projectSelectDialog: boolean;
   public paymentDialog: boolean;
+  public paymentReceivableTotle = 0;
   public paymentTotle =  0; // 总计金额
   public paymentActualTotal = 0; // 实收总计
   public paymentMoney = 0; //
@@ -105,7 +105,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     {name: '客户名称', value: '', label: 'surname'},
     {name: '手机号码', value: '', label: 'mobilePhone'},
     {name: '物业费到期时间', value: '', label: 'dueTime'},
-    {name: '账户余额', value: '', label: 'surplus'},
+    {name: '预缴余额', value: '', label: 'prepaidAmount'},
   ];
 
   public nowPage = 1;
@@ -260,7 +260,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       // 查询拆分业主
       this.paymentSrv.getUserInfoByRoomCode({roomCode: this.paymentSelect[0].roomCode}).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
              this.ownerList = value.data;
              value.data.forEach( v => {
@@ -278,6 +277,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           if (value.status === '1000') {
             this.setPaymentList(value);
             this.paymentTotle = value.data.amountTotalReceivable;
+            this.paymentReceivableTotle = value.data.actualTotalMoneyCollection;
             this.paymentMoney = value.data.actualTotalMoneyCollection;
           } else {
             this.toolSrv.setToast('error', '请求失败', value.message);
@@ -358,6 +358,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       console.log(this.paymentSelect);
       this.paymentSrv.searchChargeItem({roomCode: this.paymentSelect[0].roomCode}).subscribe(
         (value) => {
+          console.log(value);
           value.data.forEach( v => {
             if (v.chargeWay === 4) {
               this.selectCheckChargeItemList.push(v.chargeName);
@@ -436,9 +437,10 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // Calculated amount (计算金额)
   public  getBalance(e): void {
-    if (e.target.value >= this.paymentTotle) {
-      this.Balance = parseFloat(( e.target.value - this.paymentTotle).toFixed(2));
-    }
+      this.Balance = parseFloat(( e.target.value - this.paymentReceivableTotle).toFixed(2));
+    // } else {
+    //   this.Balance =  parseFloat(( e.target.value - this.paymentTotle).toFixed(2));
+    // }
   }
   // cancel select charging items
   public  payProjectFalseClick(): void {
@@ -517,7 +519,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           {field: 'mobilePhone', header: '客户电话'},
           {field: 'dueTime', header: '物业费到期时间'},
           {field: 'minMonth', header: '欠费月数'},
-          {field: 'surplus', header: '账户余额'},
+          {field: 'prepaidAmount', header: '预缴金额'},
           {field: 'operating', header: '操作'}],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
@@ -532,6 +534,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // show detail dialog (展示详情弹窗)
   public  detailClick(e): void {
+    e.minMonth = e.minMonth === 0 ? '未欠费' : e.minMonth + '个月';
     this.dialogOption = {
       dialog: true,
       tableHidden: false,
@@ -552,7 +555,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           {field: 'sex', header: '客户性别'},
           {field: 'mobilePhone', header: '客户电话'},
           {field: 'dueTime', header: '物业费到期时间'},
-          {field: 'surplus', header: '账户余额'},
+          {field: 'surplus', header: '预存金额'},
+          {field: 'prepaidAmount', header: '预缴金额'},
           {field: 'minMonth', header: '欠费月数'},
         ],
       }
@@ -591,6 +595,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
             return v;
          });
           this.paymentItemData.unshift(...costSplitList);
+          console.log(this.paymentItemData);
           this.costSplitDialog = false;
         } else {
           this.toolSrv.setToast('error', '操作成功', value.message);
@@ -634,7 +639,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       value => {
         if (value.status === '1000') {
            this.setPaymentList(value);
-          this.paymentMoney = value.data.actualTotalMoneyCollection;
+           this.paymentMoney = value.data.actualTotalMoneyCollection;
         } else {
           this.toolSrv.setToast('error', '请求失败', value.message);
           this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus =  this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus === 0 ? 1 : 0;
@@ -657,6 +662,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     // this.deductionDamagesSelect = [];
     this.paymentItemData = data.data.billDetailedDOArrayList.map( v => {
       v.stateOfArrears = v.stateOfArrears !== 0;
+      v.ownerSelection = this.ownerOption;
       return v;
     });
     this.deductionDamagesData = data.data.costDeduction;

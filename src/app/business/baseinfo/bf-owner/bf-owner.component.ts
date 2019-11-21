@@ -147,7 +147,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     if (this.themeSrv.setTheme !== undefined) {
-      console.log(this.themeSrv.setTheme);
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
@@ -235,7 +234,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     this.ownerAddDialog = true;
   }
   // sure add houser and owner info
-  public  ownerAddSureClick(): void {
+  public  ownerSureClick(): void {
     const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'roomType', 'roomStatus'];
     const addroomVerifyStaus = addRoomKeyList.every( v => {
       return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
@@ -251,18 +250,21 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     this.toolSrv.setConfirmation('增加', '增加', () => {
       const addOwnerList = this.ownerList.map( v => {
           v.identity = this.toolSrv.setLabelToValue(this.identityOption, v.identity);
+          v.sex = this.toolSrv.setLabelToValue(this.sexOption, v.sex);
           v.normalPaymentStatus = this.toolSrv.setLabelToValue(this.normalChargeOption, v.normalPaymentStatus);
           return v;
       });
       this.roomInfo.renovationStartTime = this.datePipe.transform(this.roomInfo.renovationStartTime, 'yyyy-MM-dd');
       this.roomInfo.renovationDeadline = this.datePipe.transform(this.roomInfo.renovationDeadline, 'yyyy-MM-dd');
-      this.owerSrv.addRoomCodeAndOwnerInfo({room: this.roomInfo, owner: addOwnerList}).subscribe(
+      // this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, );
+      this.owerSrv.addRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
             value => {
-              console.log(value);
               if (value.status === '1000') {
                 this.queryOwnerPageData();
                 this.toolSrv.setToast('success', '操作成功', value.message);
                 this.ownerAddDialog = false;
+                this.ownerModifayDialog = false;
+                this.clearData();
               } else {
                 this.toolSrv.setToast('error', '操作失败', value.message);
               }
@@ -272,24 +274,25 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // 从业主列表里删除业主信息删除业主信息
   public  deleteOwerMoreClick(e): void {
+    console.log(e);
     this.ownerList.splice(e, 1);
-    this.toolSrv.setToast('success', '操作成功', '删除成功');
+    // this.toolSrv.setToast('success', '操作成功', '删除成功');
   }
   public  addOwerClick(): void {
     this.ownerDialog = true;
   }
   // submit owner and roomInfo
-  public  owerInfoAddClick(): void {
+  public  owerInfoClick(data): void {
     console.log(this.ownerinfo);
     const ownerVertifyKeylist = ['surname', 'idNumber', 'mobilePhone', 'identity',
       'realRecyclingHomeTime', 'startBillingTime', 'normalPaymentStatus'];
     const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
-       return (this.ownerinfo[v] === '' || this.ownerinfo[v] === undefined || this.ownerinfo[v] === null);
+       return (this.ownerinfo[v] !== '' && this.ownerinfo[v] !== undefined && this.ownerinfo[v] !== null);
     });
-    if (!ownerInfoStatus) {
+    if (ownerInfoStatus) {
          // if (this.toolSrv.verifyPhone.test(this.ownerinfo.mobilePhone)) {
          //    if (this.toolSrv.verifyIdNumber.test(this.ownerinfo.idNumber)) {
-              this.ownerInfoSetValueToOwnerList();
+              this.ownerInfoSetValueToOwnerList(data);
          //    } else {
          //      this.toolSrv.setToast('error', '添加失败', '请输入正确的身份证号');
          //    }
@@ -303,7 +306,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
 
   // 将添加的业主信息set到业主列表中
-  public  ownerInfoSetValueToOwnerList(): void {
+  public  ownerInfoSetValueToOwnerList(data): void {
     // 将业主信息状态转换为可以别的中文格式
     // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
     this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform( this.ownerinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
@@ -311,10 +314,19 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
     this.ownerinfo.identity = this.toolSrv.setValueToLabel(this.identityOption, this.ownerinfo.identity);
     this.ownerinfo.normalPaymentStatus = this.toolSrv.setValueToLabel(this.normalChargeOption, this.ownerinfo.normalPaymentStatus);
-    // 添加业主信息到列表中
-    this.ownerList.push(this.ownerinfo);
-    this.ownerDialog = false;
-    this.ownerinfo = new OwerList();
+    if (data === 'add') {
+      // 添加业主信息到列表中
+      this.ownerList.push(this.ownerinfo);
+      this.ownerDialog = false;
+      this.ownerinfo = new OwerList();
+    } else {
+      // 添加业主信息到列表中
+      this.ownerList[this.ownerListIndex] = this.ownerinfo;
+      this.ownerDialog = false;
+      this.ownerinfo = new OwerList();
+      this.ownerModifyDialog = false;
+    }
+
   }
   // detail ownerInfo
   public  ownerDetailClick(e): void {
@@ -342,18 +354,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     if (this.ownerSelect === undefined || this.ownerSelect.length === 0 ) {
      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.ownerSelect.length === 1) {
-      console.log(this.ownerSelect[0]);
-      this.ownerSelect[0].roomType = this.toolSrv.setLabelToValue(this.roomTypeOption,  this.ownerSelect[0].roomType);
-      this.ownerSelect[0].roomStatus = this.toolSrv.setLabelToValue(this.roomStatusOption,  this.ownerSelect[0].roomStatus);
-      this.ownerSelect[0].renovationStatus = this.toolSrv.setLabelToValue(this.renovationStatusOption,  this.ownerSelect[0].renovationStatus);
-      this.timeHide = this.ownerSelect[0].renovationStatus === '0';
-      for (const roomInfoKey in this.ownerSelect[0]) {
-        if (this.ownerSelect[0][roomInfoKey] === null ) {
-          this.roomInfo[roomInfoKey] = '';
-        } else {
-          this.roomInfo[roomInfoKey] = this.ownerSelect[0][roomInfoKey];
-        }
-      }
+      this.queryOwnerUpdateData(this.ownerSelect[0].roomCode);
       this.ownerModifayDialog = true;
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
@@ -361,7 +362,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // 关闭弹窗
   public  ownerModifyFalseDialog(): void {
-    this.ownerSelect[0].roomType = this.toolSrv.setValueToLabel(this.roomTypeOption,  this.ownerSelect[0].roomType);
+    this.ownerList = [];
     this.ownerModifayDialog = false;
     this.ownerSelect = [];
   }
@@ -381,111 +382,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改的项');
     }
-  }
-  // ower modify
-  public  owerInfoModifyClick(): void {
-    this.toolSrv.setConfirmation('增加', '增加', () => {
-      let flagBole = true;
-      if (this.roomInfo.hasOwnProperty('renovationDeadline') && this.roomInfo.renovationDeadline !== '' ) {
-        this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
-      }
-      if (this.roomInfo.hasOwnProperty('renovationStartTime') && this.roomInfo.renovationStartTime !== '') {
-        this.roomInfo.renovationStartTime = this.datePipe.transform( this.roomInfo.renovationStartTime , 'yyyy-MM-dd');
-      }
-      if (this.ownerinfo.hasOwnProperty('realRecyclingHomeTime') && this.ownerinfo.realRecyclingHomeTime !== '') {
-        this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform(this.ownerinfo.realRecyclingHomeTime, 'yyyy-MM-dd');
-      }
-      for (const key in this.roomInfo) {
-        this.ownerAdd[key] = this.roomInfo[key];
-      }
-      for (const ownerinfoKey in this.ownerinfo) {
-        if (this.ownerinfo[ownerinfoKey] === '') {
-          flagBole = false;
-        }
-      }
-      if (this.ownerinfo.sex !== null ) {
-        this.sexOption.forEach(val => {
-          if (this.ownerinfo.sex === val.label) {
-            this.ownerinfo.sex = val.value;
-          }
-        });
-      }
-      if (this.ownerinfo.normalPaymentStatus !== null)  {
-        this.normalChargeOption.forEach(val => {
-          if (this.ownerinfo.normalPaymentStatus === val.label) {
-            this.ownerinfo.normalPaymentStatus = val.value;
-          }
-        });
-      }
-      if (this.ownerinfo.identity !== null) {
-        this.identityOption.forEach(val => {
-          if (this.ownerinfo.identity === val.label) {
-            this.ownerinfo.identity = val.value;
-          }
-        });
-      }
-      for (const key in this.ownerinfo) {
-        this.ownerAdd[key] = this.ownerinfo[key];
-      }
-      this.ownerAdd.startBillingTime = this.datePipe.transform(this.ownerAdd.startBillingTime, 'yyyy-MM-dd');
-      this.ownerAdd.roomCode = this.ownerAdd.roomCode.slice(this.ownerAdd.roomCode.lastIndexOf('-') + 1, this.ownerAdd.roomCode.length);
-      if (flagBole) {
-        this.owerSrv.addSingleOwerInfo(this.ownerAdd).subscribe(
-          value => {
-            if (value.status === '1000') {
-              this.toolSrv.setToast('success', '操作成功', '修改成功');
-              // this.clearData();
-              this.ownerModifyDialog = false;
-            } else {
-              this.toolSrv.setToast('error', '操作失败', value.message);
-            }
-          });
-      } else  {
-        this.toolSrv.setToast('error', '操作错误', '请填写完整的房屋信息');
-      }
-    });
-  }
-  // sure modify owner
-  public  ownerModifySureClick(): void {
-    console.log(this.roomInfo);
-    this.roomInfo.renovationStartTime = this.datePipe.transform( this.roomInfo.renovationStartTime , 'yyyy-MM-dd');
-    this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
-    console.log(this.ownerList);
-    // this.toolSrv.setConfirmation('修改', '修改', () => {
-    //
-    //
-    //
-    //
-    //   if (this.ownerList.length === 0 ) {
-    //     if (this.roomInfo.hasOwnProperty('renovationDeadline') && this.roomInfo.renovationDeadline !== '' ) {
-    //       this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
-    //     }
-    //     if (this.roomInfo.hasOwnProperty('renovationStartTime') && this.roomInfo.renovationStartTime !== '') {
-    //       this.roomInfo.renovationStartTime = this.datePipe.transform( this.roomInfo.renovationStartTime , 'yyyy-MM-dd');
-    //     }
-    //     if (this.ownerinfo.hasOwnProperty('realRecyclingHomeTime') && this.ownerinfo.realRecyclingHomeTime !== '') {
-    //       this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform( this.ownerinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
-    //     }
-    //     this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length);
-    //     // this.owerSrv.addRoomCodeInfo(this.roomInfo).subscribe(
-    //     //   value => {
-    //     //     if (value.status === '1000') {
-    //     //       this.toolSrv.setToast('success', '操作成功', value.message);
-    //     //       this.ownerModifayDialog = false;
-    //     //       this.clearData();
-    //     //       this.ownerInitialization();
-    //     //     } else  {
-    //     //       this.toolSrv.setToast('error', '操作失败', value.message);
-    //     //     }
-    //     //   }
-    //     // );
-    //   } else {
-    //     this.ownerModifayDialog = false;
-    //     this.clearData();
-    //     this.ownerInitialization();
-    //     this.toolSrv.setToast('success', '操作成功', '操作成功');
-    //   }
-    // });
   }
   // delete owner
   public  ownerDeleteClick(): void {
@@ -586,6 +482,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
      this.ownerList = [];
      this.ownerinfo = new OwerList();
      this.ownerUserSelect = [];
+     this.ownerSelect = [];
  }
   // paging query
   public  nowpageEventHandle(event: any): void {
@@ -633,6 +530,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  queryOwnerPageData(): void {
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
       (value) => {
+        console.log(value);
         if (value.status === '1000') {
           this.setQueryDataValueToLabel(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -667,5 +565,25 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       return v;
     });
     this.setTableOption(this.tableContent);
+  }
+
+  public  queryOwnerUpdateData(data): void {
+      this.owerSrv.queryUpdateInfoByroomCode({roomCode: data}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            this.ownerList = value.data.owner.map( v => {
+              v.sex = this.toolSrv.setValueToLabel(this.sexOption, v.sex);
+              v.identity = this.toolSrv.setValueToLabel(this.identityOption, v.identity);
+              v.normalPaymentStatus = this.toolSrv.setValueToLabel(this.normalChargeOption, v.normalPaymentStatus);
+              return v;
+            });
+            this.roomInfo = value.data.roomInfo;
+            this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length)
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
+          }
+        }
+      );
   }
 }

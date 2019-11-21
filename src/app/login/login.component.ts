@@ -60,6 +60,7 @@ export class LoginComponent implements OnInit{
       (value) => {
         console.log(value);
         this.loadHidden = true;
+        this.btnClickFlag = 0;
         if (value.status === '1000') {
           this.item = [];
           this.localSessionStorage.set('appkey', value.data.token);
@@ -70,10 +71,10 @@ export class LoginComponent implements OnInit{
           this.localSessionStorage.setObject('item', this.item);
           this.localSessionStorage.setObject('sidebarItem', 1);
           this.route.navigate(['/home/main']);
-          this.btnClickFlag = 0;
           // this.userLogin.removeControl('username');
           // this.userLogin.removeControl('password');
         } else {
+
           this.toolSrv.setToast('error', '登录失败', value.message);
         }
       }

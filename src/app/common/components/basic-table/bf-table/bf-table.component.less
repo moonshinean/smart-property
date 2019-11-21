@@ -1,8 +1,9 @@
 .bf-table {
   overflow: hidden;
   height: 100%;
+  ::ng-deep .ui-table-scrollable-body::-webkit-scrollbar {
+    display: inline;
+    //overflow:hidden
+  }
 }
- ::ng-deep .ui-table-scrollable-body::-webkit-scrollbar {
-  display: none;
-   //overflow:hidden
-}
+

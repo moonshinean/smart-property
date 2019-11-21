@@ -57,7 +57,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     if (this.localSrv.getObject('theme').value) {
-      console.log(this.localSrv.getObject('theme'));
       this.toolSrv.changeTheme(this.localSrv.getObject('theme').value);
       this.themeFlag = this.localSrv.getObject('theme').flag;
     } else {
@@ -68,7 +67,6 @@ export class HomeComponent implements OnInit {
     }
     this.globalSrv.queryTVillageTree().subscribe(
       value => {
-        console.log(value);
         if (value.status === '1000') {
           this.roomtree = value.data;
           this.dataTrees = this.initializeTree(this.roomtree);

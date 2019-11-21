@@ -56,4 +56,8 @@ export class BfOwnerService {
   public  queryByroomCode(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/findByRoomCode', body);
   }
+
+  public  queryUpdateInfoByroomCode(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/owner/findToUpdate', body);
+  }
 }

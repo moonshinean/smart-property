@@ -48,7 +48,7 @@
         <div class="ui-g-12">
           <div class="ui-g-6" *ngFor="let item of detailsAddTitle">
             <div class="ui-g-6" style="text-align: right">
-              <label >{{item.name}}:</label>
+              <label >{{item.name}}：</label>
             </div>
             <div class="ui-g-6 span">
               <span >{{item.value}}<span *ngIf="item.name ==='客户名称'">先生</span> <span *ngIf="item.name ==='建筑面积'">平米</span></span>
@@ -112,7 +112,7 @@
         </div>
         <div class="ui-g-12" [ngStyle]="{'line-height':'3vh'}">
           <div class="ui-g-6">
-            <div class="ui-g-6">
+            <div class="ui-g-6" style="text-align: right">
               <label>缴费人：</label>
             </div>
             <div class="ui-g-6 span" style="line-height: 2vh">
@@ -120,7 +120,7 @@
             </div>
           </div>
           <div class="ui-g-6">
-            <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
               <label >应收账单：</label>
             </div>
             <div class="ui-g-6 span" style="line-height: 2vh">
@@ -128,7 +128,7 @@
             </div>
           </div>
           <div class="ui-g-6">
-            <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
               <label >实收账单：</label>
             </div>
             <div class="ui-g-6 span" style="line-height: 2vh">
@@ -136,7 +136,7 @@
             </div>
           </div>
           <div class="ui-g-6">
-            <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
               <label >缴费类型：</label>
             </div>
             <div class="ui-g-6 span" style="line-height: 2vh">
@@ -144,7 +144,7 @@
             </div>
           </div>
           <div class="ui-g-6">
-            <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
               <label >修正金额：</label>
             </div>
             <div class="ui-g-6 span" style="line-height: 2vh">

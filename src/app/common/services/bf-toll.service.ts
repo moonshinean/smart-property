@@ -15,9 +15,6 @@ export class BfTollService {
   public  addBfTollInfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/charge/add`, pamars);
   }
-  public queryTollAllStatus(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/setting/findNativeChoose`, pamars);
-  }
   public deleteTollinfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/charge/deleteByIds`, pamars);
   }
@@ -27,12 +24,9 @@ export class BfTollService {
   public updateTollListinfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/charge/update`, pamars);
   }
-  public queryTollChargeStatus(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/setting/findAdminChoose`, pamars);
-  }
   // 下面列表为空的添加
   public queryTollAdd(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/charge/addChargeItem`, pamars);
+    return this.http.post(environment.sysetUrl + `/charge/add`, pamars);
   }
   // 下面列表为空的修改
   public queryTollModify(pamars): Observable<any> {
@@ -45,4 +39,8 @@ export class BfTollService {
   public updateTollInfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/charge/updateChargeItem`, pamars);
   }
+  public getTolldetail(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/findChargeDetail`, pamars);
+  }
+
 }

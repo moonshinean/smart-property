@@ -36,7 +36,6 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
 
   ) {
     this.themeSrv.changeEmitted$.subscribe(value => {
-      console.log(value);
       this.ftHover = value.siderbar.ftHover;
       this.ft  = value.siderbar.ft;
       this.sidebarRouterStatus(this.url);

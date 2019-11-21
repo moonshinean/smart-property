@@ -168,7 +168,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerAddSureClick()">确认</button>
+        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerSureClick()">确认</button>
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerAddDialog=false">取消</button>
       </div>
     </p-footer>
@@ -287,7 +287,7 @@
                   {{rowData[col.field]}}
                 </td>
                 <td [ngStyle]="{'text-align': 'center'}">
-                  <button class="bf-owner-Modifydialog-Btn"  (click)="deleteOwerMoreClick(rowData)">删除</button>
+                  <button class="bf-owner-Modifydialog-Btn"  (click)="deleteOwerMoreClick(rowIndex)">删除</button>
                 </td>
               </tr>
             </ng-template>
@@ -303,7 +303,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerModifySureClick()">确认</button>
+        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerSureClick()">确认</button>
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerModifyFalseDialog()">取消</button>
       </div>
     </p-footer>
@@ -420,7 +420,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="owerInfoAddClick()">确认</button>
+        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="owerInfoClick('add')">确认</button>
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerDialog=false;">取消</button>
       </div>
     </p-footer>
@@ -495,7 +495,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="owerInfoModifyClick()">确认</button>
+        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="owerInfoClick('modify')">确认</button>
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerModifyDialog=false;">取消</button>
       </div>
     </p-footer>
