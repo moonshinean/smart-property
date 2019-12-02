@@ -8,6 +8,8 @@ import {last} from 'rxjs/operators';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {ThemeService} from '../../../common/public/theme.service';
 import {Subscription} from 'rxjs';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-bf-staff',
@@ -62,9 +64,18 @@ export class BfStaffComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 按钮显示相关
+  public btnHiden = [
+    {label: '新增', hidden: true},
+    {label: '修改', hidden: true},
+    {label: '删除', hidden: true},
+    // {label: '搜索', hidden: true},
+  ];
   constructor(
     private staffSrv: BfStaffService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private datePipe: DatePipe,
     private themeSrv: ThemeService
   ) {
@@ -78,6 +89,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -319,5 +331,21 @@ export class BfStaffComponent implements OnInit, OnDestroy {
       type: 2,
       tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
+  }
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '收费项目') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

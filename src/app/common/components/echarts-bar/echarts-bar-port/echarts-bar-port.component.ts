@@ -23,9 +23,6 @@ export class EchartsBarPortComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.themeColor);
-    console.log(this.title);
-    console.log(this.data);
     this.optionsport = {
       backgroundColor: this.themeColor.background,
       color: this.themeColor.colorList,

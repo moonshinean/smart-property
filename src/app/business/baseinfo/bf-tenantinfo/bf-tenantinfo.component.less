@@ -12,15 +12,15 @@
       border-radius: 5px;
       cursor:pointer;
     }
+    .bf-tenant-header-img {
+      width: 18px;
+      height: 18px;
+      vertical-align: bottom;
+      margin-right: 5px;
+    }
     .bf-tenant-header-btn-add {
       margin-left: 2vw;
       background: #55AB7F;
-      .bf-tenant-header-img-add{
-        width: 18px;
-        height: 18px;
-        vertical-align: bottom;
-        margin-right: 5px;
-      }
     }
     .bf-tenant-header-btn-modify{
       margin-left: 1vw;
@@ -32,15 +32,18 @@
         margin-right: 5px;
       }
     }
+    .bf-tenant-header-btn-Logout{
+      //width: 7vw;
+      margin-left: 1vw;
+      background: #0D7689;
+    }
     .bf-tenant-header-btn-delete{
       margin-left: 1vw;
       background: #A84847;
-      .bf-tenant-header-img-delete{
-        width: 18px;
-        height: 18px;
-        vertical-align: bottom;
-        margin-right: 5px;
-      }
+    }
+    .bf-owner-header-btn-import{
+      margin-left: 1vw;
+      background: #449D44;
     }
     ::ng-deep .ui-dropdown{
       min-width: 0;
@@ -106,10 +109,27 @@
       background: #50588E;
     }
   }
-
+  .tenant-detail {
+    span {
+      border: 1px solid #A6A6A6;
+      width: 228px;
+      height: 33px;
+      display: block;
+      background: #EDEDED;
+      line-height: 3.2vh;
+      border-radius: 4px;
+      color: #9E9E9E;
+      word-break: break-word;
+      overflow-y: scroll;
+    }
+    ::ng-deep .ui-table-scrollable-body::-webkit-scrollbar {
+      display: inline;
+      //position: absolute;
+    }
+  }
   //弹框按钮
   .bf-tenant-dialog-Btn{
-    width: 4vw;
+    width: 6vw;
     text-align: center;
     border-radius: 5px;
     height: 4vh;

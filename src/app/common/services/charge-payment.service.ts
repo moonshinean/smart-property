@@ -47,4 +47,13 @@ export class ChargePaymentService {
   public importOldBills(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/cash/register/importOldBills`, pamars);
   }
+  // 查树结构
+  public getRoomTree(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/findParkingCode`, pamars);
+  }
+
+  // 车位办理
+  public setRoomCodeBindParkSpace(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/add`, pamars);
+  }
 }

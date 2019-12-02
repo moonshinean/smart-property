@@ -24,21 +24,9 @@ export class BfOwnerService {
     return  this.http.post(environment.sysetUrl + '/owner/import', body);
     // return  this.http.post('/recieveMessage', body);
   }
-  public  addOwerInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/addOwner', body);
-  }
-  public  addSingleOwerInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/addSingleOwner', body);
-  }
-  public  updateOwerInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/updateOwner', body);
-  }
   // delete owerInfo
   public  deleteRoomInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/deleteRoom', body);
-  }
-  public  deleteOwerInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/logout', body);
   }
   public  queryOwerInfoDetail(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/owner/findOwnerDetail', body);
@@ -46,18 +34,14 @@ export class BfOwnerService {
   public  addRoomCodeAndOwnerInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/owner/addOwner', body);
   }
-  public  queryUploadDetail(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/excel/findLog', body);
-  }
-  public  queryByMobileNumber(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/findByPhone', body);
-  }
-  // 按房间哈哈查询
-  public  queryByroomCode(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/findByRoomCode', body);
-  }
-
   public  queryUpdateInfoByroomCode(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/owner/findToUpdate', body);
+  }
+
+  public  deleteSingleOwnerInfo(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/roomInfo/deleteSingleCustomer', body);
+  }
+  public  logoutOwnerInfo(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/roomInfo/logout', body);
   }
 }

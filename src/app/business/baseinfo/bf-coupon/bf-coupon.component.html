@@ -6,15 +6,15 @@
   <!--顶部按钮-->
   <div class="bf-coupon-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1 bf-coupon-header-btn bf-coupon-header-btn-add" (click)="couponAddClick()">
+      <div class="ui-g-1 bf-coupon-header-btn bf-coupon-header-btn-add" (click)="couponAddClick()" [hidden]="this.btnHiden[0].hidden">
         <img class="bf-coupon-header-img-add" src="assets/images/ic_add.png" alt="">
         <span>增 加</span>
       </div>
-      <div class="ui-g-1 bf-coupon-header-btn bf-coupon-header-btn-modify" (click)="couponModifyClick()">
+      <div class="ui-g-1 bf-coupon-header-btn bf-coupon-header-btn-modify" (click)="couponModifyClick()" [hidden]="this.btnHiden[1].hidden">
         <img class="bf-coupon-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 bf-coupon-header-btn bf-coupon-header-btn-delete" (click)="couponDeleteClick()">
+      <div class="ui-g-1 bf-coupon-header-btn bf-coupon-header-btn-delete" (click)="couponDeleteClick()" [hidden]="this.btnHiden[2].hidden">
         <img class="bf-coupon-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>

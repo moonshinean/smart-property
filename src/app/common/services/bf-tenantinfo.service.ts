@@ -12,42 +12,28 @@ export class BfTenantinfoService {
   public  queryTenantDataList(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/customer/findCustomerAllByPage`, pamars);
   }
-  // Conditional search unitinfo
-  public  queryTenantInfoList(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/roomInfo/findAllCustomerByPage`, pamars);
-  }
 
   // upload owerInfo file
   public  uploadTenantInfoFile(body): Observable<any> {
     return  this.http.post(environment.chargeUrl + '/owner/import', body);
     // return  this.http.post('/recieveMessage', body);
   }
+  // 业主添加
   public  addTenantInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/addSingleCustomer', body);
+    return  this.http.post(environment.sysetUrl + '/customer/addCustomer', body);
   }
-  public  queryTenantInfoAllStatus(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/setting/findAdminChoose', body);
+
+  public  deleteSingleTeanantrInfo(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/roomInfo/deleteSingleCustomer', body);
   }
-  // delete owerInfo
-  public  deleteTenantInfo(body): Observable<any> {
+  //
+  public  findTenantDetail(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/customer/findCustomerDetail', body);
+  }
+  public  queryTenantfoListByCondition(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/customer/findCustomerByCondition', body);
+  }
+  public  logoutOwnerInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/logout', body);
-  }
-  public  deleteRoomInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/deleteRoom', body);
-  }
-  public  queryTenantInfoDetail(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/findCustomerDetail', body);
-  }
-  public  addRoomCodeInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/addRoom', body);
-  }
-  public  queryUploadDetail(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/excel/findLog', body);
-  }
-  public  queryByMobileNumber(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/findByPhone2', body);
-  }
-  public  queryByRoomCode(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/roomInfo/findByRoomCode2', body);
   }
 }

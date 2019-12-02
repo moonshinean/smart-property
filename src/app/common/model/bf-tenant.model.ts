@@ -82,4 +82,6 @@ export class OwerList {
   startTime?: any;  // 租房开始时间
   endTime?: any;   // 祖租房结束时间
   idNumber?: any;
+  roomCode: any;
+  customerUserId: any;
 }

@@ -24,6 +24,9 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
   public cleanTimer: any; // 清除时钟
   public ft = '#8F9198';
   public ftHover = '#3A79DD';
+  public btnListPermisCode = [
+    {label: '基础信息', item:[]},
+  ];
   // public items: MenuItem[];
   constructor(
     private router: Router,
@@ -112,7 +115,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           {label: '员工档案', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/staff']},
           {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/coupon']},
           {label: '车位信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/parkingspace']},
-          {label: '车辆信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/vehicle']},
+          // {label: '车辆信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/vehicle']},
         ] },
       { title: '关联设置', item: [] , routingItem: [
           {label: '员工分组', icon: 'pi pi-fw', routerLink: ['/home/assoc/assocstaff']},
@@ -176,21 +179,27 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
             this.items = [];
             this.homeSrv.getChildrenRouter({parentCode: v.permisCode}).subscribe(
               (value) => {
+                console.log(value);
                 value.data.forEach( data => {
                   h.routingItem.forEach( val => {
                     if (val.label === data.title) {
-                      this.sidebarItem.push({parentCode: data.parentCode, label: data.title });
+                      this.sidebarItem.push({parentCode: data.permisCode, label: data.title });
                       h.item.push(val);
                     }
                   });
+                  // this.btnListPermisCode.push({label: h.title, item: this.sidebarItem});
                 });
                 this.localSrv.remove('sidebarItem');
                 this.localSrv.setObject('sidebarItem', this.ItemData);
+                this.localSrv.setObject('btnParentCodeList', this.sidebarItem);
+
+                // this.btnListPermisCode.item.push(this.sidebarItem);
               }
             );
           }
         });
       });
+      console.log(this.btnListPermisCode);
     } else {
       this.ItemData = this.localSrv.getObject('sidebarItem');
     }

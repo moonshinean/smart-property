@@ -65,7 +65,7 @@ export class TollMoreInfo {
   money?: any; // 	金额
   datedif?: any; // 	月数
   discount?: any; // 	折扣
-  parkingSpaceNature?: any; // 		车位性质
+  parkingSpacePlace?: any; // 		车位性质
   parkingSpaceType ?: any; // 		车位类型
 }
 export class ModifyTollDrop {

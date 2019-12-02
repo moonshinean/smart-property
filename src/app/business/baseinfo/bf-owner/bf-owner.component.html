@@ -6,28 +6,32 @@
   <!--顶部按钮-->
   <div class="bf-owner-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-add" (click)="ownerAddClick()">
+      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-add" (click)="ownerAddClick()" [hidden]="btnHiden[0].hidden">
         <img class="bf-owner-header-img" src="assets/images/ic_add.png" alt="">
         <span>增 加</span>
       </div>
-      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-modify" (click)="ownerModifyClick()">
+      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-modify" (click)="ownerModifyClick()" [hidden]="btnHiden[1].hidden">
         <img class="bf-owner-header-img bf-owner-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-delete" (click)="ownerDeleteClick()">
+      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-delete" (click)="ownerDeleteClick()" [hidden]="btnHiden[2].hidden">
         <img class="bf-owner-header-img" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
-      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-import" (click)="addMoreFileClick()">
+      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-Logout" (click)="logoutClick()" [hidden]="btnHiden[3].hidden">
+        <img class="bf-owner-header-img" src="assets/images/ic_delete.png" alt="">
+        <span>注 销</span>
+      </div>
+      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-import" (click)="addMoreFileClick()" [hidden]="btnHiden[4].hidden">
         <img class="bf-owner-header-img" src="assets/images/ic_add.png" alt="">
         <span>导 入</span>
       </div>
     </div>
     <!--//搜索-->
-    <div class="ui-inputgroup bf-owner-header-search">
+    <div class="ui-inputgroup bf-owner-header-search" *ngIf="!btnHiden[5].hidden">
       <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选查看范围..." (onChange)="searchTypeChange()" [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入需要搜索的值" [(ngModel)]="inputSearchData">
-      <button id="disabled-btn" class="bf-owner-header-btn-search" type="button"  (click)="ownerSearchClick()"  label="搜索">搜索</button>
+      <input type="text" pInputText placeholder="请输入需要搜索的值" [(ngModel)]="inputSearchData" >
+      <button id="disabled-btn" class="bf-owner-header-btn-search" type="button"  (click)="ownerSearchClick()"  label="搜索" >搜索</button>
     </div>
   </div>
   <!--表格-->
@@ -287,7 +291,7 @@
                   {{rowData[col.field]}}
                 </td>
                 <td [ngStyle]="{'text-align': 'center'}">
-                  <button class="bf-owner-Modifydialog-Btn"  (click)="deleteOwerMoreClick(rowIndex)">删除</button>
+                  <button class="bf-owner-Modifydialog-Btn"  (click)="deleteModifyClick(rowData)">删除</button>
                 </td>
               </tr>
             </ng-template>

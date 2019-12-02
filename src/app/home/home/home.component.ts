@@ -28,6 +28,8 @@ export class HomeComponent implements OnInit {
     {label: '经典黑', value: '#282A31'},
     {label: '自然绿', value: '#55AA80'},
     {label: '天空蓝', value: '#7EC6F5'},
+    {label: '简约粉', value: '#DEA8A8'},
+    {label: '深沉棕', value: '#CF8D73'},
   ];
   public imageHidden = false;
 
@@ -160,7 +162,17 @@ export class HomeComponent implements OnInit {
         this.toolSrv.changeTheme('blue');
         break;
       case 2:
-        this.themeFlag  = 0;
+        this.themeFlag  += 1;
+        this.localSrv.setObject('theme', {value: 'pink', flag: this.themeFlag});
+        this.toolSrv.changeTheme('pink');
+        break;
+      case 3:
+        this.themeFlag  += 1;
+        this.localSrv.setObject('theme', {value: 'brown', flag: this.themeFlag});
+        this.toolSrv.changeTheme('brown');
+        break;
+      case 4:
+        this.themeFlag = 0;
         this.localSrv.setObject('theme', {value: 'default', flag: this.themeFlag});
         this.toolSrv.changeTheme('default');
         break;

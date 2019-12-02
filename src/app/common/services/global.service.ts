@@ -57,4 +57,13 @@ export class GlobalService {
     return this.http.post(environment.sysetUrl + `/setting/findNatChoose`, pamars);
   }
 
+  public queryCouponUserInfo(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/customer/findByRoomCode`, pamars);
+  }
+
+
+//   查询权限
+  public  getChildrenRouter(pamars): Observable<any> {
+    return this.http.post(environment.loginUrl + '/permission/findByParentCode', pamars);
+  }
 }

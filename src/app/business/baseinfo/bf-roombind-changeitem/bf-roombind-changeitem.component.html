@@ -6,15 +6,15 @@
   <!--顶部按钮-->
   <div class="bf-roombind-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1 bf-roombind-header-btn bf-roombind-header-btn-add" (click)="roombindAddClick()">
+      <div class="ui-g-1 bf-roombind-header-btn bf-roombind-header-btn-add" (click)="roombindAddClick()" [hidden]="this.btnHiden[0].hidden">
         <img class="bf-roombind-header-img-add" src="assets/images/ic_add.png" alt="">
         <span>增 加</span>
       </div>
-      <div class="ui-g-1 bf-roombind-header-btn bf-roombind-header-btn-modify" (click)="roombindModifyClick()">
+      <div class="ui-g-1 bf-roombind-header-btn bf-roombind-header-btn-modify" (click)="roombindModifyClick()" [hidden]="this.btnHiden[1].hidden">
         <img class="bf-roombind-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 bf-roombind-header-btn bf-roombind-header-btn-delete" (click)="roombindDeleteClick()">
+      <div class="ui-g-1 bf-roombind-header-btn bf-roombind-header-btn-delete" (click)="roombindDeleteClick()" [hidden]="this.btnHiden[2].hidden">
         <img class="bf-roombind-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
@@ -33,7 +33,8 @@
     </div>
     <!--//搜索-->
 <!--    <div class="ui-inputgroup bf-roombind-header-search">-->
-<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
+<!--      <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选查看范围..." [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>-->
+<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw" [(ngModel)]="serchData">-->
 <!--      <button id="disabled-btn" class="bf-roombind-header-btn-search" type="button"  (click)="roombindSearchClick()"  label="搜索">搜索</button>-->
 <!--    </div>-->
   </div>
@@ -42,121 +43,38 @@
     <rbi-check-table-btn
       [option]="tableOption"
       [select]="roombindSelect"
-      (selectData)="selectData($event)"
-      (detail)="roombindDetailClick($event)">
+      (selectData)="selectData($event)">
     </rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
-  <p-dialog header="信息添加" [(visible)]="roombindAddDialog" [width]="800">
+  <p-dialog header="信息添加" [(visible)]="roombindAddDialog" [width]="800" [closable]="false">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >小区名称：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.village" scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)" [(ngModel)]="this.roombindAdd.villageCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>地块名称：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)" [(ngModel)]="this.roombindAdd.regionCode"></p-dropdown>
-
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >楼栋名称：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.building" scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)" [(ngModel)]="this.roombindAdd.buildingCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >单元名称：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.unit"  scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)" [(ngModel)]="this.roombindAdd.unitCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >房间编号：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.room" scrollHeight="100px" placeholder="请输入房间编号..."  [(ngModel)]="roombindAdd.roomCode"></p-dropdown>
-        </div>
-      </div>
       <div class="ui-g-6">
         <div class="ui-g-4">
           <label >缴费项目：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="chargeItemOption" scrollHeight="100px" placeholder="请选择缴费项目..."  [(ngModel)]="this.roombindAdd.chargeCode"></p-dropdown>
+          <p-dropdown [options]="chargeItemOption" scrollHeight="100px" placeholder="请选择缴费项目..."  [(ngModel)]="roombindAdd.chargeCode"></p-dropdown>
         </div>
       </div>
     </div>
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="bf-roombind-dialog-Btn bf-roombind-dialog-Btn-sure" (click)="roombindAddSureClick()">确认</button>
         <button class="bf-roombind-dialog-Btn bf-roombind-dialog-Btn-false" (click)="roombindAddDialog=false;clearData();">取消</button>
       </div>
     </p-footer>
   </p-dialog>
   <!--修改弹窗-->
-  <p-dialog header="信息修改" [(visible)]="roombindModifayDialog" [width]="800">
+  <p-dialog header="信息修改" [(visible)]="roombindModifayDialog" [width]="800" [closable]="true">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <label >小区名称：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.village" scrollHeight="100px" [placeholder]="roombindModify.villageName" (onChange)="VillageChange($event)" [(ngModel)]="roombindModify.villageCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>地块名称：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.region" scrollHeight="100px" [placeholder]="roombindModify.regionName" (onChange)="regionChange($event)" [(ngModel)]="roombindModify.regionCode"></p-dropdown>
-
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >楼栋名称：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.building" scrollHeight="100px" [placeholder]="roombindModify.buildingName" (onChange)="buildingChange($event)" [(ngModel)]="roombindModify.buildingCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >单元名称：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.unit"  scrollHeight="100px" [placeholder]="roombindModify.unitName" (onChange)="unitChange($event)" [(ngModel)]="roombindModify.unitCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >房间编号：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="SearchOption.room" scrollHeight="100px" [placeholder]="roombindModify.roomCode"  [(ngModel)]="roombindModify.roomCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
           <label >缴费项目：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}"  style="text-align: center">
           <p-dropdown [options]="chargeItemOption" scrollHeight="100px" [placeholder]="chargeItemName"  [(ngModel)]="roombindModify.chargeCode"></p-dropdown>
         </div>
       </div>
@@ -170,64 +88,5 @@
   </p-dialog>
   <!--详情弹窗-->
   <rbi-detail-pop [dialogOption]="detailOption"></rbi-detail-pop>
-<!--  <p-dialog header="详细信息" [(visible)]="roombindDetailDialog" [width]="800">
-    &lt;!&ndash;Content&ndash;&gt;
-    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh','text-align':'center'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>小区名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roombindDetail.villageName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>地块名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roombindDetail.regionName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>楼栋名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roombindDetail.buildingName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>单元名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roombindDetail.unitName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >房间编号：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{roombindDetail.roomCode}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>缴费项目：</label>
-        </div>
-        <div class="ui-g-8">
-          <span >{{chargeItemName}}</span>
-        </div>
-      </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        &lt;!&ndash;<button class="bf-roombind-dialog-Btn bf-roombind-dialog-Btn-sure" (click)="roombindModifySureClick()">确认</button>&ndash;&gt;
-        <button class="bf-roombind-dialog-Btn bf-roombind-dialog-Btn-false"  (click)="roombindDetailDialog=false;clearData()">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>-->
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
 </div>

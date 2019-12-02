@@ -125,7 +125,7 @@ export class PublicMethedService {
         legendcolor: '#80BFA0',
         labelColor: 'rgba(10, 20, 10, 1)',
         labelLineColor: 'rgba(20, 10, 10, 1)',
-        itemStyle: '#C6E3D5',
+        itemStyle: '#4A886A',
         itemShodow: 'rgba(198, 227, 213, 0.5)'
       }
     },
@@ -188,6 +188,114 @@ export class PublicMethedService {
       header: {background: '#2581D6', color: '#fff'},
       content: [{background: '#F5F5F5', color: '#000'}, {background: '#D9E7F2', color: '#000'}],
       detailBtn: '#5DA2E3'
+    }
+  };
+  public PinkTheme = [
+    {label: '--bgc-theme', value: '#DEA8A8'},
+    {label: '--body-bgc', value: '#E4E4E4'},
+    {label: '--ft-sidebar-theme', value: '#fff'},
+    {label: '--ft-sidebar-hover-theme', value: '#000'},
+    {label: '--bgc-sidbarMunu', value: '#343434'},
+    {label: '--footer-bgc', value: '#fff'},
+    {label: '--footer-ft', value: '#000'},
+    {label: '--mokuai-bgc', value: '#F5F5F5'},
+    {label: '--table-detail', value: '#F09898'},
+    {label: '--paging-bgc', value: '#F5F5F5'},
+    {label: '--paging-ft', value: '#000'},
+    {label: '--paging-input', value: 'rgba(3,3,3,0.5)'},
+    {label: '--header-bgc', value: '#B48181'},
+    {label: '--main-event-item', value: '#DBDBDB'},
+    {label: '--main-event-ft', value: '#000'},
+    {label: '--main-bgc', value: '#F5F5F5'},
+    {label: '--main-title', value: '#DEA8A8'},
+    {label: '--main-box-shodow', value: '#5E6372'},
+  ];
+  public PinkData  = {
+    siderbar: {ft: '#fff', ftHover: '#000'},
+    headerbar: {ft: '#fff', ftHover: '#000'},
+    main: {
+      table: {
+        header: {background: '#DEA8A8', color: '#fff'},
+        content: [{background: '#F5F5F5', color: '#000'},
+          {background: '#F3E2E2', color: '#000'}],
+      },
+      bar: {
+        background: '#F5F5F5',
+        tipcolor: '#333',
+        axislineColor: '#000',
+        axislabelColor: '#000',
+        lineGradientColor: ['#DAA4A4', '#5F3138'],
+        linebgc: '#D0D0D0'
+      },
+      pie: {
+        background: '#F5F5F5',
+        colorList: ['#C97B85', '#A54C58', '#A94D58', '#984651', '#5F2F36'],
+        legendcolor: '#ccc',
+        labelColor: 'rgba(0, 0, 0, 0.7)',
+        labelLineColor: 'rgba(0, 0, 0, 0.3)',
+        itemStyle: '#7F3D47',
+        itemShodow: '#F3F3F3'
+      }
+
+    },
+    table: {
+      header: {background: '#DEA8A8', color: '#fff'},
+      content: [{background: '#F5F5F5', color: '#000'}, {background: '#EDDBDB', color: '#000'}],
+      detailBtn: '#F09898'
+    }
+  };
+  public brownTheme = [
+    {label: '--bgc-theme', value: '#CF8D73'},
+    {label: '--body-bgc', value: '#E4E4E4'},
+    {label: '--ft-sidebar-theme', value: '#fff'},
+    {label: '--ft-sidebar-hover-theme', value: '#000'},
+    {label: '--bgc-sidbarMunu', value: '#343434'},
+    {label: '--footer-bgc', value: '#fff'},
+    {label: '--footer-ft', value: '#000'},
+    {label: '--mokuai-bgc', value: '#F5F5F5'},
+    {label: '--table-detail', value: '#EDB4A2'},
+    {label: '--paging-bgc', value: '#F5F5F5'},
+    {label: '--paging-ft', value: '#000'},
+    {label: '--paging-input', value: 'rgba(3,3,3,0.5)'},
+    {label: '--header-bgc', value: '#AD745D'},
+    {label: '--main-event-item', value: '#DBDBDB'},
+    {label: '--main-event-ft', value: '#000'},
+    {label: '--main-bgc', value: '#F5F5F5'},
+    {label: '--main-title', value: '#CF8D73'},
+    {label: '--main-box-shodow', value: '#5E6372'},
+  ];
+  public brownData  = {
+    siderbar: {ft: '#fff', ftHover: '#000'},
+    headerbar: {ft: '#fff', ftHover: '#000'},
+    main: {
+      table: {
+        header: {background: '#CF8D73', color: '#fff'},
+        content: [{background: '#F5F5F5', color: '#000'},
+          {background: '#EFD9D0', color: '#000'}],
+      },
+      bar: {
+        background: '#F5F5F5',
+        tipcolor: '#333',
+        axislineColor: '#000',
+        axislabelColor: '#000',
+        lineGradientColor: ['#CB8A70', '#592921'],
+        linebgc: '#D0D0D0'
+      },
+      pie: {
+        background: '#F5F5F5',
+        colorList: ['#C97C6E', '#A44B3B', '#924133', '#78362B', '#56271F'],
+        legendcolor: '#ccc',
+        labelColor: 'rgba(0, 0, 0, 0.7)',
+        labelLineColor: 'rgba(0, 0, 0, 0.3)',
+        itemStyle: '#944234',
+        itemShodow: '#F3F3F3'
+      }
+
+    },
+    table: {
+      header: {background: '#CF8D73', color: '#fff'},
+      content: [{background: '#F5F5F5', color: '#000'}, {background: '#E8D2CA', color: '#000'}],
+      detailBtn: '#EDB4A2'
     }
   };
   constructor(
@@ -352,6 +460,8 @@ export class PublicMethedService {
       case 'default': this.setTheme(this.defaultTheme, this.defaultData); break;
       case 'green': this.setTheme(this.greenTheme, this.greenData); break;
       case 'blue': this.setTheme(this.blueTheme, this.blueData); break;
+      case 'pink': this.setTheme(this.PinkTheme, this.PinkData); break;
+      case 'brown': this.setTheme(this.brownTheme, this.brownData); break;
     }
 
   }

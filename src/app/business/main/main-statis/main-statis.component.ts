@@ -64,7 +64,6 @@ export class MainStatisComponent implements OnInit, OnDestroy {
   public  queryEventData(): void {
     this.mainSrv.getEvent({pageNo: 1, pageSize: 25}).subscribe(
       value => {
-        console.log(value);
         if (value.status === '1000') {
           this.eventlist = value.data.contents.map(v => {
             return {title: v.eventDescripte};

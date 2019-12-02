@@ -44,13 +44,11 @@ export class MainEventComponent implements OnInit {
 
   ngOnInit() {
     if (this.themeSrv.setTheme !== undefined) {
-      console.log(this.themeSrv.setTheme);
       this.table.tableheader = this.themeSrv.setTheme.main.table.header;
       this.table.tableContent = this.themeSrv.setTheme.main.table.content;
     }
     // this.
     this.toolSrv.getAdmStatus([{settingType: 'EVENT_TYPE'}], (data) => {
-      console.log(data);
       this.eventOption = this.toolSrv.setListMap(data.EVENT_TYPE);
       this.queryEventData();
     });
@@ -77,7 +75,6 @@ export class MainEventComponent implements OnInit {
   public  queryEventData(): void {
     this.mainSrv.getEvent({pageNo: 1, pageSize: 25}).subscribe(
       value => {
-        console.log(value);
         if (value.status === '1000') {
           value.data.contents.forEach(v => {
             v.eventType = this.toolSrv.setValueToLabel(this.eventOption, v.eventType);

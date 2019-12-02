@@ -10,6 +10,7 @@ import {Dropdown} from 'primeng/dropdown';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-bf-owner',
@@ -85,6 +86,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     {field: 'roomType', header: '房间类型'},
     {field: 'roomSize', header: '房间面积'},
     {field: 'identity', header: '客户身份'},
+    {field: 'rentStatus', header: '出租状态'},
   ];
   public ownertableOption: any;
   // 业主信息相关
@@ -99,7 +101,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public ownerDetailDialog: boolean;
   public roomTypeName: any;
   public roomStatusName: any;
-  public renovationStatusName: any;
   public renovationName: any;
   public sexName: any;
   // 业主修改相关
@@ -120,11 +121,21 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   };
   // 服务传参相关
   public ownerSub: Subscription;
+  // 按钮权限相关
+  public btnHiden = [
+      {label: '新增', hidden: true},
+      {label: '修改', hidden: true},
+      {label: '删除', hidden: true},
+      {label: '注销', hidden: true},
+      {label: '导入', hidden: true},
+      {label: '搜索', hidden: true},
+    ];
   constructor(
     private owerSrv: BfOwnerService,
     private globalSrv: GlobalService,
     private confirmationService: ConfirmationService,
     public toolSrv: PublicMethedService,
+    private localSrv: LocalStorageService,
     private datePipe: DatePipe,
     private sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
@@ -146,6 +157,8 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    // console.log(this.localSrv.getObject('btnParentCodeList'));
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -455,18 +468,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     } else {
       this.toolSrv.setToast('error', '操作失败', '请选择需要上传的文件');
     }
-
-    // this.confirmationService.confirm({
-    //   message: `确认要上传吗？`,
-    //   header: '上传提醒',
-    //   icon: 'pi pi-exclamation-triangle',
-    //   accept: () => {
-    //     this.loadHidden = false;
-    //
-    //   },
-    //   reject: () => {
-    //   }
-    // });
   }
 
   public  clearData(): void {
@@ -535,7 +536,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           this.setQueryDataValueToLabel(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else {
-          this.toolSrv.setToast('error', '查询失败', value.message)
+          this.toolSrv.setToast('error', '查询失败', value.message);
         }
       }
     );
@@ -544,6 +545,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  queryOwnerPageByCondition(conditions, data, nowPage): void {
       this.owerSrv.queryOwerInfoListByCondition({condition: conditions, value: data, pageSize: 10,  pageNo: nowPage }).subscribe(
         value => {
+          console.log(value);
           if (value.status === '1000') {
             this.setQueryDataValueToLabel(value.data.contents);
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -585,5 +587,63 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           }
         }
       );
+  }
+
+  public  logoutClick(): void {
+    if (this.ownerSelect === undefined || this.ownerSelect.length === 0 ) {
+      this.toolSrv.setToast('error', '操作错误', '请选择需要注销的项');
+    } else {
+      const Logoutlist = [];
+      this.ownerSelect.forEach( v => {
+       Logoutlist.push({roomCode: v.roomCode, customerUserId: v.customerUserId, identity: this.toolSrv.setLabelToValue(this.identityOption, v.identity)})
+      });
+      this.toolSrv.setConfirmation('注销', `注销这${this.ownerSelect.length}项`, () => {
+        this.owerSrv.logoutOwnerInfo({data: Logoutlist}).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.searchJudgment(this.nowPage);
+              this.clearData();
+              this.toolSrv.setToast('success', '请求成功', value.message);
+            } else {
+              this.toolSrv.setToast('error', '请求失败', value.message);
+            }
+          }
+        );
+      });
+      // this.queryOwnerUpdateData(this.ownerSelect[0].roomCode);
+      // this.ownerModifayDialog = true;
+    }
+  }
+
+  public  deleteModifyClick(item): void {
+     this.toolSrv.setConfirmation('删除', '删除', () => {
+       this.owerSrv.deleteSingleOwnerInfo({data: [{roomCode: this.ownerSelect[0].roomCode, customerUserId: item.customerUserId}]}).subscribe(
+         value => {
+           if (value.status === '1000') {
+             this.queryOwnerUpdateData(this.ownerSelect[0].roomCode);
+             this.toolSrv.setToast('success', '请求成功', value.message);
+           } else {
+             this.toolSrv.setToast('error', '请求失败', value.message);
+           }
+         }
+       );
+     });
+  }
+
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '业主资料') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

@@ -7,6 +7,8 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
 import {defer, Observable, Subscribable, Subscription} from 'rxjs';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
 import {ThemeService} from '../../../common/public/theme.service';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-bf-toll',
@@ -26,7 +28,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
   public tollTitle: BfTollTitle = new BfTollTitle();
   // 状态相关
   public parkingSpaceTypeOption: any[] = [];
-  public parkingSpaceNatureOption: any[] = [];
+  public parkingSpacePlaceOption: any[] = [];
   public datedifOption: any[] = [];
   public enableOption: any[] = [];
   public refundOption: any[] = [];
@@ -44,9 +46,16 @@ export class BfTollComponent implements OnInit, OnDestroy {
   public tollChargeTypeMedify: any;
   public setOptionList = {
     datedif: '',
-    parkingSpaceNature: '',
+    parkingSpacePlace: '',
     parkingSpaceType: ''
   };
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '新增', hidden: true},
+    {label: '修改', hidden: true},
+    {label: '删除', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
   // 搜索相关
   public searchType = 0;
   public SearchTypeOption = [
@@ -76,7 +85,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
     {field: 'datedif', header: '缴费月数'},
     {field: 'money', header: '金额'},
     {field: 'discount', header: '折扣'},
-    {field: 'parkingSpaceNature', header: '车位性质'},
+    {field: 'parkingSpacePlace', header: '车位地点'},
     {field: 'parkingSpaceType', header: '车位类型'}
   ];
   public moreTollMoreTitle = [
@@ -86,7 +95,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
     {field: 'datedif', header: '缴费月数'},
     {field: 'money', header: '金额'},
     {field: 'discount', header: '折扣'},
-    {field: 'parkingSpaceNature', header: '车位性质'},
+    {field: 'parkingSpacePlace', header: '车位地点'},
     {field: 'parkingSpaceType', header: '车位类型'},
     {field: 'operating', header: '操作'},
   ];
@@ -109,6 +118,8 @@ export class BfTollComponent implements OnInit, OnDestroy {
     private toolSrv: PublicMethedService,
     private tollSrv: BfTollService,
     private shareSrv: SharedServiceService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService,
   ) {
     this.themeSrv.changeEmitted$.subscribe(
@@ -122,6 +133,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.setBtnIsHidden();
     this.tollSub = this.shareSrv.changeEmitted$.subscribe(value => {
       console.log(value);
     });
@@ -143,16 +155,16 @@ export class BfTollComponent implements OnInit, OnDestroy {
   public tollInitialization(): void {
     this.esDate = this.toolSrv.esDate;
     this.toolSrv.getAdmStatus([{settingType: 'CHARGE_TYPE'},
-      {settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
-      {settingType: 'CWXZ'}, {settingType: 'CWLX'}, {settingType: 'MUST_PAY'},
-      {settingType: 'REFUND'}], (data) => {
-      // this.queryTollPageData();
+      {settingType: 'ENABLED'}, {settingType: 'DATEDIF'}, {settingType: 'MUST_PAY'},
+      {settingType: 'REFUND'},{settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}], (data) => {
+      console.log(data);
       this.enableOption = this.toolSrv.setListMap(data.ENABLED);
       this.refundOption = this.toolSrv.setListMap(data.REFUND);
       this.mustPayOption = this.toolSrv.setListMap(data.MUST_PAY);
       this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
       this.setOptionList.parkingSpaceType = this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
-      this.setOptionList.parkingSpaceNature = this.parkingSpaceNatureOption = this.toolSrv.setListMap(data.CWXZ);
+      this.setOptionList.parkingSpacePlace = this.parkingSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
+
       this.setOptionList.datedif = this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
       this.queryTollPageData();
     });
@@ -194,6 +206,8 @@ export class BfTollComponent implements OnInit, OnDestroy {
 
   // sure add toll
   public tollAddSureClick(): void {
+    console.log(this.tollTitle);
+    console.log(this.tollMoreInfo);
     this.toolSrv.setConfirmation('增加', '增加', () => {
         this.tollSrv.queryTollAdd({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
           value => {
@@ -224,14 +238,15 @@ export class BfTollComponent implements OnInit, OnDestroy {
 
   // sure modify toll
   public tollModifySureClick(): void {
-    this.enableOption.forEach(val => {
-      if (this.tollTitle.enable.toString() === val.label) {
-        this.tollTitle.enable = val.value;
-      }
-    });
+    // this.enableOption.forEach(val => {
+    //   if (this.tollTitle.enable.toString() === val.label) {
+    //     this.tollTitle.enable = val.value;
+    //   }
+    // });
+    console.log(this.tollTitle);
+    console.log(this.tollMoreInfo);
     this.toolSrv.setConfirmation('修改', '修改', () => {
-      if (this.tollMoreInfo.length === 0) {
-        this.tollSrv.updateTollInfo(this.tollTitle).subscribe(
+        this.tollSrv.updateTollInfo({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
           value => {
             if (value.status === '1000') {
               this.toolSrv.setToast('success', '操作成功', value.message);
@@ -243,36 +258,35 @@ export class BfTollComponent implements OnInit, OnDestroy {
             }
           }
         );
-      } else {
-        this.modifytoll = [];
-        this.tollMoreInfo.forEach((v, index) => {
-          for (const Key in this.tollTitle) {
-            this.tollAddinfo[Key] = this.tollTitle[Key];
-          }
-          for (const vKey in v) {
-            this.tollAddinfo[vKey] = v[vKey];
-          }
-          if (index + 1 <= this.ids.length) {
-            this.tollAddinfo.id = this.ids[index].id;
-          } else {
-            this.tollAddinfo.id = null;
-          }
-          this.modifytoll.push(this.tollAddinfo);
-          this.tollAddinfo = new AddToll();
-        });
-        this.tollSrv.updateTollListinfo({data: this.modifytoll}).subscribe(
-          value => {
-            if (value.status === '1000') {
-              this.toolSrv.setToast('success', '操作成功', value.message);
-              this.tollInitialization();
-              this.tollModifyDialog = false;
-              this.clearData();
-            } else {
-              this.toolSrv.setToast('error', '操作错误', '修改失败,' + value.message);
-            }
-          }
-        );
-      }
+    //   } else {
+    //     this.modifytoll = [];
+    //     this.tollMoreInfo.forEach((v, index) => {
+    //       for (const Key in this.tollTitle) {
+    //         this.tollAddinfo[Key] = this.tollTitle[Key];
+    //       }
+    //       for (const vKey in v) {
+    //         this.tollAddinfo[vKey] = v[vKey];
+    //       }
+    //       if (index + 1 <= this.ids.length) {
+    //         this.tollAddinfo.id = this.ids[index].id;
+    //       } else {
+    //         this.tollAddinfo.id = null;
+    //       }
+    //       this.modifytoll.push(this.tollAddinfo);
+    //       this.tollAddinfo = new AddToll();
+    //     });
+    //     this.tollSrv.updateTollListinfo({data: this.modifytoll}).subscribe(
+    //       value => {
+    //         if (value.status === '1000') {
+    //           this.toolSrv.setToast('success', '操作成功', value.message);
+    //           this.tollInitialization();
+    //           this.tollModifyDialog = false;
+    //           this.clearData();
+    //         } else {
+    //           this.toolSrv.setToast('error', '操作错误', '修改失败,' + value.message);
+    //         }
+    //       }
+    //     )
     });
   }
 
@@ -306,7 +320,6 @@ export class BfTollComponent implements OnInit, OnDestroy {
     this.detailTollTitle.forEach( v => {
       v.value = e[v.field];
     });
-    console.log(e);
     this.getTollDetailInfo(e.chargeCode, 'detail');
 
 
@@ -346,7 +359,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
       money: '',
       datedif: '',
       discount: '10',
-      parkingSpaceNature: '',
+      parkingSpacePlace: '',
       parkingSpaceType: ''
     });
     this.tollModifyData.datedif = '请选择月数';
@@ -392,6 +405,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
     this.loadHidden = false;
     this.NOW_PAGE = event;
     this.queryTollPageData();
+    this.tollSelect = [];
   }
 
   public queryTollPageData(): void {
@@ -463,8 +477,8 @@ export class BfTollComponent implements OnInit, OnDestroy {
           if (type === 'detail') {
             this.detailTollList = value.data.chargeDetail.map( v => {
               v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
-              v.parkingSpaceNature = this.toolSrv.setValueToLabel(this.parkingSpaceNatureOption, v.parkingSpaceNature);
-              v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceNature);
+              v.parkingSpacePlace= this.toolSrv.setValueToLabel(this.parkingSpacePlaceOption, v.parkingSpacePlace);
+              v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceType);
               return v;
             });
             this.tollDetailDialog = true;
@@ -485,4 +499,21 @@ export class BfTollComponent implements OnInit, OnDestroy {
       }
     );
   };
+
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '收费项目') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
+  }
 }

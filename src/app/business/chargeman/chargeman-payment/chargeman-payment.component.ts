@@ -2,6 +2,7 @@ import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angul
 import {ConfirmationService} from 'primeng/api';
 import {ChargePaymentService} from '../../../common/services/charge-payment.service';
 import {
+  AddSparkSpace,
   ChargeItem, ChargeItemData, ChargeItemDetail, ChargeItems, ChargePaymentAddOrder, CostSplitData, Patyment, SearchData
 } from '../../../common/model/charge-payment.model';
 import {GlobalService} from '../../../common/services/global.service';
@@ -10,6 +11,9 @@ import {SharedServiceService} from '../../../common/public/shared-service.servic
 import {Subscription} from 'rxjs';
 import {DatePipe} from '@angular/common';
 import {ThemeService} from '../../../common/public/theme.service';
+import {DataTree, FormValue} from '../../../common/components/basic-dialog/dialog.model';
+import {FormGroup} from '@angular/forms';
+import {TreeNode} from '../../../common/model/shared-model';
 
 @Component({
   selector: 'rbi-chargeman-payment',
@@ -22,6 +26,9 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public roomTypeOption: any[] = [];
   public paymentMethodOption: any[] = [];
   public sexOption: any[] = [];
+  public identityOption: any[] = [];
+  public datedifOption: any[] = [];
+
   // public stateOfArrearChecked = false;
   // 缴费项目选则
   public selectCheckChargeItemList: any[] = [];
@@ -56,7 +63,42 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     {field: 'discount', header: '折扣'},
     {field: 'deductionRecord', header: '抵扣记录'},
   ];
-  // 违约金信息列表内容
+  // 车位费用列表
+  public parkspaceTitle = [
+    {field: 'contractNumber', header: '合同编号'},
+    {field: 'rentalRenewalStatus', header: '续租状态'},
+    {field: 'datedif', header: '月数'},
+    // {field: 'villageName', header: '小区名称'},
+    // {field: 'regionName', header: '地块名称'},
+    // {field: 'buildingName', header: '楼宇名称'},
+    {field: 'parkingSpaceCode', header: '车位编号'},
+    {field: 'parkingSpaceType', header: '车位类型'},
+    // {field: 'parkingSpacePlace', header: '车位地点 '},
+    // {field: 'vehicleOriginalType', header: '车辆原始类型'},
+    // {field: 'licensePlateType', header: '车牌类型'},
+    // {field: 'licensePlateColor', header: '车牌颜色'},
+    // {field: 'licensePlateColor', header: '车牌颜色'},
+    // {field: 'authorizedPersonName', header: '授权人姓名'},
+    // {field: 'authorizedPersonPhone', header: '授权人电话'},
+    // {field: 'authorizedPersonIdNumber', header: '授权人身份证号'},
+    // {field: 'startTime', header: '开始计费时间'},
+    //
+    // {field: 'dueTime', header: '结束计费时间'},
+    // {field: 'discount', header: '折扣率'},
+    // {field: 'chargeUnit', header: '收费单位'},
+    // {field: 'chargeStandard', header: '标准单价'},
+    // {field: 'chargeName', header: '项目名称'},
+    {field: 'actualMoneyCollection', header: '实收金额'},
+    {field: 'amountReceivable', header: '应收金额'},
+    {field: 'operating', header: '操作'},
+  ];
+  public parkspaceDrapdownList = ['datedif', 'parkingSpacePlace', 'parkingSpaceType', 'licensePlateColor',
+    'licensePlateType', 'vehicleOriginalType', 'villageName', 'regionName', 'buildingName'];
+  public parkSpaceInputList = ['contractNumber', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone',
+    'authorizedPersonIdNumber', 'licensePlateNumber'];
+  public parkSpaceTime = ['startTime'];
+  // 抵扣项目表内容
+  public  parkSpaceData: any;
   public  deductionDamagesData: any;
   public  deductionDamagesStatus: any;
   public  deductionDamagesSelect: any[];
@@ -127,6 +169,22 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public minDate: Date = new Date();
   public maxDate: Date = new Date();
   public costSplitData: CostSplitData =  new CostSplitData();
+
+  // 车位指定
+  public addParkSpace: AddSparkSpace = new AddSparkSpace();
+  public addParkSpaceOptionDialog: boolean;
+  public lincesePlateColorOption = [];
+  public lincesePlateTypeOption = [];
+  public vehicleOriginaTypeOption = [];
+  public treeCode: any;
+
+  // 零时车位车位
+  public parkSpaceOptionDialog: boolean;
+  public rentalParkSpace: any;
+  // 树结构相关
+  public treeDialog: boolean;
+  public dataTrees: DataTree[];
+  public dataTree: DataTree = new DataTree();
   // 树结构订阅
   public paymentSub: Subscription;
   // 切换主题
@@ -183,7 +241,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         }
       }
     }
-    // this.SearchDataClear();
     this.paymentInitialization();
   }
   ngOnDestroy(): void {
@@ -196,11 +253,18 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public  paymentInitialization(): void {
      this.esDate = this.toolSrv.esDate;
      this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'},
-      {settingType: 'ROOM_TYPE'}, {settingType: 'SEX'}], (data) => {
+      {settingType: 'ROOM_TYPE'}, {settingType: 'SEX'}, {settingType: 'IDENTITY'},
+       {settingType: 'LICENSE_PLATE_COLOR'}, {settingType: 'DATEDIF'}, {settingType: 'CWLX'},
+       {settingType: 'VEHICLE_ORIGINA_TYPE'}, {settingType: 'LICENSE_PLATE_TYPE'},
+       {settingType: 'PAEKING_SPACE_PLACE'}], (data) => {
        console.log(data);
+       this.lincesePlateTypeOption = this.toolSrv.setListMap(data.LICENSE_PLATE_TYPE);
+       this.vehicleOriginaTypeOption = this.toolSrv.setListMap(data.VEHICLE_ORIGINA_TYPE);
        this.roomTypeOption = this.toolSrv.setListMap(data.ROOM_TYPE);
        this.paymentMethodOption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
        this.sexOption = this.toolSrv.setListMap(data.SEX);
+       this.identityOption = this.toolSrv.setListMap(data.IDENTITY);
+       this.lincesePlateColorOption = this.toolSrv.setListMap(data.LICENSE_PLATE_COLOR);
        this.queryPaymentPage();
     });
     // this.paymentTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
@@ -221,7 +285,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
               this.queryPaymentPage(); break;
       case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryPaymentPage(); break;
       case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryPaymentPage(); break;
-      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryPaymentPage();break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryPaymentPage(); break;
       case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryPaymentPage(); break;
       default:
             break;
@@ -254,7 +318,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         this.payItemDetail[key] = this.paymentSelect[0][key];
       }
       this.payItemDetail.chargeItem = list.map( v => {
-         return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType,
+         return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
            datedif: v.datedif, chargeStandard: v.chargeStandard};
       });
       // 查询拆分业主
@@ -273,8 +337,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       // 计费请求
       // console.log(this.payItemDetail);
       this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(value => {
-          console.log(value);
           if (value.status === '1000') {
+            console.log(value);
             this.setPaymentList(value);
             this.paymentTotle = value.data.amountTotalReceivable;
             this.paymentReceivableTotle = value.data.actualTotalMoneyCollection;
@@ -314,7 +378,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         });
         this.paymentOrderAdd.costDeduction = this.deductionDamagesData;
         this.paymentOrderAdd.correctedAmount = this.Balance;
-        console.log(this.paymentOrderAdd);
         this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
           (value) => {
             if (value.status === '1000') {
@@ -345,43 +408,38 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
             }
           }
         );
-      // } else {
-      //   this.toolSrv.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
-      // }
     }
   }
   // Display charging items selection pop-up window (展示项目选择弹窗)
   public  paymentClick(): void {
     if (this.paymentSelect === undefined || this.paymentSelect.length === 0 ) {
-      this.toolSrv.setToast('error', '请求错误', '请选择需要缴费的项');
+      this.toolSrv.setToast('error', '操作错误', '请选择需要缴费的项');
     } else if (this.paymentSelect.length === 1) {
-      console.log(this.paymentSelect);
       this.paymentSrv.searchChargeItem({roomCode: this.paymentSelect[0].roomCode}).subscribe(
         (value) => {
           console.log(value);
           value.data.forEach( v => {
             if (v.chargeWay === 4) {
               this.selectCheckChargeItemList.push(v.chargeName);
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName,
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, parkingSpaceCode: v.parkingSpaceCode,
                 chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 1, minMonth: 1,
                 chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: v.chargeStandard});
             } else  if (v.chargeWay === 3) {
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName,
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, parkingSpaceCode: v.parkingSpaceCode,
                 chargeType: v.chargeType, datedif: 0, chargeWay: v.chargeWay, check: 0, minMonth: 1,
                 chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: JSON.parse(v.chargeStandards)[0].value});
             } else  {
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName,
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, parkingSpaceCode: v.parkingSpaceCode,
                 chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 0, minMonth: 1,
                 chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: v.chargeStandard});
             }
             }
           );
-          console.log(this.paymentProject);
           this.projectSelectDialog = true;
         }
       );
     } else {
-      this.toolSrv.setToast('error', '请求错误', '只能选择一项进行缴费');
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行缴费');
     }
   }
   // Charge item selection switch (收费项目选择切换)
@@ -407,11 +465,11 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           });
           if (flag) {
             if (v.chargeType === '1' || v.chargeType === '2' || v.chargeType === '3') {
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType,
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
                 datedif: this.paymentSelect[0].minMonth, chargeWay: v.chargeWay, check: 0, minMonth: this.paymentSelect[0].minMonth
               });
             } else {
-              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: 1,
+              this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, datedif: 1,  parkingSpaceCode: v.parkingSpaceCode,
                 chargeWay: v.chargeWay, check: 0, minMonth: 1
               });
             }
@@ -420,7 +478,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
        );
       }
     );
-    // this.paymentDialog = true;
   }
   // Cancel payment
   public  paymentFaleseClick(): void {
@@ -432,15 +489,11 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // select pay type
   public  payTypeChage(e): void {
-      // console.log(e);
       this.paymentOrderAdd.paymentMethod = e.value;
   }
   // Calculated amount (计算金额)
   public  getBalance(e): void {
       this.Balance = parseFloat(( e.target.value - this.paymentReceivableTotle).toFixed(2));
-    // } else {
-    //   this.Balance =  parseFloat(( e.target.value - this.paymentTotle).toFixed(2));
-    // }
   }
   // cancel select charging items
   public  payProjectFalseClick(): void {
@@ -493,6 +546,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           val.data.contents.forEach( t => {
             t.sex = this.toolSrv.setValueToLabel(this.sexOption, t.sex);
             t.roomType = this.toolSrv.setValueToLabel(this.roomTypeOption, t.roomType);
+            t.identity = this.toolSrv.setValueToLabel(this.identityOption, t.identity);
           });
           this.paymentTableContnt = val.data.contents;
           this.setTableOption(val.data.contents);
@@ -509,13 +563,14 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       width: '100%',
       header: {
         data:  [
-          {field: 'buildingName', header: '楼栋名称'},
+          // {field: 'buildingName', header: '楼栋名称'},
           {field: 'roomCode', header: '房间编号'},
           // {field: 'roomCode', header: '房间号'},
           {field: 'roomSize', header: '建筑面积'},
           {field: 'roomType', header: '房间类型'},
           {field: 'surname', header: '客户名称'},
           {field: 'sex', header: '客户性别'},
+          {field: 'identity', header: '客户身份'},
           {field: 'mobilePhone', header: '客户电话'},
           {field: 'dueTime', header: '物业费到期时间'},
           {field: 'minMonth', header: '欠费月数'},
@@ -534,7 +589,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // show detail dialog (展示详情弹窗)
   public  detailClick(e): void {
-    e.minMonth = e.minMonth === 0 ? '未欠费' : e.minMonth + '个月';
     this.dialogOption = {
       dialog: true,
       tableHidden: false,
@@ -553,6 +607,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           {field: 'roomType', header: '房间类型'},
           {field: 'surname', header: '客户名称'},
           {field: 'sex', header: '客户性别'},
+          {field: 'idNumber', header: '身份证号'},
           {field: 'mobilePhone', header: '客户电话'},
           {field: 'dueTime', header: '物业费到期时间'},
           {field: 'surplus', header: '预存金额'},
@@ -595,7 +650,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
             return v;
          });
           this.paymentItemData.unshift(...costSplitList);
-          console.log(this.paymentItemData);
           this.costSplitDialog = false;
         } else {
           this.toolSrv.setToast('error', '操作成功', value.message);
@@ -674,6 +728,94 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.paymentAddTitle.forEach(v => {
       v.value = this.paymentSelect[0][v.label];
     });
+    this.parkSpaceData = data.data.parkingSpaceCostDetailDOList;
+  }
+  // 车位指定弹窗
+  public  addParkplaceClick(): void {
+    if (this.paymentSelect === undefined || this.paymentSelect.length === 0 ) {
+      this.toolSrv.setToast('error', '操作错误', '请选择需要办理的项');
+    } else if (this.paymentSelect.length === 1) {
+      const addParkTitleList = ['villageCode', 'villageName', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode', 'unitName',
+        'customerUserId', 'surname', 'idNumber', 'mobilePhone', 'roomCode', 'roomSize', 'organizationId', 'organizationName'];
+      addParkTitleList.forEach(v => {
+        this.addParkSpace[v] = this.paymentSelect[0][v];
+      });
+      this.paymentSrv.getRoomTree({}).subscribe(
+          value => {
+            // if (value === 1005) {
+            this.dataTrees = this.initializeTree(value.data);
+            // }
+            // console.log(value);
+          }
+        );
+    this.addParkSpaceOptionDialog = true;
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行车位办理');
+    }
+
+  }
+  public  dataTreeClick(): void {
+    this.treeDialog = true;
+  }
+  // Tree structure initialization
+  public initializeTree(data): any {
+    const oneChild = [];
+    for (let i = 0; i < data.length; i++) {
+      const childnode = new TreeNode();
+      childnode.value = data[i].code;
+      childnode.label = data[i].name;
+      if (data[i].level === '3') {
+        childnode.selectable = true;
+      } else {
+        childnode.selectable = false;
+      }
+
+      if (data[i].SpaceDTO != null && data[i].SpaceDTO.length !== 0 ) {
+        childnode.children = this.initializeTree(data[i].SpaceDTO);
+      } else {
+        childnode.children = [];
+      }
+      oneChild.push(childnode);
+    }
+    return oneChild;
+  }
+//  shu结构选择
+  public  dataTreeSureClick(): void {
+    this.treeDialog = false;
+    console.log(this.dataTree);
+    this.addParkSpace.parkingSpaceCode = this.dataTree.label;
+  }
+//   给房间绑定车位
+  public  setRoombindparkSpaceClick(): void {
+      let passFlag = true;
+      const list =['contractNumber', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
+      'vehicleOriginalType', 'startTime'];
+      list.forEach(v => {
+         console.log(this.addParkSpace[v]);
+         if ( this.addParkSpace[v] === undefined ||  this.addParkSpace[v] === '') {
+             passFlag = false;
+         }
+      });
+      this.addParkSpace.startTime = this.datePipe.transform(this.addParkSpace.startTime, 'yyyy-MM-dd');
+      if (passFlag) {
+        this.paymentSrv.setRoomCodeBindParkSpace(this.addParkSpace).subscribe(value => {
+          console.log(value);
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '请求成功', value.message);
+            this.addParkSpaceOptionDialog = false;
+            this.paymentSelect = [];
+          } else {
+            this.toolSrv.setToast('erroe', '请求失败', value.message);
+          }
+        });
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '参数未填完整');
+      }
+  }
+
+  public  editRentalParkingSpaceClick(): void {
+      this.parkSpaceOptionDialog = true;
   }
 }
+
 

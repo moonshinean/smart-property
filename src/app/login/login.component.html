@@ -1,28 +1,30 @@
 <div class="login">
+    <div class="login-title">
+      <img src="assets/images/logo.png" alt="" style="width: 120px;margin: auto 0">
+    </div>
     <div class="login-box">
       <!--头部-->
       <div class="login-box-title">
-         <div class="login-box-background-two">
-           <img src="assets/images/ic_login_icon.png" alt="" style="width: 540px;height: 100px">
+<!--         <div class="login-box-background-two">-->
+           <img src="assets/images/ic_login_title.png" alt="" style="width: 655px;height: 150px;position: absolute;left: -27px;top: -34px;">
+<!--         </div>-->
+         <div style="position: absolute;margin-left: 145px;top: 2vh;z-index: 99999">
+           <img src="assets/images/yun.png">
+           <span style="margin-left: 1rem;font-weight: bold;letter-spacing: 0.1em">物业管理智慧策略系统</span>
          </div>
-         <div class="login-box-background"></div>
-         <div style="position: absolute;margin-left: 145px;top: 1vh;z-index: 99999">
-           <img src="assets/images/cloud.png">
-           <span style="margin-left: 1rem;font-weight: bold;">物业管理智慧策略系统</span>
-         </div>
-         <img src="assets/images/logo.png" style="width: 110px;height: 55px;margin-top: 4vh;margin-right: 2.3vw">
        </div>
       <!--中间-->
       <div class="login-box-form" [formGroup]="userLogin">
+        <span style="color: #8AA0B5; padding: 2vh 2vw;letter-spacing: 0.5em; font-weight: 600; display: inline-block; font-family: '微软雅黑 Light'">请登录</span>
         <div>
           <div class="ui-inputgroup login-box-form-btn">
             <label for="userName" >用 户 名:</label>
           </div>
           <div>
-            <input style="width: 60%;"   id="userName" type="text" pInputText placeholder="请输入用户名" formControlName="username">
+            <input style="width: 50%;height: 40px; border: 1px solid #E4E4E4"   id="userName" type="text" pInputText placeholder="请输入用户名" formControlName="username">
           </div>
           <div *ngIf="userLogin.get('username').touched &&userLogin.get('username').value.length < 2" style="height: 2vh">
-            <span style="color: red;float: left;margin-left: 120px;">输入长度不得小于2位</span>
+            <span style="color: red;float: left;margin-left: 150px;">输入长度不得小于2位</span>
           </div>
         </div>
         <div>
@@ -30,10 +32,10 @@
             <label for="password" >密 码:</label>
           </div>
           <div>
-            <input  style="width: 60%;" id="password" type="password" pInputText placeholder="请输入密码" formControlName="password">
+            <input style="width: 50%;height: 40px; border: 1px solid #E4E4E4" id="password" type="password" pInputText placeholder="请输入密码" formControlName="password">
           </div>
           <div *ngIf="userLogin.get('password').touched && userLogin.get('password').value.length < 3" style="height: 2vh">
-            <span style="color: red;float: left;margin-left: 120px;">输入长度不得小于3位</span>
+            <span style="color: red;float: left;margin-left: 150px;">输入长度不得小于3位</span>
           </div>
         </div>
         <div class="login-box-form-submit">

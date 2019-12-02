@@ -87,6 +87,7 @@
       //overflow-y:hidden
       //display: none;
     }
+
     ::ng-deep .custombar .ui-scrollpanel-content{
       padding-right: 0;
     }
@@ -127,10 +128,17 @@
   }
   ::ng-deep .ui-dialog .ui-widget-content{
     background: #DCDCDC;
+    //overflow: visible !important;
   }
   ::ng-deep .ui-dialog-titlebar{
     font-size: 1rem;
     text-align: center;
+  }
+  ::ng-deep .ui-scrollpanel .ui-scrollpanel-wrapper{
+    overflow: inherit;
+  }
+  ::ng-deep .ui-scrollpanel .ui-scrollpanel-wrapper .ui-scrollpanel-content{
+    overflow: inherit;
   }
 }
 ::ng-deep .ui-dialog-content{

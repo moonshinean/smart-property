@@ -10,6 +10,8 @@ import {DialogModel, FormValue} from '../../../common/components/basic-dialog/di
 import {FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-bf-coupon',
@@ -58,11 +60,20 @@ export class BfCouponComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 按钮显示相关
+  public btnHiden = [
+    {label: '新增', hidden: true},
+    {label: '修改', hidden: true},
+    {label: '删除', hidden: true},
+    // {label: '搜索', hidden: true},
+  ];
   public themeSub: Subscription;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private toolSrv: PublicMethedService,
     private couponSrv: BfCouponService,
     private themeSrv: ThemeService
@@ -77,6 +88,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -393,5 +405,21 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     }
   }
 
-
+  // 设置按钮显示隐藏
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '优惠券') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
+  }
 }

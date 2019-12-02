@@ -188,12 +188,12 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
   public couponTotalAddClick(): void {
      if (this.SearchCoupon.roomCode !== '') {
        console.log(this.SearchCoupon);
-       this.getUserInfo(this.SearchCoupon.roomCode);
+       this.getUserInfo(this.SearchCoupon);
      } else {
        this.toolSrv.setToast('error', '操作错误', '请选择房间');
      }
   }
-  public  showCouponDialog(data): void {
+  public  showCouponDialog(roomdata, userinfo): void {
     this.optionDialog = {
       type: 'add',
       title: '添加信息',
@@ -207,9 +207,9 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
       'roomCode'];
     list.forEach(val => {
       if (val === 'mobilePhone' || val === 'surname' || val === 'userId') {
-        this.form.push({key: val, disabled: false, required: true, value: data[val]});
+        this.form.push({key: val, disabled: false, required: true, value: userinfo[val]});
       } else if (roomList.includes(val)) {
-        this.form.push({key: val, disabled: false, required: true, value: this.SearchCoupon[val]});
+        this.form.push({key: val, disabled: false, required: true, value: roomdata[val]});
       } else {
         this.form.push({key: val, disabled: false, required: true, value: ''});
 
@@ -229,13 +229,15 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
   }
   // search userInfo
   public getUserInfo(data): void {
-     this.couponTotalSrv.queryCouponUserInfo({roomCode: data}).subscribe(
+     this.globalSrv.queryCouponUserInfo({villageCode: data.villageCode, regionCode: data.regionCode, buildingCode: data.buildingCode, unitCode: data.unitCode , roomCode: data.roomCode}).subscribe(
        value => {
          console.log(value);
          if (value.status === '1000') {
-           this.showCouponDialog(value.data);
+           this.showCouponDialog(value.data.houseInfo, value.data.customerInfo);
+         } else if (value.status === '1002') {
+           this.toolSrv.setToast('error', '请求错误', '该房间没有业主');
          } else {
-           this.toolSrv.setToast('error', '请求错误', '查询业主失败');
+           this.toolSrv.setToast('error', '请求错误', value.message);
          }
        }
      );
@@ -246,12 +248,13 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
       console.log(this.AddcouponTotal);
       this.AddcouponTotal.effectiveTime = this.AddcouponTotal.effectiveTime === '无期限' ? 0 :
         this.AddcouponTotal.effectiveTime.slice(this.AddcouponTotal.effectiveTime.length - 1, this.AddcouponTotal.effectiveTime.length);
+      this.AddcouponTotal.couponType = this.toolSrv.setLabelToValue(this.couponTypeOption, this.AddcouponTotal.couponType);
       this.couponTotalSrv.addCouponInfo(this.AddcouponTotal).subscribe(
         value => {
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', value.message);
             this.queryCouponDataPage();
-            this.couponTotalAddDialog = false;
+            this.optionDialog.dialog = false;
             this.clearData();
           } else {
             this.toolSrv.setToast('error', '增加失败', value.message);
@@ -402,8 +405,10 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
       if (e.name === 'couponCode') {
         this.couponTotalSrv.queryCouponInfo({couponCode: this.formgroup.value.couponCode}).subscribe(
           value => {
+            console.log(value);
             this.formgroup.patchValue({effectiveTime: (value.data.effectiveTime === 0 ||
                 value.data.effectiveTime === '0') ? '无期限' : value.data.effectiveTime + '天' , money: value.data.money});
+            this.formgroup.patchValue({couponName: value.data.couponName});
             this.couponTotalSrv.queryCouponType({}).subscribe(
               val => {
                 val.data.forEach(v => {
@@ -411,7 +416,6 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
                     this.formgroup.patchValue({couponType: v.settingName});
                   }
                 });
-
               }
             );
           }

@@ -37,7 +37,7 @@ export class BfTollService {
       return this.http.post(environment.sysetUrl + `/charge/deleteChargeDetail`, pamars);
   }
   public updateTollInfo(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/charge/updateChargeItem`, pamars);
+    return this.http.post(environment.sysetUrl + `/charge/update`, pamars);
   }
   public getTolldetail(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/charge/findChargeDetail`, pamars);

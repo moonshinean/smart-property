@@ -5,11 +5,11 @@
   width: 100%;
   z-index: 998;
   height: 8vh;
-  background: #33353C;
-  background: -moz-linear-gradient(-206deg, #33353C 5%, #33353C 100%);
-  background: -webkit-linear-gradient(-206deg, #33353C 5%, #33353C 100%);
-  background: linear-gradient(-206deg, #33353C 5%, #33353C 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr="#33353C", endColorstr="#33353C",GradientType=1 );
+  background: var(--bgc-theme);
+  background: -moz-linear-gradient(-206deg, var(--bgc-theme) 5%, var(--bgc-theme)100%);
+  background: -webkit-linear-gradient(-206deg, var(--bgc-theme) 5%, var(--bgc-theme) 100%);
+  background: linear-gradient(-206deg, var(--bgc-theme) 5%,var(--bgc-theme)100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr=var(--bgc-theme), endColorstr=var(--bgc-theme),GradientType=1 );
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -87,7 +87,7 @@
     margin-left: 10vw;
     margin-right: 10vw;
     height: 80vh;
-    background: #33353C;
+    background: var(--bgc-theme);
     border-radius: 10px;
     color: #fff;
     .persional-content-title {

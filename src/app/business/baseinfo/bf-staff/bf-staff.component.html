@@ -6,15 +6,15 @@
   <!--顶部按钮-->
   <div class="bf-staff-header">
     <div class=" ui-g-4">
-      <div class="ui-g-1 bf-staff-header-btn bf-staff-header-btn-add" (click)="staffAddClick()">
+      <div class="ui-g-1 bf-staff-header-btn bf-staff-header-btn-add" (click)="staffAddClick()" [hidden]="this.btnHiden[0].hidden">
         <img class="bf-staff-header-img-add" src="assets/images/ic_add.png" alt="">
         <span>增 加</span>
       </div>
-      <div class="ui-g-1 bf-staff-header-btn bf-staff-header-btn-modify" (click)="staffModifyClick()">
+      <div class="ui-g-1 bf-staff-header-btn bf-staff-header-btn-modify" (click)="staffModifyClick()" [hidden]="this.btnHiden[1].hidden">
         <img class="bf-staff-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 bf-staff-header-btn bf-staff-header-btn-delete" (click)="staffDeleteClick()">
+      <div class="ui-g-1 bf-staff-header-btn bf-staff-header-btn-delete" (click)="staffDeleteClick()" [hidden]="this.btnHiden[2].hidden">
         <img class="bf-staff-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
@@ -27,44 +27,6 @@
   </div>
   <!--表格-->
   <div class="bf-staff-table">
-<!--    <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">-->
-<!--      <p-table [columns]="staffTableTitle" [value]="staffTableContent"  [(selection)]="staffSelect"  (onRowSelect)="staffonRowSelect($event)">-->
-<!--        <ng-template pTemplate="header" let-columns>-->
-<!--          <tr >-->
-<!--            <th style="width: 3em"  [ngStyle]="this.staffTableTitleStyle">-->
-<!--              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>-->
-<!--            </th>-->
-<!--            <th *ngFor="let col of columns"  [ngStyle]="this.staffTableTitleStyle">-->
-<!--              {{col.header}}-->
-<!--            </th>-->
-<!--          </tr>-->
-<!--        </ng-template>-->
-<!--        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">-->
-<!--          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">-->
-<!--            <td>-->
-<!--              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>-->
-<!--            </td>-->
-<!--            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >-->
-<!--              {{rowData[col.field]}}-->
-<!--            </td>-->
-<!--            <td>-->
-<!--              <button class="bf-staff-table-Btn" (click)="staffDetailClick(rowData)">详情</button>-->
-<!--            </td>-->
-<!--          </tr>-->
-<!--          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">-->
-<!--            <td>-->
-<!--              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>-->
-<!--            </td>-->
-<!--            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >-->
-<!--              {{rowData[col.field]}}-->
-<!--            </td>-->
-<!--            <td>-->
-<!--              <button class="bf-staff-table-Btn" (click)="staffDetailClick(rowData)">详情</button>-->
-<!--            </td>-->
-<!--          </tr>-->
-<!--        </ng-template>-->
-<!--      </p-table>-->
-<!--    </p-scrollPanel>-->
     <rbi-check-table-btn [select]="staffSelect" (selectData)="selectData($event)" [option]="optionTable" (detail)="staffDetailClick($event)"></rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
@@ -158,7 +120,7 @@
         <div class="ui-g-4">
           <label for="addmobilePhone">是否可用：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown scrollHeight="100px" [options]="enableOption"  placeholder="请选择可用状态.." [(ngModel)]="staffAdd.enabled"></p-dropdown>
         </div>
       </div>
@@ -190,7 +152,7 @@
         <div class="ui-g-4">
           <label for="educationalBackground">学历：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown id="educationalBackground"  [options]="educationalOption" scrollHeight="100px"  placeholder="请选择学历.." [(ngModel)]="staffAdd.educationalBackground"></p-dropdown>
         </div>
       </div>
@@ -222,7 +184,7 @@
         <div class="ui-g-4">
           <label for="politicalStatus">政治面貌：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown id="politicalStatus"   [options]="politicalStatusOption" scrollHeight="100px"  placeholder="请选择政治面貌.." [(ngModel)]="staffAdd.politicalStatus"></p-dropdown>
         </div>
       </div>
@@ -230,7 +192,7 @@
         <div class="ui-g-4">
           <label for="maritalStatus">婚姻状况：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown id="maritalStatus"  [options]="maritalOption" scrollHeight="100px"  placeholder="请选择婚姻状况.." [(ngModel)]="staffAdd.maritalStatus"></p-dropdown>
         </div>
       </div>

@@ -6,25 +6,25 @@
   <!--顶部按钮-->
   <div class="bf-toll-header">
     <div class=" ui-g-4">
-      <div class="ui-g-1 bf-toll-header-btn bf-toll-header-btn-add" (click)="tollAddClick()">
+      <div class="ui-g-1 bf-toll-header-btn bf-toll-header-btn-add" (click)="tollAddClick()" [hidden]="this.btnHiden[0].hidden">
         <img class="bf-toll-header-img-add" src="assets/images/ic_add.png" alt="">
         <span>增 加</span>
       </div>
-      <div class="ui-g-1 bf-toll-header-btn bf-toll-header-btn-modify" (click)="tollModifyClick()">
+      <div class="ui-g-1 bf-toll-header-btn bf-toll-header-btn-modify" (click)="tollModifyClick()" [hidden]="this.btnHiden[1].hidden">
         <img class="bf-toll-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 bf-toll-header-btn bf-toll-header-btn-delete" (click)="tollDeleteClick()">
+      <div class="ui-g-1 bf-toll-header-btn bf-toll-header-btn-delete" (click)="tollDeleteClick()" [hidden]="this.btnHiden[2].hidden">
         <img class="bf-toll-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
     </div>
     <!--搜索-->
-    <div class="ui-inputgroup bf-toll-header-search">
-      <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选查看范围..." [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">
-      <button id="disabled-btn" class="bf-toll-header-btn-search" type="button"  (click)="tollSearchClick()"  label="搜索">搜索</button>
-    </div>
+<!--    <div class="ui-inputgroup bf-toll-header-search" *ngIf="!this.btnHiden[3].hidden">-->
+<!--      <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选查看范围..." [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>-->
+<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
+<!--      <button id="disabled-btn" class="bf-toll-header-btn-search" type="button"  (click)="tollSearchClick()"  label="搜索">搜索</button>-->
+<!--    </div>-->
   </div>
   <!--表格-->
   <div class="bf-toll-table">
@@ -104,7 +104,7 @@
                   {{rowIndex+1}}
                 </td>
                 <td  *ngFor="let col of columns.slice(1,columns.length - 1)" pEditableColumn>
-                  <p-cellEditor *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' ">
+                  <p-cellEditor *ngIf="col.header === '车位地点' || col.header === '车位类型' || col.header === '缴费月数' ">
                     <ng-template pTemplate="input">
                       <p-dropdown [options]="setOptionList[col.field]" scrollHeight="100px" [(ngModel)]="rowData[col.field]"></p-dropdown>
                     </ng-template>
@@ -112,7 +112,7 @@
                       {{this.toolSrv.setValueToLabel(setOptionList[col.field], rowData[col.field])}}
                     </ng-template>
                   </p-cellEditor>
-                  <p-cellEditor *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">
+                  <p-cellEditor *ngIf="col.header !== '车位地点' && col.header !== '车位类型' && col.header !== '缴费月数' ">
                     <ng-template pTemplate="input">
                       <input pInputText type="text" [(ngModel)]="rowData[col.field]">
                     </ng-template>
@@ -159,7 +159,7 @@
           <label for="addchargeType">项目类型：</label>
         </div>
         <div class="ui-g-8"  style="line-height: 2vh">
-          <p-dropdown   [options]="chargeTypeOption" scrollHeight="100px"  [(ngModel)]="tollTitle.chargeType"></p-dropdown>
+          <p-dropdown  disabled [options]="chargeTypeOption" scrollHeight="100px"  [(ngModel)]="tollTitle.chargeType"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -218,7 +218,7 @@
                   {{rowIndex+1}}
                 </td>
                 <td  *ngFor="let col of columns.slice(1,columns.length - 1); let i = index" pEditableColumn>
-                  <p-cellEditor *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' ">
+                  <p-cellEditor *ngIf="col.field === 'parkingSpacePlace' || col.field  === 'parkingSpaceType' || col.field === 'datedif' ">
                     <ng-template pTemplate="input">
                       <p-dropdown [options]="setOptionList[col.field]" scrollHeight="100px"  [(ngModel)]="rowData[col.field]"></p-dropdown>
                     </ng-template>
@@ -226,7 +226,7 @@
                       {{this.toolSrv.setValueToLabel(setOptionList[col.field], rowData[col.field])}}
                     </ng-template>
                   </p-cellEditor>
-                  <p-cellEditor *ngIf="col.header !== '车位性质' && col.header !== '车位类型'  && col.header !== '缴费月数' ">
+                  <p-cellEditor *ngIf="col.field !== 'parkingSpacePlace' && col.field !== 'parkingSpacePlace'  && col.field   !== 'datedif' ">
                     <ng-template pTemplate="input">
                       <input pInputText type="text" [(ngModel)]="rowData[col.field]">
                     </ng-template>
@@ -234,12 +234,6 @@
                       {{rowData[col.field]}}
                     </ng-template>
                   </p-cellEditor>
-<!--                  <div *ngIf="col.header === '车位性质' || col.header === '车位类型' || col.header === '缴费月数' " style="border: 0;background: #FFFFFF; text-align: center">-->
-<!--                    <p-dropdown [options]="tollAddoption[col.field]" scrollHeight="100px" [placeholder]="tollModifyDatas[rowIndex][col.field]" [(ngModel)]="rowData[col.field]"></p-dropdown>-->
-<!--                  </div>-->
-<!--                  <div *ngIf="col.header !== '车位性质' && col.header !== '车位类型' && col.header !== '缴费月数' ">-->
-<!--                    <input type="text" pInputText placeholder="请输入{{col.header}}" [(ngModel)]="rowData[col.field]" style="border: 0;background: #FFFFFF; text-align: center">-->
-<!--                  </div>-->
                 </td>
                 <td [ngStyle]="{'text-align': 'center'}">
                   <button class="bf-toll-Modifydialog-Btn"  (click)="deleteTollMoreClick(rowIndex, rowData)">删除</button>

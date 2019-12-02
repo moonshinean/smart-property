@@ -11,7 +11,7 @@ import {
   InputTextModule,
   MessageModule, MessageService,
   MessagesModule, RadioButtonModule,
-  ScrollPanelModule, SpinnerModule
+  ScrollPanelModule, SpinnerModule, TreeModule
 } from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
 import {FormsModule} from '@angular/forms';
@@ -47,7 +47,8 @@ import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dial
     InputTextareaModule,
     BasicTableModule,
     BasicDialogModule,
-    InputSwitchModule
+    InputSwitchModule,
+    TreeModule
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

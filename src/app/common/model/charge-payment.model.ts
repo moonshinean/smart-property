@@ -31,6 +31,7 @@ export class ChargeItem {
   minMonth?: any; // 最小月数
   chargeStandards?: any; // 金额下拉框
   chargeStandard?: any; // 金额
+  parkingSpaceCode: any;  // 车位编号
 }
 // 项目选择提交
 export class ChargeItemData {
@@ -162,4 +163,37 @@ export  class CostSplitData {
   code?: any;
   parentCode?: any;
   splitState?: any;
+}
+
+// 绑定车位
+export class AddSparkSpace {
+  parkingSpaceManagementId?: any;
+  villageCode?: any;  // 小区编号
+  villageName?: any;  // 小区名称
+  regionCode?: any;  // 地块编号
+  regionName?: any;  // 地块名称
+  buildingCode?: any; // 楼宇编号
+  buildingName?: any; // 楼宇名称
+  unitCode?: any;  // 单元编号
+  unitName?: any; // 单元名称
+  surname?: any; // 姓名
+  idNumber?: any; // 身份证号
+  mobilePhone?: any; // 客户电话
+  roomCode?: any; // 房间号
+  roomSize?: any; // 住房大小 单位：平方米
+  organizationId?: any; // 客户ID，唯一标识
+  organizationName?: any; // 组织/机构名称
+  contractNumber?: any; // 合同编号
+  parkingSpaceCode?: any; //  车位编号
+  authorizedPersonName?: any; // 授权人姓名
+  authorizedPersonPhone?: any; // 授权人电话
+  authorizedPersonIdNumber?: any; // 授权人身份证号
+  licensePlateNumber?: any; // 车牌号
+  licensePlateColor?: any; // 车牌颜色
+  licensePlateType?: any; // 车牌类型
+  vehicleOriginalType?: any; // 车辆原始类型
+  startTime?: any; // 开始计费时间
+  loggedOffState?: any; // 注销状态
+  idt?: any; // 插入时间
+  udt?: any;  // 修改时间
 }
