@@ -9,6 +9,7 @@ import {FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
 import {ThemeService} from '../../../common/public/theme.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-coupon-total',
@@ -64,7 +65,12 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
   public formgroup: FormGroup;
   public formdata: any[];
   public roomtree: any;
-
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '新增', hidden: true},
+    {label: '删除', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
 
   public nowPage = 1;
   // 树结构订阅
@@ -81,6 +87,7 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
   constructor(
     private couponTotalSrv: CouponService,
     private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private toolSrv: PublicMethedService,
     private  sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
@@ -108,6 +115,7 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -150,6 +158,7 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
     );
 
   }
+
   public couponTotalSearchClick(): void {
     if (this.searchData !== '') {
        this.selectSearchType();
@@ -387,7 +396,6 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
     );
   }
 
-
   public eventClick(e): void {
     if (e === 'false') {
       this.optionDialog.dialog = false;
@@ -424,5 +432,23 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
     } else {
       this.toolSrv.setToast('error', '操作错误', '请输入合法的电话号码');
     }
+  }
+
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '优惠券信息') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

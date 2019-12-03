@@ -7,6 +7,8 @@ import {DialogModel, FormValue} from '../../../common/components/basic-dialog/di
 import {FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-refund-application-info',
@@ -48,9 +50,17 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '修改', hidden: true},
+    {label: '删除', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
   constructor(
     private applicationInfoSrv: RefundService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService,
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
@@ -63,6 +73,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -84,62 +95,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
        this.queryApplicationPageData();
     });
   }
-/*  // query Village
-  public VillageChange(e): void {
-    this.loadHidden = false;
-    this.SearchOption.region = [];
-    this.SearchOption.building = [];
-    this.SearchOption.unit = [];
-    this.applicationInfoAdd.villageName = e.originalEvent.target.innerText;
-    this.applicationInfoModify.villageName = e.originalEvent.target.innerText;
-    this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach(v => {
-          this.loadHidden = true;
-          this.SearchOption.region.push({label: v.regionName, value: v.regionCode});
-        });
-      }
-    );
-  }
-  // query region
-  public regionChange(e): void {
-    this.loadHidden = false;
-    this.SearchOption.unit = [];
-    this.applicationInfoAdd.regionName = e.originalEvent.target.innerText;
-    this.applicationInfoModify.regionName = e.originalEvent.target.innerText;
-    this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach(v => {
-          this.SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
-        });
-        this.loadHidden = true;
-
-      }
-    );
-  }
-  // query building
-  public buildingChange(e): void {
-    this.SearchOption.unit = [];
-    this.applicationInfoAdd.buildingName = e.originalEvent.target.innerText;
-    this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach(v => {
-          this.SearchOption.unit.push({label: v.unitName, value: v.unitCode});
-        });
-      }
-    );
-  }
-  // query unit
-  public unitChange(e): void {
-    this.applicationInfoAdd.unitName = e.originalEvent.target.innerText;
-
-  }*/
-  //  applicationInfo detail
-  // applicationInfo select
-  // public  applicationInfoonRowSelect(e): void {
-  //   this.applicationInfoModify = e.data;
-  // }
-  // applicationInfo delete
+  // applicationInfo detail
   public  applicationInfoDeleteClick(e): void {
     this.applicationDetailOption = {
       dialog: true,
@@ -302,5 +258,23 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
         this.formgroup.patchValue({transferCardAmount: e.value.value.refundableAmount - e.value.value.deductionPropertyFee});
       }
       // e.value.value[e.name] + e.
+  }
+
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '申请退款') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

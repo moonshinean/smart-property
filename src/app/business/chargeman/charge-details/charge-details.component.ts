@@ -6,6 +6,8 @@ import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.m
 import {SharedServiceService} from '../../../common/public/shared-service.service';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-charge-details',
@@ -69,6 +71,12 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     pageSize: 10
   };
   public searchData = '';
+
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '上传', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
   // 缴费相关
   // public projectSelectDialog: boolean;
   public chargeStatusoption: any[] = [];
@@ -102,6 +110,8 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private chargeDetailSrv: ChargeDetailsService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private  sharedSrv: SharedServiceService,
     private themeSrv: ThemeService
   ) {
@@ -127,6 +137,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.sharedSrv.SearchData !== undefined) {
       for (const key in this.sharedSrv.SearchData) {
         if (key !== 'data') {
@@ -358,5 +369,23 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );
+  }
+
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '缴费记录') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

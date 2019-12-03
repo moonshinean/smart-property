@@ -5,6 +5,7 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
 import {CouponService} from '../../../common/services/coupon.service';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-coupon-audited',
@@ -24,6 +25,10 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
   public auditStatusOption = [];
   public pastDueOption = [];
   public userStatusOption = [];
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '搜索', hidden: true},
+  ];
   // 其他相关除时钟
   public option: any;
   public loadingHide = true;
@@ -40,6 +45,8 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
   constructor(
     private couponAuditedSrv: CouponService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService,
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
@@ -53,6 +60,7 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.setBtnIsHidden()
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -214,5 +222,23 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );
+  }
+
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '已审核') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

@@ -6,7 +6,7 @@
   <!--顶部按钮-->
   <div class="refund-review-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1 refund-review-header-btn refund-review-header-btn-delete" (click)="refundReviewClick()">
+      <div class="ui-g-1 refund-review-header-btn refund-review-header-btn-delete" (click)="refundReviewClick()" [hidden]="btnHiden[0].hidden">
         <!--<img class="refund-review-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
         <span>审核</span>
       </div>
@@ -24,13 +24,13 @@
       <!--</div>-->
     </div>
     <!--&lt;!&ndash;//搜索&ndash;&gt;-->
-    <!--<div class="ui-inputgroup refund-review-header-search">-->
+    <!--<div class="ui-inputgroup refund-review-header-search" *ngIf="!btnHiden[1].hidden">-->
       <!--<input type="text" pInputText placeholder="请输入手机号码" style="width: 7vw" [(ngModel)]="refundReviewSeachData">-->
       <!--<button id="disabled-btn" class="refund-review-header-btn-search" type="button"  (click)="refundReviewSearchClick()"  label="搜索">搜索</button>-->
     <!--</div>-->
   </div>
   <!--表格-->
-  <div class="refund-review-table">
+  <div class="refund-review-table" >
     <rbi-check-table-btn [select]="refundReviewSelect" (selectData)="selectData($event)" (detail)="refundReviewDetailClick($event)" [option]="refundReviewOption"></rbi-check-table-btn>
   </div>
 

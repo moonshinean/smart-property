@@ -6,15 +6,15 @@
   <!--顶部按钮-->
   <div class="refund-info-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1 refund-info-header-btn refund-info-header-btn-add" (click)="infoAddClick()">
+      <div class="ui-g-1 refund-info-header-btn refund-info-header-btn-add" (click)="infoAddClick()" [hidden]="btnHiden[0].hidden">
         <img class="refund-info-header-img-add" src="assets/images/ic_add.png" alt="">
-        <span>增 加</span>
+        <span>新  增</span>
       </div>
-      <div class="ui-g-1 refund-info-header-btn refund-info-header-btn-modify" (click)="infoModifyClick()">
+      <div class="ui-g-1 refund-info-header-btn refund-info-header-btn-modify" (click)="infoModifyClick()" [hidden]="btnHiden[1].hidden">
         <img class="refund-info-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 refund-info-header-btn refund-info-header-btn-delete" (click)="infoDeleteClick()">
+      <div class="ui-g-1 refund-info-header-btn refund-info-header-btn-delete" (click)="infoDeleteClick()" [hidden]="btnHiden[2].hidden">
         <img class="refund-info-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
@@ -32,8 +32,8 @@
 <!--      </div>-->
     </div>
     <!--//搜索-->
-    <div class="ui-inputgroup refund-info-header-search">
-      <input type="text" pInputText placeholder="请输入搜索内容" #input style="width: 7vw">
+    <div class="ui-inputgroup refund-info-header-search" *ngIf="!btnHiden[3].hidden">
+      <input type="text" pInputText placeholder="请输入搜索内容" >
       <button id="disabled-btn" class="refund-info-header-btn-search" type="button"  (click)="infoSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>

@@ -5,6 +5,8 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
 import {RefundService} from '../../../common/services/refund.service';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-refund-pend-review',
@@ -33,6 +35,13 @@ export class RefundPendReviewComponent implements OnInit {
   public option: any;
   public loadingHide = true;
   public nowPage = 1;
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '审核', hidden: true},
+    // {label: '修改', hidden: true},
+    // {label: '删除', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
 
   public themeSub: Subscription;
   public table = {
@@ -45,6 +54,8 @@ export class RefundPendReviewComponent implements OnInit {
   constructor(
     private toolSrv: PublicMethedService,
     private refundPendReviewSrv: RefundService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
@@ -58,6 +69,7 @@ export class RefundPendReviewComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -266,5 +278,23 @@ export class RefundPendReviewComponent implements OnInit {
 
   public  isOrNull(data: any): boolean {
     return (data !== null && data !== '' && data !== undefined);
+  }
+
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '退款复审') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

@@ -185,6 +185,7 @@ export class AddSparkSpace {
   organizationName?: any; // 组织/机构名称
   contractNumber?: any; // 合同编号
   parkingSpaceCode?: any; //  车位编号
+  parkingSpaceType?: any; //  车位类型
   authorizedPersonName?: any; // 授权人姓名
   authorizedPersonPhone?: any; // 授权人电话
   authorizedPersonIdNumber?: any; // 授权人身份证号
@@ -196,4 +197,35 @@ export class AddSparkSpace {
   loggedOffState?: any; // 注销状态
   idt?: any; // 插入时间
   udt?: any;  // 修改时间
+}
+
+
+export class RentalAddSparkSpace {
+  contractNumber?: any; // 合同编号
+  rentalRenewalStatus?: any;  // 续租状态
+  datedif?: any;  // 月份
+  villageName?: any;  // 小区名称
+  villageCode?: any;  // 小区编号
+  regionName?: any;  // 地块名称
+  regionCode?: any;  // 地块编号
+  buildingName?: any;  // 楼栋名称
+  buildingCode?: any;  // 楼栋编号
+  parkingSpaceCode?: any;  // 车位编号
+  parkingSpaceType?: any;  // 车位类型
+  parkingSpacePlace?: any;  // 车位地点
+  vehicleOriginalType?: any;  // 车辆原始类型
+  licensePlateNumber?: any;  // 车牌编号
+  licensePlateType?: any;  // 车牌类型
+  licensePlateColor?: any;  // 车牌颜色
+  authorizedPersonName?: any;  // 授权人姓名
+  authorizedPersonPhone?: any;  // 授权人电话
+  authorizedPersonIdNumber?: any;  // 授权人身份证号
+  startTime?: any;  // 开始计费时间
+  dueTime?: any;  // 结束计费时间
+  discount?: any;  // 折扣率
+  chargeUnit?: any;  // 收费单位
+  chargeStandard?: any;  // 标准单价
+  chargeName?: any;  // 项目名称'
+  actualMoneyCollection?: any;  // 实收金额
+  amountReceivable?: any;  // 应收金额
 }

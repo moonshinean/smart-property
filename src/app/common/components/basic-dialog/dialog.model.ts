@@ -25,6 +25,9 @@ export class DataTree {
   name?: any;
   pid?: any;
   label?: any;
+  level?: any;
+  value?: any;
+  parent?: any;
   villageChoose2DTO?: DataTree[];
 }
 

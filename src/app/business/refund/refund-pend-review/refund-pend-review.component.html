@@ -6,7 +6,7 @@
   <!--顶部按钮-->
   <div class="refund-pend-review-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1 refund-pend-review-header-btn refund-pend-review-header-btn-delete" (click)="refundPendReviewClick()">
+      <div class="ui-g-1 refund-pend-review-header-btn refund-pend-review-header-btn-delete" (click)="refundPendReviewClick()" [hidden]="btnHiden[0].hidden">
         <!--<img class="refund-pend-review-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
         <span>审 核</span>
       </div>
@@ -24,7 +24,7 @@
       <!--</div>-->
     </div>
     <!--//搜索-->
-    <!--<div class="ui-inputgroup refund-pend-review-header-search">-->
+    <!--<div class="ui-inputgroup refund-pend-review-header-search" *ngIf="!btnHiden[1].hidden">-->
       <!--<input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="refundPendReviewSeachData">-->
       <!--<button id="disabled-btn" class="refund-pend-review-header-btn-search" type="button"  (click)="refundPendReviewSearchClick()"  label="搜索">搜索</button>-->
     <!--</div>-->

@@ -6,17 +6,17 @@
   <!--顶部按钮-->
   <div class="coupon-total-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1 coupon-total-header-btn coupon-total-header-btn-add" (click)="couponTotalAddClick()">
+      <div class="ui-g-1 coupon-total-header-btn coupon-total-header-btn-add" (click)="couponTotalAddClick()" [hidden]="btnHiden[0].hidden">
         <img class="coupon-total-header-img-add" src="assets/images/ic_add.png" alt="">
-        <span>增 加</span>
+        <span>新 增</span>
       </div>
-      <div class="ui-g-1 coupon-total-header-btn coupon-total-header-btn-delete" (click)="couponTotalDeleteClick()">
+      <div class="ui-g-1 coupon-total-header-btn coupon-total-header-btn-delete" (click)="couponTotalDeleteClick()" [hidden]="btnHiden[1].hidden">
         <img class="coupon-total-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
     </div>
     <!--//搜索-->
-    <div class="ui-inputgroup coupon-total-header-search">
+    <div class="ui-inputgroup coupon-total-header-search" *ngIf="!btnHiden[2].hidden">
       <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
       <input type="text" pInputText placeholder="请输入手机号码"  [(ngModel)]="searchData">
       <button id="disabled-btn" class="coupon-total-header-btn-search" type="button"  (click)="couponTotalSearchClick()"  label="搜索">搜索</button>

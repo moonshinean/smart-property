@@ -10,6 +10,7 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
 import {RefundService} from '../../../common/services/refund.service';
 import {ThemeService} from '../../../common/public/theme.service';
 import {Subscription} from 'rxjs';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-refund-info',
@@ -60,7 +61,13 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
   public nowPage = 1;
   public esDate: any;
   public roonCodeSelectOption: any[] = [];
-
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '新增', hidden: true},
+    {label: '修改', hidden: true},
+    {label: '删除', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
   public pageRefundStatus = [];
 
   public themeSub: Subscription;
@@ -76,6 +83,7 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
     private infoSrv: RefundService,
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private datePipe: DatePipe,
     private themeSrv: ThemeService,
   ) {
@@ -90,6 +98,7 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -524,5 +533,23 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
   // info select
   public  selectData(e): void {
     this.infoSelect = e;
+  }
+
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '退款信息') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

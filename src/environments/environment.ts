@@ -6,12 +6,12 @@ export const environment = {
   production: false,
   env: '开发环境中.........................',
   loginUrl: 'http://120.78.156.30:8848/cloud_house_authentication',
-  chargeUrl: 'http://120.78.156.30:8849/cloud_house_interactive',
+  // chargeUrl: 'http://120.78.156.30:8849/cloud_house_interactive',
   sysetUrl: 'http://120.78.156.30:8847/cloud_house_admin',
   //
 //  广祥的ip
 //   sysetUrl: 'http://192.168.28.139.30:8847/cloud_house_admin',
-//   chargeUrl: 'http://192.168.28.139:8849/cloud_house_interactive',
+  chargeUrl: 'http://192.168.28.139:8849/cloud_house_interactive',
   // loginUrl: 'http://192.168.28.139:8848/cloud_house_authentication',
   // 谢青的ip
   //

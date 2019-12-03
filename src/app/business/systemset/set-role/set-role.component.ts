@@ -107,7 +107,6 @@ export class SetRoleComponent implements OnInit, OnDestroy {
   // add role quest
   public  roleAddSureClick(): void {
     const flag = [];
-
     if (this.userCode !== undefined && this.roleDatas !== []) {
       this.toolSrv.setConfirmation('增加', '增加', () => {
         this.roleData.forEach(v => {
@@ -126,8 +125,7 @@ export class SetRoleComponent implements OnInit, OnDestroy {
             }
           });
         });
-
-
+        console.log(this.roleDatas.length);
         if (this.roleDatas.length >= 1) {
           this.roleSrv.addUserRole({userId: this.userCode , roleCodes: this.roleDatas.join(',')}).subscribe(
             (value ) => {
@@ -141,6 +139,8 @@ export class SetRoleComponent implements OnInit, OnDestroy {
               }
             }
           );
+        } else {
+          this.toolSrv.setToast('error', '操作失败', '没有改变权限');
         }
         if (this.roleData.length >= 1) {
           this.loadHidden = false;
@@ -166,6 +166,8 @@ export class SetRoleComponent implements OnInit, OnDestroy {
               }
             }
           );
+        }else {
+          this.toolSrv.setToast('error', '操作失败', '没有改变权限');
         }
       });
     } else {

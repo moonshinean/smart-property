@@ -6,11 +6,11 @@
   <!--顶部按钮-->
   <div class="refund-applicationInfo-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1 refund-applicationInfo-header-btn refund-applicationInfo-header-btn-modify" (click)="applicationInfoModifyClick()">
+      <div class="ui-g-1 refund-applicationInfo-header-btn refund-applicationInfo-header-btn-modify" (click)="applicationInfoModifyClick()" [hidden]="btnHiden[0].hidden">
         <img class="refund-applicationInfo-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 refund-applicationInfo-header-btn refund-applicationInfo-header-btn-delete" (click)="applicationInfoDeleteClick($event)">
+      <div class="ui-g-1 refund-applicationInfo-header-btn refund-applicationInfo-header-btn-delete" (click)="applicationInfoDeleteClick($event)" [hidden]="btnHiden[1].hidden">
         <img class="refund-applicationInfo-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
@@ -26,13 +26,13 @@
       <!--</div>-->
     </div>
     <!--//搜索-->
-    <!--<div class="ui-inputgroup refund-applicationInfo-header-search">-->
+    <!--<div class="ui-inputgroup refund-applicationInfo-header-search" *ngIf="!btnHiden[2].hidden">-->
       <!--<input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
       <!--<button id="disabled-btn" class="refund-applicationInfo-header-btn-search" type="button"  (click)="applicationInfoSearchClick()"  label="搜索">搜索</button>-->
     <!--</div>-->
   </div>
   <!--表格-->
-  <div class="refund-applicationInfo-table">
+  <div class="refund-applicationInfo-table" >
     <rbi-check-table-btn [select]="applicationInfoSelect" (selectData)="selectData($event)" (detail)="applicationInfoDeleteClick($event)" [option]="applicationInfoOption"></rbi-check-table-btn>
   </div>
 <!--   修改-->

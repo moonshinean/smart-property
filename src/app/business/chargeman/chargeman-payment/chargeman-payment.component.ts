@@ -3,7 +3,7 @@ import {ConfirmationService} from 'primeng/api';
 import {ChargePaymentService} from '../../../common/services/charge-payment.service';
 import {
   AddSparkSpace,
-  ChargeItem, ChargeItemData, ChargeItemDetail, ChargeItems, ChargePaymentAddOrder, CostSplitData, Patyment, SearchData
+  ChargeItem, ChargeItemData, ChargeItemDetail, ChargeItems, ChargePaymentAddOrder, CostSplitData, Patyment, RentalAddSparkSpace, SearchData
 } from '../../../common/model/charge-payment.model';
 import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
@@ -14,6 +14,8 @@ import {ThemeService} from '../../../common/public/theme.service';
 import {DataTree, FormValue} from '../../../common/components/basic-dialog/dialog.model';
 import {FormGroup} from '@angular/forms';
 import {TreeNode} from '../../../common/model/shared-model';
+import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-chargeman-payment',
@@ -32,8 +34,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   // public stateOfArrearChecked = false;
   // 缴费项目选则
   public selectCheckChargeItemList: any[] = [];
-  // 上传详情记录相关
-  public fileRecordoption: any;
   public paymentDialogTableTitle = [
     {field: 'chargeName', header: '项目名称'},
     {field: 'chargeStandard', header: '标准单价'},
@@ -92,11 +92,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     {field: 'amountReceivable', header: '应收金额'},
     {field: 'operating', header: '操作'},
   ];
-  public parkspaceDrapdownList = ['datedif', 'parkingSpacePlace', 'parkingSpaceType', 'licensePlateColor',
-    'licensePlateType', 'vehicleOriginalType', 'villageName', 'regionName', 'buildingName'];
-  public parkSpaceInputList = ['contractNumber', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone',
-    'authorizedPersonIdNumber', 'licensePlateNumber'];
-  public parkSpaceTime = ['startTime'];
   // 抵扣项目表内容
   public  parkSpaceData: any;
   public  deductionDamagesData: any;
@@ -176,15 +171,32 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public lincesePlateColorOption = [];
   public lincesePlateTypeOption = [];
   public vehicleOriginaTypeOption = [];
+  public parkSpacePlaceOption = [];
+  public parkSpaceTypeOption = [];
+  public parkSpaceNatureOption: any[] = [];
   public treeCode: any;
 
   // 零时车位车位
   public parkSpaceOptionDialog: boolean;
-  public rentalParkSpace: any;
+  public rentalParkSpace: RentalAddSparkSpace  = new RentalAddSparkSpace();
+  public editRentalParkspaceDataFlag: any;
+  public rentalRenewalStatusOption = [{label: '续租', value: 1}, {label: '非续租', value: 0}];
+  public rentalHiddenInfo = true;
+  public rentalCode: any;
   // 树结构相关
   public treeDialog: boolean;
   public dataTrees: DataTree[];
   public dataTree: DataTree = new DataTree();
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '缴费', hidden: true},
+    {label: '车位办理', hidden: true},
+    {label: '车位办理导入', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
+  // 上传车位信息
+  public UploadFileOption: FileOption = new FileOption();
+  public uploadRecordOption: any;
   // 树结构订阅
   public paymentSub: Subscription;
   // 切换主题
@@ -200,6 +212,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     private paymentSrv: ChargePaymentService,
     private confirmationService: ConfirmationService,
     private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private  toolSrv: PublicMethedService,
     private datePipe: DatePipe,
     private  sharedSrv: SharedServiceService,
@@ -228,6 +241,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -256,7 +270,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       {settingType: 'ROOM_TYPE'}, {settingType: 'SEX'}, {settingType: 'IDENTITY'},
        {settingType: 'LICENSE_PLATE_COLOR'}, {settingType: 'DATEDIF'}, {settingType: 'CWLX'},
        {settingType: 'VEHICLE_ORIGINA_TYPE'}, {settingType: 'LICENSE_PLATE_TYPE'},
-       {settingType: 'PAEKING_SPACE_PLACE'}], (data) => {
+       {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}], (data) => {
        console.log(data);
        this.lincesePlateTypeOption = this.toolSrv.setListMap(data.LICENSE_PLATE_TYPE);
        this.vehicleOriginaTypeOption = this.toolSrv.setListMap(data.VEHICLE_ORIGINA_TYPE);
@@ -265,6 +279,9 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
        this.sexOption = this.toolSrv.setListMap(data.SEX);
        this.identityOption = this.toolSrv.setListMap(data.IDENTITY);
        this.lincesePlateColorOption = this.toolSrv.setListMap(data.LICENSE_PLATE_COLOR);
+       this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
+       this.parkSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
+       this.parkSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
        this.queryPaymentPage();
     });
     // this.paymentTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
@@ -560,7 +577,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
     this.optionTable = {
-      width: '100%',
+      width: '101%',
       header: {
         data:  [
           // {field: 'buildingName', header: '楼栋名称'},
@@ -743,7 +760,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       this.paymentSrv.getRoomTree({}).subscribe(
           value => {
             // if (value === 1005) {
-            this.dataTrees = this.initializeTree(value.data);
+            this.dataTrees = this.initializeTree(value.data, 'parkSpace');
             // }
             // console.log(value);
           }
@@ -754,24 +771,34 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     }
 
   }
+  // 树形结构点击
   public  dataTreeClick(): void {
     this.treeDialog = true;
   }
   // Tree structure initialization
-  public initializeTree(data): any {
+  public initializeTree(data, flag): any {
     const oneChild = [];
     for (let i = 0; i < data.length; i++) {
       const childnode = new TreeNode();
       childnode.value = data[i].code;
       childnode.label = data[i].name;
-      if (data[i].level === '3') {
-        childnode.selectable = true;
+      childnode.level = data[i].level;
+      if (flag === 'parkSpace') {
+        if (data[i].level === '4') {
+          childnode.selectable = true;
+        } else {
+          childnode.selectable = false;
+        }
       } else {
-        childnode.selectable = false;
+        if (data[i].level === '1') {
+          childnode.selectable = false;
+        } else {
+          childnode.selectable = true;
+        }
       }
 
       if (data[i].SpaceDTO != null && data[i].SpaceDTO.length !== 0 ) {
-        childnode.children = this.initializeTree(data[i].SpaceDTO);
+        childnode.children = this.initializeTree(data[i].SpaceDTO, flag);
       } else {
         childnode.children = [];
       }
@@ -784,6 +811,43 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.treeDialog = false;
     console.log(this.dataTree);
     this.addParkSpace.parkingSpaceCode = this.dataTree.label;
+    switch (this.dataTree.level) {
+      case '1':
+        this.rentalParkSpace.villageCode = this.dataTree.value;
+        this.rentalParkSpace.villageName = this.dataTree.label;
+        this.rentalCode = this.dataTree.label;
+        break;
+      case '2':
+        this.rentalParkSpace.villageCode = this.dataTree.parent.value;
+        this.rentalParkSpace.villageName = this.dataTree.parent.label;
+        this.rentalParkSpace.regionCode = this.dataTree.label;
+        this.rentalParkSpace.regionName = this.dataTree.label;
+        this.rentalCode = this.dataTree.label;
+        break;
+      case '3':
+        this.rentalParkSpace.villageCode = this.dataTree.parent.parent.value;
+        this.rentalParkSpace.villageName = this.dataTree.parent.parent.label;
+        this.rentalParkSpace.regionCode = this.dataTree.parent.value;
+        this.rentalParkSpace.regionName = this.dataTree.parent.label;
+        this.rentalParkSpace.buildingCode = this.dataTree.value;
+        this.rentalParkSpace.buildingName = this.dataTree.label;
+        this.rentalCode = this.dataTree.label;
+        break;
+      case '4':
+        this.rentalParkSpace.villageCode = this.dataTree.parent.parent.parent.value;
+        this.rentalParkSpace.villageName = this.dataTree.parent.parent.parent.label;
+        this.rentalParkSpace.regionCode = this.dataTree.parent.parent.value;
+        this.rentalParkSpace.regionName = this.dataTree.parent.parent.label;
+        this.rentalParkSpace.buildingCode = this.dataTree.parent.value;
+        this.rentalParkSpace.buildingName = this.dataTree.parent.label;
+        this.rentalParkSpace.parkingSpaceCode = this.dataTree.label;
+        this.rentalParkSpace.parkingSpaceCode = this.dataTree.label;
+        this.rentalCode = this.dataTree.label;
+        break;
+      default:
+        break;
+    }
+    console.log(this.rentalParkSpace);
   }
 //   给房间绑定车位
   public  setRoombindparkSpaceClick(): void {
@@ -813,8 +877,150 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       }
   }
 
-  public  editRentalParkingSpaceClick(): void {
-      this.parkSpaceOptionDialog = true;
+  // 编辑租赁车位的数据
+  public  editRentalParkingSpaceClick(index): void {
+    this.editRentalParkspaceDataFlag = index;
+    for (const key in this.parkSpaceData[index]) {
+      this.rentalParkSpace[key] = this.parkSpaceData[index][key];
+    }
+    this.paymentSrv.getRoomTree({}).subscribe(
+      value => {
+        // console.log(value);
+        this.dataTrees = this.initializeTree(value.data, 'editparkSpace');
+      }
+    );
+    if (this.rentalParkSpace.parkingSpaceCode !== '') {
+      this.rentalCode = this.rentalParkSpace.parkingSpaceCode ;
+    } else if (this.rentalParkSpace.buildingName !== '') {
+      this.rentalCode = this.rentalParkSpace.buildingName ;
+    } else if(this.rentalParkSpace.regionName !== '') {
+      this.rentalCode = this.rentalParkSpace.regionName ;
+    } else if(this.rentalParkSpace.villageName !== '') {
+      this.rentalCode = this.rentalParkSpace.villageName ;
+    }
+    this.parkSpaceOptionDialog = true;
+  }
+  // 租赁车位信息确认后的按钮
+  public  rentalparkSpaceClick(): void {
+    for (const key in this.rentalParkSpace) {
+      this.parkSpaceData[this.editRentalParkspaceDataFlag][key] = this.rentalParkSpace[key];
+    }
+    this.parkSpaceOptionDialog = false;
+    this.paymentSrv.calculateRentalPackSpaceFree({roomCode: this.paymentSelect[0].roomCode, parkingSpaceCostDetailDO: this.parkSpaceData[this.editRentalParkspaceDataFlag]}).subscribe(
+      value => {
+          console.log(value);
+      }
+    );
+  }
+
+  public  rentalRenewalStatusChange(e): void {
+      // console.log(e);
+      if (e.value === 0) {
+         this.rentalHiddenInfo = false;
+      }
+  }
+  // 车位信息详情
+  public  parkSpaceDetailClick(index): void {
+    this.dialogOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '车位详情',
+      poplist: {
+        popContent: this.parkSpaceData[index],
+        popTitle:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'roomSize', header: '建筑面积'},
+          {field: 'parkingSpaceCode', header: '车位编号'},
+          {field: 'rentalRenewalStatus', header: '续租状态'},
+          {field: 'datedif', header: '月数'},
+          {field: 'startTime', header: '开始计费时间'},
+          {field: 'parkingSpacePlace', header: '车位地点'},
+          {field: 'parkingSpaceType', header: '车位类型'},
+          {field: 'vehicleOriginalType', header: '车辆原始类型'},
+          {field: 'licensePlateColor', header: '车牌颜色'},
+          {field: 'authorizedPersonName', header: '车主姓名'},
+          {field: 'authorizedPersonPhone', header: '车主电话'},
+          {field: 'authorizedPersonIdNumber', header: '车主身份证号'},
+          {field: 'dueTime', header: '计费结束时间'},
+          {field: 'discount', header: '折扣率'},
+          {field: 'chargeUnit', header: '收费单位'},
+          {field: 'chargeStandard', header: '标准单价'},
+          {field: 'chargeName', header: '项目名称'},
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'amountReceivable', header: '应收金额'},
+        ],
+      }
+    };
+  }
+  // 导入车位数据文件
+  public  importParkplaceFilesClick(): void {
+    this.UploadFileOption.width = '800';
+    this.UploadFileOption.dialog = true;
+    this.UploadFileOption.files = [];
+  }
+  // 确认上传
+  public  paymentUploadSureClick(e): void {
+    if (e.getAll('file').length !== 0) {
+      this.paymentSrv.importFilesWithParkSpaceInfo(e).subscribe(
+        (value) => {
+          if (value.status === '1000') {
+            this.UploadFileOption.files = [];
+            this.uploadRecordOption = {
+              width: '900',
+              dialog: true,
+              title: '上传记录',
+              totalNumber: value.data.totalNumber,
+              realNumber: value.data.realNumber,
+              uploadOption: {
+                width: '102%',
+                tableHeader: {
+                  data: [
+                    {field: 'code', header: '序号'},
+                    {field: 'contractNumber', header: '合同编号'},
+                    {field: 'result', header: '结果'},
+                    {field: 'remarks', header: '备注'},
+                  ],
+                  style: {background: '#F4F4F4', color: '#000', height: '6vh'}
+                },
+                tableContent: {
+                  data: value.data.logParkingSpaceManagementInfoDOS,
+                  styleone: {background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+                  styletwo: {background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+                }
+              }
+            };
+            // this.ownerInfoDialog = true;
+            this.toolSrv.setToast('success', '上传成功', value.message);
+          } else {
+            this.toolSrv.setToast('error', '上传失败', value.message);
+          }
+        }
+      );
+    } else {
+      this.toolSrv.setToast('error', '操作失败', '请选择需要上传的文件');
+    }
+  }
+
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '物业缴费') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }
 

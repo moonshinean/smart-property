@@ -6,15 +6,18 @@
   <!--顶部按钮-->
   <div class="chargeman-payment-header">
     <div class="ui-g-12">
-      <div class="ui-g-1 chargeman-payment-header-btn chargeman-payment-header-btn-delete"  style="margin-left: 2vw" (click)="paymentClick()">
+      <div class="ui-g-1 chargeman-payment-header-btn chargeman-payment-header-btn-delete"   (click)="paymentClick()" [hidden]="btnHiden[0].hidden">
         <span>缴 费</span>
       </div>
-      <div class="ui-g-1 chargeman-payment-header-btn chargeman-payment-btn-add"  style="margin-left: 2vw" (click)="addParkplaceClick()">
+      <div class="ui-g-1 chargeman-payment-header-btn chargeman-payment-btn-add"   (click)="addParkplaceClick()" [hidden]="btnHiden[1].hidden">
         <span>车位办理</span>
+      </div>
+      <div class="ui-g-1 chargeman-payment-header-btn chargeman-payment-btn-import"  (click)="importParkplaceFilesClick()" [hidden]="btnHiden[2].hidden">
+        <span>车位办理导入</span>
       </div>
     </div>
     <!--搜索-->
-    <div class="ui-inputgroup chargeman-payment-header-search">
+    <div class="ui-inputgroup chargeman-payment-header-search" *ngIf="!btnHiden[3].hidden">
 <!--      <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>-->
       <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
       <input type="text" pInputText placeholder="请输入需要搜索的值.."  [(ngModel)]="searchData">
@@ -121,7 +124,6 @@
           <h3>车位管理</h3>
         </div>
         <div class="ui-g-12" [hidden]=" deductionDamagesStatus === 0">
-  <!--          <p-scrollPanel  styleClass="custombar"[style]="{width: '100%', height: '53vh'}" >-->
               <p-table [columns]="parkspaceTitle" [value]="parkSpaceData"  [scrollable]="true"  scrollHeight="48vh"  [(selection)]="deductionDamagesSelect">
                 <ng-template pTemplate="header" let-columns>
                   <tr >
@@ -138,13 +140,12 @@
                       {{rowData[col.field]}}
                     </td>
                     <td  *ngFor="let col of columns.slice(columns.length -1 ,columns.length)" style="word-break: break-word">
-                      <button class="chargeman-payment-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;"  (click)="editRentalParkingSpaceClick()">编辑</button>
-                      <button class="chargeman-payment-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;margin-top: 0.2vh">详情</button>
+                      <button class="chargeman-payment-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;"  (click)="editRentalParkingSpaceClick(rowIndex)" *ngIf="rowData.chargeType === '5'">编辑</button>
+                      <button class="chargeman-payment-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;margin-top: 0.2vh" (click)="parkSpaceDetailClick(rowIndex)">详情</button>
                     </td>
                   </tr>
                 </ng-template>
               </p-table>
-  <!--          </p-scrollPanel>-->
           </div>
         <div class="ui-g-12">
           <h3>缴费明细</h3>
@@ -337,7 +338,7 @@
         </div>
         <div class="ui-g-6">
           <div class="ui-g-4">
-            <label >授权人姓名</label>
+            <label >车主姓名</label>
           </div>
           <div class="ui-g-8">
             <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.authorizedPersonName"/>
@@ -345,7 +346,7 @@
         </div>
         <div class="ui-g-6">
           <div class="ui-g-4">
-            <label >授权人电话</label>
+            <label >车主电话</label>
           </div>
           <div class="ui-g-8">
             <input type="text" pInputText placeholder="请输入授权人电话" [(ngModel)]="addParkSpace.authorizedPersonPhone"/>
@@ -353,7 +354,7 @@
         </div>
         <div class="ui-g-6">
           <div class="ui-g-4">
-            <label >授权人身份证号</label>
+            <label >车主身份证号</label>
           </div>
           <div class="ui-g-8">
             <input type="text" pInputText placeholder="请输入授权人身份证号" [(ngModel)]="addParkSpace.authorizedPersonIdNumber"/>
@@ -391,20 +392,13 @@
             <p-dropdown [options]="vehicleOriginaTypeOption"  placeholder="请选择车辆原始类型" scrollHeight="100px" [(ngModel)]="addParkSpace.vehicleOriginalType"></p-dropdown>
           </div>
         </div>
-        <div class="ui-g-6">
-          <div class="ui-g-4">
-            <label >开始计费时间</label>
-          </div>
-          <div class="ui-g-8">
-            <p-calendar [(ngModel)]="addParkSpace.startTime" placeholder="请选择开始计费日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
-          </div>
-        </div>
+
       </div>
 <!--    </p-scrollPanel>-->
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" (click)="setRoombindparkSpaceClick()">确认</button>
-        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" (click)="addParkSpaceOptionDialog = false">取消</button>
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" (click)="addParkSpaceOptionDialog = false;paymentSelect = []">取消</button>
       </div>
     </p-footer>
 <!--    树结构-->
@@ -429,101 +423,126 @@
     </p-dialog>
   </p-dialog>
 
-  <p-dialog header="车位办理" [(visible)]="parkSpaceOptionDialog" [width]="1000"  [transitionOptions]="'200ms'"  [closable]="false">
+  <p-dialog header="租赁车位" [(visible)]="parkSpaceOptionDialog" [width]="800"  [transitionOptions]="'200ms'"  [closable]="false">
     <div class="ui-g ui-fluid">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
           <label>车位编号</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" placeholder="请选择车位编号" pInputText (click)="dataTreeClick()" [(ngModel)]="rentalParkSpace?.parkingSpaceCode"/>
+          <input type="text" placeholder="请选择车位编号" pInputText (click)="dataTreeClick()" [(ngModel)]="rentalCode"/>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
           <label >合同编号</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入合同编号"  [(ngModel)]="rentalParkSpace?.contractNumber"/>
+          <input type="text" pInputText placeholder="请输入合同编号"  [(ngModel)]="rentalParkSpace.contractNumber"/>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >授权人姓名</label>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >是否续租</label>
         </div>
-        <div class="ui-g-8">
-          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="rentalParkSpace?.authorizedPersonName"/>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >授权人电话</label>
-        </div>
-        <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入授权人电话" [(ngModel)]="rentalParkSpace?.authorizedPersonPhone"/>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="rentalRenewalStatusOption" placeholder="请选择续租状态" scrollHeight="100px" [(ngModel)]="rentalParkSpace.rentalRenewalStatus" (onChange)="rentalRenewalStatusChange($event)"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >授权人身份证号</label>
-        </div>
-        <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入授权人身份证号" [(ngModel)]="rentalParkSpace?.authorizedPersonIdNumber"/>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
           <label >租赁月数</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="datedifOption" placeholder="请选择租赁月数" scrollHeight="100px" [(ngModel)]="rentalParkSpace?.datedif"></p-dropdown>
+          <p-dropdown [options]="datedifOption" placeholder="请选择租赁月数" scrollHeight="100px" [(ngModel)]="rentalParkSpace.datedif"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >开始计费时间</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 4vh">
+          <p-calendar [(ngModel)]="rentalParkSpace.startTime" placeholder="请选择开始计费日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车主姓名</label>
+        </div>
+        <div class="ui-g-8" >
+          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="rentalParkSpace.authorizedPersonName"/>
+        </div>
+      </div>
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车主电话</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入授权人电话" [(ngModel)]="rentalParkSpace.authorizedPersonPhone"/>
+        </div>
+      </div>
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车主身份证号</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入授权人身份证号" [(ngModel)]="rentalParkSpace.authorizedPersonIdNumber"/>
+        </div>
+      </div>
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车位地点</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="parkSpacePlaceOption" placeholder="请选择车牌颜色" scrollHeight="100px" [(ngModel)]="rentalParkSpace.parkingSpacePlace"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车位类型</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="parkSpaceTypeOption" placeholder="请选择车牌颜色" scrollHeight="100px" [(ngModel)]="rentalParkSpace.parkingSpaceType"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
           <label >车牌号</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入车牌号" [(ngModel)]="rentalParkSpace?.licensePlateNumber"/>
+          <input type="text" pInputText placeholder="请输入车牌号" [(ngModel)]="rentalParkSpace.licensePlateNumber"/>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
           <label >车牌颜色</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="lincesePlateColorOption" placeholder="请选择车牌颜色" scrollHeight="100px" [(ngModel)]="rentalParkSpace?.licensePlateColor"></p-dropdown>
+          <p-dropdown [options]="lincesePlateColorOption" placeholder="请选择车牌颜色" scrollHeight="100px" [(ngModel)]="rentalParkSpace.licensePlateColor"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
           <label >车牌类型</label>
         </div>
-        <div class="ui-g-8">
-          <p-dropdown [options]="lincesePlateTypeOption"  placeholder="请选择车牌类型" scrollHeight="100px" [(ngModel)]="rentalParkSpace?.licensePlateType"></p-dropdown>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="lincesePlateTypeOption"  placeholder="请选择车牌类型" scrollHeight="100px" [(ngModel)]="rentalParkSpace.licensePlateType"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
           <label >车辆原始类型</label>
         </div>
-        <div class="ui-g-8">
-          <p-dropdown [options]="vehicleOriginaTypeOption"  placeholder="请选择车辆原始类型" scrollHeight="100px" [(ngModel)]="rentalParkSpace?.vehicleOriginalType"></p-dropdown>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="vehicleOriginaTypeOption"  placeholder="请选择车辆原始类型" scrollHeight="100px" [(ngModel)]="rentalParkSpace.vehicleOriginalType"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >开始计费时间</label>
-        </div>
-        <div class="ui-g-8">
-          <p-calendar [(ngModel)]="rentalParkSpace?.startTime" placeholder="请选择开始计费日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
-        </div>
-      </div>
+
     </div>
     <!--    </p-scrollPanel>-->
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
-        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" (click)="setRoombindparkSpaceClick()">确认</button>
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" (click)="rentalparkSpaceClick()">确认</button>
         <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" (click)="parkSpaceOptionDialog = false">取消</button>
       </div>
     </p-footer>
@@ -549,6 +568,7 @@
     </p-dialog>
   </p-dialog>
   <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
-  <rbi-upload-file-record [uploadRecordOption]="fileRecordoption"></rbi-upload-file-record>
+  <rbi-file-pop [UploadFileOption]="UploadFileOption" (event)="paymentUploadSureClick($event)"></rbi-file-pop>
+  <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
 </div>

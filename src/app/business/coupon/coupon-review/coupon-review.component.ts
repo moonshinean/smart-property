@@ -4,6 +4,8 @@ import {PublicMethedService} from '../../../common/public/public-methed.service'
 import {CouponService} from '../../../common/services/coupon.service';
 import {ThemeService} from '../../../common/public/theme.service';
 import {Subscription} from 'rxjs';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-coupon-review',
@@ -44,10 +46,17 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '审核', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private couponReviewSrv: CouponService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService,
   ) {
     this.themeSub = this.themeSrv.changeEmitted$.subscribe(
@@ -61,6 +70,7 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.setBtnIsHidden();
     this.esDate = this.toolSrv.esDate;
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
@@ -255,5 +265,21 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
     );
   }
 
-  // 审核信息
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '优惠券初审') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
+  }
 }

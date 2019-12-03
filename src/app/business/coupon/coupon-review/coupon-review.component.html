@@ -6,13 +6,13 @@
   <!--顶部按钮-->
   <div class="coupon-review-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1 coupon-review-header-btn coupon-review-header-btn-delete" (click)="couponReviewClick()">
+      <div class="ui-g-1 coupon-review-header-btn coupon-review-header-btn-delete" (click)="couponReviewClick()" [hidden]="btnHiden[0].hidden">
         <!--<img class="coupon-review-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
         <span>审 核</span>
       </div>
     </div>
     <!--//搜索-->
-<!--    <div class="ui-inputgroup coupon-review-header-search">-->
+<!--    <div class="ui-inputgroup coupon-review-header-search"  *ngIf="!btnHiden[1].hidden">-->
 <!--      <input type="text" pInputText placeholder="请输入手机号码" style="width: 7vw" [(ngModel)]="couponReviewSeachData">-->
 <!--      <button id="disabled-btn" class="coupon-review-header-btn-search" type="button"  (click)="couponReviewSearchClick()"  label="搜索">搜索</button>-->
 <!--    </div>-->

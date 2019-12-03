@@ -5,6 +5,8 @@ import {AddOwner, ModifyOwner} from '../../../common/model/bf-owner.model';
 import {exportData} from '../../../common/model/chaege-export.model';
 import {DatePipe} from '@angular/common';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-charge-export',
@@ -37,15 +39,25 @@ export class ChargeExportComponent implements OnInit {
   public exportRequestData: exportData = new exportData();
   public exportDetail: any[] =[];
   public exportDetailDialog: boolean;
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '报表类型选择', hidden: true},
+    {label: '表格设置', hidden: true},
+    {label: '报表导出', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
   // 其他相关
   public esDate: any;
   constructor(
     private exportSrv: ChargeExportService,
     private confirmationService: ConfirmationService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private datePipe: DatePipe
   ) { }
   ngOnInit() {
+    this.setBtnIsHidden();
     this.exportInitialization();
   }
   public  exportInitialization(): void {
@@ -273,5 +285,22 @@ export class ChargeExportComponent implements OnInit {
       type: 2,
       tableList:  [{label: '详情', color: '#6A72A1'}]
     };
+  }
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '报表导出') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach( v => {
+            this.btnHiden.forEach( val => {
+              if (v.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }
