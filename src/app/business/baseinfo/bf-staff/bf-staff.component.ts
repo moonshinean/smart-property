@@ -64,12 +64,14 @@ export class BfStaffComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 搜索相关
+  public searchInputData = '';
   // 按钮显示相关
   public btnHiden = [
     {label: '新增', hidden: true},
     {label: '修改', hidden: true},
     {label: '删除', hidden: true},
-    // {label: '搜索', hidden: true},
+    {label: '搜索', hidden: true},
   ];
   constructor(
     private staffSrv: BfStaffService,
@@ -117,15 +119,20 @@ export class BfStaffComponent implements OnInit, OnDestroy {
       this.queryStaffPageData();
     });
   }
-
-  // condition search click
-  // public  staffSearchClick(): void {
-  //   // @ts-ignore
-  // }
+   // 搜索按钮
+   public  staffSearchClick(): void {
+       if (this.searchInputData !== '') {
+          this.nowPage = 1;
+          this.queryStaffInfoByRealName();
+       } else {
+         this.queryStaffPageData();
+       }
+   }
   // add staff
   public  staffAddClick(): void {
     this.staffAddDialog = true;
   }
+  // 部门树查询
   public  DepartTreeClick(): void {
     this.departDialog = true;
     this.staffSrv.queryDepartTree({}).subscribe(
@@ -134,6 +141,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
       }
     );
   }
+  // 部门树结构选择
   public  treeSelectDepartClick(): void {
      this.staffAdd.departmentId = this.departTree.value;
      this.staffAdd.departmentName = this.departTree.label;
@@ -283,12 +291,17 @@ export class BfStaffComponent implements OnInit, OnDestroy {
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.queryStaffPageData();
+    if (this.searchInputData !== '') {
+      this.nowPage = 1;
+      this.queryStaffInfoByRealName();
+    } else {
+      this.queryStaffPageData();
+    }
   }
+  // 查询员工分页信息
   public  queryStaffPageData(): void {
         this.staffSrv.queryStaffInfoPage({pageNo: this.nowPage, pageSize: 10 }).subscribe(
           value => {
-            this.loadHidden = true;
             value.data.contents.forEach( v => {
               v.enabled = this.toolSrv.setValueToLabel(this.enableOption, v.enabled);
               v.loginStatus = this.toolSrv.setValueToLabel(this.loginStatusOption, v.loginStatus);
@@ -301,6 +314,29 @@ export class BfStaffComponent implements OnInit, OnDestroy {
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
           }
         );
+  }
+
+  // 条件查询
+  public  queryStaffInfoByRealName(): void {
+      this.staffSrv.queryStaffInfoByRealName({pageNo: this.nowPage, pageSize: 10, realName: this.searchInputData}).subscribe(
+        value => {
+          console.log(value);
+           if (value.status === '1000') {
+             value.data.contents.forEach( v => {
+               v.enabled = this.toolSrv.setValueToLabel(this.enableOption, v.enabled);
+               v.loginStatus = this.toolSrv.setValueToLabel(this.loginStatusOption, v.loginStatus);
+               v.maritalStatus = this.toolSrv.setValueToLabel(this.maritalOption, v.maritalStatus);
+               v.politicalStatus = this.toolSrv.setValueToLabel(this.politicalStatusOption, v.politicalStatus);
+               v.educationalBackground = this.toolSrv.setValueToLabel(this.educationalOption, v.educationalBackground);
+             });
+             this.staffTableContent = value.data.contents;
+             this. setTableOption(value.data.contents);
+             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+           }else {
+             this.toolSrv.setToast('error', '搜索失败', value.message);
+           }
+        }
+      );
   }
 
   public  selectData(e): void {
@@ -332,14 +368,14 @@ export class BfStaffComponent implements OnInit, OnDestroy {
       tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
+  // 判断按钮权限
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
-      if (v.label === '收费项目') {
+      if (v.label === '员工档案') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
-          console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });

@@ -20,10 +20,10 @@
       </div>
     </div>
     <!--搜索-->
-<!--    <div class="ui-inputgroup bf-staff-header-search">-->
-<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
-<!--      <button id="disabled-btn" class="bf-staff-header-btn-search" type="button"  (click)="staffSearchClick()"  label="搜索">搜索</button>-->
-<!--    </div>-->
+    <div class="ui-inputgroup bf-staff-header-search" *ngIf="!btnHiden[3].hidden">
+      <input type="text" pInputText placeholder="请输入员工姓名" [(ngModel)]="searchInputData">
+      <button id="disabled-btn" class="bf-staff-header-btn-search" type="button"  (click)="staffSearchClick()">搜索</button>
+    </div>
   </div>
   <!--表格-->
   <div class="bf-staff-table">
@@ -669,5 +669,4 @@
   </p-dialog>
   <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
-
 </div>

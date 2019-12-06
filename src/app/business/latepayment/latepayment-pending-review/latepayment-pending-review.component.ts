@@ -5,6 +5,8 @@ import {LatePaymentService} from '../../../common/services/late-payment.service'
 import {BtnOption} from '../../../common/components/header-btn/headerData.model';
 import {ThemeService} from '../../../common/public/theme.service';
 import {Subscription} from 'rxjs';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-latepayment-pending-review',
@@ -70,6 +72,8 @@ export class LatepaymentPendingReviewComponent implements OnInit, OnDestroy {
   constructor(
     private toolSrv: PublicMethedService,
     private lateSrv: LatePaymentService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService,
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
@@ -82,18 +86,17 @@ export class LatepaymentPendingReviewComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    this.btnOption.btnlist = [
+      // {label: '新增', src: 'assets/images/ic_add.png', style: {background: '#55AB7F', marginLeft: '2vw'} },
+      // {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '1vw'} },
+      // {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#A84847', marginLeft: '1vw'} },
+      {label: '审核', src: '', style: {background: '#55AB7F', marginLeft: '2vw'}, hidden: true},
+    ];
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
-    this.btnOption.btnlist = [
-      // {label: '新增', src: 'assets/images/ic_add.png', style: {background: '#55AB7F', marginLeft: '2vw'} },
-      // {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '1vw'} },
-      // {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#A84847', marginLeft: '1vw'} },
-      {label: '审核', src: '', style: {background: '#55AB7F', marginLeft: '2vw'} },
-    ];
-    this.btnOption.searchHidden = true;
     this.latependreviewInitialization();
   }
   ngOnDestroy(): void {
@@ -282,5 +285,23 @@ export class LatepaymentPendingReviewComponent implements OnInit, OnDestroy {
         this.queryData(this.SearchData);
       }
     }
+  }
+
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '待复审') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          if (value.data.length !== 0) {
+            value.data.forEach( vitem => {
+              this.btnOption.btnlist.forEach( val => {
+                if (vitem.title === val.label) {
+                  val.hidden = false;
+                }
+              });
+            });
+          }
+        });
+      }
+    });
   }
 }

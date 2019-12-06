@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {BtnList, BtnOption} from '../headerData.model';
 
 @Component({
@@ -6,7 +6,7 @@ import {BtnList, BtnOption} from '../headerData.model';
   templateUrl: './basic-btn.component.html',
   styleUrls: ['./basic-btn.component.less']
 })
-export class BasicBtnComponent implements OnInit {
+export class BasicBtnComponent implements OnInit, OnChanges {
 
   @Input()
   public btnOption: BtnOption;
@@ -35,5 +35,9 @@ export class BasicBtnComponent implements OnInit {
   }
   public  SearchClick(): void {
       this.searchEvent.emit({type: this.searchType, value: this.serchData});
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.btnOption);
   }
 }

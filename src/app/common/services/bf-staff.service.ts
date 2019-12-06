@@ -27,4 +27,7 @@ export class BfStaffService {
   public queryStaffStatus(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/setting/findAdminChoose`, pamars);
   }
+  public queryStaffInfoByRealName(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/user/findByName`, pamars);
+  }
 }

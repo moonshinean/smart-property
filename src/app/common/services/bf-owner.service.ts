@@ -32,7 +32,7 @@ export class BfOwnerService {
     return  this.http.post(environment.sysetUrl + '/owner/findOwnerDetail', body);
   }
   public  addRoomCodeAndOwnerInfo(body): Observable<any> {
-    return  this.http.post(environment.sysetUrl + '/owner/addOwner', body);
+    return  this.http.post(environment.sysetUrl + '/owner/addOwner2', body);
   }
   public  queryUpdateInfoByroomCode(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/owner/findToUpdate', body);

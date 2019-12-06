@@ -176,6 +176,7 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
           {field: 'parkingSpaceArea', header: '车位面积'},
           {field: 'parkingSpaceType', header: '车位类型'},
           {field: 'floor', header: '车位楼层'},
+          {field: 'parkingSpacePlace', header: '车位地点'},
           {field: 'parkingSpaceNature', header: '车位性质'},
           {field: 'vehicleCapacity', header: '车位容车数量'},
           {field: 'currentCapacity', header: '车位当前容车数量'},
@@ -262,6 +263,7 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
         value.data.contents.forEach( v => {
           v.parkingSpaceNature = this.toolSrv.setValueToLabel(this.parkSpaceNatureOption, v.parkingSpaceNature);
           v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, v.parkingSpaceType);
+          v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption, v.parkingSpacePlace);
         });
         this.parkingSpaceContent = value.data.contents;
         this.setTableOption(value.data.contents);
@@ -282,6 +284,7 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
         data: [
           {field: 'villageName', header: '小区名称'},
           {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
           {field: 'parkingSpaceCode', header: '车位编号'},
           {field: 'parkingSpaceArea', header: '车位面积'},
           {field: 'vehicleCapacity', header: '车位容车数量'},

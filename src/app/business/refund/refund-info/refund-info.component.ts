@@ -509,8 +509,8 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
       width: '101.4%',
       header: {
         data:   [
-          {field: 'orderId', header: '订单Id'},
-          {field: 'payerName', header: '缴费人姓名'},
+          // {field: 'orderId', header: '订单Id'},
+          // {field: 'payerName', header: '缴费人姓名'},
           {field: 'paymentMethod', header: '支付方式'},
           {field: 'roomCode', header: '房间编号'},
           {field: 'chargeName', header: '项目名称'},

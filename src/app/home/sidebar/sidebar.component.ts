@@ -109,12 +109,14 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
       { title: '基础信息', item: [], routingItem: [
           {label: '业主资料', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/owner']},
           {label: '租户资料', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/tenantinfo']},
+          {label: '空置房信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/vacant']},
           {label: '收费项目', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/toll']},
           {label: '收费项目配置', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/roomCharge']},
           // {label: '工作组', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/workgroup']},
           {label: '员工档案', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/staff']},
           {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/coupon']},
           {label: '车位信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/parkingspace']},
+
           // {label: '车辆信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/vehicle']},
         ] },
       { title: '关联设置', item: [] , routingItem: [
@@ -130,6 +132,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           // {label: '欠款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/arrears']},
           {label: '预缴记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/prepayment']},
           // {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
+          {label: '历史数据', icon: 'pi pi-fw ', routerLink: ['/home/charge/history']},
           // {label: '车位管理', icon: 'pi pi-fw ', routerLink: ['/home/charge/parkspace']},
           // {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/charge/coupon']},
         ] },

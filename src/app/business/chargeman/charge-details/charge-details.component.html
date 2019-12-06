@@ -26,8 +26,8 @@
 
 <!--      搜索-->
       <div class="ui-inputgroup charge-details-header-search" *ngIf="!btnHiden[1].hidden">
-        <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>
-        <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
+<!--        <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>-->
+        <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'margin-right':'2vw'}"></p-dropdown>
         <input type="text" pInputText placeholder="请输入需要搜索的值"  [(ngModel)]="searchData">
         <button id="disabled-btn" class="charge-details-header-btn-search" type="button"  (click)="detailsSearchClick()"  label="搜索">搜索</button>
       </div>

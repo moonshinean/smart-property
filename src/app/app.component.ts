@@ -1,8 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {PublicMethedService} from './common/public/public-methed.service';
-import {LoginService} from './common/services/login.service';
-import {Router} from '@angular/router';
-import {LocalStorageService} from './common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-root',
@@ -15,6 +12,6 @@ export class AppComponent implements OnInit {
   ) {
   }
   ngOnInit(): void {
-    this.toolSrv.changeTheme('default');
+    this.toolSrv.changeTheme('green');
   }
 }

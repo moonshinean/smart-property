@@ -79,7 +79,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     {field: 'startBillingTime', label: '物业费开始既费时间', value: ''},
     {field: 'remarks', label: '备注', value: ''},
   ];
-  public roomList: any;
+  public roomList: any[] = [];
   public ownerRoomCodeDetailTitle = [
     {field: 'buildingName', header: '楼栋名称'},
     {field: 'roomCode', header: '房间编号'},
@@ -88,6 +88,15 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     {field: 'identity', header: '客户身份'},
     {field: 'rentStatus', header: '出租状态'},
   ];
+  public ownerParkingSpaceDetailTitle = [
+    {field: 'buildingName', header: '楼栋名称'},
+    {field: 'roomCode', header: '房间编号'},
+    {field: 'parkingSpaceCode', header: '车位编号'},
+    {field: 'authorizedPersonName', header: '车主姓名'},
+    {field: 'authorizedPersonPhone', header: '车主电话'},
+    {field: 'remarks', header: '备注'},
+  ];
+  public ParkingSpaceList: any[] = [];
   public ownertableOption: any;
   // 业主信息相关
   public ownerinfo: OwerList = new OwerList();
@@ -247,20 +256,20 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     this.ownerAddDialog = true;
   }
   // sure add houser and owner info
-  public  ownerSureClick(): void {
+  public  ownerSureClick(data): void {
     const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'roomType', 'roomStatus'];
     const addroomVerifyStaus = addRoomKeyList.every( v => {
       return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
     });
     if (!addroomVerifyStaus) {
-       this.addQuest();
+       this.addQuest(data);
     } else {
       this.toolSrv.setToast('error', '操作错误', '信息未填写完整');
     }
   }
 
-  public  addQuest(): void {
-    this.toolSrv.setConfirmation('增加', '增加', () => {
+  public  addQuest(data): void {
+    this.toolSrv.setConfirmation(data, data, () => {
       const addOwnerList = this.ownerList.map( v => {
           v.identity = this.toolSrv.setLabelToValue(this.identityOption, v.identity);
           v.sex = this.toolSrv.setLabelToValue(this.sexOption, v.sex);
@@ -353,6 +362,9 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
             this.roomList =  value.data.roomInfo.map(val => {
               val.roomType = this.toolSrv.setValueToLabel(this.roomTypeOption,  val.roomType);
               val.identity = this.toolSrv.setValueToLabel(this.identityOption, val.identity);
+              return val;
+            });
+            this.ParkingSpaceList = value.data.parkingSpaceManagementDOS.map( val => {
               return val;
             });
             this.ownerDetailDialog = true;
@@ -581,6 +593,9 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
               return v;
             });
             this.roomInfo = value.data.roomInfo;
+            this.roomInfo.renovationStatus = this.roomInfo.renovationStatus.toString();
+            this.roomInfo.roomStatus = this.roomInfo.roomStatus.toString();
+            this.roomInfo.roomType = this.roomInfo.roomType.toString();
             this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length)
           } else {
             this.toolSrv.setToast('error', '请求失败', value.message);

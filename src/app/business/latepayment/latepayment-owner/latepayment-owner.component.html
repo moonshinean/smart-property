@@ -6,7 +6,7 @@
   <!--顶部按钮-->
   <div class=" latepayment-owner-header">
     <div class=" ui-g-12">
-      <div class="ui-g-1  latepayment-owner-header-btn  latepayment-owner-header-btn-add" (click)="CalculationClick()">
+      <div class="ui-g-1  latepayment-owner-header-btn  latepayment-owner-header-btn-add" (click)="CalculationClick()" [hidden]="btnHiden[0].hidden">
 <!--        <img class=" latepayment-owner-header-img-add" src="assets/images/ic_add.png" alt="">-->
         <span>计算违约金</span>
       </div>
@@ -32,7 +32,7 @@
 <!--      </div>-->
     </div>
     <!--//搜索-->
-<!--    <div class="ui-inputgroup  latepayment-owner-header-search">-->
+<!--    <div class="ui-inputgroup  latepayment-owner-header-search" *ngIf="btnHiden[1].hidden">-->
 <!--&lt;!&ndash;      <input type="text" pInputText placeholder="请输入手机号" style="width: 7vw" [(ngModel)]="mobileNumber">&ndash;&gt;-->
 <!--      <button id="disabled-btn" class=" latepayment-owner-header-btn-search" type="button"  (click)="ownerSearchClick()"  label="搜索">搜索</button>-->
 <!--    </div>-->

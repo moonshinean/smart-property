@@ -5,6 +5,8 @@ import {LatePaymentService} from '../../../common/services/late-payment.service'
 import {BtnOption} from '../../../common/components/header-btn/headerData.model';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-latepayment-no-pass',
@@ -69,8 +71,11 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
   constructor(
     private toolSrv: PublicMethedService,
     private lateSrv: LatePaymentService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService,
   ) {
+
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
       value => {
         this.table.tableheader = value.table.header;
@@ -87,7 +92,7 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
     this.btnOption.btnlist = [];
-    this.btnOption.searchHidden = true;
+    this.setBtnIsHidden();
     this.lateNopassInitialization();
   }
   ngOnDestroy(): void {
@@ -186,7 +191,6 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
     this.loadHidden = false;
     this.lateSrv.queryLatePaymentNoPassPageData(data).subscribe(
       value => {
-        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
           this.latePaymentNoContents = value.data.contents;
@@ -198,10 +202,6 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
       }
     );
   }
-  //
-  // public btnClick(e): void {
-  //   this.reviewClick();
-  // }
   // search data
   public  searchClick(e): void {
     if (e.type === 1) {
@@ -225,5 +225,23 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
         this.queryData(this.SearchData);
       }
     }
+  }
+
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '审核拒绝') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          if (value.data.length !== 0) {
+            value.data.forEach( vitem => {
+              this.btnOption.btnlist.forEach( val => {
+                if (vitem.title === val.label) {
+                  val.hidden = false;
+                }
+              });
+            });
+          }
+        });
+      }
+    });
   }
 }

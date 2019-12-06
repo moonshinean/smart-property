@@ -15,7 +15,8 @@ const routes: Routes = [
       {path: 'payment', component: ChargemanPaymentComponent,  data: {preload: true}},
       // {path: 'arrears', component: ChargeArrearsComponent},
       {path: 'prepayment', loadChildren: './charge-prepayment/charge-prepayment.module#ChargePrepaymentModule'},
-      {path: 'historicalreport', loadChildren: './charge-historicalreport/charge-historicalreport.module#ChargeHistoricalreportModule'},
+      {path: 'history', loadChildren: './charge-history/charge-history.module#ChargeHistoryModule'},
+      // {path: 'historicalreport', loadChildren: './charge-historicalreport/charge-historicalreport.module#ChargeHistoricalreportModule'},
       // {path: 'parkspace', loadChildren: './charge-parkspace/charge-parkspace.module#ChargeParkspaceModule'},
     ]
   }

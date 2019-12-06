@@ -60,7 +60,7 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.setBtnIsHidden()
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -148,23 +148,23 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
         popTitle:  [
           {field: 'villageName', header: '小区名称'},
           {field: 'regionName', header: '地块名称'},
-          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'buildingName', header: '楼宇名称'},
           {field: 'unitName', header: '单元名称'},
           {field: 'roomCode', header: '房间编号'},
-          {field: 'couponName', header: '优惠券名称'},
-          {field: 'couponType', header: '优惠券类型'},
           {field: 'surname', header: '客户姓名'},
           {field: 'mobilePhone', header: '客户电话'},
+
+          {field: 'couponName', header: '优惠券名称'},
           {field: 'money', header: '优惠金额'},
-          {field: 'propertyFee', header: '抵扣物业费金额'},
-          {field: 'balanceAmount', header: '剩余金额'},
-          {field: 'usageState', header: '使用状态'},
-          {field: 'pastDue', header: '过期状态'},
           {field: 'effectiveTime', header: '有效时长'},
-          {field: 'dueTime', header: '物业费到期时间'},
           {field: 'auditStatus', header: '审核状态'},
-          {field: 'startTime', header: '开始时间'},
-          {field: 'endTime', header: '结束时间'},
+          {field: 'pastDue', header: '过期状态'},
+          {field: 'usageState', header: '使用状态'},
+
+          {field: 'deductibleMoney', header: '可抵扣金额'},
+          {field: 'deductibledMoney', header: '已抵扣金额'},
+          {field: 'surplusDeductibleMoney', header: '剩余可抵扣'},
+          {field: 'deductionRecord', header: '抵扣记录'},
           {field: 'remarks', header: '备注 '},
         ],
       }

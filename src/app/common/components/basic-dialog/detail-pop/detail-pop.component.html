@@ -7,13 +7,13 @@
             <div class="ui-g-4" style="text-align: right">
               <label>{{item.header}}：</label>
             </div>
-            <div class="ui-g-8" style="text-align: center;" *ngIf="item.field !== 'remarks'">
+            <div class="ui-g-8" style="text-align: center;" >
               <span>{{dialogOption.poplist.popContent[item.field]}}</span>
             </div>
-            <div class="ui-g-8"  *ngIf="item.field === 'remarks'">
-              <!--<span style="height: 3vh">{{dialogOption.poplist.popContent[item.field]}}</span>-->
-              <textarea rows="3" cols="4" pInputTextarea [placeholder]="dialogOption.poplist.popContent[item.field]" disabled></textarea>
-            </div>
+<!--            <div class="ui-g-8"  *ngIf="item.field === 'remarks'">-->
+<!--              &lt;!&ndash;<span style="height: 3vh">{{dialogOption.poplist.popContent[item.field]}}</span>&ndash;&gt;-->
+<!--              <textarea rows="3" cols="4" pInputTextarea [placeholder]="dialogOption.poplist.popContent[item.field]" disabled></textarea>-->
+<!--            </div>-->
           </div>
           <div class="ui-g-12" *ngIf="dialogOption.tableHidden">
             <h3>{{dialogOption.tablelist.title}}</h3>
@@ -35,16 +35,14 @@
       <!--Content-->
       <p-scrollPanel [style]="{width:'100%',height: '60vh'}" styleClass="custombar">
         <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+          <div class="ui-g-12"></div>
+        <!-- 基础信息-->
           <div class="ui-g-6" *ngFor="let item of dialogOption.poplist.popTitle">
-            <div class="ui-g-4">
-              <label>{{item.header}}</label>
+            <div class="ui-g-4" style="text-align: right">
+              <label>{{item.header}}:</label>
             </div>
-            <div class="ui-g-8" style="text-align: center" *ngIf="item.field !== 'remarks'">
+            <div class="ui-g-8" style="text-align: left" >
               <span>{{dialogOption.poplist.popContent[item.field]}}</span>
-            </div>
-            <div class="ui-g-8"  *ngIf="item.field === 'remarks'">
-              <!--<span style="height: 3vh">{{dialogOption.poplist.popContent[item.field]}}</span>-->
-              <textarea rows="3" cols="4" pInputTextarea [placeholder]="dialogOption.poplist.popContent[item.field]" disabled></textarea>
             </div>
           </div>
           <div class="ui-g-12" *ngIf="dialogOption.tableHidden === true">

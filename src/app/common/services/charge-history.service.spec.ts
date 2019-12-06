@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BfHouseinfoService } from './bf-houseinfo.service';
+import { ChargeHistoryService } from './charge-history.service';
 
-describe('BfHouseinfoService', () => {
+describe('ChargeHistoryService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: BfHouseinfoService = TestBed.get(BfHouseinfoService);
+    const service: ChargeHistoryService = TestBed.get(ChargeHistoryService);
     expect(service).toBeTruthy();
   });
 });

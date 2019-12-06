@@ -172,7 +172,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerSureClick()">确认</button>
+        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerSureClick('添加')">确认</button>
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerAddDialog=false">取消</button>
       </div>
     </p-footer>
@@ -223,6 +223,14 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
+          <label >房屋类型：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <p-dropdown [options]="roomTypeOption" disabled placeholder="请选择房屋类型" scrollHeight="100px"  [(ngModel)]="roomInfo.roomType"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4 right">
           <label for="addroomSize">房屋面积：</label>
         </div>
         <div class="ui-g-8">
@@ -231,18 +239,10 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label >房屋类型：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomTypeOption"  scrollHeight="100px"  [(ngModel)]="roomInfo.roomType"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4 right">
           <label >房屋状态：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px"   [(ngModel)]="roomInfo.roomStatus" ></p-dropdown>
+          <p-dropdown [options]="roomStatusOption" placeholder="请选择房屋状态"  scrollHeight="100px"   [(ngModel)]="roomInfo.roomStatus" ></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -250,7 +250,7 @@
           <label >装修情况：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" [(ngModel)]="roomInfo.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
+          <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" [(ngModel)]="roomInfo.renovationStatus" placeholder="请选择装修状态" (onChange)="renovationChange($event)"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6"  [hidden]="timeHide">
@@ -307,7 +307,7 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
-        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerSureClick()">确认</button>
+        <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerSureClick('修改')">确认</button>
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false"  (click)="ownerModifyFalseDialog()">取消</button>
       </div>
     </p-footer>
@@ -315,16 +315,23 @@
   <!--详情弹窗-->
   <p-dialog header="详细信息" [(visible)]="ownerDetailDialog" [width]="1100" class="owerDetail">
     <!--Content-->
-    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh','text-align':'center'}">
-      <div class="ui-g-6" *ngFor="let item of owerMoreDetailDetail">
+  <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
+    <div class="ui-g ui-fluid" [ngStyle]="{'text-align':'center'}">
+      <div class="ui-g-12" style="text-align: left">
+        <h3>业主信息：</h3>
+      </div>
+      <div class="ui-g-6" *ngFor="let item of owerMoreDetailDetail" style="line-height: 4vh">
         <div class="ui-g-4" style="text-align: right">
           <label>{{item.label}}：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" >
           <span >{{item.value}}</span>
         </div>
       </div>
-      <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
+      <div class="ui-g-12" style="text-align: left" *ngIf="roomList.length !== 0">
+        <h3>房间信息：</h3>
+      </div>
+      <p-scrollPanel [style]="{width:'100%',height: 'auto'}" styleClass="custombar" *ngIf="roomList !== []">
         <p-table [columns]="ownerRoomCodeDetailTitle" [value]="roomList"  [(selection)]="ownerUserSelect" [style]="{'width': '100%'}">
           <ng-template pTemplate="header" let-columns>
             <tr >
@@ -342,7 +349,29 @@
           </ng-template>
         </p-table>
       </p-scrollPanel>
+      <div class="ui-g-12" style="text-align: left"  *ngIf="ParkingSpaceList.length !== 0">
+        <h3>车位信息：</h3>
+      </div>
+      <p-scrollPanel [style]="{width:'100%',height: 'aoto'}" styleClass="custombar" *ngIf="ParkingSpaceList.length !== 0">
+        <p-table [columns]="ownerParkingSpaceDetailTitle" [value]="ParkingSpaceList"  [style]="{'width': '100%'}">
+          <ng-template pTemplate="header" let-columns>
+            <tr >
+              <th *ngFor="let col of columns" [ngStyle]="{'height': '5vh'}">
+                {{col.header}}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF', 'color':'#000'}">
+              <td  *ngFor="let col of columns" [ngStyle]="{'overflow-x': 'auto'}">
+                {{rowData[col.field]}}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-scrollPanel>
     </div>
+  </p-scrollPanel>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerModifySureClick()">确认</button>-->

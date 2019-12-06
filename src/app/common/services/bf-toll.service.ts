@@ -29,8 +29,8 @@ export class BfTollService {
     return this.http.post(environment.sysetUrl + `/charge/add`, pamars);
   }
   // 下面列表为空的修改
-  public queryTollModify(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/charge/updateChargeItem`, pamars);
+  public queryTollForChargeName(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/findByChargeName`, pamars);
   }
   // 下面列表的删除
   public  deleteTollList(pamars): Observable<any> {

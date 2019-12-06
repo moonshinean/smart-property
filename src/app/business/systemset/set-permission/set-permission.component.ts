@@ -25,16 +25,20 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
   public primitTree: PermitDTO[]; // 权限树
   public primitTreeSelect: PermitDTO[]; // 权限树
   public RoleCode: any;
-  public primitDatas: any[]= [];
+  public primitDatas: any[] = [];
   public primitData: any[] = [];
+  public primitDataList: any[] = [];
+  public primitDeleteList: any[] = [];
   public primitDatasList: any[] = [];
+
+  // 角色的权限列表
+  public primitRoleList: any[] = [];
 
   // 删除相关
   public ids: any[] = [];
   // 其他相关
   public option: any;
   public setlimitCodeOption: any[] = [];
-  public loadHidden = true;
   public pageNo = 1;
 
   public themeSub: Subscription;
@@ -74,7 +78,6 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
 
   // Initialize permission data
   public  permissionInitialization(): void {
-    this.loadHidden = false;
     this.queryPrimissionPageData();
   }
   // show add permission dialog
@@ -93,6 +96,7 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
     this.permissionSrv.queryPerimitList({}).subscribe(
       (value) => {
         if (value.status === '1000') {
+          console.log(value.data);
           this.primitTree = this.initializeTree(value.data);
         } else {
           this.toolSrv.setToast('error', '请求失败', value.message);
@@ -104,74 +108,56 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
   }
   // sure add permission
   public  permissionAddSureClick(): void {
-    // console.log(this.primitDatas);
+    this.primitDeleteList = [];
+    this.primitDataList = [];
     if (this.primitDatas.length > 0) {
-      this.primitData = [];
-      this.toolSrv.setConfirmation('增加', '增加', () => {
-        if (this.permissionTableContent.length <= this.primitDatas.length) {
-          if (this.permissionTableContent.length === 0) {
-              this.primitDatas.forEach(v => {
-                this.primitData.push(v.value);
-            });
-          } else {
-            this.permissionTableContent.forEach(val => {
-              this.primitDatas.forEach((v, index) => {
-                if (v.value === val.permisCode) {
-                  this.primitDatas.splice(index, 1);
-                }
-              });
-            });
-            this.primitDatas.forEach( v => {
-              this.primitData.push(v.value);
-            });
+      this.toolSrv.setConfirmation('修改', '修改', () => {
+        this.primitDataList = this.primitDatas.filter( v => {
+          return this.primitData.indexOf(v) === -1;
+        });
+        const primitList = [];
+        this.primitDataList.forEach(v => {
+          primitList.push(v.value);
+        });
+        this.permissionSrv.addRolePerimit({roleCode: this.RoleCode, permisCodes: primitList.join(',')}).subscribe(
+          (data) => {
+            if (data.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', data.message);
+              this.permissionAddDialog = false;
+              this.permissionInitialization();
+              this.initializationData();
+            } else {
+              this.toolSrv.setToast('error', '操作失败', data.message);
+            }
           }
-          if (this.primitData.length > 0) {
-            this.loadHidden = false;
-            this.permissionSrv.addRolePerimit({roleCode: this.RoleCode, permisCodes: this.primitData.join(',')}).subscribe(
-              (data) => {
-                this.loadHidden = true;
-                if (data.status === '1000') {
-                  this.toolSrv.setToast('success', '操作成功', data.message);
-                  this.permissionAddDialog = false;
-                  this.permissionInitialization();
-                  this.initializationData();
-                } else {
-                  this.toolSrv.setToast('error', '操作失败', data.message);
-                }
+        );
+        this.primitDeleteList = this.primitData.filter(v => {
+          return this.primitDatas.indexOf(v) === -1;
+        });
+        this.primitRoleList.forEach( v => {
+          this.primitDeleteList.forEach( val => {
+            if (v.label !== '总平台' && v.label !== '物业管理智慧策略系统') {
+              if (val.label === v.label) {
+                this.ids.push({roleCode: v.roleCode, permisCode: v.permisCode});
               }
-            );
-          }
-        } else {
-          const list = this.permissionTableContent;
-          this.primitDatas.forEach( v => {
-                 list.forEach( (val, index) => {
-                 if (v.value === val.permisCode) {
-                   list.splice(index, 1);
-                 }
-             });
+            }
           });
-          list.forEach(v => {
-            this.ids.push(v.id);
-          });
-          if (this.ids.length > 0) {
-            this.permissionSrv.deleteRolePerimit({ids: this.ids.join(',')}).subscribe(
-              (value) => {
-                if (value.status === '1000') {
-                  this.permissionInitialization();
-                  this.toolSrv.setToast('success', '操作成功', '删除成功');
-                  this.permissionAddDialog = false;
-                  this.permissionSelect = [];
-                } else {
-                  this.toolSrv.setToast('error', '操作失败', value.message);
-                }
-              }
-            );
+        });
+        this.permissionSrv.deleteRolePerimit({roleAndPermitCodes: this.ids}).subscribe(
+          (value) => {
+            if (value.status === '1000') {
+              this.permissionInitialization();
+              this.toolSrv.setToast('success', '操作成功', '删除成功');
+              this.permissionAddDialog = false;
+              this.permissionSelect = [];
+            } else {
+              this.toolSrv.setToast('error', '操作失败', value.message);
+            }
           }
-        }
+        );
       });
     } else {
       this.toolSrv.setToast('error' , '操作错误', '未选择数据');
-
     }
   }
   // close  add permission dialog
@@ -208,14 +194,22 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
   public  setRoleNameChange(e): void {
     this.RoleCode = e.value;
     this.primitDatasList = [];
+    this.primitDatas = [];
+    this.primitData = [];
+    this.primitRoleList = [];
     this.permissionSrv.queryRolePermit({roleCode: e.value}).subscribe(
       (value) => {
         value.data.forEach( v => {
           this.primitDatasList.push(v.permisCode);
+          this.primitRoleList.push({label: v.title, roleCode: v.roleCode, permisCode: v.permisCode});
         });
         this.checkNode(this.primitTree, this.primitDatasList);
+        this.primitData = this.primitDatas.map(v => {
+          return v;
+        });
       }
     );
+
   }
   // initialization data
   public initializationData(): void {
@@ -243,6 +237,7 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
     for (let i = 0; i < data.length; i++) {
       const childnode = new TreeNode();
       childnode.value = data[i].permisCode;
+      childnode.roleCode = data[i].roleCode;
       childnode.id = data[i].id;
       childnode.label = data[i].title;
       childnode.check = false;
@@ -294,9 +289,7 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
   public  queryPrimissionPageData(): void {
     this.permissionSrv.queryPermissionData({pageNo: this.pageNo, pageSize: 10}).subscribe(
       (value) => {
-        console.log(value);
         if (value.status === '1000') {
-          this.loadHidden = true;
           this.permissionTableContent = value.data.contents;
           this.setTableOption(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -331,4 +324,5 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
   public  selectData(e): void {
     this.permissionSelect = e;
   }
+
 }

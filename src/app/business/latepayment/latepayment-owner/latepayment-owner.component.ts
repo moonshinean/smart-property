@@ -9,6 +9,8 @@ import {CalaPaymentData} from '../../../common/model/latepayment.model';
 import {DatePipe} from '@angular/common';
 import {ThemeService} from '../../../common/public/theme.service';
 import {Subscription} from 'rxjs';
+import {GlobalService} from '../../../common/services/global.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-latepayment-owner',
@@ -33,7 +35,11 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
   public optionDialog: DialogModel = new DialogModel();
   // 查询相关
   public searchOwerData: SearchOwner = new SearchOwner();
-
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '计算违约金', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
   public themeSub: Subscription;
   public table = {
     tableheader: {background: '', color: ''},
@@ -47,6 +53,8 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
     private ownerSrv: BfOwnerService,
     private lateSrv: LatePaymentService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private datePipe: DatePipe,
     private themeSrv: ThemeService,
   ) {
@@ -260,5 +268,20 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
           console.log(value);
         }
       );
+  }
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '业主信息') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          value.data.forEach( item => {
+            this.btnHiden.forEach( val => {
+              if (item.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

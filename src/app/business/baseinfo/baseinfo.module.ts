@@ -17,18 +17,13 @@ import {
   ScrollPanelModule, TreeModule
 } from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
-import { BfTenantinfoComponent } from './bf-tenantinfo/bf-tenantinfo.component';
 import {DataViewModule} from 'primeng/dataview';
 import {PagingModule} from '../../common/components/paging/paging.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { BfParkingspaceComponent } from './bf-parkingspace/bf-parkingspace.component';
 import {LoadingModule} from '../../common/components/loading/loading.module';
-import { BfCouponComponent } from './bf-coupon/bf-coupon.component';
-import { BfRoombindChangeitemComponent } from './bf-roombind-changeitem/bf-roombind-changeitem.component';
 import {PublicMethedService} from '../../common/public/public-methed.service';
 import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
 import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
-import {SharedServiceService} from '../../common/public/shared-service.service';
 
 @NgModule({
   declarations: [
