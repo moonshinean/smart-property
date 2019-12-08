@@ -10,11 +10,11 @@
         <!--<img class="set-role-header-img-add" src="assets/images/ic_add.png" alt="">-->
         <!--<span>增 加</span>-->
       <!--</div>-->
-      <div class="ui-g-1 set-role-header-btn set-role-header-btn-modify" (click)="roleConfigClick()">
+      <div class="ui-g-1 set-role-header-btn set-role-header-btn-modify" (click)="roleConfigClick()" [hidden]="btnHiden[0].hidden">
         <img class="set-role-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>配  置</span>
       </div>
-      <div class="ui-g-1 set-role-header-btn set-role-header-btn-delete" (click)="roleDeleteClick()">
+      <div class="ui-g-1 set-role-header-btn set-role-header-btn-delete" (click)="roleDeleteClick()" [hidden]="btnHiden[1].hidden">
         <img class="set-role-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>

@@ -8,6 +8,7 @@ import {Dropdown} from 'primeng/primeng';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {ThemeService} from '../../../common/public/theme.service';
 import {Subscription} from 'rxjs';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-set-config',
@@ -45,10 +46,19 @@ export class SetConfigComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '新增', hidden: true},
+    {label: '修改', hidden: true},
+    {label: '删除', hidden: true},
+    {label: '搜索', hidden: true},
+  ];
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private configService: SetConfigService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService
   ) {
     this.themeSub = this.themeSrv.changeEmitted$.subscribe(
@@ -62,6 +72,7 @@ export class SetConfigComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -86,11 +97,11 @@ export class SetConfigComponent implements OnInit, OnDestroy {
     );
   }
   // // condition search click
-  // public  configSearchClick(): void {
-  //   // @ts-ignore
-  //   console.log(this.input.nativeElement.value);
-  //   console.log('这里是条件搜索');
-  // }
+  public  configSearchClick(): void {
+    // @ts-ignore
+    console.log(this.input.nativeElement.value);
+    console.log('这里是条件搜索');
+  }
   // show add config dialog
   public  configAddClick(): void {
     this.configAdd.settingCode = '';
@@ -274,4 +285,21 @@ export class SetConfigComponent implements OnInit, OnDestroy {
      }
    );
  }
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '系统配置') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(item => {
+            this.btnHiden.forEach( val => {
+              if (item.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
+  }
 }

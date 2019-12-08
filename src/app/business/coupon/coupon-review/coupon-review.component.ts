@@ -6,6 +6,7 @@ import {ThemeService} from '../../../common/public/theme.service';
 import {Subscription} from 'rxjs';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-coupon-review',
@@ -19,9 +20,27 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
   public couponReviewContent: any;
   // 添加相关
   public esDate: any;
-  // 审核相关
-  public couponReviewDialog: any;
-  public reviewStatus  = '通过';
+  // 搜索相关
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public SearchCoupon = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchType = 0;
+  public searchData =  '';
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public option: any;
@@ -37,7 +56,8 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
   public couponReviewDetailOption: any;
   // 审核相关
   public reviewOption: any;
-
+  // 树结构订阅
+  public couponSub: Subscription;
   public themeSub: Subscription;
   public table = {
     tableheader: {background: '', color: ''},
@@ -56,6 +76,7 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
     private couponReviewSrv: CouponService,
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
+    private  sharedSrv: SharedServiceService,
     private localSrv: LocalStorageService,
     private themeSrv: ThemeService,
   ) {
@@ -65,6 +86,18 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
         this.table.tableContent = value.table.content;
         this.table.detailBtn = value.table.detailBtn;
         this.setTableOption(this.couponReviewContent);
+      }
+    );
+    this.couponSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchCoupon[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchCoupon.pageNo = 1;
+        this.reslveSearchData();
+        this.queryCouponPageData();
       }
     );
   }
@@ -77,10 +110,18 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
+    if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.sharedSrv.SearchData) {
+        if (key !== 'data') {
+          this.SearchCoupon[key] = this.sharedSrv.SearchData[key];
+        }
+      }
+    }
     this.couponReviewInitialization();
   }
   ngOnDestroy(): void {
     this.themeSub.unsubscribe();
+    this.couponSub.unsubscribe();
   }
 
   // initialization houseinfo
@@ -113,6 +154,40 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
   //   // }
   //   console.log('这里是条件搜索');
   // }
+  public couponReviewSearchClick(): void {
+    if (this.searchData !== '') {
+      this.selectSearchType();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    }
+  }
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+              this.queryCouponPageData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchCoupon.mobilePhone = this.searchData; this.queryCouponPageData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchCoupon.roomCode = this.searchData; this.queryCouponPageData(); break;
+      case 3: this.setSearData('surname'); this.SearchCoupon.surname = this.searchData;  this.queryCouponPageData(); break;
+      case 4: this.setSearData('idNumber'); this.SearchCoupon.idNumber = this.searchData; this.queryCouponPageData(); break;
+      default:
+        break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchCoupon) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchCoupon[serchKey] = '';
+      }
+    }
+  }
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchCoupon.mobilePhone = '';
+    this.SearchCoupon.surname = '';
+    this.SearchCoupon.idNumber = '';
+  }
   // detail couponReviewInfo
   public couponReviewDetailClick(e): void {
     e.couponType = this.toolSrv.setValueToLabel(this.couponTypeOption, e.couponType);
@@ -202,7 +277,7 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;
     this.nowPage = event;
-    this.queryCouponPageData();
+    this.selectSearchType();
     this.couponReviewSelect = [];
   }
   // 设置表格
@@ -240,10 +315,8 @@ export class CouponReviewComponent implements OnInit, OnDestroy {
 
   // 分页查询
   public queryCouponPageData(): void {
-    this.couponReviewSrv.queryCouponReviewPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.couponReviewSrv.queryCouponReviewPageData(this.SearchCoupon).subscribe(
       (value) => {
-        console.log(value);
-        this.loadingHide = true;
         if (value.status === '1000') {
           value.data.contents.forEach( v => {
             v.effectiveTime = (v.effectiveTime === 0 || v.effectiveTime === '0') ? '无期限': v.effectiveTime + '天';

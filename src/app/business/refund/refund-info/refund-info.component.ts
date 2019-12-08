@@ -11,6 +11,7 @@ import {RefundService} from '../../../common/services/refund.service';
 import {ThemeService} from '../../../common/public/theme.service';
 import {Subscription} from 'rxjs';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-refund-info',
@@ -68,9 +69,33 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
     {label: '删除', hidden: true},
     {label: '搜索', hidden: true},
   ];
-  public pageRefundStatus = [];
+  public auditStatusOption = [];
 
+  // 搜索相关
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public searchType = 0;
+  public searchData = '';
+  // 订阅主题
   public themeSub: Subscription;
+  // 树结构订阅
+  public refundSub: Subscription;
   public table = {
     tableheader: {background: '', color: ''},
     tableContent: [
@@ -84,6 +109,7 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
+    private sharedSrv: SharedServiceService,
     private datePipe: DatePipe,
     private themeSrv: ThemeService,
   ) {
@@ -95,27 +121,48 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
         this.setTableOption(this.infoTableContent);
       }
     );
+    this.refundSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchData[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchData.pageNo = 1;
+        this.reslveSearchData();
+        this.queryPageData();
+      }
+    );
   }
 
   ngOnInit() {
     this.setBtnIsHidden();
+    if (this.sharedSrv.SearchData !== undefined){
+      for (const key in this.sharedSrv.SearchData) {
+        if (key !== 'data') {
+          this.SearchData[key] = this.sharedSrv.SearchData[key];
+        }
+      }
+    }
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
+    this.esDate = this.toolSrv.esDate;
     this.infoInitialization();
   }
   ngOnDestroy(): void {
     this.themeSub.unsubscribe();
+    this.refundSub.unsubscribe();
   }
   // initialization info
   public infoInitialization(): void {
-    this.esDate = this.toolSrv.esDate;
-    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'}, {settingType: 'CHARGE_TYPE'}, {settingType: 'REFUND_STATUS'}, {settingType: 'PARMENT_TYPE'}], (data) => {
+    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'}, {settingType: 'AUDIT_STATUS'}, {settingType: 'CHARGE_TYPE'}, {settingType: 'REFUND_STATUS'}, {settingType: 'PARMENT_TYPE'}], (data) => {
         this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
         this.paymentMethodOption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
         this.refundStatusOption = this.toolSrv.setListMap(data.REFUND_STATUS);
+        this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
         this.queryPageData();
     });
     this.globalSrv.queryVillageInfo({}).subscribe(
@@ -128,7 +175,42 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
     );
     // this.infoTableTitleStyle = {background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
-
+  // condition search 条件搜索）
+  public  infoSearchClick(): void {
+    this.nowPage = this.SearchData.pageNo = 1;
+    if (this.searchData !== '') {
+      this.selectSearchType();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    }
+  }
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+              this.queryPageData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryPageData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryPageData(); break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryPageData(); break;
+      case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryPageData(); break;
+      default:
+        break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchData) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchData[serchKey] = '';
+      }
+    }
+  }
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchData.mobilePhone = '';
+    this.SearchData.surname = '';
+    this.SearchData.idNumber = '';
+  }
   // query region
   public VillageChange(e): void {
     // console.log(this.test);
@@ -201,35 +283,6 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
       }
     );
   }
-  // condition search click
-  public infoSearchClick(): void {
-    // @ts-ignore
-    if (this.searchRefundInfo.buildingCode === '' && this.searchRefundInfo.mobilePhone === undefined) {
-      this.toolSrv.setToast('error', '搜索失败', '搜索信息条件请具体到楼栋');
-    } else {
-      this.searchRefundInfo.pageNo = 1;
-      this.searchRefundInfo.pageSize = 10;
-      // @ts-ignore
-      this.loadHidden = false;
-      this.infoSrv.queryRefundInfoPage(this.searchRefundInfo).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.loadHidden = true;
-            if (value.data.contents) {
-              this.toolSrv.setToast('success', '搜索成功', value.message);
-
-              this.setTableOption(value.data.contents);
-            } else {
-              this.toolSrv.setToast('success', '搜索成功', '数据为空');
-            }
-          } else {
-            this.toolSrv.setToast('error', '搜索失败', value.message);
-
-          }
-        }
-      );
-    }
-  }
   // search userInfo
   public getUserInfo(): void {
     if (this.infoAdd.mobilePhone !== null) {
@@ -260,28 +313,15 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
         this.infoModify.chargeStandard = v.chargeStandard;
       }
     });
-    // this.toolSrv.getAdminStatus('CHARGE_TYPE', (data) => {
-    //     data.forEach( v => {
-    //       if (this.infoAdd.chargeType.toString() === v.settingCode) {
-    //         this.ChargetTypeName = v.settingName;
-    //       }
-    //     });
-    // });
 
   }
   // add info
   public infoAddClick(): void {
-    this.infoSrv.quertyChargeInfo({}).subscribe(
-      value => {
-        if (value.data.length !== 0) {
-          value.data.forEach(v => {
-            this.ChargetOption.push({label: v.chargeName, value: v.chargeCode, chargeUnit: v.chargeUnit, chargeType: v.chargeType, chargeStandard: v.chargeStandard, refund: v.refund });
-            this.ChargeSelectOption.push({label: v.chargeName, value: v.chargeCode});
-          });
-        }
-      }
-    );
-    this.infoAddDialog = true;
+    if (this.SearchData.roomCode !== ''){
+      this.infoAddDialog = true;
+    }else {
+      this.toolSrv.setToast('error', '操作失败', '请先选择房屋');
+    }
   }
   // sure add info
   public infoAddSureClick(): void {
@@ -316,32 +356,42 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
       poplist: {
         popContent: e,
         popTitle:  [
-          {field: 'organizationName', header: '组织名称'},
           {field: 'villageName', header: '小区名称'},
           {field: 'regionName', header: '地块名称'},
-          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'buildingName', header: '楼宇名称'},
           {field: 'unitName', header: '单元名称'},
           {field: 'roomCode', header: '房间编号'},
-          {field: 'surname', header: '客户名称'},
-          {field: 'roomSize', header: '住房大小'},
+          {field: 'roomSize', header: '住房面积'},
+          {field: 'surname', header: '客户姓名'},
+          {field: 'mobilePhone', header: '客户电话'},
+
+
           {field: 'chargeName', header: '项目名称'},
           {field: 'actualMoneyCollection', header: '实收金额'},
-          {field: 'mortgageAmount', header: '抵扣金额'},
-          {field: 'reasonForDeduction', header: '抵扣原因'},
-          {field: 'refundableAmount', header: '可退还金额'},
-          {field: 'chargeUnit', header: '收费单位'},
-          {field: 'payerPhone', header: '缴费人手机号'},
           {field: 'paymentMethod', header: '支付方式'},
-          {field: 'paymentType', header: '支付类型'},
           {field: 'refundStatus', header: '退款状态'},
-          {field: 'startTime', header: '开始时间'},
-          {field: 'endTime', header: '结束时间'},
-          {field: 'delayTime', header: '延迟时长'},
-          {field: 'delayReason', header: '延期原因'},
+          {field: 'auditStatus', header: '审核状态'},
+
+          {field: 'startTime', header: '装修开始时间'},
+          {field: 'endTime', header: '装修结束时间'},
           {field: 'personLiable', header: '责任人'},
           {field: 'personLiablePhone', header: '责任人电话'},
           {field: 'responsibleAgencies', header: '负责机构'},
-          {field: 'remark', header: '申请退款备注 '},
+
+          {field: 'reasonForDeduction', header: '抵扣原因'},
+          {field: 'delayReason', header: '延期原因'},
+
+          {field: 'mortgageAmount', header: '被扣金额'},
+          {field: 'refundableAmount', header: '可退金额'},
+          {field: 'transferCardAmount', header: '退还银行卡金额'},
+          {field: 'deductionPropertyFee', header: '抵扣物业费金额'},
+
+          {field: 'deductibleMoney', header: '可抵扣金额'},
+          {field: 'deductibledMoney', header: '已抵扣金额'},
+          {field: 'surplusDeductibleMoney', header: '剩余可抵扣金额'},
+          {field: 'deductionRecord', header: '抵扣记录'},
+          {field: 'remark', header: '备注'},
+
         ],
       }
     };
@@ -469,12 +519,12 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.queryPageData();
+    this.selectSearchType();
   }
   public queryPageData(): void {
-    this.infoSrv.queryRefundInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.infoSrv.queryRefundInfoPage(this.SearchData).subscribe(
       val => {
-        console.log(val);
+        // console.log(val);
         this.loadHidden = true;
         if (val.status === '1000') {
             val.data.contents.forEach( v => {
@@ -488,6 +538,9 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
               if (this.isOrNull(v.paymentType)) {
                 v.paymentType = this.toolSrv.setValueToLabel(this.chargeTypeOption, v.paymentType);
 
+              }
+              if (this.isOrNull(v.auditStatus)) {
+                v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
               }
             });
             this.infoTableContent = val.data.contents;
@@ -510,12 +563,19 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
       header: {
         data:   [
           // {field: 'orderId', header: '订单Id'},
+          {field: 'chargeName', header: '项目名称'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'surname', header: '客户姓名'},
+          {field: 'refundStatus', header: '退款状态'},
+          {field: 'auditStatus', header: '审核状态'},
+
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'transferCardAmount', header: '退还银行卡金额'},
+          {field: 'deductionPropertyFee', header: '抵扣物业费金额'},
+          {field: 'deductibledMoney', header: '已抵扣金额'},
+          {field: 'surplusDeductibleMoney', header: '剩余可抵扣金额'},
           // {field: 'payerName', header: '缴费人姓名'},
           {field: 'paymentMethod', header: '支付方式'},
-          {field: 'roomCode', header: '房间编号'},
-          {field: 'chargeName', header: '项目名称'},
-          {field: 'actualMoneyCollection', header: '实收金额'},
-          {field: 'refundStatus', header: '退款状态'},
           {field: 'operating', header: '操作'},
         ],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
@@ -540,10 +600,9 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '退款信息') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
-          console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach( item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });

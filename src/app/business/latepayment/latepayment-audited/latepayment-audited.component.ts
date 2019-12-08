@@ -85,7 +85,9 @@ export class LatepaymentAuditedComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
-    this.btnOption.btnlist = [];
+    this.btnOption.btnlist = [
+      {label: '搜索', src: '', style: {background: '#55AB7F', marginLeft: '2vw'}, hidden: true },
+    ];
     this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;

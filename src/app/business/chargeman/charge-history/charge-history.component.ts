@@ -133,7 +133,6 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
       for (const key in this.sharedSrv.SearchData) {
         if (key !== 'data') {
           this.SearchData[key] = this.sharedSrv.SearchData[key];
-          // console.log(key);
         }
       }
       // this

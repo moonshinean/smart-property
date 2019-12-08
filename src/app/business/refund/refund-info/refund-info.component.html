@@ -33,7 +33,8 @@
     </div>
     <!--//搜索-->
     <div class="ui-inputgroup refund-info-header-search" *ngIf="!btnHiden[3].hidden">
-      <input type="text" pInputText placeholder="请输入搜索内容" >
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'10vw','margin-right':'2vw'}"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入搜索内容"  [(ngModel)]="searchData">
       <button id="disabled-btn" class="refund-info-header-btn-search" type="button"  (click)="infoSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>
@@ -43,48 +44,48 @@
   </div>
   <!--增加弹窗-->
   <p-dialog header="信息添加" [(visible)]="infoAddDialog" [width]="1100">
-    <p-scrollPanel [style]="{width:'100%',height: '75vh'}" styleClass="custombar">
+    <p-scrollPanel [style]="{width:'100%',height: '65vh'}" styleClass="custombar">
       <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >小区：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="SearchOption.village" scrollHeight="100px" placeholder="请选择小区..."  (onChange)="VillageChange($event)" [(ngModel)]="infoAdd.villageCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>地块：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)" [(ngModel)]="infoAdd.regionCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>楼栋：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="SearchOption.building" scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)" [(ngModel)]="infoAdd.buildingCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>单元：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="SearchOption.unit" scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)" [(ngModel)]="infoAdd.unitCode"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>房间编号：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="roonCodeSelectOption" scrollHeight="100px" placeholder="请选择房间..." [(ngModel)]="infoAdd.roomCode"></p-dropdown>
-        </div>
-      </div>
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >小区：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--          <p-dropdown [options]="SearchOption.village" scrollHeight="100px" placeholder="请选择小区..."  (onChange)="VillageChange($event)" [(ngModel)]="infoAdd.villageCode"></p-dropdown>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label>地块：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--          <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)" [(ngModel)]="infoAdd.regionCode"></p-dropdown>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label>楼栋：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--          <p-dropdown [options]="SearchOption.building" scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)" [(ngModel)]="infoAdd.buildingCode"></p-dropdown>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label>单元：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--          <p-dropdown [options]="SearchOption.unit" scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)" [(ngModel)]="infoAdd.unitCode"></p-dropdown>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label>房间编号：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--          <p-dropdown [options]="roonCodeSelectOption" scrollHeight="100px" placeholder="请选择房间..." [(ngModel)]="infoAdd.roomCode"></p-dropdown>-->
+<!--        </div>-->
+<!--      </div>-->
       <div class="ui-g-6">
         <div class="ui-g-4">
           <label for="addmobilePhone">客户电话：</label>
@@ -406,5 +407,4 @@
   <!--详情弹窗-->
   <rbi-detail-pop [dialogOption]="infoDetailOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
-  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

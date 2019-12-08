@@ -7,7 +7,7 @@
     <div class="charge-details-header">
       <div class="ui-g-1 charge-details-header-btn charge-details-header-btn-add" (click)="uploadFileClick()" [hidden]="btnHiden[0].hidden">
 <!--        <img class="charge-margin-header-img-add" src="assets/images/ic_add.png" alt="">-->
-        <span>上 传</span>
+        <span>导  入</span>
       </div>
       <!--<div class="ui-g-12">-->
         <!--<div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">-->
@@ -27,7 +27,7 @@
 <!--      搜索-->
       <div class="ui-inputgroup charge-details-header-search" *ngIf="!btnHiden[1].hidden">
 <!--        <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>-->
-        <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'margin-right':'2vw'}"></p-dropdown>
+        <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width': '8vw','margin-right':'2vw'}"></p-dropdown>
         <input type="text" pInputText placeholder="请输入需要搜索的值"  [(ngModel)]="searchData">
         <button id="disabled-btn" class="charge-details-header-btn-search" type="button"  (click)="detailsSearchClick()"  label="搜索">搜索</button>
       </div>

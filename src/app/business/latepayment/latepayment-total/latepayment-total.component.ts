@@ -72,7 +72,7 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
     this.btnOption.btnlist = [
       {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '2vw'} , hidden: true },
       {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#A84847', marginLeft: '1vw'} , hidden: true},
-      {label: '上传', src: '', style: {background: '#55AB7F', marginLeft: '1vw'} ,  hidden: true},
+      {label: '导入', src: '', style: {background: '#55AB7F', marginLeft: '1vw'} ,  hidden: true},
       {label: '搜索', src: '', style: '' , hidden: true},
     ];
     this.setBtnIsHidden();
@@ -373,7 +373,7 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
         case '新增': console.log(e); break;
         case '修改': this.latetotleModifyClick(); break;
         case '删除': this.latetotleDeleteClick(); break;
-        case '上传': this.uploadFileClick(); break;
+        case '导入': this.uploadFileClick(); break;
       }
   }
   // search data
@@ -410,7 +410,7 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
               this.btnOption.btnlist.forEach( val => {
                   if (vitem.title === val.label) {
                        val.hidden = false;
-                }
+                  }
                });
             });
           }

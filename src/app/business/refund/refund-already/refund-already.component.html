@@ -30,10 +30,11 @@
       <!--</div>-->
     </div>
     <!--//搜索-->
-<!--    <div class="ui-inputgroup refund-already-header-search" *ngIf="btnHiden[0].hidden">-->
-<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
-<!--      <button id="disabled-btn" class="refund-already-header-btn-search" type="button"  (click)="alreadySearchClick()"  label="搜索">搜索</button>-->
-<!--    </div>-->
+    <div class="ui-inputgroup refund-already-header-search" *ngIf="!btnHiden[0].hidden">
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'10vw','margin-right':'2vw'}"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入搜索内容" [(ngModel)]="searchData">
+      <button id="disabled-btn" class="refund-already-header-btn-search" type="button"  (click)="alreadySearchClick()"  label="搜索">搜索</button>
+    </div>
   </div>
   <!--表格-->
   <div class="refund-already-table">

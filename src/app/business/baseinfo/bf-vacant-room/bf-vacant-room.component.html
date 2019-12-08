@@ -285,8 +285,8 @@
           <label >客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone" [pKeyFilter]="toolSrv.verifyPhone"  [pValidateOnly]="true">
-          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(ownerinfo.mobilePhone === undefined || ownerinfo.mobilePhone === '')? !toolSrv.verifyPhone.test(ownerinfo.mobilePhone): toolSrv.verifyPhone.test(ownerinfo.mobilePhone)"></p-message>
+          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone">
+<!--          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(ownerinfo.mobilePhone === undefined || ownerinfo.mobilePhone === '')? !toolSrv.verifyPhone.test(ownerinfo.mobilePhone): toolSrv.verifyPhone.test(ownerinfo.mobilePhone)"></p-message>-->
         </div>
       </div>
       <div class="ui-g-6">
@@ -302,8 +302,8 @@
           <label >身份号码：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入身份号码..." [(ngModel)]="ownerinfo.idNumber" [pKeyFilter]="toolSrv.verifyIdNumber"  [pValidateOnly]="true">
-          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(ownerinfo.idNumber === undefined || ownerinfo.idNumber === '')? !this.toolSrv.verifyIdNumber.test(ownerinfo.idNumber): toolSrv.verifyIdNumber.test(ownerinfo.idNumber)"></p-message>
+          <input  type="text" pInputText placeholder="请输入身份号码..." [(ngModel)]="ownerinfo.idNumber" >
+<!--          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(ownerinfo.idNumber === undefined || ownerinfo.idNumber === '')? !this.toolSrv.verifyIdNumber.test(ownerinfo.idNumber): toolSrv.verifyIdNumber.test(ownerinfo.idNumber)"></p-message>-->
         </div>
       </div>
       <div class="ui-g-6">

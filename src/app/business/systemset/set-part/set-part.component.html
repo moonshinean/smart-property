@@ -6,15 +6,15 @@
   <!--顶部按钮-->
   <div class="set-part-header">
     <div class=" ui-g-4">
-      <div class="ui-g-1 set-part-header-btn set-part-header-btn-add" (click)="partAddClick()">
+      <div class="ui-g-1 set-part-header-btn set-part-header-btn-add" (click)="partAddClick()" [hidden]="btnHiden[0].hidden">
         <img class="set-part-header-img-add" src="assets/images/ic_add.png" alt="">
         <span>增 加</span>
       </div>
-      <div class="ui-g-1 set-part-header-btn set-part-header-btn-modify" (click)="partModifyClick()">
+      <div class="ui-g-1 set-part-header-btn set-part-header-btn-modify" (click)="partModifyClick()" [hidden]="btnHiden[1].hidden">
         <img class="set-part-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 set-part-header-btn set-part-header-btn-delete" (click)="partDeleteClick()">
+      <div class="ui-g-1 set-part-header-btn set-part-header-btn-delete" (click)="partDeleteClick()" [hidden]="btnHiden[2].hidden">
         <img class="set-part-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>

@@ -90,6 +90,7 @@ export class LatepaymentReviewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.btnOption.btnlist = [
       {label: '审核', src: '', style: {background: '#55AB7F', marginLeft: '2vw'}, hidden: true },
+      {label: '搜索', src: '', style: {background: '#55AB7F', marginLeft: '2vw'}, hidden: true },
     ];
     this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {

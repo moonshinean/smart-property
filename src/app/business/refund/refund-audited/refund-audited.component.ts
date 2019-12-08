@@ -1,15 +1,16 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {ModifyRefundInfo} from '../../../common/model/refund-info.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {RefundService} from '../../../common/services/refund.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'rbi-refund-audited',
   templateUrl: './refund-audited.component.html',
   styleUrls: ['./refund-audited.component.less']
 })
-export class RefundAuditedComponent implements OnInit {
+export class RefundAuditedComponent implements OnInit, OnDestroy {
   public refundAuditeTableTitle: any;
   public refundAuditeTableContent: any[];
   public refundAuditeTableTitleStyle: any;
@@ -33,11 +34,35 @@ export class RefundAuditedComponent implements OnInit {
     unit: [],
     room: [],
   };
+
   public couponSelectOption: any[] = [];
   public roonCodeSelectOption: any[] = [];
   public couponTypeName: any;
   public couponMoney: any;
   public couponEffectiveTime: any;
+  // 搜索相关
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public searchType = 0;
+  public searchData = '';
+  // 树结构订阅
+  public refundSub: Subscription;
   constructor(
     private refundAuditeSrv: RefundService,
     private toolSrv: PublicMethedService,
@@ -47,6 +72,9 @@ export class RefundAuditedComponent implements OnInit {
   ngOnInit() {
     this.esDate = this.toolSrv.esDate;
     this.refundAuditeInitialization();
+  }
+  ngOnDestroy(): void {
+    this.refundSub.unsubscribe();
   }
 
   // initialization houseinfo

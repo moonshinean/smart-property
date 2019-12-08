@@ -91,7 +91,9 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
-    this.btnOption.btnlist = [];
+    this.btnOption.btnlist = [
+      {label: '搜索', src: '', style: {background: '#55AB7F', marginLeft: '2vw'}, hidden: true },
+    ];
     this.setBtnIsHidden();
     this.lateNopassInitialization();
   }

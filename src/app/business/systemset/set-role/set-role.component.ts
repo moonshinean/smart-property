@@ -7,6 +7,7 @@ import {isObjectFlagSet} from 'tslint';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-set-role',
@@ -43,10 +44,17 @@ export class SetRoleComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '配置', hidden: true},
+    {label: '删除', hidden: true},
+  ];
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private roleSrv: SetRoleService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService
   ) {
     this.themeSub = this.themeSrv.changeEmitted$.subscribe(
@@ -59,6 +67,7 @@ export class SetRoleComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -280,5 +289,22 @@ export class SetRoleComponent implements OnInit, OnDestroy {
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
     );
+  }
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '用户角色配置') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(item => {
+            this.btnHiden.forEach( val => {
+              if (item.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
   }
 }

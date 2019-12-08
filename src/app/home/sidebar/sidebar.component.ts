@@ -130,7 +130,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           // {label: '保证金', icon: 'pi pi-fw ', routerLink: ['/home/charge/margin']},
           // {label: '退款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/record']},
           // {label: '欠款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/arrears']},
-          {label: '预缴记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/prepayment']},
+          // {label: '预缴记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/prepayment']},
           // {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
           {label: '历史数据', icon: 'pi pi-fw ', routerLink: ['/home/charge/history']},
           // {label: '车位管理', icon: 'pi pi-fw ', routerLink: ['/home/charge/parkspace']},
@@ -167,12 +167,12 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           {label: '退款已审核', icon: 'pi pi-fw ', routerLink: ['/home/refund/audited']},
         ] },
       { title: '违约金', item: [],  routingItem: [
-          {label: '业主信息', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/owner']},
           {label: '违约金信息', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/latepaytotle']},
           {label: '待审核', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/review']},
           {label: '待复审', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/pendreview']},
           {label: '审核拒绝', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/nopass']},
           {label: '审核通过', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/audited']},
+          {label: '业主信息', icon: 'pi pi-fw ', routerLink: ['/home/latepayment/owner']},
         ] }
     ];
     if (this.localSrv.getObject('sidebarItem') === 1 || this.localSrv.getObject('sidebarItem') === null ) {
@@ -183,8 +183,8 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
             this.homeSrv.getChildrenRouter({parentCode: v.permisCode}).subscribe(
               (value) => {
                 console.log(value);
-                value.data.forEach( data => {
-                  h.routingItem.forEach( val => {
+                h.routingItem.forEach( val => {
+                 value.data.forEach( data => {
                     if (val.label === data.title) {
                       this.sidebarItem.push({parentCode: data.permisCode, label: data.title });
                       h.item.push(val);

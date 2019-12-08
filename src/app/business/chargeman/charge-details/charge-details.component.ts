@@ -74,7 +74,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
 
   // 按钮权限相关
   public btnHiden = [
-    {label: '上传', hidden: true},
+    {label: '导入', hidden: true},
     {label: '搜索', hidden: true},
   ];
   // 缴费相关

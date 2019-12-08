@@ -20,10 +20,11 @@
       <!--</div>-->
     </div>
     <!--//搜索-->
-    <!--<div class="ui-inputgroup coupon-audited-header-search" *ngIf="!btnHiden[0].hidden">-->
-      <!--<input type="text" pInputText placeholder="请输入手机号码" style="width: 7vw" [(ngModel)]="couponAuditedSeachData">-->
-      <!--<button id="disabled-btn" class="coupon-audited-header-btn-search" type="button"  (click)="couponAuditedSearchClick()"  label="搜索">搜索</button>-->
-    <!--</div>-->
+    <div class="ui-inputgroup coupon-audited-header-search" *ngIf="!btnHiden[0].hidden">
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入手机号码" style="width: 7vw" [(ngModel)]="searchData">
+      <button id="disabled-btn" class="coupon-audited-header-btn-search" type="button"  (click)="couponAuditedSearchClick()"  label="搜索">搜索</button>
+    </div>
   </div>
   <!--表格-->
   <div class="coupon-audited-table">
@@ -33,5 +34,4 @@
   <!--详情弹窗-->
   <rbi-detail-pop [dialogOption]="couponAuditedDetailOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
-  <rbi-loading [hidden]="loadingHide" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

@@ -3,7 +3,6 @@ import {AddCouponTotal} from '../../../common/model/coupon-total.model';
 import {GlobalService} from '../../../common/services/global.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {CouponService} from '../../../common/services/coupon.service';
-import {Dropdown} from 'primeng/dropdown';
 import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
 import {FormGroup} from '@angular/forms';
 import {Subscription} from 'rxjs';
@@ -51,7 +50,6 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
   public deleteIds: any[] = [];
   public cleanTimer: any; // 清除时钟
   public option: any;
-  public loadingHide = true;
   // public couponTotalSeachData: any;
   // 状态值相关
   public auditStatusOption = [];
@@ -296,14 +294,14 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
   }
   // Paging request
   public nowpageEventHandle(event: any): void {
-    this.loadingHide = false;
     this.nowPage = event;
     this.selectSearchType();
     this.couponTotalSelect = [];
   }
   // clear data
   public clearData(): void {
-    this.AddcouponTotal = new AddCouponTotal();}
+    this.AddcouponTotal = new AddCouponTotal();
+  }
 
   public selectData(e): void {
       this.couponTotalSelect = e;
@@ -379,7 +377,6 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
     this.couponTotalSrv.queryCouponPageData(this.SearchCoupon).subscribe(
       (value) => {
         console.log(value);
-        this.loadingHide = true;
         if (value.status === '1000') {
           value.data.contents.forEach( h => {
             h.effectiveTime = (h.effectiveTime === '0' || h.effectiveTime === 0 ) ? '无期限' :  h.effectiveTime + '天';
@@ -440,9 +437,9 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
       if (v.label === '优惠券信息') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });

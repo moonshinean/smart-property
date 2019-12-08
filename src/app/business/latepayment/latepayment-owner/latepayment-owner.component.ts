@@ -48,6 +48,7 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  public serchData: any;
 
   constructor(
     private ownerSrv: BfOwnerService,
@@ -69,6 +70,7 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -77,22 +79,6 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
     this.searchOwerData.pageNo = 1;
     this.searchOwerData.pageSize = 10;
     this.queryData(this.searchOwerData);
-    // this.toolSrv.getNativeStatus('SEX', (value) => {
-    //   value.data.forEach( v => {
-    //     this.sexOption.push({label: v.settingName, value: v.settingCode});
-    //   });
-    // });
-    //
-    // this.toolSrv.getNativeStatus('NORMAL_PAYMENT_STATUS', (value) => {
-    //   value.data.forEach( v => {
-    //     this.sexOption.push({label: v.settingName, value: v.settingCode});
-    //   });
-    // });
-    // this.toolSrv.getNativeStatus('IDENTITY', (value) => {
-    //   value.data.forEach( v => {
-    //     this.sexOption.push({label: v.settingName, value: v.settingCode});
-    //   });
-    // });
   }
   ngOnDestroy(): void {
     this.themeSub.unsubscribe();
@@ -126,6 +112,9 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
     }
   }
 
+  public  ownerSearchClick(): void {
+      
+  }
   // set table data
   public  setTableOption(data1): void {
     this.optionTable = {
@@ -269,14 +258,17 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
         }
       );
   }
+  // 设置按钮显示隐藏
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '业主信息') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
           value.data.forEach( item => {
             this.btnHiden.forEach( val => {
               if (item.title === val.label) {
                 val.hidden = false;
+                console.log(val);
               }
             });
           });

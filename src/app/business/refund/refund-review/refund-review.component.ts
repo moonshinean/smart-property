@@ -111,32 +111,41 @@ export class RefundReviewComponent implements OnInit, OnDestroy {
       poplist: {
         popContent: e,
         popTitle:  [
-          {field: 'organizationName', header: '组织名称'},
           {field: 'villageName', header: '小区名称'},
           {field: 'regionName', header: '地块名称'},
-          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'buildingName', header: '楼宇名称'},
           {field: 'unitName', header: '单元名称'},
           {field: 'roomCode', header: '房间编号'},
-          {field: 'surname', header: '客户名称'},
-          {field: 'roomSize', header: '住房大小'},
+          {field: 'roomSize', header: '住房面积'},
+          {field: 'surname', header: '客户姓名'},
+          {field: 'mobilePhone', header: '客户电话'},
+
+
           {field: 'chargeName', header: '项目名称'},
           {field: 'actualMoneyCollection', header: '实收金额'},
-          {field: 'mortgageAmount', header: '抵扣金额'},
-          {field: 'reasonForDeduction', header: '抵扣原因'},
-          {field: 'refundableAmount', header: '可退还金额'},
-          {field: 'chargeUnit', header: '收费单位'},
-          {field: 'payerPhone', header: '缴费人手机号'},
           {field: 'paymentMethod', header: '支付方式'},
-          {field: 'paymentType', header: '支付类型'},
           {field: 'refundStatus', header: '退款状态'},
-          {field: 'startTime', header: '开始时间'},
-          {field: 'endTime', header: '结束时间'},
-          {field: 'delayTime', header: '延迟时长'},
-          {field: 'delayReason', header: '延期原因'},
+          {field: 'auditStatus', header: '审核状态'},
+
+          {field: 'startTime', header: '装修开始时间'},
+          {field: 'endTime', header: '装修结束时间'},
           {field: 'personLiable', header: '责任人'},
           {field: 'personLiablePhone', header: '责任人电话'},
           {field: 'responsibleAgencies', header: '负责机构'},
-          {field: 'remark', header: '申请退款备注 '},
+
+          {field: 'reasonForDeduction', header: '抵扣原因'},
+          {field: 'delayReason', header: '延期原因'},
+
+          {field: 'mortgageAmount', header: '被扣金额'},
+          {field: 'refundableAmount', header: '可退金额'},
+          {field: 'transferCardAmount', header: '退还银行卡金额'},
+          {field: 'deductionPropertyFee', header: '抵扣物业费金额'},
+
+          {field: 'deductibleMoney', header: '可抵扣金额'},
+          {field: 'deductibledMoney', header: '已抵扣金额'},
+          {field: 'surplusDeductibleMoney', header: '剩余可抵扣'},
+          {field: 'deductionRecord', header: '抵扣记录'},
+          {field: 'remark', header: '备注'},
         ],
       }
     };
@@ -223,13 +232,20 @@ export class RefundReviewComponent implements OnInit, OnDestroy {
       width: '101.4%',
       header: {
         data: [
-          {field: 'orderId', header: '订单Id'},
-          {field: 'payerName', header: '缴费人姓名'},
-          {field: 'paymentMethod', header: '支付方式'},
-          {field: 'roomCode', header: '房间编号'},
+          // {field: 'orderId', header: '订单Id'},
           {field: 'chargeName', header: '项目名称'},
-          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'roomCode', header: '房间编号'},
+          {field: 'surname', header: '客户姓名'},
+          {field: 'refundStatus', header: '退款状态'},
           {field: 'auditStatus', header: '审核状态'},
+
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'transferCardAmount', header: '退还银行卡金额'},
+          {field: 'deductionPropertyFee', header: '抵扣物业费金额'},
+          {field: 'deductibledMoney', header: '已抵扣金额'},
+          {field: 'surplusDeductibleMoney', header: '剩余可抵扣金额'},
+          // {field: 'payerName', header: '缴费人姓名'},
+          {field: 'paymentMethod', header: '支付方式'},
           {field: 'operating', header: '操作'},
         ],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}

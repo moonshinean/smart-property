@@ -30,10 +30,11 @@
       <!--</div>-->
     </div>
     <!--//搜索-->
-<!--    <div class="ui-inputgroup refund-no-header-search" *ngIf="btnHiden[0].hidden">-->
-<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
-<!--      <button id="disabled-btn" class="refund-no-header-btn-search" type="button"  (click)="refundNoSearchClick()"  label="搜索">搜索</button>-->
-<!--    </div>-->
+    <div class="ui-inputgroup refund-no-header-search" *ngIf="!btnHiden[0].hidden">
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入缴费人"  style="width: 7vw" [(ngModel)]="searchData">
+      <button id="disabled-btn" class="refund-no-header-btn-search" type="button"  (click)="refundNoSearchClick()"  label="搜索">搜索</button>
+    </div>
   </div>
   <!--表格-->
   <div class="refund-no-table">
@@ -61,10 +62,10 @@
             <td>
               <button class="refund-no-table-Btn refund-no-table-Btn-detail" (click)="refundNoDetailClick(rowData)" >详情</button>
               <span *ngIf="rowData.refundStatus !== '未退'">
-                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474"  (click)="InfoRefundClick(rowData)"  [disabled]="rowData.refundStatus !== '未退'">退款申请</button>
+                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474; margin-top: 1vh"  (click)="InfoRefundClick(rowData)"  [disabled]="rowData.refundStatus !== '未退'">退款申请</button>
               </span>
               <span *ngIf="rowData.refundStatus === '未退'">
-                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" (click)="InfoRefundClick(rowData)" >退款申请</button>
+                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="margin-top: 0.5vh" (click)="InfoRefundClick(rowData)" >退款申请</button>
               </span>
             </td>
           </tr>
@@ -164,5 +165,4 @@
   <!--详情弹窗-->
   <rbi-detail-pop [dialogOption]="infoNoOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
-  <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

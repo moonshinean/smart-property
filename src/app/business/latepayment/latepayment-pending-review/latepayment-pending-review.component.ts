@@ -91,7 +91,10 @@ export class LatepaymentPendingReviewComponent implements OnInit, OnDestroy {
       // {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '1vw'} },
       // {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#A84847', marginLeft: '1vw'} },
       {label: '审核', src: '', style: {background: '#55AB7F', marginLeft: '2vw'}, hidden: true},
+
+
     ];
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -119,7 +122,7 @@ export class LatepaymentPendingReviewComponent implements OnInit, OnDestroy {
   public reviewClick(): void {
     if (this.latependreviewSelect.length === undefined || this.latependreviewSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择一项进行审核');
-    } else if(this.latependreviewSelect.length === 1) {
+    } else if (this.latependreviewSelect.length === 1) {
       this.reviewOption = {
         width: '500',
         dialog: true

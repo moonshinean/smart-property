@@ -10,11 +10,11 @@
         <!--<img class="set-permission-header-img-add" src="assets/images/ic_add.png" alt="">-->
         <!--<span>增 加</span>-->
       <!--</div>-->
-      <div class="ui-g-1 set-permission-header-btn set-permission-header-btn-modify" (click)="permissionConfigClick()">
+      <div class="ui-g-1 set-permission-header-btn set-permission-header-btn-modify" (click)="permissionConfigClick()"  [hidden]="btnHiden[0].hidden">
         <img class="set-permission-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>配  置</span>
       </div>
-      <div class="ui-g-1 set-permission-header-btn set-permission-header-btn-delete" (click)="permissionDeleteClick()">
+      <div class="ui-g-1 set-permission-header-btn set-permission-header-btn-delete" (click)="permissionDeleteClick()"  [hidden]="btnHiden[1].hidden">
         <img class="set-permission-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>

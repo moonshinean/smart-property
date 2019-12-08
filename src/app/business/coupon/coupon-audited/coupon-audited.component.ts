@@ -6,6 +6,7 @@ import {CouponService} from '../../../common/services/coupon.service';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-coupon-audited',
@@ -31,7 +32,6 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
   ];
   // 其他相关除时钟
   public option: any;
-  public loadingHide = true;
   public nowPage = 1;
   // public msgs: Message[] = []; // 消息弹窗
   public themeSub: Subscription;
@@ -42,11 +42,35 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 搜索相关
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public SearchCoupon = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchType = 0;
+  public searchData =  '';
+  // 树结构订阅
+  public couponSub: Subscription;
   constructor(
     private couponAuditedSrv: CouponService,
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
+    private  sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
@@ -55,6 +79,18 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
         this.table.tableContent = value.table.content;
         this.table.detailBtn = value.table.detailBtn;
         this.setTableOption(this.couponAuditedContents);
+      }
+    );
+    this.couponSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchCoupon[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchCoupon.pageNo = 1;
+        this.reslveSearchData();
+        this.queryCouponAuditedPageData();
       }
     );
   }
@@ -66,10 +102,18 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
+    if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.sharedSrv.SearchData) {
+        if (key !== 'data') {
+          this.SearchCoupon[key] = this.sharedSrv.SearchData[key];
+        }
+      }
+    }
     this.couponAuditedInitialization();
   }
   ngOnDestroy(): void {
     this.themeSub.unsubscribe();
+    this.couponSub.unsubscribe();
   }
 
   // initialization houseinfo
@@ -83,55 +127,42 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
       this.userStatusOption = this.toolSrv.setListMap(data.USE_STATUS);
       this.queryCouponAuditedPageData();
     });
-    this.loadingHide = false;
   }
-
-/*  public  VillageChange(e): void {
-    this.SearchOption.region = [];
-    this.SearchOption.building = [];
-    this.SearchOption.unit = [];
-    this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
-      (value) => {
-        console.log(value);
-        value.data.forEach( v => {
-          this. SearchOption.region.push({label: v.regionName, value: v.regionCode});
-        });
-      }
-    );
-  }
-  public  regionChange(e): void {
-    this.SearchOption.building = [];
-    this.SearchOption.unit = [];
-    console.log(e.value);
-    this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
-      (value) => {
-        console.log(value);
-        value.data.forEach( v => {
-          this. SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
-        });
-      }
-    );
-  }
-  public  buildingChange(e): void {
-    this.SearchOption.unit = [];
-    this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
-      (value) => {
-        console.log(value);
-        value.data.forEach( v => {
-          this. SearchOption.unit.push({label: v.unitName, value: v.unitCode});
-        });
-      }
-    );
-  }
-  public  unitChange(e): void {
-    this.roonCodeSelectOption = [];
-  }*/
-
   // condition search click
-  // public couponAuditedSearchClick(): void {
-  //   console.log('这里是条件搜索');
-  // }
-
+  public couponAuditedSearchClick(): void {
+    if (this.searchData !== '') {
+      this.selectSearchType();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    }
+  }
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+              this.queryCouponAuditedPageData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchCoupon.mobilePhone = this.searchData; this.queryCouponAuditedPageData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchCoupon.roomCode = this.searchData; this.queryCouponAuditedPageData(); break;
+      case 3: this.setSearData('surname'); this.SearchCoupon.surname = this.searchData;  this.queryCouponAuditedPageData(); break;
+      case 4: this.setSearData('idNumber'); this.SearchCoupon.idNumber = this.searchData; this.queryCouponAuditedPageData(); break;
+      default:
+        break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchCoupon) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchCoupon[serchKey] = '';
+      }
+    }
+  }
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchCoupon.mobilePhone = '';
+    this.SearchCoupon.surname = '';
+    this.SearchCoupon.idNumber = '';
+  }
 
   // detail couponAuditedInfo
   public couponAuditedDetailClick(e): void {
@@ -172,9 +203,8 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
   }
   // 分页请求
   public nowpageEventHandle(event: any): void {
-    this.loadingHide = false;
     this.nowPage = event;
-    this.queryCouponAuditedPageData();
+    this.selectSearchType();
     this.couponAuditedSelect = [];
   }
   // 设置表格
@@ -209,11 +239,10 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
   }
   // 分页查询
   public  queryCouponAuditedPageData(): void {
-    this.couponAuditedSrv.queryCouponAuditedPageData({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.couponAuditedSrv.queryCouponAuditedPageData(this.SearchCoupon).subscribe(
       (value) => {
-        this.loadingHide = true;
         value.data.contents.forEach( v => {
-          v.effectiveTime = (v.effectiveTime === 0 || v.effectiveTime === '0') ? '无期限': v.effectiveTime + '天';
+          v.effectiveTime = (v.effectiveTime === 0 || v.effectiveTime === '0') ? '无期限' : v.effectiveTime + '天';
           v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
           v.pastDue = this.toolSrv.setValueToLabel(this.pastDueOption, v.pastDue);
         });
@@ -230,9 +259,9 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
       if (v.label === '已审核') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });

@@ -7,6 +7,7 @@ import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-refund-no',
@@ -22,6 +23,7 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   public chargeTypeOption = [];
   public paymentMethodOption = [];
   public refundStatusOption = [];
+  public auditStatusOption = [];
   // 添加相关
   public refundNoAdd: any;
   // 详情相关
@@ -35,6 +37,27 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   public option: any;
   public loadHidden = true;
   public themeSub: Subscription;
+  // 搜索相关
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public searchType = 0;
+  public searchData = '';
   // 按钮权限相关
   public btnHiden = [
     // {label: '新增', hidden: true},
@@ -49,6 +72,8 @@ export class RefundNoComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 树结构订阅
+  public refundSub: Subscription;
   // 其他相关
   // public cleanTimer: any; // 清除时钟
   public nowPage = 1;
@@ -57,6 +82,7 @@ export class RefundNoComponent implements OnInit, OnDestroy {
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
+    private sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
@@ -65,6 +91,18 @@ export class RefundNoComponent implements OnInit, OnDestroy {
         this.table.tableContent = value.table.content;
         this.table.detailBtn = value.table.detailBtn;
         this.refundNoTableTitleStyle = {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'};
+      }
+    );
+    this.refundSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchData[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchData.pageNo = 1;
+        this.reslveSearchData();
+        this.queryRefundNoInfoPageData();
       }
     );
   }
@@ -76,6 +114,13 @@ export class RefundNoComponent implements OnInit, OnDestroy {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
+    if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.sharedSrv.SearchData) {
+        if (key !== 'data') {
+          this.SearchData[key] = this.sharedSrv.SearchData[key];
+        }
+      }
+    }
     this.refundNoInitialization();
   }
 
@@ -83,20 +128,27 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   public refundNoInitialization(): void {
     this.ApplicationRefund.remark = null;
     this.refundNoTableTitle = [
-      {field: 'orderId', header: '订单Id'},
-      {field: 'payerName', header: '缴费人姓名'},
-      {field: 'paymentMethod', header: '支付方式'},
-      {field: 'roomCode', header: '房间编号'},
       {field: 'chargeName', header: '项目名称'},
+      {field: 'roomCode', header: '房间编号'},
+      {field: 'surname', header: '客户姓名'},
+      {field: 'refundStatus', header: '退款状态'},
+      {field: 'auditStatus', header: '审核状态'},
+
       {field: 'actualMoneyCollection', header: '实收金额'},
-      // {field: 'refundStatus', header: '退款状态'},
+      {field: 'transferCardAmount', header: '退还银行卡金额'},
+      {field: 'deductionPropertyFee', header: '抵扣物业费金额'},
+      {field: 'deductibledMoney', header: '已抵扣金额'},
+      {field: 'surplusDeductibleMoney', header: '剩余可抵扣金额'},
+      // {field: 'payerName', header: '缴费人姓名'},
+      {field: 'paymentMethod', header: '支付方式'},
       {field: 'operating', header: '操作'},
     ];
     this.loadHidden = false;
-    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'}, {settingType: 'CHARGE_TYPE'}, {settingType: 'REFUND_STATUS'}, {settingType: 'PARMENT_TYPE'}], (data) => {
+    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'}, {settingType: 'AUDIT_STATUS'}, {settingType: 'CHARGE_TYPE'}, {settingType: 'REFUND_STATUS'}, {settingType: 'PARMENT_TYPE'}], (data) => {
       this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
       this.paymentMethodOption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
       this.refundStatusOption = this.toolSrv.setListMap(data.REFUND_STATUS);
+      this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
       this.queryRefundNoInfoPageData();
     });
 
@@ -105,57 +157,44 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.themeSub.unsubscribe();
+    this.refundSub.unsubscribe();
   }
 
-/*  // village change
-  public VillageChange(e): void {
-    this.loadHidden = false;
-    this.SearchOption.region = [];
-    this.SearchOption.building = [];
-    this.SearchOption.unit = [];
-    this.refundNoAdd.villageName = e.originalEvent.target.innerText;
-    this.refundNoModify.villageName = e.originalEvent.target.innerText;
-    this.globalSrv.queryRegionInfo({villageCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach(v => {
-          this.loadHidden = true;
-          this.SearchOption.region.push({label: v.regionName, value: v.regionCode});
-        });
-      }
-    );
-  }
-  public regionChange(e): void {
-    this.loadHidden = false;
-    this.SearchOption.unit = [];
-    this.refundNoAdd.regionName = e.originalEvent.target.innerText;
-    this.refundNoModify.regionName = e.originalEvent.target.innerText;
-    this.globalSrv.queryBuilingInfo({regionCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach(v => {
-          this.SearchOption.building.push({label: v.buildingName, value: v.buildingCode});
-        });
-        this.loadHidden = true;
-
-      }
-    );
-  }
-  public buildingChange(e): void {
-    this.SearchOption.unit = [];
-    this.refundNoAdd.buildingName = e.originalEvent.target.innerText;
-    this.globalSrv.queryunitInfo({buildingCode: e.value}).subscribe(
-      (value) => {
-        value.data.forEach(v => {
-          this.SearchOption.unit.push({label: v.unitName, value: v.unitCode});
-        });
-      }
-    );
-  }
-  public unitChange(e): void {
-    this.refundNoAdd.unitName = e.originalEvent.target.innerText;
-  }*/
   // condition search click
   public refundNoSearchClick(): void {
-    // @ts-ignore
+    this.nowPage = this.SearchData.pageNo = 1;
+    if (this.searchData !== '') {
+      this.selectSearchType();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    }
+  }
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+        this.queryRefundNoInfoPageData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryRefundNoInfoPageData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryRefundNoInfoPageData(); break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryRefundNoInfoPageData(); break;
+      case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryRefundNoInfoPageData(); break;
+      default:
+        break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchData) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchData[serchKey] = '';
+      }
+    }
+  }
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchData.mobilePhone = '';
+    this.SearchData.surname = '';
+    this.SearchData.idNumber = '';
   }
   // show refund application dialog
   public  InfoRefundClick(e): void {
@@ -198,32 +237,41 @@ export class RefundNoComponent implements OnInit, OnDestroy {
       poplist: {
         popContent: e,
         popTitle:  [
-          {field: 'organizationName', header: '组织名称'},
           {field: 'villageName', header: '小区名称'},
           {field: 'regionName', header: '地块名称'},
-          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'buildingName', header: '楼宇名称'},
           {field: 'unitName', header: '单元名称'},
           {field: 'roomCode', header: '房间编号'},
-          {field: 'surname', header: '客户名称'},
-          {field: 'roomSize', header: '住房大小'},
+          {field: 'roomSize', header: '住房面积'},
+          {field: 'surname', header: '客户姓名'},
+          {field: 'mobilePhone', header: '客户电话'},
+
+
           {field: 'chargeName', header: '项目名称'},
           {field: 'actualMoneyCollection', header: '实收金额'},
-          {field: 'mortgageAmount', header: '抵扣金额'},
-          {field: 'reasonForDeduction', header: '抵扣原因'},
-          {field: 'refundableAmount', header: '可退还金额'},
-          {field: 'chargeUnit', header: '收费单位'},
-          {field: 'payerPhone', header: '缴费人手机号'},
           {field: 'paymentMethod', header: '支付方式'},
-          {field: 'paymentType', header: '支付类型'},
           {field: 'refundStatus', header: '退款状态'},
-          {field: 'startTime', header: '开始时间'},
-          {field: 'endTime', header: '结束时间'},
-          {field: 'delayTime', header: '延迟时长'},
-          {field: 'delayReason', header: '延期原因'},
+          {field: 'auditStatus', header: '审核状态'},
+
+          {field: 'startTime', header: '装修开始时间'},
+          {field: 'endTime', header: '装修结束时间'},
           {field: 'personLiable', header: '责任人'},
           {field: 'personLiablePhone', header: '责任人电话'},
           {field: 'responsibleAgencies', header: '负责机构'},
-          {field: 'remark', header: '申请退款备注 '},
+
+          {field: 'reasonForDeduction', header: '抵扣原因'},
+          {field: 'delayReason', header: '延期原因'},
+
+          {field: 'mortgageAmount', header: '被扣金额'},
+          {field: 'refundableAmount', header: '可退金额'},
+          {field: 'transferCardAmount', header: '退还银行卡金额'},
+          {field: 'deductionPropertyFee', header: '抵扣物业费金额'},
+
+          {field: 'deductibleMoney', header: '可抵扣金额'},
+          {field: 'deductibledMoney', header: '已抵扣金额'},
+          {field: 'surplusDeductibleMoney', header: '剩余可抵扣'},
+          {field: 'deductionRecord', header: '抵扣记录'},
+          {field: 'remark', header: '备注'},
         ],
       }
     };
@@ -262,13 +310,12 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.queryRefundNoInfoPageData();
+    this.selectSearchType();
   }
 
   public  queryRefundNoInfoPageData(): void {
-    this.refundNoSrv.queryRefundNoInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.refundNoSrv.queryRefundNoInfoPage(this.SearchData).subscribe(
       value => {
-        this.loadHidden = true;
         if (value.status === '1000') {
           value.data.contents.forEach( v => {
             if (this.isOrNull(v.refundStatus)) {
@@ -280,6 +327,10 @@ export class RefundNoComponent implements OnInit, OnDestroy {
             }
             if (this.isOrNull(v.paymentType)) {
               v.paymentType = this.toolSrv.setValueToLabel(this.chargeTypeOption, v.paymentType);
+
+            }
+            if (this.isOrNull(v.auditStatus)) {
+              v.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, v.auditStatus);
 
             }
           });
@@ -296,7 +347,6 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   }
 
   public  refundNoonRowSelect(e): void {
-      console.log(e);
   }
 
   // 设置按钮显示权限

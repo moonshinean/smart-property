@@ -6,25 +6,25 @@
   <!--顶部按钮-->
   <div class="set-config-header">
     <div class=" ui-g-4">
-      <div class="ui-g-1 set-config-header-btn set-config-header-btn-add" (click)="configAddClick()">
+      <div class="ui-g-1 set-config-header-btn set-config-header-btn-add" (click)="configAddClick()" [hidden]="btnHiden[0].hidden">
         <img class="set-config-header-img-add" src="assets/images/ic_add.png" alt="">
         <span>增 加</span>
       </div>
-      <div class="ui-g-1 set-config-header-btn set-config-header-btn-modify" (click)="configModifyClick()">
+      <div class="ui-g-1 set-config-header-btn set-config-header-btn-modify" (click)="configModifyClick()" [hidden]="btnHiden[1].hidden">
         <img class="set-config-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 set-config-header-btn set-config-header-btn-delete" (click)="configDeleteClick()">
+      <div class="ui-g-1 set-config-header-btn set-config-header-btn-delete" (click)="configDeleteClick()" [hidden]="btnHiden[2].hidden">
         <img class="set-config-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
     </div>
     <!--搜索-->
-    <!--<div class="ui-inputgroup set-config-header-btn-search">-->
-      <!--<input type="text" pInputText placeholder="请输入地块号" #input>-->
-      <!--<button   type="button"  (click)="configSearchClick()"  label="搜索" style="outline: none;border:0;background: #5E6372;width: 6vw;color: #fff;margin-left: 1vw;border-radius: 5px">搜索</button>-->
-      <!--&lt;!&ndash;<span class="ui-inputgroup-addon" (click)="exportSearchClick($event)"><i class="fa fa-search"></i></span>&ndash;&gt;-->
-    <!--</div>-->
+<!--    <div class="ui-inputgroup set-config-header-btn-search" *ngIf="!btnHiden[3].hidden">-->
+<!--      <input type="text" pInputText placeholder="请输入地块号" #input>-->
+<!--      <button   type="button"  (click)="configSearchClick()"  label="搜索" style="outline: none;border:0;background: #5E6372;width: 6vw;color: #fff;margin-left: 1vw;border-radius: 5px">搜索</button>-->
+<!--      &lt;!&ndash;<span class="ui-inputgroup-addon" (click)="exportSearchClick($event)"><i class="fa fa-search"></i></span>&ndash;&gt;-->
+<!--    </div>-->
   </div>
   <!--表格-->
   <div class="set-config-table">

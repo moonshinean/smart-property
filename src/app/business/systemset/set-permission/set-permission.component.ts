@@ -8,6 +8,7 @@ import {TreeNode} from '../../../common/model/shared-model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
+import {LocalStorageService} from '../../../common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-set-permission',
@@ -36,6 +37,12 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
 
   // 删除相关
   public ids: any[] = [];
+
+  // 按钮权限相关
+  public btnHiden = [
+    {label: '配置', hidden: true},
+    {label: '删除', hidden: true},
+  ];
   // 其他相关
   public option: any;
   public setlimitCodeOption: any[] = [];
@@ -53,6 +60,8 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
   constructor(
     private permissionSrv: SetPermissionService,
     private toolSrv: PublicMethedService,
+    private globalSrv: GlobalService,
+    private localSrv: LocalStorageService,
     private themeSrv: ThemeService
   ) {
     this.themeSub = this.themeSrv.changeEmitted$.subscribe(
@@ -65,6 +74,7 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
     );
   }
   ngOnInit() {
+    this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -324,5 +334,21 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
   public  selectData(e): void {
     this.permissionSelect = e;
   }
-
+  // 设置按钮显示权限
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '角色权限配置') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
+          value.data.forEach(item => {
+            this.btnHiden.forEach( val => {
+              if (item.title === val.label) {
+                val.hidden = false;
+              }
+            });
+          });
+        });
+      }
+    });
+  }
 }
