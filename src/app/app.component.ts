@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {PublicMethedService} from './common/public/public-methed.service';
+import {LocalStorageService} from './common/services/local-storage.service';
 
 @Component({
   selector: 'rbi-root',
@@ -7,11 +8,18 @@ import {PublicMethedService} from './common/public/public-methed.service';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent implements OnInit {
+  public themeFlag = 0;
   constructor(
     private toolSrv: PublicMethedService,
+    private localSrv: LocalStorageService,
   ) {
   }
   ngOnInit(): void {
-    this.toolSrv.changeTheme('green');
+    if (this.localSrv.getObject('theme').value) {
+      this.toolSrv.changeTheme(this.localSrv.getObject('theme').value);
+      this.themeFlag = this.localSrv.getObject('theme').flag;
+    } else {
+      this.toolSrv.changeTheme('green');
+    }
   }
 }

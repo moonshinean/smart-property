@@ -19,13 +19,12 @@ const routes: Routes = [
     path: '',
     component: RefundComponent,
     children: [
-      {path: 'info', component: RefundInfoComponent},
-      {path: 'no', component: RefundNoComponent},
-      {path: 'already', component: RefundAlreadyComponent},
-      // {path: 'audited', component: RefundAuditedComponent},
-      {path: 'review', component: RefundReviewComponent},
-      {path: 'pendreview', component: RefundPendReviewComponent},
-      {path: 'applicationInfo', component: RefundApplicationInfoComponent},
+      {path: 'info', component: RefundInfoComponent, data: {preload: true}},
+      {path: 'no', loadChildren: './refund-no/refund-no.module#RefundNoModule'},
+      {path: 'already', loadChildren: './refund-already/refund-already.module#RefundAlreadyModule'},
+      {path: 'review', loadChildren: './refund-review/refund-review.module#RefundReviewModule'},
+      {path: 'pendreview', loadChildren: './refund-pend-review/refund-pend-review.module#RefundPendReviewModule'},
+      {path: 'applicationInfo', loadChildren: './refund-application-info/refund-application-info.module#RefundApplicationInfoModule'},
     ]
   }
 ];

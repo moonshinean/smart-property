@@ -18,6 +18,13 @@ export class LoginComponent implements OnInit{
   public loadHidden = true;
   public userLogin: FormGroup;
   public btnClickFlag = 0;
+  public themeList = [
+    {label: '自然绿', value: 'green'},
+    {label: '天空蓝', value: 'blue'},
+    {label: '简约粉', value: 'pink'},
+    {label: '深沉棕', value: 'brown'},
+    {label: '经典黑', value: 'default'},
+  ];
   constructor(
     public loginSrv: LoginService,
     private route: Router,
@@ -34,11 +41,6 @@ export class LoginComponent implements OnInit{
     if (!(this.isOrTrue('username') && this.isOrTrue('password'))) {
       this.userLogin.setValue( {username: this.localSessionStorage.get('username'), password: this.localSessionStorage.get('password')});
     }
-    // Monitor keyboard enter event
-    // this.eventManager.addGlobalEventListener('body', 'keydown.enter', () => {
-    //   console.log(this.userLogin);
-    //   this.userLoginClick(this.userLogin);
-    // });
   }
   // user click event
   public  userLoginClick(user): void {
@@ -48,6 +50,7 @@ export class LoginComponent implements OnInit{
         this.loadHidden = false;
         this.localSessionStorage.set('username', user.value.username);
         this.localSessionStorage.set('password', user.value.password);
+
         this.login(user.value.username, user.value.password);
       }
     } else {
@@ -63,6 +66,11 @@ export class LoginComponent implements OnInit{
         this.btnClickFlag = 0;
         if (value.status === '1000') {
           this.item = [];
+          this.themeList.forEach((v, index) => {
+            if (v.value === value.data.userInfo.theme) {
+              this.localSessionStorage.setObject('theme', {value: value.data.userInfo.theme, flag: index});
+            }
+          });
           this.localSessionStorage.set('appkey', value.data.token);
           value.data.permitDTOS.forEach( v => {
             // console.log(v);

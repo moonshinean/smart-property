@@ -13,4 +13,7 @@ export class HomeService {
   public  getChildrenRouter(pamars): Observable<any> {
       return this.http.post(environment.loginUrl + '/permission/findByParentCode', pamars);
   }
+  public  setChangeTheme(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + '/user/updateTheme', pamars);
+  }
 }

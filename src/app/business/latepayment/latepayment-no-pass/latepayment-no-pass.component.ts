@@ -7,6 +7,7 @@ import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-latepayment-no-pass',
@@ -17,7 +18,6 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
 
   public latePaymentNoContents: any;
   public optionTable: any;
-  public SearchData: LatePaymentQueryData = new LatePaymentQueryData();
   // 详情相关
   public dialogOption: any;
   public detailTitle = [
@@ -55,6 +55,29 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
   ];
   public btnOption: BtnOption = new BtnOption();
 
+  // 搜索相关
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public searchType = 0;
+  public searchData = '';
+  public nowPage: any;
+  public latePaymentSub: Subscription;
   // 其他相关
   public pageOption: any;
   public loadHidden = true;
@@ -73,6 +96,7 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
     private lateSrv: LatePaymentService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
+    private sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
   ) {
 
@@ -84,12 +108,32 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
         this.setTableOption(this.latePaymentNoContents);
       }
     );
+    this.latePaymentSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchData[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchData.pageNo = 1;
+        this.reslveSearchData();
+        this.queryData();
+      }
+    );
+
   }
   ngOnInit() {
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
+    }
+    if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.sharedSrv.SearchData) {
+        if (key !== 'data') {
+          this.SearchData[key] = this.sharedSrv.SearchData[key];
+        }
+      }
     }
     this.btnOption.btnlist = [
       {label: '搜索', src: '', style: {background: '#55AB7F', marginLeft: '2vw'}, hidden: true },
@@ -102,16 +146,12 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
   }
   // Initialize lateNopass data
   public  lateNopassInitialization(): void {
-    this.SearchData.pageNo = 1;
-    this.SearchData.pageSize = 10;
-    this.queryData(this.SearchData);
+    this.queryData();
   }
   // paging query
   public  nowpageEventHandle(event: any): void {
     this.SearchData.pageNo = event;
-    // this.SearchData.pageNo = 10;
-    // console.log(this.SearchData);
-    this.queryData(this.SearchData);
+    this.queryData();
   }
   // set table data
   public  setTableOption(data1): void {
@@ -188,10 +228,10 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
     }
   }
   // query data
-  public  queryData(data): void {
+  public  queryData(): void {
     // this.SearchData.pageSize = 10;
     this.loadHidden = false;
-    this.lateSrv.queryLatePaymentNoPassPageData(data).subscribe(
+    this.lateSrv.queryLatePaymentNoPassPageData(this.SearchData).subscribe(
       value => {
         this.loadHidden = true;
         if (value.status === '1000') {
@@ -206,29 +246,42 @@ export class LatepaymentNoPassComponent implements OnInit, OnDestroy {
   }
   // search data
   public  searchClick(e): void {
-    if (e.type === 1) {
-      this.SearchData.mobilePhone = '';
-      this.SearchData.roomCode = '';
-      this.queryData(this.SearchData);
-    } else if (e.type === 2) {
-      if (e.value === '') {
-        this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
-      } else {
-        this.SearchData.mobilePhone = '';
-        this.SearchData.roomCode = e.value;
-        this.queryData(this.SearchData);
-      }
+    this.nowPage = this.SearchData.pageNo = 1;
+    this.searchType = e.type;
+    this.searchData = e.value;
+    if (e.value !== '') {
+      this.selectSearchType();
     } else {
-      if (e.value === '') {
-        this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
-      } else {
-        this.SearchData.roomCode = '';
-        this.SearchData.mobilePhone = e.value;
-        this.queryData(this.SearchData);
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    }
+  }
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+        this.queryData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryData(); break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryData(); break;
+      case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryData(); break;
+      default:
+        break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchData) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchData[serchKey] = '';
       }
     }
   }
-
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchData.mobilePhone = '';
+    this.SearchData.surname = '';
+    this.SearchData.idNumber = '';
+  }
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '审核拒绝') {

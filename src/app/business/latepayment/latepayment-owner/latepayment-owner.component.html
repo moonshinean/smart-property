@@ -33,6 +33,7 @@
     </div>
     <!--//搜索-->
     <div class="ui-inputgroup  latepayment-owner-header-search" *ngIf="!btnHiden[1].hidden">
+      <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选查看范围..."  [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
       <input type="text" pInputText placeholder="请输入手机号" style="width: 7vw" [(ngModel)]="serchData">
       <button id="disabled-btn" class=" latepayment-owner-header-btn-search" type="button"  (click)="ownerSearchClick()"  label="搜索">搜索</button>
     </div>

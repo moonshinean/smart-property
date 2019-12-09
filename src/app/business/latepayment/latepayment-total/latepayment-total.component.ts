@@ -10,6 +10,7 @@ import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-latepayment-total',
@@ -23,7 +24,6 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   public latetotleSelect = [];
   // 基础按钮相关
   public btnOption: BtnOption = new BtnOption();
-  public SearchData: LatePaymentQueryData = new LatePaymentQueryData();
   // 上传相关
   public UploadFileOption: FileOption = new FileOption();
   // 上传详情记录相关
@@ -41,7 +41,30 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   public formdata: any[];
   public optionDialog: DialogModel = new DialogModel();
   public pageOption: any;
-  public loadHidden = true;
+  // 搜索相关
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public searchType = 0;
+  public searchData = '';
+  public nowPage: any;
+
+  public latePaymentSub: Subscription;
   public themeSub: Subscription;
   public table = {
     tableheader: {background: '', color: ''},
@@ -57,6 +80,7 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
     private lateSrv: LatePaymentService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
+    private sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
@@ -65,6 +89,18 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
         this.table.tableContent = value.table.content;
         this.table.detailBtn = value.table.detailBtn;
         this.setTableOption(this.latepaymentContent);
+      }
+    );
+    this.latePaymentSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchData[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchData.pageNo = 1;
+        this.reslveSearchData();
+        this.queryData();
       }
     );
   }
@@ -76,6 +112,13 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
       {label: '搜索', src: '', style: '' , hidden: true},
     ];
     this.setBtnIsHidden();
+    if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.sharedSrv.SearchData) {
+        if (key !== 'data') {
+          this.SearchData[key] = this.sharedSrv.SearchData[key];
+        }
+      }
+    }
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -85,14 +128,11 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.themeSub.unsubscribe();
+    this.latePaymentSub.unsubscribe();
   }
   // Initialize latetotle data
   public  latetotleInitialization(): void {
-    this.SearchData.pageNo = 1;
-    this.SearchData.pageSize = 10;
-    this.SearchData.mobilePhone = '';
-    this.SearchData.roomCode = '';
-    this.queryData(this.SearchData);
+    this.queryData();
   }
 
   // show add latetotle dialog
@@ -127,14 +167,12 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   public  latetotleModifySureClick(): void {
     // console.log(this.primitDatas);
     this.toolSrv.setConfirmation('修改', '修改', () => {
-      this.loadHidden = false;
       this.lateSrv.updateLatePayment(this.modifyLatePayment).subscribe(
         value => {
-          this.loadHidden = true;
           this.toolSrv.setQuestJudgment(value.status, value.message, () => {
             this.optionDialog.dialog = false;
             this.latetotleSelect = [];
-            this.queryData(this.SearchData);
+            this.queryData();
           });
         }
       );
@@ -163,10 +201,8 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   // paging query
   public  nowpageEventHandle(event: any): void {
     this.SearchData.pageNo = event;
-
-    // this.SearchData.pageNo = 10;
-    // console.log(this.SearchData);
-    this.queryData(this.SearchData);
+    this.selectSearchType();
+    this.latetotleSelect = [];
   }
   // show upload file dialog
   public uploadFileClick(): void {
@@ -176,10 +212,8 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   }
   // sure upload file
   public  UploadSureClick(e): void {
-    this.loadHidden = false;
     this.lateSrv.uploadFile(e).subscribe(
       (value) => {
-        this.loadHidden = true;
         if (value.status === '1000') {
          this.toolSrv.setToast('success', '请求成功', '上传成功');
          this.UploadFileOption.files = [];
@@ -210,7 +244,7 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
              }
            }
          };
-         this.queryData(this.SearchData);
+         this.queryData();
         }
         console.log(value);
       });
@@ -323,11 +357,9 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
       }
   }
   // query data
-  public  queryData(data): void {
-    this.loadHidden = false;
-    this.lateSrv.queryLatePaymentPageData(data).subscribe(
+  public  queryData(): void {
+    this.lateSrv.queryLatePaymentPageData(this.SearchData).subscribe(
       value => {
-        this.loadHidden = true;
         if (value.status === '1000') {
           this.latepaymentContent = value.data.contents;
           this.setTableOption(value.data.contents);
@@ -344,7 +376,6 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
       this.optionDialog.dialog = false;
       this.latetotleSelect = [];
     } else {
-      console.log(e);
       if (e.invalid) {
         if (e.type === '添加信息') {
           for (const eKey in e.value.value) {
@@ -368,9 +399,7 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   }
   // btn click event
   public  btnEvent(e): void {
-      // console.log(e);
       switch (e) {
-        case '新增': console.log(e); break;
         case '修改': this.latetotleModifyClick(); break;
         case '删除': this.latetotleDeleteClick(); break;
         case '导入': this.uploadFileClick(); break;
@@ -378,28 +407,42 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   }
   // search data
   public  searchClick(e): void {
-       if (e.type === 1) {
-         this.SearchData.mobilePhone = '';
-         this.SearchData.roomCode = '';
-         this.queryData(this.SearchData);
-       } else if (e.type === 2) {
-         if (e.value === '') {
-           this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
-         } else {
-           this.SearchData.mobilePhone = '';
-           this.SearchData.roomCode = e.value;
-           this.queryData(this.SearchData);
-         }
-       } else {
-           if (e.value === '') {
-             this.toolSrv.setToast('error', '操作错误', '请输入搜索的值');
-           } else {
-             this.SearchData.roomCode = '';
-             this.SearchData.mobilePhone = e.value;
-             this.queryData(this.SearchData);
-           }
-         }
-     }
+    this.nowPage = this.SearchData.pageNo = 1;
+    this.searchType = e.type;
+    this.searchData = e.value;
+    if (e.value !== '') {
+      this.selectSearchType();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    }
+  }
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+              this.queryData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryData(); break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryData(); break;
+      case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryData(); break;
+      default:
+        break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchData) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchData[serchKey] = '';
+      }
+    }
+  }
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchData.mobilePhone = '';
+    this.SearchData.surname = '';
+    this.SearchData.idNumber = '';
+  }
   // 设置按钮显示权限
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {

@@ -9,6 +9,7 @@ import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-refund-application-info',
@@ -56,11 +57,35 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
     {label: '删除', hidden: true},
     {label: '搜索', hidden: true},
   ];
+  // 搜索相关
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public searchType = 0;
+  public searchData = '';
+  // 树结构订阅
+  public refundSub: Subscription;
   constructor(
     private applicationInfoSrv: RefundService,
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
+    private sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
@@ -79,10 +104,23 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
+    this.refundSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchData[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchData.pageNo = 1;
+        this.reslveSearchData();
+        this.queryApplicationPageData();
+      }
+    );
     this.applicationInfoInitialization();
   }
   ngOnDestroy(): void {
     this.themeSub.unsubscribe();
+    this.refundSub.unsubscribe();
   }
   // initialization applicationInfo
   public applicationInfoInitialization(): void {
@@ -158,6 +196,42 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
     }
   }
+  // 搜索
+  public  applicationInfoSearchClick(): void {
+    this.nowPage = this.SearchData.pageNo = 1;
+    if (this.searchData !== '') {
+      this.selectSearchType();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    }
+  }
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+        this.queryApplicationPageData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryApplicationPageData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryApplicationPageData(); break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryApplicationPageData(); break;
+      case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryApplicationPageData(); break;
+      default:
+        break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchData) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchData[serchKey] = '';
+      }
+    }
+  }
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchData.mobilePhone = '';
+    this.SearchData.surname = '';
+    this.SearchData.idNumber = '';
+  }
   public  modifyApplicationInfo(): void {
     this.optionDialog = {
       type: 'add',
@@ -186,13 +260,13 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.queryApplicationPageData();
+    this.SearchData.pageNo = event;
+    this.selectSearchType();
   }
   // 查询申请的数据
   public  queryApplicationPageData(): void {
-    this.applicationInfoSrv.queryRefundApplicationInfoPage({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.applicationInfoSrv.queryRefundApplicationInfoPage(this.SearchData).subscribe(
       value => {
-        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
             value.data.contents.forEach( v => {
@@ -279,10 +353,9 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '申请退款') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
-          console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });

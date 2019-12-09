@@ -24,10 +24,11 @@
       <!--</div>-->
     </div>
     <!--//搜索-->
-    <!--<div class="ui-inputgroup refund-pend-review-header-search" *ngIf="!btnHiden[1].hidden">-->
-      <!--<input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="refundPendReviewSeachData">-->
-      <!--<button id="disabled-btn" class="refund-pend-review-header-btn-search" type="button"  (click)="refundPendReviewSearchClick()"  label="搜索">搜索</button>-->
-    <!--</div>-->
+    <div class="ui-inputgroup refund-pend-review-header-search" *ngIf="!btnHiden[1].hidden">
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="searchData">
+      <button id="disabled-btn" class="refund-pend-review-header-btn-search" type="button"  (click)="refundPendReviewSearchClick()" >搜索</button>
+    </div>
   </div>
   <!--表格-->
   <div class="refund-pend-review-table">

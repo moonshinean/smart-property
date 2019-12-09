@@ -15,16 +15,17 @@ export class BasicBtnComponent implements OnInit, OnChanges {
   @Output()
   public searchEvent = new EventEmitter<any>();
   public searchOption = [
-    {label: '所有', value: 1},
+    {label: '手机号', value: 1},
     {label: '房间号', value: 2},
-    {label: '手机号', value: 3},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
   ];
   // public  SearchOption = {
   //   village: [],
   //   region: [],
   //   building: [],
   // };
-  public searchType = 1;
+  public searchType = 0;
   public serchData = '';
   constructor() { }
   ngOnInit() {

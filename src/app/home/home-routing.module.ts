@@ -13,7 +13,7 @@ const routes: Routes = [
       {path: 'charge', loadChildren: '../business/chargeman/chargeman.module#ChargemanModule', data: {preload: true}},
       {path: 'system', loadChildren: '../business/systemset/systemset.module#SystemsetModule'},
       {path: 'coupon', loadChildren: '../business/coupon/coupon.module#CouponModule'},
-      {path: 'refund', loadChildren: '../business/refund/refund.module#RefundModule'},
+      {path: 'refund', loadChildren: '../business/refund/refund.module#RefundModule', data: {preload: true}},
       {path: 'latepayment', loadChildren: '../business/latepayment/latepayment.module#LatepaymentModule'},
      ]
   }

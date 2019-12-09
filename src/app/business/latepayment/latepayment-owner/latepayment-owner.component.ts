@@ -11,6 +11,7 @@ import {ThemeService} from '../../../common/public/theme.service';
 import {Subscription} from 'rxjs';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-latepayment-owner',
@@ -34,13 +35,28 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
   public formdata: any[];
   public optionDialog: DialogModel = new DialogModel();
   // 查询相关
-  public searchOwerData: SearchOwner = new SearchOwner();
+  public searchOwerData = {
+    pageSize: 10,
+    pageNo: 1,
+    code: '',
+    level: ''
+  };
   // 按钮权限相关
   public btnHiden = [
     {label: '计算违约金', hidden: true},
     {label: '搜索', hidden: true},
   ];
+  public inputSearchData = '';
+  public searchType = 0;
+  public SearchTypeOption = [
+    {label: '全部', value: 1},
+    {label: '手机号', value: 2},
+    {label: '房间号', value: 3},
+    {label: '业主姓名', value: 4},
+    {label: '身份证号', value: 5},
+  ];
   public themeSub: Subscription;
+  public ownerSub: Subscription;
   public table = {
     tableheader: {background: '', color: ''},
     tableContent: [
@@ -56,6 +72,7 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
+    private sharedSrv: SharedServiceService,
     private datePipe: DatePipe,
     private themeSrv: ThemeService,
   ) {
@@ -67,6 +84,13 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
         this.setTableOption(this.tableContents);
       }
     );
+    this.ownerSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        this.searchOwerData.level = value.data.level;
+        this.searchOwerData.code = value.data.code;
+        this.queryData();
+      }
+    );
   }
 
   ngOnInit() {
@@ -76,9 +100,13 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
+    if (this.sharedSrv.SearchData !== undefined) {
+      this.searchOwerData.level = this.sharedSrv.SearchData.data.level;
+      this.searchOwerData.code = this.sharedSrv.SearchData.data.code;
+    }
     this.searchOwerData.pageNo = 1;
     this.searchOwerData.pageSize = 10;
-    this.queryData(this.searchOwerData);
+    this.queryData();
   }
   ngOnDestroy(): void {
     this.themeSub.unsubscribe();
@@ -113,7 +141,26 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
   }
 
   public  ownerSearchClick(): void {
-      
+    this.searchJudgment(1);
+  }
+  // 判断搜索条件
+  public  searchJudgment(page): void {
+    switch (this.searchType) {
+      case 0:  this.queryData(); break;
+      case 1:  this.queryData(); break;
+      case 2:  this.setCondition('phone', '请输入需要搜索的手机号', page); break;
+      case 3:  this.setCondition('roomCode', '请输入需要搜索的房间号', page); break;
+      case 4:  this.setCondition('surname', '请输入需要搜索的客户名称', page); break;
+      case 5:  this.setCondition('idNumber', '请输入需要搜索的身份证号', page); break;
+      default: break;
+    }
+  }
+  public  setCondition(confition, message, pageNo): void {
+    if (this.serchData !== '') {
+      this.queryOwnerPageByCondition(confition, this.serchData, pageNo);
+    } else {
+      this.toolSrv.setToast('error', '操作错误', message);
+    }
   }
   // set table data
   public  setTableOption(data1): void {
@@ -141,11 +188,10 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
     };
   }
   // query fata
-  // query data
-  public  queryData(data): void {
+  public  queryData(): void {
     // this.SearchData.pageSize = 10;
     this.loadHidden = false;
-    this.ownerSrv.queryOwerDataList(data).subscribe(
+    this.ownerSrv.queryOwerDataList(this.searchOwerData).subscribe(
       value => {
         this.loadHidden = true;
         if (value.status === '1000') {
@@ -158,6 +204,20 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
       }
     );
   }
+  // 条件查询
+  public  queryOwnerPageByCondition(conditions, data, nowPage): void {
+    this.ownerSrv.queryOwerInfoListByCondition({condition: conditions, value: data, pageSize: 10,  pageNo: nowPage }).subscribe(
+      (value) => {
+        if (value.status === '1000') {
+          this.setTableOption(value.data.contents);
+          this.pageOption = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询失败', value.message);
+        }
+      }
+    );
+  }
+
 
   // set detail dialog data
   public  detailClick(e): void {
@@ -177,7 +237,7 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
     this.ownerSrv.queryOwerInfoDetail({roomCode: e.roomCode}).subscribe(
       value => {
         console.log(value);
-        if (value.data.length !== 0) {
+        if (value.data.parkingSpaceManagementDOS.length !== 0) {
           this.dialogOption = {
             dialog: true,
             tableHidden: true,
@@ -204,7 +264,7 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
                 style: {background: '#ffffff', color: '#000000', height: '6vh'},
               },
               tableContent: {
-                data: value.data,
+                data: value.data.parkingSpaceManagementDOS,
                 styleone: {background: '#ffffff', color: '#000', textAlign: 'center', height: '2vw'},
                 styletwo: {background: '#ffffff', color: '#000', textAlign: 'center', height: '2vw'}
               },
@@ -215,7 +275,7 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
             dialog: true,
             tableHidden: false,
             width: '1000',
-            type: 2,
+            type: 1,
             title: '详情',
             poplist: {
               popContent: e,
@@ -226,17 +286,14 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
       }
     );
   }
-
   // select data
   public  selectData(e): void {
       this.ownerSelect = e;
   }
-
   public  nowpageEventHandle(e): void {
     this.searchOwerData.pageNo = e;
-    this.queryData(this.searchOwerData);
+    this.queryData();
   }
-
   public  eventClick(e): void {
       // if (！e)
     if (e === 'false') {
@@ -249,12 +306,17 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
       this.calcLatepayment(this.CalcPaymentData);
     }
   }
-
   public  calcLatepayment(data): void {
-    console.log(data);
     this.lateSrv.calcLatepayment(data).subscribe(
         value => {
-          console.log(value);
+          if (value.status === '1000') {
+             this.toolSrv.setToast('success', '请求成功', '计算成功');
+             this.optionDialog.dialog = false;
+             this.ownerSelect = [];
+             this.queryData();
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
+          }
         }
       );
   }

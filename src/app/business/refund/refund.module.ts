@@ -20,24 +20,17 @@ import {DataViewModule} from 'primeng/dataview';
 import {PagingModule} from '../../common/components/paging/paging.module';
 import {FormsModule} from '@angular/forms';
 import {LoadingModule} from '../../common/components/loading/loading.module';
-import { RefundReviewComponent } from './refund-review/refund-review.component';
-import { RefundPendReviewComponent } from './refund-pend-review/refund-pend-review.component';
-import { RefundAuditedComponent } from './refund-audited/refund-audited.component';
-import { RefundApplicationInfoComponent } from './refund-application-info/refund-application-info.component';
 import {PublicMethedService} from '../../common/public/public-methed.service';
 import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
 import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
+import {RefundAuditedComponent} from './refund-audited/refund-audited.component';
 
 @NgModule({
   declarations: [
     RefundComponent,
     RefundInfoComponent,
-    RefundAlreadyComponent,
-    RefundNoComponent,
-    RefundReviewComponent,
-    RefundPendReviewComponent,
-    RefundAuditedComponent,
-    RefundApplicationInfoComponent],
+    RefundAuditedComponent
+  ],
   imports: [
     CommonModule,
     RefundRoutingModule,

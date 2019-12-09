@@ -7,7 +7,7 @@ import { LatepaymentTotalComponent } from './latepayment-total/latepayment-total
 import {
   ButtonModule, ConfirmationService,
   ConfirmDialogModule,
-  DialogModule, FileUploadModule,
+  DialogModule, DropdownModule, FileUploadModule,
   InputTextModule,
   MessageModule, MessageService,
   MessagesModule,
@@ -52,7 +52,8 @@ import { LatepaymentOwnerComponent } from './latepayment-owner/latepayment-owner
     BasicTableModule,
     FileUploadModule,
     BasicDialogModule,
-    HeaderBtnModule
+    HeaderBtnModule,
+    DropdownModule,
   ],
   providers: [MessageService, ConfirmationService, PublicMethedService, DatePipe]
 })

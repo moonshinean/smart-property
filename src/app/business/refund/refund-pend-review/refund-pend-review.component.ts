@@ -7,6 +7,7 @@ import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-refund-pend-review',
@@ -51,11 +52,35 @@ export class RefundPendReviewComponent implements OnInit {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 树结构订阅
+  public refundSub: Subscription;
+  // 搜索相关
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode:  '',
+    unitCode: '',
+    roomCode: '',
+    mobilePhone: '',
+    idNumber: '',
+    surname: '',
+    pageNo: 1,
+    pageSize: 10
+  };
+  public searchOption = [
+    {label: '手机号', value: 1},
+    {label: '房间号', value: 2},
+    {label: '姓名', value: 3},
+    {label: '身份证号', value: 4},
+  ];
+  public searchType = 0;
+  public searchData = '';
   constructor(
     private toolSrv: PublicMethedService,
     private refundPendReviewSrv: RefundService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
+    private sharedSrv: SharedServiceService,
     private themeSrv: ThemeService
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
@@ -64,6 +89,18 @@ export class RefundPendReviewComponent implements OnInit {
         this.table.tableContent = value.table.content;
         this.table.detailBtn = value.table.detailBtn;
         this.setTableOption(this.refundPendReviewTableContent);
+      }
+    );
+    this.refundSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        for (const key in value) {
+          if (key !== 'data') {
+            this.SearchData[key] = value[key];
+          }
+        }
+        this.nowPage = this.SearchData.pageNo = 1;
+        this.reslveSearchData();
+        this.queryRefundPendReviewPageData();
       }
     );
   }
@@ -75,11 +112,19 @@ export class RefundPendReviewComponent implements OnInit {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
+    if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.sharedSrv.SearchData) {
+        if (key !== 'data') {
+          this.SearchData[key] = this.sharedSrv.SearchData[key];
+        }
+      }
+    }
     this.esDate = this.toolSrv.esDate;
     this.refundPendReviewInitialization();
   }
   ngOnDestroy(): void {
     this.themeSub.unsubscribe();
+    this.refundSub.unsubscribe();
   }
   // initialization houseinfo
   public refundPendReviewInitialization(): void {
@@ -105,10 +150,41 @@ export class RefundPendReviewComponent implements OnInit {
   }
 
   // // condition search click
-  // public refundPendReviewSearchClick(): void {
-  //   console.log('这里是条件搜索');
-  // }
-
+  public refundPendReviewSearchClick(): void {
+    this.nowPage = this.SearchData.pageNo = 1;
+    if (this.searchData !== '') {
+      this.selectSearchType();
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    }
+  }
+  // 判断搜索方式
+  public  selectSearchType(): void {
+    switch (this.searchType) {
+      case 0: this.reslveSearchData();
+              this.queryRefundPendReviewPageData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryRefundPendReviewPageData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryRefundPendReviewPageData(); break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryRefundPendReviewPageData(); break;
+      case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryRefundPendReviewPageData(); break;
+      default:
+        break;
+    }
+  }
+  // 重置数据
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchData) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchData[serchKey] = '';
+      }
+    }
+  }
+  // 重置搜索条件
+  public  reslveSearchData(): void {
+    this.SearchData.mobilePhone = '';
+    this.SearchData.surname = '';
+    this.SearchData.idNumber = '';
+  }
   // detail refundPendReviewInfo
   public refundPendReviewDetailClick(e): void {
     this.refundPendReviewDetailOption = {
@@ -218,12 +294,13 @@ export class RefundPendReviewComponent implements OnInit {
   public nowpageEventHandle(event: any): void {
     this.loadingHide = false;
     this.nowPage = event;
-    this.queryRefundPendReviewPageData();
+    this.SearchData.pageNo = event;
+    this.selectSearchType();
     this.refundPendReviewSelect = [];
   }
 
   public  queryRefundPendReviewPageData(): void {
-    this.refundPendReviewSrv.queryRefundPendPageInfo({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.refundPendReviewSrv.queryRefundPendPageInfo(this.SearchData).subscribe(
       (value) => {
         console.log(value);
         this.loadingHide = true;

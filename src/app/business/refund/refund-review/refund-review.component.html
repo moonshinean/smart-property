@@ -23,11 +23,12 @@
         <!--<p-dropdown [options]="SearchOption.room"  scrollHeight="100px" placeholder="请选择房间..."></p-dropdown>-->
       <!--</div>-->
     </div>
-    <!--&lt;!&ndash;//搜索&ndash;&gt;-->
-    <!--<div class="ui-inputgroup refund-review-header-search" *ngIf="!btnHiden[1].hidden">-->
-      <!--<input type="text" pInputText placeholder="请输入手机号码" style="width: 7vw" [(ngModel)]="refundReviewSeachData">-->
-      <!--<button id="disabled-btn" class="refund-review-header-btn-search" type="button"  (click)="refundReviewSearchClick()"  label="搜索">搜索</button>-->
-    <!--</div>-->
+    <!--//搜索-->
+    <div class="ui-inputgroup refund-review-header-search" *ngIf="!btnHiden[1].hidden">
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入需要搜索的值" style="width: 7vw" [(ngModel)]="searchData">
+      <button id="disabled-btn" class="refund-review-header-btn-search" type="button"  (click)="refundReviewSearchClick()" >搜索</button>
+    </div>
   </div>
   <!--表格-->
   <div class="refund-review-table" >

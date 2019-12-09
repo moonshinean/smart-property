@@ -109,7 +109,7 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
-    if (this.sharedSrv.SearchData !== undefined){
+    if (this.sharedSrv.SearchData !== undefined) {
       for (const key in this.sharedSrv.SearchData) {
         if (key !== 'data') {
           this.SearchData[key] = this.sharedSrv.SearchData[key];
@@ -148,11 +148,11 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
   public  selectSearchType(): void {
     switch (this.searchType) {
       case 0: this.reslveSearchData();
-        this.queryRefundNoInfoPageData(); break;
-      case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryRefundNoInfoPageData(); break;
-      case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryRefundNoInfoPageData(); break;
-      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryRefundNoInfoPageData(); break;
-      case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryRefundNoInfoPageData(); break;
+              this.queryData(); break;
+      case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryData(); break;
+      case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryData(); break;
+      case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryData(); break;
+      case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryData(); break;
       default:
         break;
     }
@@ -227,7 +227,9 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
-    this.queryData();
+    this.SearchData.pageNo = event;
+    this.selectSearchType();
+    this.alreadySelect = [];
   }
   public  queryData(): void {
     this.alreadySrv.queryRefundAlreadyPageInfo(this.SearchData).subscribe(
@@ -296,9 +298,9 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '未退款') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });

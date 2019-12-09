@@ -182,7 +182,6 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
             this.items = [];
             this.homeSrv.getChildrenRouter({parentCode: v.permisCode}).subscribe(
               (value) => {
-                console.log(value);
                 h.routingItem.forEach( val => {
                  value.data.forEach( data => {
                     if (val.label === data.title) {

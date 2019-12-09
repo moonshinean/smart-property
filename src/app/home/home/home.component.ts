@@ -18,7 +18,6 @@ export class HomeComponent implements OnInit {
   @ViewChild('mainStyle') mainStyle: Element;
   public sidbarHidden: boolean;
   public sidbarItem: any;
-  public sidbarData: any;
   public treeDialog = false;
   public roomtree: any;
   public themeFlag = 0;
@@ -155,26 +154,31 @@ export class HomeComponent implements OnInit {
         this.themeFlag += 1;
         this.localSrv.setObject('theme', {value: 'blue', flag: this.themeFlag});
         this.toolSrv.changeTheme('blue');
+        this.setChangeTheme('blue');
         break;
       case 1:
         this.themeFlag += 1;
         this.localSrv.setObject('theme', {value: 'pink', flag: this.themeFlag});
         this.toolSrv.changeTheme('pink');
+        this.setChangeTheme('pink');
         break;
       case 2:
         this.themeFlag  += 1;
         this.localSrv.setObject('theme', {value: 'brown', flag: this.themeFlag});
         this.toolSrv.changeTheme('brown');
+        this.setChangeTheme('brown');
         break;
       case 3:
         this.themeFlag  += 1;
         this.localSrv.setObject('theme', {value: 'default', flag: this.themeFlag});
         this.toolSrv.changeTheme('default');
+        this.setChangeTheme('default');
         break;
       case 4:
         this.themeFlag = 0;
         this.localSrv.setObject('theme', {value: 'green', flag: this.themeFlag});
         this.toolSrv.changeTheme('green');
+        this.setChangeTheme('green');
         break;
     }
     // this.themeFlag += 1;
@@ -215,5 +219,17 @@ export class HomeComponent implements OnInit {
     // //   }).then(() => {
     // //     console.log(123);
     // // });
+  }
+  public  setChangeTheme(data): void {
+      this.homeSrv.setChangeTheme({theme: data}).subscribe(
+        value => {
+          console.log(value);
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '绑定成功', '主题绑定用户成功');
+            } else {
+              this.toolSrv.setToast('error', '绑定失败', '主题该主题仅限于当次使用');
+            }
+        }
+      );
   }
 }

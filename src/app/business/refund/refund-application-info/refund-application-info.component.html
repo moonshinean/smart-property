@@ -14,22 +14,13 @@
         <img class="refund-applicationInfo-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
-      <!--<div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">-->
-        <!--<label style="color: #fff;margin-left: 0.5vw" >小区：</label>-->
-        <!--<p-dropdown [options]="SearchOption.village"  scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)"></p-dropdown>-->
-        <!--<label style="color: #fff;margin-left: 0.5vw">地块：</label>-->
-        <!--<p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)"></p-dropdown>-->
-        <!--<label style="color: #fff;margin-left: 0.5vw">楼栋：</label>-->
-        <!--<p-dropdown [options]="SearchOption.building"  scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)"></p-dropdown>-->
-        <!--<label style="color: #fff;margin-left: 0.5vw">单元：</label>-->
-        <!--<p-dropdown [options]="SearchOption.unit"   scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)"></p-dropdown>-->
-      <!--</div>-->
     </div>
     <!--//搜索-->
-    <!--<div class="ui-inputgroup refund-applicationInfo-header-search" *ngIf="!btnHiden[2].hidden">-->
-      <!--<input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
-      <!--<button id="disabled-btn" class="refund-applicationInfo-header-btn-search" type="button"  (click)="applicationInfoSearchClick()"  label="搜索">搜索</button>-->
-    <!--</div>-->
+    <div class="ui-inputgroup refund-applicationInfo-header-search" *ngIf="!btnHiden[2].hidden">
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'10vw','margin-right':'2vw'}"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入缴费人"  style="width: 7vw" [(ngModel)]="searchData" />
+      <button id="disabled-btn" class="refund-applicationInfo-header-btn-search" type="button"  (click)="applicationInfoSearchClick()">搜索</button>
+    </div>
   </div>
   <!--表格-->
   <div class="refund-applicationInfo-table" >

@@ -7,7 +7,7 @@ import {Injectable} from '@angular/core';
 export class PreloadSelectedModules implements PreloadingStrategy {
   preloadModules: string[] = [];
   preload(route: Route, load: () => Observable<any>): Observable<any> {
-    if (route.data && route.data.preload) {
+    if (route.data && route.data.preload ) {
       this.preloadModules.push(route.path);
       return load();
     }
