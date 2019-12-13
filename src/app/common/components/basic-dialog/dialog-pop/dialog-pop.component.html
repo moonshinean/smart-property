@@ -5,9 +5,9 @@
       <div class="ui-g-12">
         <!--<rbi-form-control [formValue]="form" [formdata]="formdata"></rbi-form-control>-->
         <div class="form-control" [formGroup]="formContrl" *ngIf="formdata">
-          <div class="ui-g-6" *ngFor="let item of formdata">
-            <div class="ui-g-4" style="text-align: right;line-height: 4.5vh">
-              <label [for]="item?.name">{{item.label}}:</label>
+          <div class="ui-g-6" *ngFor="let item of formdata" style="line-height: 4vh">
+            <div class="ui-g-4" style="text-align: right;line-height: 3vh">
+              <label [for]="item?.name"><em [hidden]="!item.required">*</em>{{item.label}}:</label>
             </div>
             <div class="ui-g-8" *ngIf="item?.type === 'input'" style="line-height: 3vh">
               <div [hidden]="!item?.disable">
@@ -19,7 +19,7 @@
                 <input type="text"  pInputText [id]="item?.name" [formControlName]="item?.name"  [placeholder]="item?.placeholder" (click)="inputData()" (blur)="inputBlur(item?.name)" />
               </div>
             </div>
-            <div class="ui-g-8" *ngIf="item?.type === 'dropdown'"  style="line-height: 3vh">
+            <div class="ui-g-8" *ngIf="item?.type === 'dropdown'"  style="line-height: 2vh">
               <p-dropdown [id]="item?.name" scrollHeight="100px" [options]="item?.option"  [placeholder]="item?.placeholder" [formControlName]="item?.name" (onChange)="dataChange(item?.name, item?.value, item?.option)"></p-dropdown>
             </div>
             <div class="ui-g-8" *ngIf="item?.type === 'date'"  style="line-height: 2vh">

@@ -100,7 +100,7 @@
               <ng-template pTemplate="header" let-columns>
                 <tr >
                   <th style="width: 3em">
-                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    <p-tableHeaderCheckbox (click)="itemCalClick()"></p-tableHeaderCheckbox>
                   </th>
                   <th *ngFor="let col of columns" >
                     {{col.header}}
@@ -299,12 +299,12 @@
     <div class="ui-g ui-fluid" style="line-height: 4vh">
       <!--报表显示数据-->
       <div class="ui-g-12">
-        <div class="ui-g-6">
+        <div class="ui-g-8">
           <div class="ui-g-5" style="text-align: right">
             <label>选择拆分时间:</label>
           </div>
           <div class="ui-g-7">
-            <p-calendar  placeholder="物业费开始计费时间..." [readonlyInput]="true" dateFormat="yy-mm-dd" [minDate]="minDate" [maxDate]="maxDate"  [locale]="esDate" [(ngModel)]="costSplitData.spiltTime"></p-calendar>
+            <p-calendar  placeholder="物业费开始计费时间..."   dateFormat="yy-mm-dd" [minDate]="minDate" [maxDate]="maxDate"  [locale]="esDate" [(ngModel)]="costSplitData.spiltTime"></p-calendar>
           </div>
         </div>
       </div>
@@ -554,26 +554,26 @@
         <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" (click)="parkSpaceOptionDialog = false;this.rentalHiddenInfo = true;">取消</button>
       </div>
     </p-footer>
-    <!--    树结构-->
-    <p-dialog [(visible)]="treeDialog" [responsive]="true" showEffect="fade" [modal]= false [maximizable]="false" [baseZIndex]="10000" [modal]="true" [width]="350" [height]="400">
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-12">
-          <p-scrollPanel [style]="{width: '100%', height: '300px'}">
-            <p-tree
-              [value]="dataTrees"
-              [(selection)]="dataTree"
-              selectionMode="single">
-            </p-tree>
-          </p-scrollPanel>
-        </div>
+  </p-dialog>
+  <!--    树结构-->
+  <p-dialog [(visible)]="treeDialog" [responsive]="true" showEffect="fade" [modal]= false [maximizable]="false" [baseZIndex]="10000" [modal]="true" [width]="350" [height]="400">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <p-scrollPanel [style]="{width: '100%', height: '300px'}">
+          <p-tree
+            [value]="dataTrees"
+            [(selection)]="dataTree"
+            selectionMode="single">
+          </p-tree>
+        </p-scrollPanel>
       </div>
-      <p-footer>
-        <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
-          <button  class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" style="width: 4vw" (click)="dataTreeSureClick()">确认</button>
-          <button  class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" style="width: 4vw" (click)="treeDialog = false">取消</button>
-        </div>
-      </p-footer>
-    </p-dialog>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button  class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" style="width: 4vw" (click)="dataTreeSureClick()">确认</button>
+        <button  class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" style="width: 4vw" (click)="treeDialog = false">取消</button>
+      </div>
+    </p-footer>
   </p-dialog>
   <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
   <rbi-file-pop [UploadFileOption]="UploadFileOption" (event)="paymentUploadSureClick($event)"></rbi-file-pop>

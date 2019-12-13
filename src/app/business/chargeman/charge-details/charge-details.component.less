@@ -5,7 +5,7 @@
     .charge-details-header-btn {
       color: #fff;
       width: 6vw;
-      margin-top: 4vh;
+      margin-top: 5vh;
       border: 0;
       text-align: center;
       border-radius: 5px;
@@ -20,24 +20,30 @@
         margin-right: 5px;
       }
     }
-    //.charge-details-header-btn-modify{
-    //  margin-left: 1vw;
-    //  background: #3A78DA;
-    //  .charge-details-header-img-modify {
-    //    width: 20px;
-    //    height: 20px;
-    //    vertical-align: bottom;
-    //    margin-right: 5px;
-    //  }
-    //}
-    //.charge-details-header-btn-delete{
-    //  margin-left: 1vw;
-    //  background: #A84847;
-    //}
-    //.charge-details-header-btn-delete:hover{
-    //  //margin-left: 1vw;
-    //  background: #A84847;
-    //}
+    .charge-details-header-btn-modify{
+      margin-left: 2vw;
+      background: #3A78DA;
+      .charge-details-header-img-modify {
+        width: 20px;
+        height: 20px;
+        vertical-align: bottom;
+        margin-right: 5px;
+      }
+    }
+    .charge-details-header-btn-delete{
+      margin-left: 2vw;
+      background: #A84847;
+      .charge-details-header-img-delete{
+        width: 18px;
+        height: 18px;
+        vertical-align: bottom;
+        margin-right: 5px;
+      }
+    }
+    .charge-details-header-btn-delete:hover{
+      //margin-left: 1vw;
+      background: #A84847;
+    }
     ::ng-deep .ui-dropdown{
       //width: 5% !important;
       min-width: 0;
@@ -91,13 +97,10 @@
       outline: none;
       color: #fff;
       border: 0;
-      background: #6A72A1;
+      background: var(--table-detail);
       cursor:pointer;
 
       //text-align: center;
-    }
-    .charge-details-table-Btn:hover{
-      background: #50588E;
     }
   }
 

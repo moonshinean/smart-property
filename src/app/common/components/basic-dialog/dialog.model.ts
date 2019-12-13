@@ -13,6 +13,7 @@ export class FromData {
   option?: any; // 下拉框的列表
   value?: any;  // 单选，多选的列表
   disable?: any;  // 单选，多选的列表
+  required?: any;  // 单选，多选的列表
 }
 export class FormValue {
   key: any;

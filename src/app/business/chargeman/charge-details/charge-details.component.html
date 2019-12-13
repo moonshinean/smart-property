@@ -5,28 +5,20 @@
     <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
     <!--顶部按钮-->
     <div class="charge-details-header">
-      <div class="ui-g-1 charge-details-header-btn charge-details-header-btn-add" (click)="uploadFileClick()" [hidden]="btnHiden[0].hidden">
+      <div class="ui-g-1 charge-details-header-btn charge-details-header-btn-modify" (click)="modifyChargeDetail()" >
+        <img class="charge-details-header-img-modify" src="assets/images/ic_modify.png" alt="">
+        <span>修  改</span>
+      </div>
+      <div class="ui-g-1 charge-details-header-btn charge-details-header-btn-delete" (click)="deleteChargeDetail()">
+        <img class="charge-details-header-img-delete" src="assets/images/ic_delete.png" alt="">
+        <span>删  除</span>
+      </div>
+      <div class="ui-g-1 charge-details-header-btn charge-details-header-btn-add" (click)="uploadFileClick()" [hidden]="btnHiden[2].hidden">
 <!--        <img class="charge-margin-header-img-add" src="assets/images/ic_add.png" alt="">-->
         <span>导  入</span>
       </div>
-      <!--<div class="ui-g-12">-->
-        <!--<div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">-->
-          <!--<label style="color: #fff;margin-left: 0.5vw" >小区：</label>-->
-          <!--<p-dropdown [options]="SearchOption.village" scrollHeight="100px" placeholder="请选择小区..."></p-dropdown>-->
-          <!--<label style="color: #fff;margin-left: 0.5vw">地块：</label>-->
-          <!--<p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..."></p-dropdown>-->
-          <!--<label style="color: #fff;margin-left: 0.5vw">楼栋：</label>-->
-          <!--<p-dropdown [options]="SearchOption.building" scrollHeight="100px" placeholder="请选择楼栋..."></p-dropdown>-->
-          <!--<label style="color: #fff;margin-left: 0.5vw">单元：</label>-->
-          <!--<p-dropdown [options]="SearchOption.unit"  scrollHeight="100px" placeholder="请选择单元..."></p-dropdown>-->
-          <!--<label style="color: #fff;margin-left: 0.5vw">房间：</label>-->
-          <!--<p-dropdown [options]="SearchOption.room"  scrollHeight="100px" placeholder="请选择房间..."></p-dropdown>-->
-        <!--</div>-->
-      <!--</div>-->
-
 <!--      搜索-->
-      <div class="ui-inputgroup charge-details-header-search" *ngIf="!btnHiden[1].hidden">
-<!--        <label style="color: #fff;margin-top: 0.5vh">搜索方式：</label>-->
+      <div class="ui-inputgroup charge-details-header-search" *ngIf="!btnHiden[3].hidden">
         <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width': '8vw','margin-right':'2vw'}"></p-dropdown>
         <input type="text" pInputText placeholder="请输入需要搜索的值"  [(ngModel)]="searchData">
         <button id="disabled-btn" class="charge-details-header-btn-search" type="button"  (click)="detailsSearchClick()"  label="搜索">搜索</button>
@@ -35,8 +27,182 @@
   <!--<button class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" style="position: absolute;top: 18.7vh;right: 5vw;z-index: 10000">搜索</button>-->
     <!--表格-->
     <div class="charge-details-table">
-      <rbi-check-table-btn (detail)="detailsDialogClick($event)" [option]="optionTable"></rbi-check-table-btn>
+      <rbi-check-table-btn (detail)="detailsDialogClick($event)" [select]="paymentDetailSelect" [option]="optionTable" (selectData)="selectData($event)"></rbi-check-table-btn>
     </div>
+  <!--缴费弹窗-->
+  <p-dialog  class="parmentDialog"  header="账单修改" [(visible)]="paymentDialog" [width]="1000"  [transitionOptions]="'200ms'"  [closable]="false">
+    <!--Content-->
+    <p-scrollPanel [style]="{width:'100%',height: '75vh'}" styleClass="custombar">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+          <h3>业主信息</h3>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-6" *ngFor="let item of paymentAddTitle" style="line-height: 4vh">
+            <div class="ui-g-4" style="text-align: right" >
+              <label>{{item.name}}:</label>
+            </div>
+            <div class="ui-g-8" style="line-height: 2vh">
+              <input pInputText type="text" [(ngModel)]="item.value" />
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12" [hidden]="deductionDamagesData.length === 0">
+          <h3>抵扣项目</h3>
+        </div>
+        <div class="ui-g-12" [hidden]="deductionDamagesData.length === 0">
+          <p-table [columns]="deductioTitle" [value]="deductionDamagesData"  [scrollable]="true"  scrollHeight="48vh">
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns" >
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
+                <td  *ngFor="let col of columns" style="word-break: break-word">
+                  {{rowData[col.field]}}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="ui-g-12" [hidden]="parkSpaceData.length === 0">
+          <h3>车位管理</h3>
+        </div>
+        <div class="ui-g-12" [hidden]=" parkSpaceData.length === 0">
+          <p-table [columns]="parkspaceTitle" [value]="parkSpaceData"  [scrollable]="true"  scrollHeight="48vh">
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns" >
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
+
+                <td  *ngFor="let col of columns.slice(0 ,columns.length -1)" style="word-break: break-word">
+                  <span *ngIf="col !== 'rentalRenewalStatus' && col !== 'parkingSpaceType'"></span>{{rowData[col.field]}}
+                  <span *ngIf="col === 'rentalRenewalStatus'"></span>{{rowData[col.field] === 0? '非续租': '续租'}}
+                  <span *ngIf="col === 'rentalRenewalStatus'"></span>{{toolSrv.setValueToLabel(parkSpaceTypeOption, rowData[col.field])}}
+                </td>
+                <td  *ngFor="let col of columns.slice(columns.length -1 ,columns.length)" style="word-break: break-word">
+                  <button class="charge-details-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;"  (click)="changePackSpaceInfo(rowData)">修改</button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="ui-g-12">
+          <h3>缴费明细</h3>
+        </div>
+        <div class="ui-g-12">
+          <p-table   [columns]="paymentDialogTableTitle" [value]="paymentItemData"  [scrollable]="true" [resizableColumns]="true">
+            <ng-template pTemplate="colgroup" let-columns>
+              <colgroup>
+                <col *ngFor="let col of columns" style="width:180px">
+              </colgroup>
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th *ngFor="let col of columns" >
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
+                <td *ngFor="let col of columns.slice(0, columns.length-1)" style="word-break: break-word">
+                  <span *ngIf="col.field !== 'stateOfArrears'">{{rowData[col.field]}}</span>
+                  <span *ngIf="col.field === 'stateOfArrears'">{{rowData[col.field]=== 0? '未欠费': '欠费'}}</span>
+                </td>
+                <td *ngFor="let col of columns.slice(columns.length-1, columns.length)" style="word-break: break-word">
+
+                  <button class="charge-details-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;" >修改</button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-9">
+          </div>
+          <div class="ui-g-3">
+            <div >总计: <span [ngStyle]="{'font-size':'1.2rem'}"></span></div>
+          </div>
+        </div>
+        <div class="ui-g-12">
+          <h3>收费信息</h3>
+        </div>
+        <div class="ui-g-6" style="line-height:  3vh">
+          <div class="ui-g-3"  style="text-align: right">
+            <label >应收账单：</label>
+          </div>
+          <div class="ui-g-7" style="text-align: left">
+              <input type="text" pInputText [(ngModel)]="chargeDetails.actualTotalMoneyCollection"/>
+          </div>
+        </div>
+        <div class="ui-g-6" style="line-height:  3vh">
+          <div class="ui-g-3" style="text-align: right">
+            <label >实收账单：</label>
+          </div>
+          <div class="ui-g-7" style="text-align: left">
+            <input type="text" pInputText [(ngModel)]="chargeDetails.amountTotalReceivable"/>
+          </div>
+        </div>
+        <div class="ui-g-6" style="line-height:  3vh">
+          <div class="ui-g-3" style="text-align: right">
+            <label >缴费方式：</label>
+          </div>
+          <div class="ui-g-7" style="line-height: 2vh;text-align: left">
+            <p-dropdown [options]="chargeStatusoption" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择支付方式..." [(ngModel)]="chargeDetails.paymentMethod"></p-dropdown>
+          </div>
+        </div>
+        <div class="ui-g-6" style="line-height:  3vh">
+          <div class="ui-g-3" style="text-align: right">
+            <label >预存金额：</label>
+          </div>
+          <div class="ui-g-7" style="text-align: left">
+            <input type="text" pInputText [(ngModel)]="chargeDetails.correctedAmount"/>
+          </div>
+        </div>
+        <div class="ui-g-6" style="line-height:  3vh">
+          <div class="ui-g-3" style="text-align: right">
+            <label for="payerName">缴费人：</label>
+          </div>
+          <div class="ui-g-7" style="text-align: left">
+            <input  id="payerName"  type="text" pInputText placeholder="请输入缴费人..." [(ngModel)]="chargeDetails.payerName">
+          </div>
+        </div>
+        <div class="ui-g-6" style="line-height:  3vh">
+          <div class="ui-g-3" style="text-align: right">
+            <label for="payerPhone">缴费人电话：</label>
+          </div>
+          <div class="ui-g-7" style="text-align: left">
+            <input  id="payerPhone" type="text" pInputText placeholder="请输入电话..." [(ngModel)]="chargeDetails.payerPhone" [maxlength]="11" (blur)="paymentPhoneChange(paymentOrderAdd.payerPhone)"  >
+            <span style="color: red" [hidden]="phoneErrorToast">手机号格式错误</span>
+          </div>
+        </div>
+        <div class="ui-g-6" style="line-height:  3vh">
+          <div class="ui-g-3" style="text-align: right">
+            <label for="remark">备注：</label>
+          </div>
+          <div class="ui-g-7" style="text-align: left">
+            <textarea id="remark" pInputTextarea [(ngModel)]="chargeDetails.remark" [rows]="3" [cols]="33"></textarea>
+          </div>
+        </div>
+      </div>
+    </p-scrollPanel>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" (click)="ModifypaymentSureClick()">确认</button>
+        <button class="charge-details-dialog-Btn charge-details-dialog-Btn-false" (click)="ModifypaymentFaleseClick()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
    <!--详情弹框-->
   <p-dialog header="费用详情" [(visible)]="detailsDialog" [width]="1100" >
       <!--Content-->
@@ -46,7 +212,7 @@
           <h3>业主信息</h3>
         </div>
         <div class="ui-g-12">
-          <div class="ui-g-6" *ngFor="let item of detailsAddTitle">
+          <div class="ui-g-6" *ngFor="let item of paymentAddTitle">
             <div class="ui-g-6" style="text-align: right">
               <label >{{item.name}}：</label>
             </div>
@@ -78,11 +244,33 @@
             </p-table>
           </p-scrollPanel>
         </div>
+         <div class="ui-g-12">
+           <h3>车位管理</h3>
+         </div>
+         <div class="ui-g-12" [hidden]=" deductionDamagesStatus === 0">
+           <p-table [columns]="parkspaceTitleDetail" [value]="parkSpaceData"  [scrollable]="true"  scrollHeight="48vh">
+             <ng-template pTemplate="header" let-columns>
+               <tr >
+                 <th *ngFor="let col of columns" >
+                   {{col.header}}
+                 </th>
+               </tr>
+             </ng-template>
+             <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+               <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
+                 <td  *ngFor="let col of columns" style="word-break: break-word">
+                   <span *ngIf="col !== 'rentalRenewalStatus' && col !== 'parkingSpaceType'"></span>{{rowData[col.field]}}
+                   <span *ngIf="col === 'rentalRenewalStatus'"></span>{{rowData[col.field] === 0? '非续租': '续租'}}
+                   <span *ngIf="col === 'rentalRenewalStatus'"></span>{{toolSrv.setValueToLabel(parkSpaceTypeOption, rowData[col.field])}}
+                 </td>
+               </tr>
+             </ng-template>
+           </p-table>
+         </div>
         <div class="ui-g-12">
           <h3>缴费信息</h3>
         </div>
         <div class="ui-g-12">
-<!--          <p-scrollPanel [style]="detailsProjectStyle" styleClass="custombar">-->
             <p-table [columns]="paymentDialogTableTitle" [value]="detailsPaymentProject"  [scrollable]="true">
               <ng-template pTemplate="colgroup" let-columns>
                 <colgroup>
@@ -148,7 +336,15 @@
               <label >修正金额：</label>
             </div>
             <div class="ui-g-6 span" style="line-height: 2vh">
-              <span >{{chargeDetails.surplus}}</span>
+              <span >{{chargeDetails.correctedAmount}}</span>
+            </div>
+          </div>
+          <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
+              <label >录单人：</label>
+            </div>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span >{{chargeDetails.tollCollectorName}}</span>
             </div>
           </div>
         </div>
@@ -161,6 +357,177 @@
         </div>
       </p-footer>
     </p-dialog>
+
+  <!--增加弹窗-->
+  <rbi-dialog-pop
+    [dialogOption]="optionDialog"
+    [formContrl]="formgroup"
+    [formdata]="formdata"
+    (eventClick)="eventClick($event)">
+  </rbi-dialog-pop>
+  <p-dialog header="租赁车位" [(visible)]="parkSpaceOptionDialog" [width]="800"  [transitionOptions]="'200ms'"  [closable]="false" [positionTop]="150">
+    <div class="ui-g ui-fluid">
+
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >合同编号</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入合同编号"  [(ngModel)]="rentalParkSpace.contractNumber"/>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >是否续租</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-dropdown [options]="rentalRenewalStatusOption" placeholder="请选择续租状态" scrollHeight="100px" [(ngModel)]="rentalParkSpace.rentalRenewalStatus"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >租赁月数</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <input type="text" pInputText placeholder="请输入租赁月数"  [(ngModel)]="rentalParkSpace.datedif"/>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh" >
+        <div class="ui-g-4" style="text-align: right">
+          <label>车位编号</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" placeholder="请选择车位编号" pInputText (click)="dataTreeClick()" [(ngModel)]="rentalCode"/>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh" >
+        <div class="ui-g-4" style="text-align: right">
+          <label >开始计费时间</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-calendar [(ngModel)]="rentalParkSpace.startTime" placeholder="请选择开始计费日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车主姓名</label>
+        </div>
+        <div class="ui-g-8" >
+          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="rentalParkSpace.authorizedPersonName"/>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车主电话</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入授权人电话" [(ngModel)]="rentalParkSpace.authorizedPersonPhone"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车主身份证号</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入授权人身份证号" [(ngModel)]="rentalParkSpace.authorizedPersonIdNumber"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车位地点</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-dropdown [options]="parkSpacePlaceOption" placeholder="请选择车牌颜色" scrollHeight="100px" [(ngModel)]="rentalParkSpace.parkingSpacePlace"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车位类型</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-dropdown [options]="parkSpaceTypeOption" placeholder="请选择车牌颜色" scrollHeight="100px" [(ngModel)]="rentalParkSpace.parkingSpaceType"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车牌号</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入车牌号" [(ngModel)]="rentalParkSpace.licensePlateNumber"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车牌颜色</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-dropdown [options]="lincesePlateColorOption" placeholder="请选择车牌颜色" scrollHeight="100px" [(ngModel)]="rentalParkSpace.licensePlateColor"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车牌类型</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-dropdown [options]="lincesePlateTypeOption"  placeholder="请选择车牌类型" scrollHeight="100px" [(ngModel)]="rentalParkSpace.licensePlateType"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车辆原始类型</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-dropdown [options]="vehicleOriginaTypeOption"  placeholder="请选择车辆原始类型" scrollHeight="100px" [(ngModel)]="rentalParkSpace.vehicleOriginalType"></p-dropdown>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" (click)="rentalparkSpaceClick()">确认</button>
+        <button class="charge-details-dialog-Btn charge-details-dialog-Btn-false" (click)="parkSpaceOptionDialog = false;this.rentalHiddenInfo = true;">取消</button>
+      </div>
+    </p-footer>
+    <!--    树结构-->
+    <p-dialog [(visible)]="treeDialog" [responsive]="true" showEffect="fade" [modal]= false [maximizable]="false" [baseZIndex]="10000" [modal]="true" [width]="350" [height]="400">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+          <p-scrollPanel [style]="{width: '100%', height: '300px'}">
+            <p-tree
+              [value]="dataTrees"
+              [(selection)]="dataTree"
+              selectionMode="single">
+            </p-tree>
+          </p-scrollPanel>
+        </div>
+      </div>
+      <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+          <button  class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" style="width: 4vw" (click)="dataTreeSureClick()">确认</button>
+          <button  class="charge-details-dialog-Btn charge-details-dialog-Btn-false" style="width: 4vw" (click)="treeDialog = false">取消</button>
+        </div>
+      </p-footer>
+    </p-dialog>
+  </p-dialog>
+  <!--    树结构-->
+  <p-dialog [(visible)]="treeDialog" [responsive]="true" showEffect="fade" [modal]= false [maximizable]="false" [baseZIndex]="10000" [modal]="true" [width]="350" [height]="400">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+        <p-scrollPanel [style]="{width: '100%', height: '300px'}">
+          <p-tree
+            [value]="dataTrees"
+            [(selection)]="dataTree"
+            selectionMode="single">
+          </p-tree>
+        </p-scrollPanel>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button  class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" style="width: 4vw" (click)="dataTreeSureClick()">确认</button>
+        <button  class="charge-details-dialog-Btn charge-details-dialog-Btn-false" style="width: 4vw" (click)="treeDialog = false">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
   <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
   <rbi-file-pop [UploadFileOption]="uploadFileOption" (event)="uploadFileSureClick($event)"></rbi-file-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>

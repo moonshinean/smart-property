@@ -19,6 +19,7 @@ export class Patyment {
   idNumber?: any; // 组织id
   id?: any; // 组织id
   pid?: any; // 组织id
+  oneMonthPropertyFee?: any;
 }
 // 项目选则状态记录
 export class ChargeItem {
@@ -164,6 +165,7 @@ export  class CostSplitData {
   code?: any;
   parentCode?: any;
   splitState?: any;
+  oneMonthPropertyFee?: any;
 }
 
 // 绑定车位

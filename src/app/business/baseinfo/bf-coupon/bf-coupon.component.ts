@@ -168,11 +168,11 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     });
     this.formgroup = this.toolSrv.setFormGroup(this.form);
     this.formdata = [
-      {label: '优惠卷名称', type: 'input', name: 'couponName', option: '', placeholder: '请输入优惠卷名称'},
-      {label: '优惠卷类型', type: 'dropdown', name: 'couponType', option: this.couponTypeData, placeholder: '请选择优惠卷类型'},
-      {label: '收费项目', type: 'dropdown', name: 'chargeCode', option: this.ChargeCodeData, placeholder: '请选择收费项目'},
-      {label: '有效时长', type: 'dropdown', name: 'effectiveTime', option: this.EffectiveTime, placeholder: '请选择有效时长'},
-      {label: '金额', type: 'input', name: 'money', option: '', placeholder: '请输入金额'},
+      {label: '优惠卷名称', type: 'input', name: 'couponName', option: '', placeholder: '请输入优惠卷名称', required: true},
+      {label: '优惠卷类型', type: 'dropdown', name: 'couponType', option: this.couponTypeData, placeholder: '请选择优惠卷类型', required: true},
+      {label: '收费项目', type: 'dropdown', name: 'chargeCode', option: this.ChargeCodeData, placeholder: '请选择收费项目', required: true},
+      {label: '有效时长', type: 'dropdown', name: 'effectiveTime', option: this.EffectiveTime, placeholder: '请选择有效时长',  required: true},
+      {label: '金额', type: 'input', name: 'money', option: '', placeholder: '请输入金额',  required: true},
     ];
   }
   // sure add coupon （添加确认请求）

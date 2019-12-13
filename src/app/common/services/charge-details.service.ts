@@ -23,4 +23,8 @@ export class ChargeDetailsService {
   public  queryBillDetail(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/bills/find_bill_detail`, pamars);
   }
+
+  public  deleteBillDetail(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/bills/delete`, pamars);
+  }
 }

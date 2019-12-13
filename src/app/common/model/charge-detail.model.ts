@@ -24,10 +24,11 @@ export class ChargeDetail {
   tollCollectorId?: any; // 收费人编号 （不显示）
   // @ts-ignore
   paymentMethod?: any; // 付款方式
-  surplus?: any; // 修正金额
+  correctedAmount?: any; // 修正金额 / 预存金额
   stateOfArrears?: any; // 付款方式
   refundStatus?: any; // 付款方式
   invalidState?: any; // 付款方式
+  tollCollectorName?: any; // 录单人
   remark?: any; // 备注
   idt?: any; // 插入时间
   udt?: any; // 修改时间

@@ -88,7 +88,7 @@
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <label >客户名：</label>
+          <label >*客户名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="tenantinfo.surname">
@@ -97,7 +97,7 @@
 
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <label >客户电话：</label>
+          <label >*客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="tenantinfo.mobilePhone">
@@ -105,7 +105,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <label >身份证号：</label>
+          <label >*身份证号：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入身份证号..." [(ngModel)]="tenantinfo.idNumber">
@@ -113,7 +113,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <label >是否正常缴费：</label>
+          <label >*是否正常缴费：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择注销状态..."  [(ngModel)]="tenantinfo.normalPaymentStatus"></p-dropdown>
@@ -121,7 +121,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <label >租房开始时间：</label>
+          <label >*租房开始时间：</label>
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="tenantinfo.startTime" placeholder="请选择租房开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
@@ -129,7 +129,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <label >租房结束时间：</label>
+          <label >*租房结束时间：</label>
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="tenantinfo.endTime" placeholder="请选择租房结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
@@ -156,7 +156,7 @@
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
         <div class="ui-g-4">
-          <label >客户名：</label>
+          <label >客户名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText [placeholder]="tenantinfo.surname" [(ngModel)]="tenantinfo.surname">

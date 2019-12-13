@@ -356,6 +356,7 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
           {field: 'mobilePhone', header: '客户电话'},
           {field: 'effectiveTime', header: '有效时长'},
           {field: 'money', header: '金额'},
+          {field: 'usageState', header: '使用状态'},
           {field: 'auditStatus', header: '审核状态'},
           {field: 'pastDue', header: '过期状态'},
           {field: 'operating', header: '操作'}
@@ -382,6 +383,7 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
             h.effectiveTime = (h.effectiveTime === '0' || h.effectiveTime === 0 ) ? '无期限' :  h.effectiveTime + '天';
             h.pastDue = this.toolSrv.setValueToLabel(this.pastDueOption, h.pastDue);
             h.auditStatus = this.toolSrv.setValueToLabel(this.auditStatusOption, h.auditStatus);
+            h.usageState = this.toolSrv.setValueToLabel(this.userStatusOption, h.usageState);
           });
           this.couponTableContent = value.data.contents;
           this.setTableOption(value.data.contents);

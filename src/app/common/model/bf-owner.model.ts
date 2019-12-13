@@ -83,6 +83,8 @@ export class RoomTitle {
   renovationStatus?: any;
   renovationStartTime?: any;
   renovationDeadline?: any;
+  startBillingTime?: any;
+  realRecyclingHomeTime?: any;
 }
 export class OwerList {
   surname?: any;
@@ -91,7 +93,7 @@ export class OwerList {
   remarks?: any;
   identity?: any;
   normalPaymentStatus?: any;
-  startBillingTime?: any;
+  // startBillingTime?: any;
   idNumber?: any;
-  realRecyclingHomeTime?: any;
+  // realRecyclingHomeTime?: any;
 }

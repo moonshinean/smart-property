@@ -12,7 +12,7 @@ import {
   MessageModule,
   MessagesModule,
   RadioButtonModule,
-  ScrollPanelModule, SpinnerModule
+  ScrollPanelModule, SpinnerModule, TreeModule
 } from 'primeng/primeng';
 import {FormsModule} from '@angular/forms';
 import {PagingModule} from '../../../common/components/paging/paging.module';
@@ -41,6 +41,8 @@ import {BasicDialogModule} from '../../../common/components/basic-dialog/basic-d
     PagingModule,
     BasicTableModule,
     BasicDialogModule,
+    TreeModule,
+    CalendarModule
   ]
 })
 export class ChargeDetailsModule { }

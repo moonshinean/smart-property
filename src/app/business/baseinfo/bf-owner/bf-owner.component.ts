@@ -63,8 +63,8 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     {field: 'mobilePhone', header: '客户电话'},
     {field: 'identity', header: '身份'},
     {field: 'idNumber', header: '身份证号'},
-    {field: 'realRecyclingHomeTime', header: '实际交房时间'},
-    {field: 'normalPaymentStatus', header: '是否正常缴费'},
+    // {field: 'realRecyclingHomeTime', header: '实际交房时间'},
+    // {field: 'normalPaymentStatus', header: '是否正常缴费'},
     {field: 'remarks', header: '备注'},
     {field: 'operating', header: '操作'},
   ];
@@ -278,6 +278,8 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       });
       this.roomInfo.renovationStartTime = this.datePipe.transform(this.roomInfo.renovationStartTime, 'yyyy-MM-dd');
       this.roomInfo.renovationDeadline = this.datePipe.transform(this.roomInfo.renovationDeadline, 'yyyy-MM-dd');
+      this.roomInfo.realRecyclingHomeTime = this.datePipe.transform( this.roomInfo.realRecyclingHomeTime , 'yyyy-MM-dd');
+      this.roomInfo.startBillingTime = this.datePipe.transform( this.roomInfo.startBillingTime , 'yyyy-MM-dd');
       // this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, );
       this.owerSrv.addRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
             value => {
@@ -306,8 +308,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   // submit owner and roomInfo
   public  owerInfoClick(data): void {
     console.log(this.ownerinfo);
-    const ownerVertifyKeylist = ['surname', 'idNumber', 'mobilePhone', 'identity',
-      'realRecyclingHomeTime', 'startBillingTime', 'normalPaymentStatus'];
+    const ownerVertifyKeylist = ['surname', 'idNumber', 'mobilePhone', 'identity', 'normalPaymentStatus'];
     const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
        return (this.ownerinfo[v] !== '' && this.ownerinfo[v] !== undefined && this.ownerinfo[v] !== null);
     });
@@ -331,8 +332,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  ownerInfoSetValueToOwnerList(data): void {
     // 将业主信息状态转换为可以别的中文格式
     // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
-    this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform( this.ownerinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
-    this.ownerinfo.startBillingTime = this.datePipe.transform( this.ownerinfo.startBillingTime , 'yyyy-MM-dd');
+
     // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
     this.ownerinfo.identity = this.toolSrv.setValueToLabel(this.identityOption, this.ownerinfo.identity);
     this.ownerinfo.normalPaymentStatus = this.toolSrv.setValueToLabel(this.normalChargeOption, this.ownerinfo.normalPaymentStatus);
@@ -543,7 +543,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  queryOwnerPageData(): void {
     this.owerSrv.queryOwerDataList(this.searchOwerData).subscribe(
       (value) => {
-        console.log(value);
         if (value.status === '1000') {
           this.setQueryDataValueToLabel(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -557,7 +556,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  queryOwnerPageByCondition(conditions, data, nowPage): void {
       this.owerSrv.queryOwerInfoListByCondition({condition: conditions, value: data, pageSize: 10,  pageNo: nowPage }).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.setQueryDataValueToLabel(value.data.contents);
             this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
@@ -584,7 +582,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  queryOwnerUpdateData(data): void {
       this.owerSrv.queryUpdateInfoByroomCode({roomCode: data}).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.ownerList = value.data.owner.map( v => {
               v.sex = this.toolSrv.setValueToLabel(this.sexOption, v.sex);

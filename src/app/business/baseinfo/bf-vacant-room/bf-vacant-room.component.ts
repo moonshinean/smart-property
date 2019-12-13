@@ -304,9 +304,11 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
           });
         }
         this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length);
+        this.roomInfo.startBillingTime = this.datePipe.transform(this.roomInfo.startBillingTime, 'yyyy-MM-dd');
+        this.roomInfo.realRecyclingHomeTime = this.datePipe.transform(this.roomInfo.realRecyclingHomeTime, 'yyyy-MM-dd');
         this.roomInfo.renovationStartTime = this.datePipe.transform(this.roomInfo.renovationStartTime, 'yyyy-MM-dd');
         this.roomInfo.renovationDeadline = this.datePipe.transform(this.roomInfo.renovationDeadline, 'yyyy-MM-dd');
-        this.owerSrv.addRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
+        this.owerSrv.addVacantRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
           value => {
             if (value.status === '1000') {
               this.queryVacantRoomPageData();
@@ -332,8 +334,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   // submit owner and roomInfo
   public  owerInfoClick(): void {
     console.log(this.ownerinfo);
-    const ownerVertifyKeylist = ['surname', 'idNumber', 'mobilePhone', 'identity',
-      'realRecyclingHomeTime', 'startBillingTime', 'normalPaymentStatus'];
+    const ownerVertifyKeylist = ['surname', 'idNumber', 'mobilePhone', 'identity', 'normalPaymentStatus'];
     const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
       return (this.ownerinfo[v] !== '' && this.ownerinfo[v] !== undefined && this.ownerinfo[v] !== null);
     });
@@ -357,8 +358,8 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   public  ownerInfoSetValueToOwnerList(): void {
     // 将业主信息状态转换为可以别的中文格式
     // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
-    this.ownerinfo.realRecyclingHomeTime = this.datePipe.transform( this.ownerinfo.realRecyclingHomeTime , 'yyyy-MM-dd');
-    this.ownerinfo.startBillingTime = this.datePipe.transform( this.ownerinfo.startBillingTime , 'yyyy-MM-dd');
+    // this.roomInfo.realRecyclingHomeTime = this.datePipe.transform( this.roomInfo.realRecyclingHomeTime , 'yyyy-MM-dd');
+    // 、this.roomInfo.startBillingTime = this.datePipe.transform( this.roomInfo.startBillingTime , 'yyyy-MM-dd');
     // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
     this.ownerinfo.identity = this.toolSrv.setValueToLabel(this.identityOption, this.ownerinfo.identity);
     this.ownerinfo.normalPaymentStatus = this.toolSrv.setValueToLabel(this.normalChargeOption, this.ownerinfo.normalPaymentStatus);
@@ -377,9 +378,9 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
       if (v.label === '业主资料') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });

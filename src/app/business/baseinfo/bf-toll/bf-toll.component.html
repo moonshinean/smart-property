@@ -42,7 +42,7 @@
       <div class="ui-g-12"></div>
       <div class="ui-g-6">
         <div class="ui-g-4" style="text-align: right">
-          <label for="addchargeCode">项目名称：</label>
+          <label for="addchargeCode">*项目名称：</label>
         </div>
         <div class="ui-g-8">
           <input id="addchargeCode" type="text" pInputText placeholder="请输入收费项目名称" [(ngModel)]="tollTitle.chargeName">
@@ -50,7 +50,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4" style="text-align: right">
-          <label for="addchargeType">项目类型：</label>
+          <label for="addchargeType">*项目类型：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown  id="addchargeType" [options]="chargeTypeOption" scrollHeight="100px" placeholder="请选择项目类型..." [(ngModel)]="tollTitle.chargeType"></p-dropdown>
@@ -58,7 +58,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4"  style="text-align: right">
-          <label for="addchargeUnit">收费单位：</label>
+          <label for="addchargeUnit">*收费单位：</label>
         </div>
         <div class="ui-g-8">
           <input id="addchargeUnit" type="text" pInputText placeholder="请输入收费单位" [(ngModel)]="tollTitle.chargeUnit">
@@ -74,7 +74,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4"  style="text-align: right">
-          <label >是否可退款：</label>
+          <label >*是否可退款：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown [options]="refundOption" scrollHeight="100px" placeholder="请选择是否可退款" [(ngModel)]="tollTitle.refund"></p-dropdown>
@@ -82,7 +82,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4"  style="text-align: right">
-          <label >是否必缴：</label>
+          <label >*是否必缴：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown [options]="mustPayOption" scrollHeight="100px" placeholder="请选择是否必缴" [(ngModel)]="tollTitle.mustPay"></p-dropdown>

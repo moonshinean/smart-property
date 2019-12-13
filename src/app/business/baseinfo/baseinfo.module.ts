@@ -24,6 +24,7 @@ import {LoadingModule} from '../../common/components/loading/loading.module';
 import {PublicMethedService} from '../../common/public/public-methed.service';
 import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
 import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
+import {EchartsPieModule} from '../../common/components/echarts-pie/echarts-pie.module';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dial
     ReactiveFormsModule,
     BasicTableModule,
     BasicDialogModule,
-    KeyFilterModule
+    KeyFilterModule,
+    EchartsPieModule,
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

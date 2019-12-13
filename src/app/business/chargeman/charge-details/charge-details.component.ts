@@ -8,6 +8,11 @@ import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {ChargeItemDetail, ChargePaymentAddOrder, RentalAddSparkSpace} from '../../../common/model/charge-payment.model';
+import {DataTree, DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
+import {FormGroup} from '@angular/forms';
+import {TreeNode} from '../../../common/model/shared-model';
+import {ChargePaymentService} from '../../../common/services/charge-payment.service';
 
 @Component({
   selector: 'rbi-charge-details',
@@ -17,7 +22,20 @@ import {LocalStorageService} from '../../../common/services/local-storage.servic
 export class ChargeDetailsComponent implements OnInit, OnDestroy {
 
   public option: any;
+  public paymentDetailSelect: any[] = [];
   public paymentDetailTableContnt: any;
+  // 状态值相关
+  public roomTypeOption: any[] = [];
+  public paymentMethodOption: any[] = [];
+  public sexOption: any[] = [];
+  public identityOption: any[] = [];
+  public datedifOption: any[] = [];
+  public lincesePlateColorOption = [];
+  public lincesePlateTypeOption = [];
+  public vehicleOriginaTypeOption = [];
+  public parkSpacePlaceOption = [];
+  public parkSpaceTypeOption = [];
+  // 收费项，列表
   public paymentDialogTableTitle = [
     {field: 'chargeName', header: '项目名称'},
     {field: 'chargeStandard', header: '标准单价'},
@@ -34,7 +52,9 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {field: 'payerName', header: '缴费人姓名'},
     {field: 'payerPhone', header: '缴费人手机号'},
     {field: 'stateOfArrears', header: '欠费状态'},
+    {field: 'operating', header: '操作'},
   ];
+  // 抵扣项目列表
   public deductioTitle = [
     {field: 'deductionItem', header: '抵扣项目'},
     {field: 'deductibleMoney', header: '抵扣金额'},
@@ -45,6 +65,8 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {field: 'discount', header: '折扣'},
     {field: 'deductionRecord', header: '抵扣记录'},
   ];
+  public  deductionDamagesStatus: any;
+  public  deductionDamagesData: any[] = [];
   public deductioContent: any[] = [];
   public liquidatedDamagesStyle: any;
   public uploadFileOption: FileOption = new FileOption();
@@ -72,8 +94,27 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   };
   public searchData = '';
 
+  // 修改车位
+  // 零时车位车位
+  public parkSpaceOptionDialog: boolean;
+  public rentalParkSpace: RentalAddSparkSpace  = new RentalAddSparkSpace();
+  public editRentalParkspaceDataFlag: any;
+  public rentalRenewalStatusOption = [{label: '续租', value: '1'}, {label: '非续租', value: '0'}];
+  public rentalHiddenInfo = true;
+  public rentalCode: any;
+  // 树结构相关
+  public treeDialog: boolean;
+  public dataTrees: DataTree[];
+  public dataTree: DataTree = new DataTree();
+  // 修改弹窗
+  public optionDialog: DialogModel = new DialogModel();
+  public form: FormValue[] = [];
+  public formgroup: FormGroup;
+  public formdata: any[];
   // 按钮权限相关
   public btnHiden = [
+    {label: '修改', hidden: true},
+    {label: '删除', hidden: true},
     {label: '导入', hidden: true},
     {label: '搜索', hidden: true},
   ];
@@ -84,18 +125,50 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   public nowPage = 1;
   // 初始化项目
   public detailsPaymentProject: any;
-  public detailsProjectStyle: any;
-  public detailsAddTitle =  [
-    {name: '房间代码', value: '', label: 'roomCode'},
+  // 车位费用列表
+  public parkspaceTitle = [
+    {field: 'chargeName', header: '项目名称'},
+    {field: 'contractNumber', header: '合同编号'},
+    {field: 'rentalRenewalStatus', header: '续租状态'},
+    {field: 'datedif', header: '月数'},
+    {field: 'parkingSpaceCode', header: '车位编号'},
+    {field: 'parkingSpaceType', header: '车位类型'},
+    {field: 'actualMoneyCollection', header: '实收金额'},
+    {field: 'amountReceivable', header: '应收金额'},
+    {field: 'operating', header: '操作'},
+  ];
+  public parkspaceTitleDetail = [
+    {field: 'chargeName', header: '项目名称'},
+    {field: 'contractNumber', header: '合同编号'},
+    {field: 'rentalRenewalStatus', header: '续租状态'},
+    {field: 'datedif', header: '月数'},
+    {field: 'parkingSpaceCode', header: '车位编号'},
+    {field: 'parkingSpaceType', header: '车位类型'},
+    {field: 'actualMoneyCollection', header: '实收金额'},
+    {field: 'amountReceivable', header: '应收金额'},
+  ];
+  public parkSpaceData: any[] = [];
+
+  public paymentAddTitle =  [
+    {name: '房间编号', value: '', label: 'roomCode'},
     {name: '建筑面积', value: '', label: 'roomSize'},
     {name: '客户名称', value: '', label: 'surname'},
     {name: '手机号码', value: '', label: 'mobilePhone'},
+    {name: '物业费到期时间', value: '', label: 'dueTime'},
+    {name: '预缴余额', value: '', label: 'prepaidAmount'},
+    {name: '单月物业费', value: '', label: 'oneMonthPropertyFee'},
+    {name: '欠费月数', value: '', label: 'minMonth'}
   ];
+
+  public paymentItemData: ChargeItemDetail[] = [];
   // 详情相关
   public chargeDetails: ChargeDetail = new ChargeDetail();
+  public paymentOrderAdd: ChargePaymentAddOrder  = new ChargePaymentAddOrder();
   // 其他相关
   public cleanTimer: any; // 清除时钟
-  public loadHidden = true;
+  public phoneErrorToast = true;
+  public paymentDialog: boolean;
+  public esDate: any;
   // 树结构订阅
   public detailSub: Subscription;
   // 切换主题
@@ -111,6 +184,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     private chargeDetailSrv: ChargeDetailsService,
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
+    private paymentSrv: ChargePaymentService,
     private localSrv: LocalStorageService,
     private  sharedSrv: SharedServiceService,
     private themeSrv: ThemeService
@@ -162,9 +236,22 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
 
   // initialization details
   public  detailsInitialization(): void {
-    this.loadHidden = false;
-    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'}] , (data) => {
+    this.esDate = this.toolSrv.esDate;
+    this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'},
+      {settingType: 'ROOM_TYPE'}, {settingType: 'SEX'}, {settingType: 'IDENTITY'},
+      {settingType: 'LICENSE_PLATE_COLOR'}, {settingType: 'DATEDIF'}, {settingType: 'CWLX'},
+      {settingType: 'VEHICLE_ORIGINA_TYPE'}, {settingType: 'LICENSE_PLATE_TYPE'},
+      {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}], (data) => {
+      this.lincesePlateTypeOption = this.toolSrv.setListMap(data.LICENSE_PLATE_TYPE);
+      this.vehicleOriginaTypeOption = this.toolSrv.setListMap(data.VEHICLE_ORIGINA_TYPE);
+      this.roomTypeOption = this.toolSrv.setListMap(data.ROOM_TYPE);
       this.chargeStatusoption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
+      this.sexOption = this.toolSrv.setListMap(data.SEX);
+      this.identityOption = this.toolSrv.setListMap(data.IDENTITY);
+      this.lincesePlateColorOption = this.toolSrv.setListMap(data.LICENSE_PLATE_COLOR);
+      this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
+      this.parkSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
+      this.parkSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
       this.queryData();
     });
   }
@@ -207,11 +294,9 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
 
   // sure modify details
   public  detailsSureClick(): void {
-    this.loadHidden = false;
     this.chargeDetailSrv.getPayDocument({orderId: this.chargeDetails.orderId, organizationId: this.chargeDetails.organizationId}).subscribe(
       (data) => {
         if (data.data !== '') {
-          this.loadHidden = true;
           window.open(data.data);
           this.detailsDialog = false;
         } else {
@@ -226,37 +311,11 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   // charge item detail
   public  detailsDialogClick(e): void {
     this.queryDetail(e.orderId);
-    //  this.chargeDetails = e;
-    //  this.detailsProject =  JSON.parse(e.detailed);
-    //  this.liquidatedDamagesContent  =  JSON.parse(e.liquidatedDamages);
-     this.detailsDialog = true;
-    //  this.detailsAddTitle.forEach( v => {
-    //    if (v.name === '房间编号') {
-    //      v.value = e.roomCode;
-    //    } else if (v.name === '建筑面积') {
-    //      v.value = e.roomSize;
-    //    } else if (v.name === '客户名称') {
-    //      v.value = e.surname;
-    //    } else if (v.name === '手机号码') {
-    //      v.value = e.mobilePhone;
-    //    }
-    //  });
-    //  if (this.liquidatedDamagesContent !== null && this.liquidatedDamagesContent.length <= 4) {
-    //    this.liquidatedDamagesStyle = {width: '100%'};
-    //  } else {
-    //    this.liquidatedDamagesStyle = {width: '100%', height: '20vh'};
-    //
-    //  }
-    // if (this.detailsProject.length <= 4) {
-    //   this.detailsProjectStyle = {width: '100%'};
-    // } else {
-    //   this.detailsProjectStyle = {width: '100%', height: '20vh'};
-    // }
+    this.detailsDialog = true;
   }
 
   // paging query
   public  nowpageEventHandle(event: any): void {
-    this.loadHidden = false;
     this.nowPage = event;
     this.SearchData.pageNo = event;
     this.selectSearchType();
@@ -340,13 +399,21 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
         value => {
           console.log(value);
           if (value.status === '1000') {
+               // 基本信息
                this.chargeDetails = value.data.bill;
                this.detailsPaymentProject = value.data.billDetailedDOS;
                this.deductioContent = value.data.costDeductionDOS;
-               this.detailsAddTitle.forEach( v => {
+               // 缴费明细
+               this.paymentItemData = value.data.billDetailedDOS.map( v => {
+                return v;
+               });
+               // 抵扣账单
+               this.deductionDamagesData = value.data.costDeductionDOS;
+               this.paymentAddTitle.forEach( v => {
                  v.value = this.chargeDetails[v.label];
                });
-               this.chargeDetails.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, this.chargeDetails.paymentMethod);
+              this.parkSpaceData = value.data.parkingSpaceCostDetailDOS;
+            // this.chargeDetails.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, this.chargeDetails.paymentMethod);
           } else {
             this.toolSrv.setToast('error', '请求错误', value.message);
           }
@@ -357,14 +424,22 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   public  queryData(): void {
     this.chargeDetailSrv.queryChargeDataPage(this.SearchData).subscribe(
       (value) => {
-        console.log(value);
-        this.loadHidden = true;
         if (value.status === '1000') {
-          value.data.contents.forEach( v => {
-            v.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, v.paymentMethod);
-          });
-          this.paymentDetailTableContnt = value.data.contents;
-          this.setTableOption(value.data.contents);
+          if (value.data.contents.length === 0) {
+            if (this.SearchData.pageNo !== 1) {
+              this.SearchData.pageNo = this.nowPage = value.data.totalPage;
+              this.queryData();
+            } else {
+              this.paymentDetailTableContnt = value.data.contents;
+              this.setTableOption(value.data.contents);
+            }
+          } else {
+            value.data.contents.forEach( v => {
+              v.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, v.paymentMethod);
+            });
+            this.paymentDetailTableContnt = value.data.contents;
+            this.setTableOption(value.data.contents);
+          }
         }
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
@@ -377,9 +452,9 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
       if (v.label === '缴费记录') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });
@@ -388,4 +463,176 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  // 删除详情数据
+  public  deleteChargeDetail(): void {
+      if (this.paymentDetailSelect.length === undefined && this.paymentDetailSelect.length === 0) {
+        this.toolSrv.setToast('error', '操作失败', '请选择需要删除的项');
+      } else {
+        this.toolSrv.setConfirmation('删除', `删除这${this.paymentDetailSelect.length}项`, () => {
+          const ids = [];
+          this.paymentDetailSelect.forEach(v => {
+            ids.push(v.id);
+          });
+          console.log(ids.join(','));
+          this.chargeDetailSrv.deleteBillDetail({ids: ids.join(',')}).subscribe(
+            value => {
+              console.log(value);
+              if (value.status === '1000') {
+                this.toolSrv.setToast('success', '请求成功', '删除成功');
+                this.selectSearchType();
+                this.paymentDetailSelect.splice(0);
+              } else {
+                this.toolSrv.setToast('error', '请求失败', value.message);
+              }
+            }
+          );
+        });
+      }
+  }
+  // 选择数据
+  public  selectData(e): void {
+      this.paymentDetailSelect = e;
+  }
+
+  public  modifyChargeDetail(): void {
+    if (this.paymentDetailSelect.length === undefined && this.paymentDetailSelect.length === 0) {
+      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
+    } else if (this.paymentDetailSelect.length === 1) {
+      this.queryDetail(this.paymentDetailSelect[0].orderId);
+      this.paymentDialog = true;
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
+    }
+  }
+  // Mobile phone number format judgment （手机号格式判断）
+  public paymentPhoneChange(e): void {
+    if (!/^1[37458]\d{9}$/.test(e)) {
+      this.toolSrv.setToast('error', '手机号码格式错误', '请重新输入11位手机号码');
+      this.phoneErrorToast = false;
+    } else {
+      this.phoneErrorToast = true;
+    }
+  }
+
+  public  ModifypaymentSureClick(): void {
+      console.log(23);
+  }
+
+  public  ModifypaymentFaleseClick(): void {
+      this.paymentDialog = false;
+      this.paymentDetailSelect = [];
+      this.deductioContent = [];
+      this.deductionDamagesData = [];
+  }
+
+  // 修改后的事件
+  public  eventClick(e): void {
+      console.log(e);
+  }
+  // 修改车位信息
+  public  changePackSpaceInfo(data): void {
+    console.log(data);
+    this.paymentSrv.getRoomTree({}).subscribe(
+      value => {
+        // console.log(value);
+        this.dataTrees = this.initializeTree(value.data, 'editparkSpace');
+      }
+    );
+    this.parkSpaceOptionDialog = true;
+    for (const datastr in data) {
+      this.rentalParkSpace[datastr] = data[datastr];
+    }
+    this.rentalCode = this.rentalParkSpace.parkingSpaceCode;
+    this.rentalParkSpace.parkingSpacePlace = this.rentalParkSpace.parkingSpacePlace.toString();
+  }
+
+  // 树形结构点击
+  public  dataTreeClick(): void {
+    this.treeDialog = true;
+  }
+  // Tree structure initialization
+  public initializeTree(data, flag): any {
+    const oneChild = [];
+    for (let i = 0; i < data.length; i++) {
+      const childnode = new TreeNode();
+      childnode.value = data[i].code;
+      childnode.label = data[i].name;
+      childnode.level = data[i].level;
+      if (flag === 'parkSpace') {
+        if (data[i].level === '4') {
+          childnode.selectable = true;
+        } else {
+          childnode.selectable = false;
+        }
+      } else {
+        if (data[i].level === '1') {
+          childnode.selectable = false;
+        } else {
+          childnode.selectable = true;
+        }
+      }
+
+      if (data[i].SpaceDTO != null && data[i].SpaceDTO.length !== 0 ) {
+        childnode.children = this.initializeTree(data[i].SpaceDTO, flag);
+      } else {
+        childnode.children = [];
+      }
+      oneChild.push(childnode);
+    }
+    return oneChild;
+  }
+  //  shu结构选择
+  public  dataTreeSureClick(): void {
+    this.treeDialog = false;
+    switch (this.dataTree.level) {
+      case '1':
+        this.rentalParkSpace.villageCode = this.dataTree.value;
+        this.rentalParkSpace.villageName = this.dataTree.label;
+        this.rentalCode = this.dataTree.label;
+        break;
+      case '2':
+        this.rentalParkSpace.villageCode = this.dataTree.parent.value;
+        this.rentalParkSpace.villageName = this.dataTree.parent.label;
+        this.rentalParkSpace.regionCode = this.dataTree.value;
+        this.rentalParkSpace.regionName = this.dataTree.label;
+        this.rentalCode = this.dataTree.label;
+        break;
+      case '3':
+        this.rentalParkSpace.villageCode = this.dataTree.parent.parent.value;
+        this.rentalParkSpace.villageName = this.dataTree.parent.parent.label;
+        this.rentalParkSpace.regionCode = this.dataTree.parent.value;
+        this.rentalParkSpace.regionName = this.dataTree.parent.label;
+        this.rentalParkSpace.buildingCode = this.dataTree.value;
+        this.rentalParkSpace.buildingName = this.dataTree.label;
+        this.rentalCode = this.dataTree.label;
+        break;
+      case '4':
+        if (this.dataTree.parent.level === '2') {
+          this.rentalParkSpace.villageCode = this.dataTree.parent.parent.value;
+          this.rentalParkSpace.villageName = this.dataTree.parent.parent.label;
+          this.rentalParkSpace.regionCode = this.dataTree.parent.value;
+          this.rentalParkSpace.regionName = this.dataTree.parent.label;
+          this.rentalParkSpace.parkingSpaceCode = this.dataTree.value;
+        } else {
+          this.rentalParkSpace.villageCode = this.dataTree.parent.parent.parent.value;
+          this.rentalParkSpace.villageName = this.dataTree.parent.parent.parent.label;
+          this.rentalParkSpace.regionCode = this.dataTree.parent.parent.value;
+          this.rentalParkSpace.regionName = this.dataTree.parent.parent.label;
+          this.rentalParkSpace.buildingCode = this.dataTree.parent.value;
+          this.rentalParkSpace.buildingName = this.dataTree.parent.label;
+          this.rentalParkSpace.parkingSpaceCode = this.dataTree.value;
+        }
+        this.rentalCode = this.dataTree.label;
+        break;
+      default:
+        break;
+    }
+    console.log(this.rentalParkSpace);
+  }
+  // 确认修改
+  public  rentalparkSpaceClick(): void {
+      console.log(123);
+  }
+
 }

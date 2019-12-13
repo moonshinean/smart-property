@@ -70,26 +70,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     {field: 'contractNumber', header: '合同编号'},
     {field: 'rentalRenewalStatus', header: '续租状态'},
     {field: 'datedif', header: '月数'},
-    // {field: 'villageName', header: '小区名称'},
-    // {field: 'regionName', header: '地块名称'},
-    // {field: 'buildingName', header: '楼宇名称'},
     {field: 'parkingSpaceCode', header: '车位编号'},
     {field: 'parkingSpaceType', header: '车位类型'},
-    // {field: 'parkingSpacePlace', header: '车位地点 '},
-    // {field: 'vehicleOriginalType', header: '车辆原始类型'},
-    // {field: 'licensePlateType', header: '车牌类型'},
-    // {field: 'licensePlateColor', header: '车牌颜色'},
-    // {field: 'licensePlateColor', header: '车牌颜色'},
-    // {field: 'authorizedPersonName', header: '授权人姓名'},
-    // {field: 'authorizedPersonPhone', header: '授权人电话'},
-    // {field: 'authorizedPersonIdNumber', header: '授权人身份证号'},
-    // {field: 'startTime', header: '开始计费时间'},
-    //
-    // {field: 'dueTime', header: '结束计费时间'},
-    // {field: 'discount', header: '折扣率'},
-    // {field: 'chargeUnit', header: '收费单位'},
-    // {field: 'chargeStandard', header: '标准单价'},
-    // {field: 'chargeName', header: '项目名称'},
     {field: 'actualMoneyCollection', header: '实收金额'},
     {field: 'amountReceivable', header: '应收金额'},
     {field: 'operating', header: '操作'},
@@ -145,6 +127,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     {name: '手机号码', value: '', label: 'mobilePhone'},
     {name: '物业费到期时间', value: '', label: 'dueTime'},
     {name: '预缴余额', value: '', label: 'prepaidAmount'},
+    {name: '单月物业费', value: '', label: 'oneMonthPropertyFee'},
+    {name: '欠费月数', value: '', label: 'minMonth'}
   ];
 
   public nowPage = 1;
@@ -272,7 +256,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
        {settingType: 'LICENSE_PLATE_COLOR'}, {settingType: 'DATEDIF'}, {settingType: 'CWLX'},
        {settingType: 'VEHICLE_ORIGINA_TYPE'}, {settingType: 'LICENSE_PLATE_TYPE'},
        {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}], (data) => {
-       console.log(data);
        this.lincesePlateTypeOption = this.toolSrv.setListMap(data.LICENSE_PLATE_TYPE);
        this.vehicleOriginaTypeOption = this.toolSrv.setListMap(data.VEHICLE_ORIGINA_TYPE);
        this.roomTypeOption = this.toolSrv.setListMap(data.ROOM_TYPE);
@@ -331,9 +314,13 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     });
     if (list.length > 0 ) {
       // 组装请求参数
-      const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus'];
+      const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus', 'identity'];
       for (const key of keyList) {
-        this.payItemDetail[key] = this.paymentSelect[0][key];
+        if(key === 'identity') {
+          this.payItemDetail[key] = this.toolSrv.setLabelToValue(this.identityOption, this.paymentSelect[0][key]);
+        } else {
+          this.payItemDetail[key] = this.paymentSelect[0][key];
+        }
       }
       this.payItemDetail.chargeItem = list.map( v => {
          return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
@@ -347,7 +334,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
              this.ownerOption = [];
              this.ownerList = value.data;
              value.data.forEach( v => {
-               console.log(v.surname);
                this.ownerOption.push({label: v.surname, value: v.surname});
              });
           } else {
@@ -612,10 +598,10 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           {field: 'roomSize', header: '建筑面积'},
           {field: 'roomType', header: '房间类型'},
           {field: 'surname', header: '客户名称'},
-          {field: 'sex', header: '客户性别'},
           {field: 'identity', header: '客户身份'},
           {field: 'mobilePhone', header: '客户电话'},
           {field: 'dueTime', header: '物业费到期时间'},
+          {field: 'oneMonthPropertyFee', header: '单月物业费'},
           {field: 'minMonth', header: '欠费月数'},
           {field: 'prepaidAmount', header: '预缴金额'},
           {field: 'operating', header: '操作'}],
@@ -632,33 +618,84 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // show detail dialog (展示详情弹窗)
   public  detailClick(e): void {
-    this.dialogOption = {
-      dialog: true,
-      tableHidden: false,
-      width: '1000',
-      type: 1,
-      title: '详情',
-      poplist: {
-        popContent: e,
-        popTitle:  [
-          {field: 'villageName', header: '小区名称'},
-          {field: 'regionName', header: '地块名称'},
-          {field: 'buildingName', header: '楼栋名称'},
-          {field: 'unitName', header: '单元名称'},
-          {field: 'roomCode', header: '房间编号'},
-          {field: 'roomSize', header: '建筑面积'},
-          {field: 'roomType', header: '房间类型'},
-          {field: 'surname', header: '客户名称'},
-          {field: 'sex', header: '客户性别'},
-          {field: 'idNumber', header: '身份证号'},
-          {field: 'mobilePhone', header: '客户电话'},
-          {field: 'dueTime', header: '物业费到期时间'},
-          {field: 'surplus', header: '预存金额'},
-          {field: 'prepaidAmount', header: '预缴金额'},
-          {field: 'minMonth', header: '欠费月数'},
-        ],
-      }
-    };
+    console.log(e);
+    console.log(e.parkingSpaceManagementDOS.length);
+    if (e.parkingSpaceManagementDOS.length !== 0) {
+      this.dialogOption = {
+        dialog: true,
+        tableHidden: true,
+        width: '1000',
+        type: 1,
+        title: '详情',
+        poplist: {
+          popContent: e,
+          popTitle:  [
+            {field: 'villageName', header: '小区名称'},
+            {field: 'regionName', header: '地块名称'},
+            {field: 'buildingName', header: '楼栋名称'},
+            {field: 'unitName', header: '单元名称'},
+            {field: 'roomCode', header: '房间编号'},
+            {field: 'roomSize', header: '建筑面积'},
+            {field: 'roomType', header: '房间类型'},
+            {field: 'surname', header: '客户名称'},
+            {field: 'sex', header: '客户性别'},
+            {field: 'idNumber', header: '身份证号'},
+            {field: 'mobilePhone', header: '客户电话'},
+            {field: 'dueTime', header: '物业费到期时间'},
+            {field: 'surplus', header: '预存金额'},
+            {field: 'prepaidAmount', header: '预缴金额'},
+            {field: 'minMonth', header: '欠费月数'},
+          ],
+        },
+        tablelist: {
+          width: '102%',
+          tableHeader: {
+            data: [
+              {field: 'buildingName', header: '楼栋名称'},
+              {field: 'roomCode', header: '房间编号'},
+              {field: 'parkingSpaceCode', header: '车位编号'},
+              {field: 'authorizedPersonName', header: '车主姓名'},
+              {field: 'authorizedPersonPhone', header: '车主电话'},
+              {field: 'remarks', header: '备注'},
+            ],
+            style: {background: '#F4F4F4', color: '#000', height: '6vh'}
+          },
+          tableContent: {
+            data: e.parkingSpaceManagementDOS,
+            styleone: {background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+            styletwo: {background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+          }
+        }
+      };
+    } else {
+      this.dialogOption = {
+        dialog: true,
+        tableHidden: false,
+        width: '1000',
+        type: 1,
+        title: '详情',
+        poplist: {
+          popContent: e,
+          popTitle: [
+            {field: 'villageName', header: '小区名称'},
+            {field: 'regionName', header: '地块名称'},
+            {field: 'buildingName', header: '楼栋名称'},
+            {field: 'unitName', header: '单元名称'},
+            {field: 'roomCode', header: '房间编号'},
+            {field: 'roomSize', header: '建筑面积'},
+            {field: 'roomType', header: '房间类型'},
+            {field: 'surname', header: '客户名称'},
+            {field: 'sex', header: '客户性别'},
+            {field: 'idNumber', header: '身份证号'},
+            {field: 'mobilePhone', header: '客户电话'},
+            {field: 'dueTime', header: '物业费到期时间'},
+            {field: 'surplus', header: '预存金额'},
+            {field: 'prepaidAmount', header: '预缴金额'},
+            {field: 'minMonth', header: '欠费月数'},
+          ],
+        }
+      };
+    }
   }
   // select data （选择数据）
   public  selectData(e): void {
@@ -680,8 +717,10 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // 拆分请求
   public  costSplitSure(): void {
+    this.costSplitData.oneMonthPropertyFee = this.paymentSelect[0].oneMonthPropertyFee;
     this.costSplitData.spiltTime = this.datePipe.transform(this.costSplitData.spiltTime, 'yyyy-MM-dd');
     this.costSplitData.stateOfArrears = this.costSplitData.stateOfArrears === true ? 1 : 0 ;
+    console.log(this.costSplitData);
     this.paymentSrv.getCostSplitBill(this.costSplitData).subscribe(
       value => {
         if (value.status === '1000') {
@@ -1093,9 +1132,9 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       if (v.label === '物业缴费') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });
@@ -1103,6 +1142,23 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+  // 全选取消
+  public  itemCalClick(): void {
+     console.log();
+     const flag = this.deductionDamagesData.some(v => {
+       return v.deductionStatus === 1;
+     });
+     if(flag){
+       this.deductionDamagesData.forEach(val => {
+          val.deductionStatus = 0;
+       });
+     } else {
+       this.deductionDamagesData.forEach(val =>{
+         val.deductionStatus = 1;
+       });
+     }
+     this.getTotalBalaceData();
   }
 }
 
