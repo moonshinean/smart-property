@@ -1,51 +1,155 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 
 @Component({
   selector: 'rbi-echarts-payment-pie',
   templateUrl: './echarts-payment-pie.component.html',
   styleUrls: ['./echarts-payment-pie.component.less']
 })
-export class EchartsPaymentPieComponent implements OnInit {
+export class EchartsPaymentPieComponent implements OnInit, OnChanges {
 
   public option: any;
+  @Input()
+  public datas: any;
+  public totalDatas =  0;
   constructor() { }
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.totalDatas =  0;
+    this.datas.forEach( v => {
+      this.totalDatas += v.value;
+    });
     this.option = {
-      // title : {
-      //   text: '缴费项目情况',
-      //   subtext: '2019-01-01至2019-05-31',
-      //   x: 'center'
-      // },
-      tooltip : {
-        trigger: 'item',
-        formatter: ' {a} <br/> {b} : {c} ({d}%)'
+      color: ['#FF8352', '#E271DE', '#00FFFF', '#4AEAB0', '#31C5C0', '#5085f2', '#fdb301'],
+      backgroundColor: '#012A5C',
+      borderRadius: '10',
+      title: {
+        text: '总金额',
+        subtext: this.totalDatas + '元',
+        textStyle: {
+          color: '#f2f2f2',
+          fontSize: 23,
+          // align: '40'
+        },
+        subtextStyle: {
+          fontSize: 16,
+          color: ['#ff9d19']
+        },
+        x: 'center',
+        y: 'center',
       },
-      series : [
+      grid: {
+        bottom: 150,
+        left: 100,
+        right: '10%'
+      },
+      legend: {
+        x : '2%',
+        top: '5%',
+        y : 'top',
+        orient: 'vertical',
+        textStyle: {
+          color: '#f2f2f2',
+          // fontSize: 1,
+
+        },
+        icon: 'roundRect',
+        data: this.datas,
+      },
+      tooltip: {
+        formatter: '{a}：<br/>{b}: {c}元'
+      },
+      series: [
+        // 主要展示层的
         {
-          name: '部门使用情况',
-          type: 'pie',
-          radius : '45%',
+          radius: ['50%', '72%'],
           center: ['50%', '50%'],
-          // label: {
-          //   show: true,
-          //   formatter: '{b}: {d}%'
-          // },
-          data: [
-            {value: 2628, name: '物业费住宅'},
-            {value: 1797, name: '装修保证金'},
-            {value: 1399, name: '装修管理费'},
-            {value: 1241, name: '装修建筑垃圾清运费'},
-            {value: 6557, name: '车位管理费'}
-          ],
-          itemStyle: {
+          type: 'pie',
+          label: {
+            normal: {
+              show: true,
+              formatter: '{c}元',
+              textStyle: {
+                fontSize: 15,
+
+              },
+              position: 'outside'
+            },
             emphasis: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
+              show: true
             }
-          }
-        }
+          },
+          labelLine: {
+            normal: {
+              show: true,
+              length: 15,
+              length2: 25
+            },
+            emphasis: {
+              show: true
+            }
+          },
+          name: '信息统计',
+          data: this.datas,
+
+        },
+        // 边框的设置
+        {
+          radius: ['50%', '54%'],
+          center: ['50%', '50%'],
+          type: 'pie',
+          label: {
+            normal: {
+              show: false
+            },
+            emphasis: {
+              show: false
+            }
+          },
+          labelLine: {
+            normal: {
+              show: false
+            },
+            emphasis: {
+              show: false
+            }
+          },
+          animation: false,
+          tooltip: {
+            show: false
+          },
+          data: [{
+            value: 1,
+            itemStyle: {
+              color: 'rgba(250,250,250,0.3)',
+            },
+          }],
+        },
+        // {
+        //   name: '外边框',
+        //   type: 'pie',
+        //   clockWise: false, // 顺时加载
+        //   hoverAnimation: false, // 鼠标移入变大
+        //   center: ['50%', '50%'],
+        //   radius: ['65%', '65%'],
+        //   label: {
+        //     normal: {
+        //       show: false
+        //     }
+        //   },
+        //   data: [{
+        //     value: 9,
+        //     name: '',
+        //     itemStyle: {
+        //       normal: {
+        //         borderWidth: 2,
+        //         borderColor: '#0b5263'
+        //       }
+        //     }
+        //   }]
+        // },
       ]
     };
   }

@@ -43,7 +43,8 @@
               <label>{{item.name}}:</label>
             </div>
             <div class="ui-g-8" style="line-height: 2vh">
-              <input pInputText type="text" [(ngModel)]="item.value" />
+              <input  *ngIf="item.label !== 'dueTime'" pInputText type="text" [(ngModel)]="item.value" />
+              <p-calendar *ngIf="item.label === 'dueTime'" [(ngModel)]="item.value" placeholder="请选择物业费到期时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
             </div>
           </div>
         </div>
@@ -85,12 +86,13 @@
               <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
 
                 <td  *ngFor="let col of columns.slice(0 ,columns.length -1)" style="word-break: break-word">
-                  <span *ngIf="col !== 'rentalRenewalStatus' && col !== 'parkingSpaceType'"></span>{{rowData[col.field]}}
-                  <span *ngIf="col === 'rentalRenewalStatus'"></span>{{rowData[col.field] === 0? '非续租': '续租'}}
-                  <span *ngIf="col === 'rentalRenewalStatus'"></span>{{toolSrv.setValueToLabel(parkSpaceTypeOption, rowData[col.field])}}
+                  <span *ngIf="col !== 'rentalRenewalStatus' && col !== 'parkingSpaceType'">{{rowData[col.field]}}</span>
+                  <span *ngIf="col === 'rentalRenewalStatus'">{{rowData[col.field] === 0? '非续租': '续租'}}</span>
+                  <span *ngIf="col === 'parkingSpaceType'">{{toolSrv.setValueToLabel(parkSpaceTypeOption, rowData[col.field])}}</span>
                 </td>
                 <td  *ngFor="let col of columns.slice(columns.length -1 ,columns.length)" style="word-break: break-word">
-                  <button class="charge-details-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;"  (click)="changePackSpaceInfo(rowData)">修改</button>
+                  <button class="charge-details-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;"  (click)="changePackSpaceInfo(rowIndex)">修改</button>
+                  <button class="charge-details-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;margin-top: 0.2vh" (click)="parkSpaceDetailClick(rowIndex)">详情</button>
                 </td>
               </tr>
             </ng-template>
@@ -121,7 +123,7 @@
                 </td>
                 <td *ngFor="let col of columns.slice(columns.length-1, columns.length)" style="word-break: break-word">
 
-                  <button class="charge-details-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;" >修改</button>
+                  <button class="charge-details-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;" (click)="changeChargeItemDataClick(rowIndex)">修改</button>
                 </td>
               </tr>
             </ng-template>
@@ -131,7 +133,7 @@
           <div class="ui-g-9">
           </div>
           <div class="ui-g-3">
-            <div >总计: <span [ngStyle]="{'font-size':'1.2rem'}"></span></div>
+            <div >总计: <span [ngStyle]="{'font-size':'1.2rem'}">{{chargeDetails.amountTotalReceivable}}</span></div>
           </div>
         </div>
         <div class="ui-g-12">
@@ -167,6 +169,14 @@
           </div>
           <div class="ui-g-7" style="text-align: left">
             <input type="text" pInputText [(ngModel)]="chargeDetails.correctedAmount"/>
+          </div>
+        </div>
+        <div class="ui-g-6" style="line-height:  3vh">
+          <div class="ui-g-3" style="text-align: right">
+            <label >订单生成日期：</label>
+          </div>
+          <div class="ui-g-7" style="text-align: left">
+            <p-calendar [(ngModel)]="chargeDetails.realGenerationTime" placeholder="请选择订单生成日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
           </div>
         </div>
         <div class="ui-g-6" style="line-height:  3vh">
@@ -221,10 +231,10 @@
             </div>
           </div>
         </div>
-        <div class="ui-g-12" [hidden]="deductioContent.length === 0">
+        <div class="ui-g-12" *ngIf="deductioContent.length !== 0">
           <h3>抵扣信息</h3>
         </div>
-        <div class="ui-g-12"  [hidden]="deductioContent.length === 0">
+        <div class="ui-g-12"  *ngIf="deductioContent.length !== 0">
           <p-scrollPanel [style]="liquidatedDamagesStyle" styleClass="custombar">
             <p-table [columns]="deductioTitle" [value]="deductioContent">
               <ng-template pTemplate="header" let-columns>
@@ -244,10 +254,10 @@
             </p-table>
           </p-scrollPanel>
         </div>
-         <div class="ui-g-12">
+         <div class="ui-g-12" *ngIf="parkSpaceData.length !== 0">
            <h3>车位管理</h3>
          </div>
-         <div class="ui-g-12" [hidden]=" deductionDamagesStatus === 0">
+         <div class="ui-g-12" *ngIf="parkSpaceData.length !== 0">
            <p-table [columns]="parkspaceTitleDetail" [value]="parkSpaceData"  [scrollable]="true"  scrollHeight="48vh">
              <ng-template pTemplate="header" let-columns>
                <tr >
@@ -271,7 +281,7 @@
           <h3>缴费信息</h3>
         </div>
         <div class="ui-g-12">
-            <p-table [columns]="paymentDialogTableTitle" [value]="detailsPaymentProject"  [scrollable]="true">
+            <p-table [columns]="paymentDialogTableTitle.slice(0,paymentDialogTableTitle.length-1)" [value]="detailsPaymentProject"  [scrollable]="true">
               <ng-template pTemplate="colgroup" let-columns>
                 <colgroup>
                   <col *ngFor="let col of columns" style="width:150px">
@@ -358,13 +368,98 @@
       </p-footer>
     </p-dialog>
 
-  <!--增加弹窗-->
-  <rbi-dialog-pop
-    [dialogOption]="optionDialog"
-    [formContrl]="formgroup"
-    [formdata]="formdata"
-    (eventClick)="eventClick($event)">
-  </rbi-dialog-pop>
+<!--    修改费用详细-->
+  <p-dialog header="修改费用" [(visible)]="chargeItemDialog" [width]="800"  [transitionOptions]="'200ms'"  [closable]="false" [positionTop]="150">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-6" style="line-height: 4vh" >
+        <div class="ui-g-4" style="text-align: right">
+          <label>折扣</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" placeholder="请输入折扣" pInputText [(ngModel)]="changePaymentItem.discont"/>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh" >
+        <div class="ui-g-4" style="text-align: right">
+          <label >月/张数</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <input type="text" pInputText  placeholder="请输入月/张数" [(ngModel)]="changePaymentItem.datedif"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >应收金额</label>
+        </div>
+        <div class="ui-g-8" >
+          <input type="text" pInputText  placeholder="请输入应收金额" [(ngModel)]="changePaymentItem.actualMoneyCollection"/>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >实收金额</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入实收金额" [(ngModel)]="changePaymentItem.amountReceivable"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >使用量</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入使用量" [(ngModel)]="changePaymentItem.usageAmount"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >当前读数</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <input type="text" pInputText placeholder="请输入当前读数" [(ngModel)]="changePaymentItem.currentReadings"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >上次读数</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <input type="text" pInputText placeholder="请输入上次读数" [(ngModel)]="changePaymentItem.lastReading"/>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >开始计费时间</label>
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="changePaymentItem.startTime" placeholder="请选择计费开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >结束计费时间</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-calendar [(ngModel)]="changePaymentItem.dueTime" placeholder="请选择计费结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >欠费状态</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-dropdown [options]="stateOfArrearsOption"  placeholder="请选择车辆原始类型" scrollHeight="100px" [(ngModel)]="changePaymentItem.stateOfArrears"></p-dropdown>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" (click)="changeChargeItemSureClick()">确认</button>
+        <button class="charge-details-dialog-Btn charge-details-dialog-Btn-false" (click)="chargeItemDialog = false;">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
   <p-dialog header="租赁车位" [(visible)]="parkSpaceOptionDialog" [width]="800"  [transitionOptions]="'200ms'"  [closable]="false" [positionTop]="150">
     <div class="ui-g ui-fluid">
 
@@ -480,6 +575,22 @@
           <p-dropdown [options]="vehicleOriginaTypeOption"  placeholder="请选择车辆原始类型" scrollHeight="100px" [(ngModel)]="rentalParkSpace.vehicleOriginalType"></p-dropdown>
         </div>
       </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >应收金额</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <input type="text" pInputText placeholder="请输入应收金额" [(ngModel)]="rentalParkSpace.actualMoneyCollection"/>
+        </div>
+      </div>
+      <div class="ui-g-6" style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >实收金额</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <input type="text" pInputText placeholder="请输入实收金额" [(ngModel)]="rentalParkSpace.amountReceivable"/>
+        </div>
+      </div>
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
@@ -487,26 +598,6 @@
         <button class="charge-details-dialog-Btn charge-details-dialog-Btn-false" (click)="parkSpaceOptionDialog = false;this.rentalHiddenInfo = true;">取消</button>
       </div>
     </p-footer>
-    <!--    树结构-->
-    <p-dialog [(visible)]="treeDialog" [responsive]="true" showEffect="fade" [modal]= false [maximizable]="false" [baseZIndex]="10000" [modal]="true" [width]="350" [height]="400">
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-12">
-          <p-scrollPanel [style]="{width: '100%', height: '300px'}">
-            <p-tree
-              [value]="dataTrees"
-              [(selection)]="dataTree"
-              selectionMode="single">
-            </p-tree>
-          </p-scrollPanel>
-        </div>
-      </div>
-      <p-footer>
-        <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
-          <button  class="charge-details-dialog-Btn charge-details-dialog-Btn-sure" style="width: 4vw" (click)="dataTreeSureClick()">确认</button>
-          <button  class="charge-details-dialog-Btn charge-details-dialog-Btn-false" style="width: 4vw" (click)="treeDialog = false">取消</button>
-        </div>
-      </p-footer>
-    </p-dialog>
   </p-dialog>
   <!--    树结构-->
   <p-dialog [(visible)]="treeDialog" [responsive]="true" showEffect="fade" [modal]= false [maximizable]="false" [baseZIndex]="10000" [modal]="true" [width]="350" [height]="400">
@@ -529,6 +620,7 @@
     </p-footer>
   </p-dialog>
   <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
   <rbi-file-pop [UploadFileOption]="uploadFileOption" (event)="uploadFileSureClick($event)"></rbi-file-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
 </div>

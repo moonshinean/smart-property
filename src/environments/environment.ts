@@ -10,9 +10,9 @@ export const environment = {
   sysetUrl: 'http://120.78.156.30:8847/cloud_house_admin',
   //
 //  广祥的ip
-//   sysetUrl: 'http://192.168.28.244.30:8847/cloud_house_admin',
-//   chargeUrl: 'http://192.168.28.244:8849/cloud_house_interactive',
-//   loginUrl: 'http://192.168.28.244:8848/cloud_house_authentication',
+//   sysetUrl: 'http://192.168.28.204.30:8847/cloud_house_admin',
+//   chargeUrl: 'http://192.168.28.204:8849/cloud_house_interactive',
+//   loginUrl: 'http://192.168.28.204:8848/cloud_house_authentication',
   // 谢青的ip
   //
   // sysetUrl: 'http://192.168.28.184.30:8847/cloud_house_admin',

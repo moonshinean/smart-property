@@ -29,6 +29,8 @@ export class ChargeDetail {
   refundStatus?: any; // 付款方式
   invalidState?: any; // 付款方式
   tollCollectorName?: any; // 录单人
+  realGenerationTime?: any;
+  // dueTime?: any;
   remark?: any; // 备注
   idt?: any; // 插入时间
   udt?: any; // 修改时间

@@ -121,4 +121,49 @@
       </ng-template>
     </p-table>
   </div>
+<!--显示费用信息的-->
+  <div *ngIf="option.type === 4">
+    <p-table [columns]="option.header.data" [value]="option.Content.data"  [scrollable]="true"   scrollHeight="40vh"  [style]="{'width':  option?.width}"  [(selection)]="select"  (onRowSelect)="selectClick($event)"  (onRowUnselect)="noSelectClick($event)">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th [ngStyle]="option.header.style" style="width: 3em">
+            <p-tableHeaderCheckbox (click)="checkClick()"></p-tableHeaderCheckbox>
+          </th>
+          <th *ngFor="let col of columns"  [ngStyle]="option.header.style">
+            {{col.header}}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+        <!--普通列表-->
+        <tr [pSelectableRow]="rowData" *ngIf="rowIndex%2 != 1" [ngStyle]="option.Content.styleone">
+          <td style="width: 3em">
+            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+          </td>
+          <td  *ngFor="let col of columns?.slice(0, columns?.length-1)" >
+            <span style="word-wrap:break-word">{{rowData[col.field]}}</span>
+          </td>
+          <td >
+            <button class="check-table-btn-detail" (click)="DetailClick(rowData)" *ngFor="let item of option.tableList" [ngStyle]="{'background': item.color}">{{item.label}}</button>
+          </td>
+        </tr>
+        <tr [pSelectableRow]="rowData" *ngIf="rowIndex %2!== 0" [ngStyle]="option.Content.styletwo">
+          <td>
+            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+          </td>
+          <td  *ngFor="let col of columns.slice(0, columns.length-1)" >
+            <span style="word-wrap:break-word">{{rowData[col.field]}}</span>
+          </td>
+          <td >
+            <button class="check-table-btn-detail" (click)="DetailClick(rowData)"  *ngFor="let item of option.tableList"  [ngStyle]="{'background': item.color}">{{item.label}}</button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <p-scrollPanel [style]="{height: '15vh'}" styleClass="custombar">
+           <div>123</div>
+        </p-scrollPanel>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

@@ -66,4 +66,6 @@ export class ChargePaymentService {
   public importFilesWithParkSpaceInfo(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/excelImport`, pamars);
   }
+
+
 }

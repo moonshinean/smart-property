@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BfTableComponent } from './bf-table/bf-table.component';
 import { CheckTableBtnComponent } from './check-table-btn/check-table-btn.component';
 import {TableModule} from 'primeng/table';
+import {ScrollPanelModule} from 'primeng/primeng';
 
 
 
@@ -11,6 +12,7 @@ import {TableModule} from 'primeng/table';
   imports: [
     CommonModule,
     TableModule,
+    ScrollPanelModule,
   ],
   exports: [BfTableComponent, CheckTableBtnComponent]
 })

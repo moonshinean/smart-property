@@ -128,6 +128,14 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 详情里的列表按钮
+  public pieBtnList = [
+    {label: '新系统缴费统计图', value: 1, color: '#FF8352'},
+    {label: '本年缴费统计图', value: 2, color: '#31C5C0'},
+    {label: '总缴费统计图', value: 3, color: '#31C5C0'},
+  ];
+  public pieDatas = [];
+  public pieChargeRoomCode: any;
   // 服务传参相关
   public ownerSub: Subscription;
   // 按钮权限相关
@@ -257,14 +265,14 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // sure add houser and owner info
   public  ownerSureClick(data): void {
-    const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'roomType', 'roomStatus'];
-    const addroomVerifyStaus = addRoomKeyList.every( v => {
+    const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'roomType', 'roomStatus', 'realRecyclingHomeTime', 'startBillingTime'];
+    const addroomVerifyStaus = addRoomKeyList.some( v => {
       return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
     });
     if (!addroomVerifyStaus) {
        this.addQuest(data);
     } else {
-      this.toolSrv.setToast('error', '操作错误', '信息未填写完整');
+      this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
     }
   }
 
@@ -352,6 +360,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // detail ownerInfo
   public  ownerDetailClick(e): void {
+    this.pieChargeRoomCode = e.roomCode;
     this.owerSrv.queryOwerInfoDetail({roomCode: e.roomCode, customerUserId: e.customerUserId}).subscribe(
       value => {
           if (value.status === '1000') {
@@ -372,7 +381,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
             this.toolSrv.setToast('error', '操作错误', value.message);
           }
     });
-
+    this.getChargePieData();
   }
   // modify owner
   public ownerModifyClick(): void {
@@ -657,5 +666,28 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+  // 设置切换饼状图的数据
+  public  changePieDataClick(item): void {
+      this.pieBtnList.forEach( v => {
+        v.color = '#31C5C0';
+      });
+      item.color = '#FF8352';
+      this.getChargePieData();
+  }
+
+  public  getChargePieData(): void {
+    this.owerSrv.getNewSystemChargeItemToatal({roomCode: this.pieChargeRoomCode}).subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          this.pieDatas = value.data.filter(v => {
+            return v.value !== null;
+          });
+        } else {
+          this.toolSrv.setToast('error', '请求失败', value.message);
+        }
+      }
+    );
   }
 }

@@ -13,6 +13,7 @@ import {DataTree, DialogModel, FormValue} from '../../../common/components/basic
 import {FormGroup} from '@angular/forms';
 import {TreeNode} from '../../../common/model/shared-model';
 import {ChargePaymentService} from '../../../common/services/charge-payment.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'rbi-charge-details',
@@ -54,6 +55,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {field: 'stateOfArrears', header: '欠费状态'},
     {field: 'operating', header: '操作'},
   ];
+
   // 抵扣项目列表
   public deductioTitle = [
     {field: 'deductionItem', header: '抵扣项目'},
@@ -98,8 +100,8 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   // 零时车位车位
   public parkSpaceOptionDialog: boolean;
   public rentalParkSpace: RentalAddSparkSpace  = new RentalAddSparkSpace();
-  public editRentalParkspaceDataFlag: any;
   public rentalRenewalStatusOption = [{label: '续租', value: '1'}, {label: '非续租', value: '0'}];
+  public stateOfArrearsOption = [{label: '欠费', value: 1}, {label: '未欠费', value: 0}];
   public rentalHiddenInfo = true;
   public rentalCode: any;
   // 树结构相关
@@ -107,10 +109,10 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   public dataTrees: DataTree[];
   public dataTree: DataTree = new DataTree();
   // 修改弹窗
-  public optionDialog: DialogModel = new DialogModel();
-  public form: FormValue[] = [];
-  public formgroup: FormGroup;
-  public formdata: any[];
+  // 修改费用详细
+  public dialogOption: any;
+  public chargeItemDialog: boolean;
+  public changeChangeIndex: any;
   // 按钮权限相关
   public btnHiden = [
     {label: '修改', hidden: true},
@@ -148,19 +150,22 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {field: 'amountReceivable', header: '应收金额'},
   ];
   public parkSpaceData: any[] = [];
+  // 车位修改的信息的索引
+  public changeIndex: any;
 
   public paymentAddTitle =  [
     {name: '房间编号', value: '', label: 'roomCode'},
     {name: '建筑面积', value: '', label: 'roomSize'},
     {name: '客户名称', value: '', label: 'surname'},
     {name: '手机号码', value: '', label: 'mobilePhone'},
-    {name: '物业费到期时间', value: '', label: 'dueTime'},
-    {name: '预缴余额', value: '', label: 'prepaidAmount'},
-    {name: '单月物业费', value: '', label: 'oneMonthPropertyFee'},
-    {name: '欠费月数', value: '', label: 'minMonth'}
+    // {name: '物业费到期时间', value: '', label: 'dueTime'},
+    // {name: '预缴余额', value: '', label: 'prepaidAmount'},
+    // {name: '单月物业费', value: '', label: 'oneMonthPropertyFee'},
+    // {name: '欠费月数', value: '', label: 'minMonth'}
   ];
 
   public paymentItemData: ChargeItemDetail[] = [];
+  public changePaymentItem: ChargeItemDetail = new ChargeItemDetail();
   // 详情相关
   public chargeDetails: ChargeDetail = new ChargeDetail();
   public paymentOrderAdd: ChargePaymentAddOrder  = new ChargePaymentAddOrder();
@@ -187,6 +192,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     private paymentSrv: ChargePaymentService,
     private localSrv: LocalStorageService,
     private  sharedSrv: SharedServiceService,
+    private datePipe: DatePipe,
     private themeSrv: ThemeService
   ) {
     this.themeSub = this.themeSrv.changeEmitted$.subscribe(
@@ -348,7 +354,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
         styleone: {background: this.table.tableContent[0].background, color: this.table.tableContent[0].color, textAlign: 'center', height: '2vw'},
         styletwo: {background: this.table.tableContent[1].background, color: this.table.tableContent[1].color, textAlign: 'center', height: '2vw'},
       },
-      type: 2,
+      type: 4,
       tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
@@ -399,20 +405,20 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
         value => {
           console.log(value);
           if (value.status === '1000') {
-               // 基本信息
-               this.chargeDetails = value.data.bill;
-               this.detailsPaymentProject = value.data.billDetailedDOS;
-               this.deductioContent = value.data.costDeductionDOS;
-               // 缴费明细
-               this.paymentItemData = value.data.billDetailedDOS.map( v => {
-                return v;
-               });
-               // 抵扣账单
-               this.deductionDamagesData = value.data.costDeductionDOS;
-               this.paymentAddTitle.forEach( v => {
-                 v.value = this.chargeDetails[v.label];
-               });
-              this.parkSpaceData = value.data.parkingSpaceCostDetailDOS;
+            // 基本信息
+            this.chargeDetails = value.data.bill;
+            this.detailsPaymentProject = value.data.billDetailedDOS;
+            this.deductioContent = value.data.costDeductionDOS;
+            // 缴费明细
+            this.paymentItemData = value.data.billDetailedDOS.map( v => {
+              return v;
+            });
+            // 抵扣账单
+            this.deductionDamagesData = value.data.costDeductionDOS;
+            this.paymentAddTitle.forEach( v => {
+              v.value = this.chargeDetails[v.label];
+            });
+            this.parkSpaceData = value.data.parkingSpaceCostDetailDOS;
             // this.chargeDetails.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, this.chargeDetails.paymentMethod);
           } else {
             this.toolSrv.setToast('error', '请求错误', value.message);
@@ -515,8 +521,29 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // 修改账单
   public  ModifypaymentSureClick(): void {
-      console.log(23);
+    this.paymentAddTitle.forEach( v => {
+       this.chargeDetails[v.label] = v.value;
+    });
+    this.chargeDetails.realGenerationTime = this.datePipe.transform(this.chargeDetails.realGenerationTime, 'yyyy-MM-dd');
+    this.toolSrv.setConfirmation('修改', '修改订单', () => {
+        this.chargeDetailSrv.updateChargeBasicInfo(this.chargeDetails).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.paymentDialog = false;
+              this.paymentDetailSelect = [];
+              this.deductioContent = [];
+              this.deductionDamagesData = [];
+              this.chargeDetails = new ChargeDetail();
+              this.selectSearchType();
+              this.toolSrv.setToast('success', '请求成功', value.message);
+            } else {
+              this.toolSrv.setToast('error', '请求失败', value.message);
+            }
+          }
+        );
+    });
   }
 
   public  ModifypaymentFaleseClick(): void {
@@ -526,13 +553,10 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
       this.deductionDamagesData = [];
   }
 
-  // 修改后的事件
-  public  eventClick(e): void {
-      console.log(e);
-  }
   // 修改车位信息
-  public  changePackSpaceInfo(data): void {
-    console.log(data);
+  public  changePackSpaceInfo(index): void {
+    // console.log(data);
+    this.changeIndex = index;
     this.paymentSrv.getRoomTree({}).subscribe(
       value => {
         // console.log(value);
@@ -540,11 +564,12 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
       }
     );
     this.parkSpaceOptionDialog = true;
-    for (const datastr in data) {
-      this.rentalParkSpace[datastr] = data[datastr];
+    for (const datastr in this.parkSpaceData[index]) {
+      this.rentalParkSpace[datastr] = this.parkSpaceData[index][datastr];
     }
     this.rentalCode = this.rentalParkSpace.parkingSpaceCode;
     this.rentalParkSpace.parkingSpacePlace = this.rentalParkSpace.parkingSpacePlace.toString();
+    // this.rentalParkSpace.rentalRenewalStatus = this.rentalParkSpace.rentalRenewalStatus.toString();
   }
 
   // 树形结构点击
@@ -632,7 +657,94 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   }
   // 确认修改
   public  rentalparkSpaceClick(): void {
-      console.log(123);
+      this.rentalParkSpace.startTime = this.datePipe.transform(this.rentalParkSpace.startTime, 'yyyy-MM-dd');
+      this.chargeDetailSrv.updateParkspaceInfo(this.rentalParkSpace).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            for (const key in this.rentalParkSpace) {
+               this.parkSpaceData[this.changeIndex][key] = this.rentalParkSpace[key];
+            }
+            this.toolSrv.setToast('success', '请求成功', value.message);
+            // this.recalculateCosts();
+            this.parkSpaceOptionDialog = false;
+          }else {}
+          this.toolSrv.setToast('error', '请求失败', value.message);
+        }
+      );
   }
 
+  // 车位信息详情
+  public  parkSpaceDetailClick(index): void {
+    for (const  key in this.parkSpaceData[index]) {
+      this.rentalParkSpace[key] = this.parkSpaceData[index][key];
+    }
+    this.rentalParkSpace.rentalRenewalStatus = this.toolSrv.setValueToLabel(this.rentalRenewalStatusOption, this.rentalParkSpace.rentalRenewalStatus);
+    this.rentalParkSpace.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption, this.rentalParkSpace.parkingSpacePlace);
+    this.rentalParkSpace.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, this.rentalParkSpace.parkingSpaceType);
+    this.rentalParkSpace.vehicleOriginalType = this.toolSrv.setValueToLabel(this.vehicleOriginaTypeOption, this.rentalParkSpace.vehicleOriginalType);
+    this.rentalParkSpace.licensePlateColor = this.toolSrv.setValueToLabel(this.lincesePlateColorOption, this.rentalParkSpace.licensePlateColor);
+    this.dialogOption = {
+      dialog: true,
+      tableHidden: false,
+      width: '1000',
+      type: 1,
+      title: '车位详情',
+      poplist: {
+        popContent: this.rentalParkSpace,
+        popTitle:  [
+          {field: 'villageName', header: '小区名称'},
+          {field: 'regionName', header: '地块名称'},
+          {field: 'buildingName', header: '楼栋名称'},
+          {field: 'roomSize', header: '建筑面积'},
+          {field: 'parkingSpaceCode', header: '车位编号'},
+          {field: 'rentalRenewalStatus', header: '续租状态'},
+          {field: 'datedif', header: '月数'},
+          {field: 'startTime', header: '开始计费时间'},
+          {field: 'parkingSpacePlace', header: '车位地点'},
+          {field: 'parkingSpaceType', header: '车位类型'},
+          {field: 'vehicleOriginalType', header: '车辆原始类型'},
+          {field: 'licensePlateColor', header: '车牌颜色'},
+          {field: 'authorizedPersonName', header: '车主姓名'},
+          {field: 'authorizedPersonPhone', header: '车主电话'},
+          {field: 'authorizedPersonIdNumber', header: '车主身份证号'},
+          {field: 'dueTime', header: '计费结束时间'},
+          {field: 'discount', header: '折扣率'},
+          {field: 'chargeUnit', header: '收费单位'},
+          {field: 'chargeStandard', header: '标准单价'},
+          {field: 'chargeName', header: '项目名称'},
+          {field: 'actualMoneyCollection', header: '实收金额'},
+          {field: 'amountReceivable', header: '应收金额'},
+        ],
+      }
+    };
+  }
+  // 缴费明细详情
+  public  changeChargeItemDataClick(index): void {
+      this.changeChangeIndex = index;
+      for(const  chargekey in this.paymentItemData[index]){
+        this.changePaymentItem[chargekey] = this.paymentItemData[index][chargekey];
+      }
+      this.chargeItemDialog = true;
+  }
+  // 确认修改
+  public  changeChargeItemSureClick(): void {
+    this.changePaymentItem.startTime = this.datePipe.transform(this.changePaymentItem.startTime, 'yyyy-MM-dd');
+    this.changePaymentItem.dueTime = this.datePipe.transform(this.changePaymentItem.dueTime, 'yyyy-MM-dd');
+      this.toolSrv.setConfirmation('修改', '修改', () => {
+        this.chargeDetailSrv.updateChargeItemInfo(this.changePaymentItem).subscribe(
+          value => {
+            console.log(value);
+            if (value.status === '1000') {
+              for (const  chargekey in this.changePaymentItem) {
+                this.paymentItemData[this.changeChangeIndex][chargekey] = this.changePaymentItem[chargekey];
+              }
+              this.chargeItemDialog = false;
+            } else {
+              this.toolSrv.setToast('error', '请求失败', value.message)
+            }
+          }
+        );
+      });
+  }
 }

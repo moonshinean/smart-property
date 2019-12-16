@@ -49,4 +49,8 @@ export class BfOwnerService {
   public  logoutOwnerInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/logout', body);
   }
+  // 新系统缴费记录
+  public  getNewSystemChargeItemToatal(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/chart/nowChart', body);
+  }
 }

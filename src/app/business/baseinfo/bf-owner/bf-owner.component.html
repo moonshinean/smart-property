@@ -60,7 +60,7 @@
           <label>*地块名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入地块名称..." [(ngModel)]="roomInfo.regionName">
+          <input  type="text" pInputText placeholder="请输入地块名称..." [(ngModel)]="roomInfo.regionName"  [pKeyFilter]="roomInfo.regionName !== null && roomInfo.regionName !== undefined">
         </div>
       </div>
       <div class="ui-g-6">
@@ -84,7 +84,7 @@
           <label for="addroomCode">*房间编号：</label>
         </div>
         <div class="ui-g-8">
-          <input id="addroomCode" type="text" pInputText placeholder="请输入房间编号..." [(ngModel)]="roomInfo.roomCode">
+          <input id="addroomCode" type="text" pInputText placeholder="请输入房间编号..."  [(ngModel)]="roomInfo.roomCode">
         </div>
       </div>
       <div class="ui-g-6">
@@ -195,7 +195,7 @@
     </p-footer>
   </p-dialog>
   <!--修改弹窗-->
-  <p-dialog header="信息修改" [(visible)]="ownerModifayDialog" [width]="1100">
+  <p-dialog header="信息修改" [(visible)]="ownerModifayDialog" [width]="1300">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
@@ -364,16 +364,22 @@
       <div class="ui-g-12" style="text-align: left" >
         <h3>缴费信息：</h3>
       </div>
-      <div class="ui-g-12">
-        <div class="ui-g-4">
-          <rbi-echarts-payment-pie></rbi-echarts-payment-pie>
+      <div class="ui-g-12" style="position: relative" >
+        <div *ngIf="this.pieDatas.length === 0">未查询到该用户的缴费记录</div>
+        <div style="position: absolute;z-index: 99999;right: 5vw;top: 10vh" *ngIf="this.pieDatas.length !== 0">
+          <div style="margin: 3vh 0" *ngFor="let item of pieBtnList"><button class="bf-owner-dialog-pie-btn" [ngStyle]="{'background': item.color}" (click)="changePieDataClick(item)">{{item.label}}</button></div>
+<!--          <div style="margin: 3vh 0"><button class="bf-owner-dialog-pie-btn" style="background: #31C5C0">新系统</button></div>-->
+<!--          <div style="margin: 3vh 0"><button class="bf-owner-dialog-pie-btn" style="background: #31C5C0">总计</button></div>-->
         </div>
-        <div class="ui-g-4">
-          <rbi-echarts-payment-pie></rbi-echarts-payment-pie>
+        <div class="ui-g-12" *ngIf="this.pieDatas.length !== 0">
+          <rbi-echarts-payment-pie [datas]="this.pieDatas"></rbi-echarts-payment-pie>
         </div>
-        <div class="ui-g-4">
-          <rbi-echarts-payment-pie></rbi-echarts-payment-pie>
-        </div>
+<!--        <div class="ui-g-4">-->
+<!--          <rbi-echarts-payment-pie></rbi-echarts-payment-pie>-->
+<!--        </div>-->
+<!--        <div class="ui-g-4">-->
+<!--          <rbi-echarts-payment-pie></rbi-echarts-payment-pie>-->
+<!--        </div>-->
       </div>
       <div class="ui-g-12" style="text-align: left" *ngIf="roomList.length !== 0">
         <h3>房间信息：</h3>
@@ -580,8 +586,6 @@
       </div>
     </p-footer>
   </p-dialog>
-
-
 <!--  <button class="bf-owner-dialog-Btn bf-owner-bottom-Btn" (click)="addMoreFileClick()" >批量导入</button>-->
   <rbi-file-pop [UploadFileOption]="UploadFileOption" (event)="ownerUploadSureClick($event)"></rbi-file-pop>
   <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>

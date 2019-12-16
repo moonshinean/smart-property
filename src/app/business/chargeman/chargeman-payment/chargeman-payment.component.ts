@@ -792,7 +792,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
            this.toolSrv.setToast('success', '计费成功', value.message);
         } else {
           this.toolSrv.setToast('error', '请求失败', value.message);
-          if (this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus !== undefined){
+          if (this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus !== undefined) {
             this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus =  this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus === 0 ? 1 : 0;
           }
           this.deductionDamagesSelect.splice(this.deductionDamagesSelect.indexOf(this.deductionDamagesItem), 1);
@@ -827,7 +827,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.paymentAddTitle.forEach(v => {
       v.value = this.paymentSelect[0][v.label];
     });
-    this.parkSpaceData = data.data.parkingSpaceCostDetailDOList.map(v => {
+    this.parkSpaceData = data.data.parkingSpaceCostDetailDOList.map( v => {
         v.rentalRenewalStatus = this.toolSrv.setValueToLabel(this.rentalRenewalStatusOption, v.rentalRenewalStatus);
         v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, v.parkingSpaceType);
         v.vehicleOriginalType = this.toolSrv.setValueToLabel(this.vehicleOriginaTypeOption, v.vehicleOriginalType);
