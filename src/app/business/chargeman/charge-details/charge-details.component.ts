@@ -148,6 +148,8 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {field: 'parkingSpaceType', header: '车位类型'},
     {field: 'actualMoneyCollection', header: '实收金额'},
     {field: 'amountReceivable', header: '应收金额'},
+    {field: 'startTime', header: '开始时间'},
+    {field: 'dueTime', header: '结束时间'},
   ];
   public parkSpaceData: any[] = [];
   // 车位修改的信息的索引
@@ -317,6 +319,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   // charge item detail
   public  detailsDialogClick(e): void {
     this.queryDetail(e.orderId);
+    console.log(this.parkSpaceTypeOption);
     this.detailsDialog = true;
   }
 

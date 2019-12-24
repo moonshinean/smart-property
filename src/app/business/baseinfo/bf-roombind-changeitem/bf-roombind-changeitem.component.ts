@@ -207,13 +207,12 @@ export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
       this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.roombindSelect.length === 1) {
       console.log(this.roombindSelect[0].chargeCode);
-      const list = ['villageCode', 'villageName', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode', 'unitName',
-        'roomCode'];
+      const list = ['id', 'organizationId', 'organizationName', 'idt', 'udt', 'surplus', 'villageCode',  'villageName', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode', 'unitName',
+        'roomCode', 'chargeCode'];
        for (const ikey of list) {
          this.roombindModify[ikey] = this.roombindSelect[0][ikey];
        }
-      this.roombindModify.chargeCode = this.roombindSelect[0].chargeCode;
-      // this.chargeItemName = this.roombindModify.chargeCode;
+      this.roombindModify.chargeCode = this.toolSrv.setLabelToValue(this.chargeItemOption, this.roombindModify.chargeCode);
       this.roombindModifayDialog = true;
     } else {
       this.toolSrv.setToast('success', '操作成功', '只能选择一项进行修改');
@@ -308,7 +307,7 @@ export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
   public  queryRoomBindChargeItemPageData(): void {
     this.roomBindChargeSrv.queryRoomChangeInfoPage(this.SearchData).subscribe(
       (val) => {
-        console.log(val);
+        // console.log(val);
         if (val.status === '1000') {
           val.data.contents.forEach( v => {
             v.chargeCode = this.toolSrv.setValueToLabel(this.chargeItemOption, v.chargeCode);
@@ -326,7 +325,7 @@ export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
   public getUserInfo(data): void {
     this.globalSrv.queryCouponUserInfo({villageCode: data.villageCode, regionCode: data.regionCode, buildingCode: data.buildingCode, unitCode: data.unitCode , roomCode: data.roomCode}).subscribe(
       value => {
-        console.log(value);
+        // console.log(value);
         if (value.status === '1000') {
           for (const key in value.data.houseInfo) {
              this.roombindAdd[key] = value.data.houseInfo[key];
@@ -343,9 +342,9 @@ export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
       if (v.label === '收费项目配置') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });

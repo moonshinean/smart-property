@@ -36,4 +36,9 @@ export class BfTenantinfoService {
   public  logoutOwnerInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/logout', body);
   }
+
+  // 业主信息导出
+  public  downloadTenantInfo(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/excel/customer', body);
+  }
 }

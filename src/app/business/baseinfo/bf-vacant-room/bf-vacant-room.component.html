@@ -18,6 +18,10 @@
         <img class="bf-vacant-room-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
+      <div class="ui-g-1 bf-vacant-room-header-btn bf-vacant-header-btn-import" (click)="importVacantRoomClick()" [hidden]="btnHiden[3].hidden">
+<!--        <img class="bf-vacant-room-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+        <span>导 出</span>
+      </div>
     </div>
     <!--//搜索-->
 <!--      <div class="ui-inputgroup bf-vacant-room-header-search">-->
@@ -72,6 +76,14 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
+          <label >*楼层：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <input  type="number" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.floor">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4 right">
           <label for="addroomCode">*房间编号：</label>
         </div>
         <div class="ui-g-8">
@@ -102,22 +114,22 @@
           <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" placeholder="请选择房间状态..." [(ngModel)]="roomInfo.roomStatus"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4 right">
-          <label >*物业费开始计费时间：</label>
-        </div>
-        <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4 right">
-          <label >*实际交房时间：</label>
-        </div>
-        <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
-        </div>
-      </div>
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4 right">-->
+<!--          <label >*物业费开始计费时间：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4 right">-->
+<!--          <label >*实际交房时间：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>-->
+<!--        </div>-->
+<!--      </div>-->
       <div class="ui-g-6">
         <div class="ui-g-4 right">
           <label >装修情况：</label>
@@ -131,7 +143,7 @@
           <label >装修开始日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" ></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6" [hidden]="timeHide">
@@ -139,7 +151,7 @@
           <label >装修结束日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" ></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
     </div>
@@ -156,7 +168,7 @@
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label >小区名称：</label>
+          <label >*小区名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText  disabled placeholder="请输小区名称" [(ngModel)]="roomInfo.villageName">
@@ -164,7 +176,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label>地块名称：</label>
+          <label>*地块名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText  disabled placeholder="请输地块名称"  [(ngModel)]="roomInfo.regionName">
@@ -172,7 +184,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label >楼栋名称：</label>
+          <label >*楼栋名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText disabled  placeholder="请输入楼栋名称" [(ngModel)]="roomInfo.buildingName">
@@ -180,7 +192,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label >单元名称：</label>
+          <label >*单元名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText disabled placeholder="请输入单元名称" [(ngModel)]="roomInfo.unitName">
@@ -188,7 +200,15 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label for="addroomCode">房间编号：</label>
+          <label >*楼层：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <input  type="number" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.floor">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4 right">
+          <label for="addroomCode">*房间编号：</label>
         </div>
         <div class="ui-g-8">
           <input  type="text" pInputText disabled placeholder="请输入房间编号..." [(ngModel)]="roomInfo.roomCode">
@@ -196,7 +216,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label for="addroomSize">房屋面积：</label>
+          <label for="addroomSize">*房屋面积：</label>
         </div>
         <div class="ui-g-8">
           <input  type="text" pInputText  placeholder="请输入房屋面积..." [(ngModel)]="roomInfo.roomSize">
@@ -204,7 +224,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label >房屋类型：</label>
+          <label >*房屋类型：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <p-dropdown  disabled [options]="roomTypeOption"  scrollHeight="100px"  [(ngModel)]="roomInfo.roomType"></p-dropdown>
@@ -212,7 +232,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label >房屋状态：</label>
+          <label >*房屋状态：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <p-dropdown [options]="roomStatusOption"  scrollHeight="100px"   [(ngModel)]="roomInfo.roomStatus" ></p-dropdown>

@@ -47,7 +47,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
     {field: 'mobilePhone', header: '客户电话'},
     {field: 'identity', header: '身份'},
     {field: 'idNumber', header: '身份证号'},
-    {field: 'realRecyclingHomeTime', header: '实际交房时间'},
+    // {field: 'realRecyclingHomeTime', header: '实际交房时间'},
     {field: 'normalPaymentStatus', header: '是否正常缴费'},
     {field: 'remarks', header: '备注'},
     {field: 'operating', header: '操作'},
@@ -76,7 +76,9 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
     {label: '新增', hidden: true},
     {label: '修改', hidden: true},
     {label: '删除', hidden: true},
+    {label: '导出', hidden: true},
   ];
+  public addroomVerifyStaus: any;
   // 选择日期相关
   public esDate: any;
   public vacantRoomSub: Subscription;
@@ -186,6 +188,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
       for (const key in this.vacantRoomSelect[0]) {
         this.roomInfo[key] = this.vacantRoomSelect[0][key];
       }
+      this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length )
       this.roomInfo.roomType = this.toolSrv.setLabelToValue(this.roomTypeOption,  this.roomInfo.roomType);
       this.roomInfo.roomStatus = this.toolSrv.setLabelToValue(this.roomStatusOption,  this.roomInfo.roomStatus);
       this.roomInfo.renovationStatus = this.toolSrv.setLabelToValue(this.renovationStatusOption, this.roomInfo.renovationStatus);
@@ -217,8 +220,8 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
       });
     }
   }
-  //  搜索
-  public  vacantRoomSearchClick(): void {}
+  // //  搜索
+  // public  vacantRoomSearchClick(): void {}
   // 选择列表数据
   public  selectData(e): void {
     this.vacantRoomSelect = e;
@@ -292,12 +295,29 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
       this.roomInfo.renovationDeadline = '';
     }
   }
+
   // 添加房屋请求
   public  addVacantRoomSureClick(data): void {
+    if (data === '添加') {
+      const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'floor', 'roomType', 'roomStatus'];
+      // @ts-ignore
+      this.addroomVerifyStaus =  addRoomKeyList.some((v) => {
+
+        return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
+      });
+    } else {
+      const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'floor', 'roomType', 'roomStatus', 'startBillingTime', 'realRecyclingHomeTime'];
+      // @ts-ignore
+      this.addroomVerifyStaus =  addRoomKeyList.some((v) => {
+
+        return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
+      });
+    }
+    if (!this.addroomVerifyStaus) {
       let addOwnerList = [];
       this.toolSrv.setConfirmation(data, data, () => {
         if (this.ownerList.length !== 0) {
-          addOwnerList = this.ownerList.map( v => {
+          addOwnerList = this.ownerList.map(v => {
             v.identity = this.toolSrv.setLabelToValue(this.identityOption, v.identity);
             v.normalPaymentStatus = this.toolSrv.setLabelToValue(this.normalChargeOption, v.normalPaymentStatus);
             return v;
@@ -325,6 +345,9 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
           }
         );
       });
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
+    }
   }
   // 显示添加业主弹窗
   public  addOwerClick(): void {
@@ -388,5 +411,26 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  public  importVacantRoomClick(): void {
+      if (this.SearchData.code !== '' || this.SearchData.level !== '') {
+         this.importExcalOfVacantRoom();
+      } else {
+        this.toolSrv.setToast('error', '操作失败', '请先选择请先选择需要导出的小区\\地块\\楼栋');
+      }
+  }
+  // 导出文件
+  public  importExcalOfVacantRoom(): void {
+      this.owerSrv.importFileOfVacantRoom({level: this.SearchData.level, code: this.SearchData.code}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            window.open(value.data);
+          } else {
+            this.toolSrv.setToast('error', '请求错误', value.message);
+          }
+        }
+      );
   }
 }

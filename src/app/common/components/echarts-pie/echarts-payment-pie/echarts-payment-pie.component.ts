@@ -27,7 +27,7 @@ export class EchartsPaymentPieComponent implements OnInit, OnChanges {
       borderRadius: '10',
       title: {
         text: '总金额',
-        subtext: this.totalDatas + '元',
+        subtext: this.totalDatas.toFixed(2) + '元',
         textStyle: {
           color: '#f2f2f2',
           fontSize: 23,

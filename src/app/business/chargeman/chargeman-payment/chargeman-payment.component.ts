@@ -126,7 +126,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     {name: '客户名称', value: '', label: 'surname'},
     {name: '手机号码', value: '', label: 'mobilePhone'},
     {name: '物业费到期时间', value: '', label: 'dueTime'},
-    {name: '预缴余额', value: '', label: 'prepaidAmount'},
+    {name: '预存金额', value: '', label: 'surplus'},
     {name: '单月物业费', value: '', label: 'oneMonthPropertyFee'},
     {name: '欠费月数', value: '', label: 'minMonth'}
   ];
@@ -147,8 +147,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public ownerOption: any[] = [];
   public ownerList: any[] = [];
   public costSplitDialog: boolean;
-  public minDate: Date = new Date();
-  public maxDate: Date = new Date();
+  public firstDate: Date = new Date();
+  public secondDate: Date = new Date();
   public costSplitData: CostSplitData =  new CostSplitData();
 
   // 车位指定
@@ -182,6 +182,9 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   // 上传车位信息
   public UploadFileOption: FileOption = new FileOption();
   public uploadRecordOption: any;
+  // 打开链接列表
+  public openListDataPdf: any[] = [];
+  public openListLength: any;
   // 树结构订阅
   public paymentSub: Subscription;
   // 切换主题
@@ -193,6 +196,9 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+
+  // 放大 缩小显示
+  public dialogHiddenData = [];
   constructor(
     private paymentSrv: ChargePaymentService,
     private confirmationService: ConfirmationService,
@@ -316,7 +322,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       // 组装请求参数
       const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus', 'identity'];
       for (const key of keyList) {
-        if(key === 'identity') {
+        if (key === 'identity') {
           this.payItemDetail[key] = this.toolSrv.setLabelToValue(this.identityOption, this.paymentSelect[0][key]);
         } else {
           this.payItemDetail[key] = this.paymentSelect[0][key];
@@ -369,7 +375,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         const listKey = ['organizationId', 'villageName',
           'villageCode', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode',
           'unitName', 'roomCode', 'roomSize', 'surname', 'mobilePhone', 'idNumber',
-          'customerUserId'];
+          'customerUserId', 'oneMonthPropertyFee'];
         for (const key of listKey) {
           this.paymentOrderAdd[key] = this.paymentSelect[0][key];
         }
@@ -395,23 +401,19 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         this.paymentOrderAdd.correctedAmount = this.Balance;
         this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
           (value) => {
+            console.log(value);
             if (value.status === '1000') {
               this.confirmationService.confirm({
                 message: `是否打印单据吗？`,
                 header: '缴费成功',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
-                  this.paymentSrv.getPayDocument({orderId: value.data.orderId, organizationId: value.data.organizationId}).subscribe(
-                    (data) => {
-                      if (data.data !== '') {
-                        this.InitializationAllpayData();
-                        this.paymentDialog = false;
-                        window.open(data.data);
-                      } else {
-                        this.toolSrv.setToast('error', '操作失败', data.message);
-                      }
-                    }
-                  );
+                  // const list = ['a', 'b', 'c', 'e'];
+                  this.openListLength = value.data.length;
+                  value.data.forEach(v => {
+                    // window.open('http://www.baidu.com');
+                    this.printBillDetail(v.orderId, v.organizationId);
+                  });
                 },
                 reject: () => {
                   this.paymentDialog = false;
@@ -439,6 +441,34 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           }
         );
     }
+  }
+
+  // 打印单据
+  public  printBillDetail(orderIdData, organizationIdData): void {
+    // const newWindow = window.open();
+    // console.log(123);
+    this.paymentSrv.getPayDocument({orderId: orderIdData, organizationId: organizationIdData}).subscribe(
+      (data) => {
+        console.log(data);
+        if (data.status === '1000') {
+          if (data.data !== '' && data.data !== null) {
+            this.openListDataPdf.push(data.data);
+            console.log(this.openListDataPdf);
+            if (this.openListDataPdf.length === this.openListLength) {
+              this.openListDataPdf.forEach( (v, index) => {
+                window.open(v, index.toString());
+              });
+              this.InitializationAllpayData();
+              this.paymentDialog = false;
+            }
+          } else {
+            this.toolSrv.setToast('error', '操作失败', '数据为空');
+          }
+        } else {
+          this.toolSrv.setToast('error', '请求失败', data.message);
+        }
+      }
+    );
   }
   // Display charging items selection pop-up window (展示项目选择弹窗)
   public  paymentClick(): void {
@@ -516,6 +546,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.paymentDialog = false;
     this.ownerList = [];
     this.deductionDamagesSelect = [];
+    this.dialogHiddenData = [];
     this.InitializationAllpayData();
 
   }
@@ -562,6 +593,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.payItemDetail = new ChargeItemData();
     this.paymentProject = [];
     this.deductionDamagesSelect = [];
+    this.openListDataPdf = [];
     this.selectCheckChargeItemList = [];
     this.deductionDamagesData = [];
     this.queryPaymentPage();
@@ -710,34 +742,64 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public  costSplitClick(e, index): void {
       this.paymentItemListIndex = index;
       this.costSplitData = e;
-      this.costSplitData.spiltTime = e.startTime;
-      this.setDate(e.startTime, this.minDate);
-      this.setDate(e.dueTime, this.maxDate);
+      // this.costSplitData.spiltTime = e.startTime;
+      // this.setDate(e.startTime, this.minDate);
+      // this.setDate(e.dueTime, this.maxDate);
       this.costSplitDialog = true;
+  }
+  // 监听时间选择
+  public  SelectDateClick(data): void {
+    this.costSplitData.firstStartTime = this.datePipe.transform(this.costSplitData.firstStartTime, 'yyyy-MM-dd');
+    if (data === 1) {
+      this.setDate(this.costSplitData.firstStartTime, this.firstDate);
+    } else {
+      this.costSplitData.secondStartTime = this.addDate(this.costSplitData.firstEndTime, 1);
+      this.setDate(this.costSplitData.secondStartTime, this.secondDate);
+    }
+  }
+  // 日期加一天
+  public addDate(date, days): any {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + days);
+    const month = newDate.getMonth() + 1 >= 10 ? newDate.getMonth() + 1 : '0' + (newDate.getMonth() + 1);
+    const day = newDate.getDate() >= 10 ?  newDate.getDate() : '0' + newDate.getDate();
+    return newDate.getFullYear() + '-' + month + '-' + day;
   }
   // 拆分请求
   public  costSplitSure(): void {
-    this.costSplitData.oneMonthPropertyFee = this.paymentSelect[0].oneMonthPropertyFee;
-    this.costSplitData.spiltTime = this.datePipe.transform(this.costSplitData.spiltTime, 'yyyy-MM-dd');
-    this.costSplitData.stateOfArrears = this.costSplitData.stateOfArrears === true ? 1 : 0 ;
-    console.log(this.costSplitData);
-    this.paymentSrv.getCostSplitBill(this.costSplitData).subscribe(
-      value => {
-        if (value.status === '1000') {
-          this.paymentItemData.splice( this.paymentItemListIndex, 1);
-          // 设置其欠费状态和用户选择
-          const costSplitList = value.data.map( v => {
-            v.stateOfArrears = v.stateOfArrears !== 0;
-            v.ownerSelection = this.ownerOption;
-            return v;
-         });
-          this.paymentItemData.unshift(...costSplitList);
-          this.costSplitDialog = false;
-        } else {
-          this.toolSrv.setToast('error', '操作成功', value.message);
-        }
-      }
-    );
+    const list = ['firstStartTime', 'firstEndTime', 'secondStartTime', 'secondEndTime'];
+    let costPass: boolean;
+    costPass =  list.some(v => {
+      return (this.costSplitData[v] === null || this.costSplitData[v] === undefined);
+    });
+    if (!costPass) {
+        this.costSplitData.oneMonthPropertyFee = this.paymentSelect[0].oneMonthPropertyFee;
+        // this.costSplitData.firstStartTime =
+        this.costSplitData.firstEndTime = this.datePipe.transform(this.costSplitData.firstEndTime, 'yyyy-MM-dd');
+        this.costSplitData.secondEndTime = this.datePipe.transform(this.costSplitData.secondEndTime, 'yyyy-MM-dd');
+        this.costSplitData.stateOfArrears = this.costSplitData.stateOfArrears === true ? 1 : 0 ;
+        console.log(this.costSplitData);
+        this.paymentSrv.getCostSplitBill(this.costSplitData).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.paymentItemData.splice( this.paymentItemListIndex, 1);
+              // 设置其欠费状态和用户选择
+              const costSplitList = value.data.map( v => {
+                v.stateOfArrears = v.stateOfArrears !== 0;
+                v.ownerSelection = this.ownerOption;
+                return v;
+             });
+              this.paymentItemData.unshift(...costSplitList);
+              this.getTotalBalaceData();
+              this.costSplitDialog = false;
+            } else {
+              this.toolSrv.setToast('error', '操作成功', value.message);
+            }
+          }
+        );
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '您有信息未填');
+    }
   }
   // 设置最大时间和最小时间
   public  setDate(data, time): void {
@@ -768,7 +830,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // 重新计算计算费用总和
   public  getTotalBalaceData(): void {
-    console.log(this.paymentItemData);
+    // console.log(this.paymentItemData);
     this.paymentItemData =  this.paymentItemData.map( v => {
       v.stateOfArrears = v.stateOfArrears === false ? 0 : 1;
       return v;
@@ -902,6 +964,10 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public  dataTreeSureClick(): void {
     this.treeDialog = false;
     console.log(this.dataTree);
+    const dataList = ['villageCode', 'villageName', 'regionCode', 'regionCode', 'buildingCode', 'buildingName', 'parkingSpaceCode'];
+    for (const itemkey of dataList) {
+      this.rentalParkSpace[itemkey] = '';
+    }
     this.addParkSpace.parkingSpaceCode = this.dataTree.label;
     switch (this.dataTree.level) {
       case '1':
@@ -980,6 +1046,12 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   // 编辑租赁车位的数据
   public  editRentalParkingSpaceClick(index): void {
     this.editRentalParkspaceDataFlag = index;
+    // this.parkSpaceData[index]
+    this.parkSpaceData[index].parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, this.parkSpaceData[index].parkingSpaceType);
+    this.parkSpaceData[index].vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption, this.parkSpaceData[index].vehicleOriginalType);
+    this.parkSpaceData[index].licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, this.parkSpaceData[index].licensePlateType);
+    this.parkSpaceData[index].licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, this.parkSpaceData[index].licensePlateColor);
+    this.parkSpaceData[index].parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, this.parkSpaceData[index].parkingSpacePlace);
     this.parkSpaceData[index].rentalRenewalStatus = this.toolSrv.setLabelToValue(this.rentalRenewalStatusOption, this.parkSpaceData[index].rentalRenewalStatus);
     for (const key in this.parkSpaceData[index]) {
       this.rentalParkSpace[key] = this.parkSpaceData[index][key];
@@ -1012,7 +1084,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.parkSpaceData[this.editRentalParkspaceDataFlag].licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, this.parkSpaceData[this.editRentalParkspaceDataFlag].licensePlateType);
     this.parkSpaceData[this.editRentalParkspaceDataFlag].licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, this.parkSpaceData[this.editRentalParkspaceDataFlag].licensePlateColor);
     this.parkSpaceData[this.editRentalParkspaceDataFlag].parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, this.parkSpaceData[this.editRentalParkspaceDataFlag].parkingSpacePlace);
-    this.parkSpaceData[this.editRentalParkspaceDataFlag].startTime = this.datePipe.transform(this.parkSpaceData[this.editRentalParkspaceDataFlag].startTime, 'yyyy-MM-dd')
+    this.parkSpaceData[this.editRentalParkspaceDataFlag].startTime = this.datePipe.transform(this.parkSpaceData[this.editRentalParkspaceDataFlag].startTime, 'yyyy-MM-dd');
     this.parkSpaceOptionDialog = false;
     this.paymentSrv.calculateRentalPackSpaceFree({roomCode: this.paymentSelect[0].roomCode, parkingSpaceCostDetailDO: this.parkSpaceData[this.editRentalParkspaceDataFlag]}).subscribe(
       value => {
@@ -1149,7 +1221,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
      const flag = this.deductionDamagesData.some(v => {
        return v.deductionStatus === 1;
      });
-     if(flag){
+     if(flag) {
        this.deductionDamagesData.forEach(val => {
           val.deductionStatus = 0;
        });
@@ -1159,6 +1231,34 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
        });
      }
      this.getTotalBalaceData();
+  }
+
+  // 放大弹窗
+  public  dilagClickAmplificationOpen(item): void {
+      if (item.dialog === 'paymentDialog') {
+        this.paymentDialog = true;
+      }
+      // console.log(123);
+  }
+  // 关闭弹窗
+  public dialogClose(item): void {
+    this.dialogHiddenData.splice(this.dialogHiddenData.indexOf(item), 1);
+    this.paymentFaleseClick();
+  }
+
+//  缩小弹窗
+  public  closePaymentDialogClick(): void {
+    this.paymentDialog = false;
+
+    console.log(this.dialogHiddenData.indexOf({label: '费用添加', dialog: 'paymentDialog'}));
+    console.log(this.dialogHiddenData);
+    const listFlag =  this.dialogHiddenData.some( v => {
+      return v.label === '费用添加';
+    });
+    if (!listFlag) {
+      this.dialogHiddenData.push({label: '费用添加', dialog: 'paymentDialog'});
+    }
+
   }
 }
 

@@ -15,9 +15,9 @@ export const environment = {
 //   loginUrl: 'http://192.168.28.204:8848/cloud_house_authentication',
   // 谢青的ip
   //
-  // sysetUrl: 'http://192.168.28.184.30:8847/cloud_house_admin',
-  // chargeUrl: 'http://192.168.28.184:8849/cloud_house_interactive',
-  // loginUrl: 'http://192.168.28.184:8848/cloud_house_authentication',
+  // sysetUrl: 'http://192.168.28.212:8847/cloud_house_admin',
+  // chargeUrl: 'http://192.168.28.212:8849/cloud_house_interactive',
+  // loginUrl: 'http://192.168.28.212:8848/cloud_house_auth entication',
 };
 
 /*

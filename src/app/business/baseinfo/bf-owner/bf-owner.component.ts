@@ -96,6 +96,9 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     {field: 'authorizedPersonPhone', header: '车主电话'},
     {field: 'remarks', header: '备注'},
   ];
+  // 房屋添加检验
+  public keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false, false];
+  public keyOwnerInfoList = [false, false, false, false, false];
   public ParkingSpaceList: any[] = [];
   public ownertableOption: any;
   // 业主信息相关
@@ -108,13 +111,12 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public ownerModifayDialog: boolean;
   public ownerModify: ModifyOwner[]  = [];
   public ownerDetailDialog: boolean;
-  public roomTypeName: any;
-  public roomStatusName: any;
-  public renovationName: any;
-  public sexName: any;
   // 业主修改相关
   public ownerModifyDialog: any;
   public ownerListIndex: any;
+  // 业主导出相关
+  public downOwnerInfoDialog: any;
+  public downLoadIndentity: any;
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public option: any;
@@ -127,6 +129,13 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       {background: '', color: ''},
       {background: '', color: ''}],
     detailBtn: ''
+  };
+  public roomCodeInfo = {
+    villageCode: '',
+    roomCode: '',
+    regionCode: '',
+    buildingCode: '',
+    unitCode: '',
   };
   // 详情里的列表按钮
   public pieBtnList = [
@@ -145,6 +154,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       {label: '删除', hidden: true},
       {label: '注销', hidden: true},
       {label: '导入', hidden: true},
+      {label: '导出', hidden: true},
       {label: '搜索', hidden: true},
     ];
   constructor(
@@ -159,9 +169,28 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   ) {
     this.ownerSub = this.sharedSrv.changeEmitted$.subscribe(
       value => {
+        console.log(value);
+        for (const key in this.roomCodeInfo) {
+          this.roomCodeInfo[key] = value[key];
+        }
         this.searchOwerData.level = value.data.level;
         this.searchOwerData.code = value.data.code;
         this.queryOwnerPageData();
+        for (const roomKey in this.roomCodeInfo) {
+          if (this.roomCodeInfo[roomKey] !== '') {
+            if (roomKey ===  'villageCode') {
+              this.roomInfo.villageName = this.roomCodeInfo[roomKey];
+            } else if (roomKey ===  'regionCode') {
+              this.roomInfo.regionName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+            } else if (roomKey ===  'buildingCode') {
+              this.roomInfo.buildingName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+            } else if (roomKey ===  'unitCode') {
+              this.roomInfo.unitName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+            } else {
+              this.roomInfo.roomCode = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+            }
+          }
+        }
       }
     );
     this.themeSrv.changeEmitted$.subscribe(
@@ -182,6 +211,9 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
     if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.roomCodeInfo) {
+        this.roomCodeInfo[key] = this.sharedSrv.SearchData[key];
+      }
       this.searchOwerData.level = this.sharedSrv.SearchData.data.level;
       this.searchOwerData.code = this.sharedSrv.SearchData.data.code;
     }
@@ -261,21 +293,44 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // show add owner box
   public  ownerAddClick(): void {
+    console.log(this.roomCodeInfo);
+    for (const roomKey in this.roomCodeInfo) {
+      if (this.roomCodeInfo[roomKey] !== '') {
+        if (roomKey ===  'villageCode') {
+          this.roomInfo.villageName = this.roomCodeInfo[roomKey];
+        } else if (roomKey ===  'regionCode') {
+          this.roomInfo.regionName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+        } else if (roomKey ===  'buildingCode') {
+          this.roomInfo.buildingName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+        } else if (roomKey ===  'unitCode') {
+          this.roomInfo.unitName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+        } else {
+          this.roomInfo.roomCode = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+        }
+      }
+    }
     this.ownerAddDialog = true;
   }
   // sure add houser and owner info
   public  ownerSureClick(data): void {
-    const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'roomType', 'roomStatus', 'realRecyclingHomeTime', 'startBillingTime'];
+    const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'floor', 'roomCode', 'roomSize',  'roomType', 'roomStatus', 'startBillingTime', 'realRecyclingHomeTime'];
+    addRoomKeyList.forEach((v, index) => {
+     this.keyRoomInfoList[index] = this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '';
+   });
     const addroomVerifyStaus = addRoomKeyList.some( v => {
-      return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
+    return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
     });
     if (!addroomVerifyStaus) {
+        // console.log(data);
        this.addQuest(data);
     } else {
       this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
     }
   }
 
+  public  changeInput(data, index): void {
+    this.keyRoomInfoList[index] = !(data !== '' && data !== null);
+  }
   public  addQuest(data): void {
     this.toolSrv.setConfirmation(data, data, () => {
       const addOwnerList = this.ownerList.map( v => {
@@ -284,11 +339,15 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           v.normalPaymentStatus = this.toolSrv.setLabelToValue(this.normalChargeOption, v.normalPaymentStatus);
           return v;
       });
+      if (data === '添加') {
+        this.roomInfo.villageName = this.toolSrv.setValueToLabel(this.villageOption,  this.roomInfo.villageName);
+      }
       this.roomInfo.renovationStartTime = this.datePipe.transform(this.roomInfo.renovationStartTime, 'yyyy-MM-dd');
       this.roomInfo.renovationDeadline = this.datePipe.transform(this.roomInfo.renovationDeadline, 'yyyy-MM-dd');
       this.roomInfo.realRecyclingHomeTime = this.datePipe.transform( this.roomInfo.realRecyclingHomeTime , 'yyyy-MM-dd');
       this.roomInfo.startBillingTime = this.datePipe.transform( this.roomInfo.startBillingTime , 'yyyy-MM-dd');
       // this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, );
+      console.log(this.roomInfo);
       this.owerSrv.addRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
             value => {
               if (value.status === '1000') {
@@ -317,19 +376,28 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  owerInfoClick(data): void {
     console.log(this.ownerinfo);
     const ownerVertifyKeylist = ['surname', 'idNumber', 'mobilePhone', 'identity', 'normalPaymentStatus'];
+    ownerVertifyKeylist.forEach((v, index) => {
+      this.keyOwnerInfoList[index] = this.ownerinfo[v] === '' || this.ownerinfo[v] === undefined || this.ownerinfo[v] === null;
+    });
+    console.log(this.keyOwnerInfoList);
     const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
        return (this.ownerinfo[v] !== '' && this.ownerinfo[v] !== undefined && this.ownerinfo[v] !== null);
     });
     if (ownerInfoStatus) {
-         // if (this.toolSrv.verifyPhone.test(this.ownerinfo.mobilePhone)) {
-         //    if (this.toolSrv.verifyIdNumber.test(this.ownerinfo.idNumber)) {
-              this.ownerInfoSetValueToOwnerList(data);
-         //    } else {
-         //      this.toolSrv.setToast('error', '添加失败', '请输入正确的身份证号');
-         //    }
-         // } else {
-         //   this.toolSrv.setToast('error', '添加失败', '请输入正确的手机号');
-         // }
+      if (this.toolSrv.verifyName.test(this.ownerinfo.surname)) {
+        if (this.toolSrv.verifyPhone.test(this.ownerinfo.mobilePhone)) {
+          if (this.toolSrv.verifyIdNumber.test(this.ownerinfo.idNumber)) {
+            this.ownerInfoSetValueToOwnerList(data);
+          } else {
+            this.toolSrv.setToast('error', '添加失败', '请输入正确的身份证号');
+          }
+        } else {
+          this.toolSrv.setToast('error', '添加失败', '请输入正确的手机号');
+        }
+      } else {
+        this.toolSrv.setToast('error', '添加失败', '请输入正确的用户名(只含中文汉字)');
+      }
+
 
     } else {
       this.toolSrv.setToast('error', '添加失败', '信息未填写完整');
@@ -381,7 +449,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
             this.toolSrv.setToast('error', '操作错误', value.message);
           }
     });
-    this.getChargePieData();
+    this.getChargePieData(1);
   }
   // modify owner
   public ownerModifyClick(): void {
@@ -389,6 +457,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.ownerSelect.length === 1) {
       this.queryOwnerUpdateData(this.ownerSelect[0].roomCode);
+
       this.ownerModifayDialog = true;
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
@@ -399,6 +468,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     this.ownerList = [];
     this.ownerModifayDialog = false;
     this.ownerSelect = [];
+    this.clearData();
   }
 
   public  modifyMoreOwerClick(): void {
@@ -495,16 +565,13 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
      this.ownerAdd = new AddOwner();
      this.ownerModify = [];
      // this.SearchOption = {village: [], region: [], building: [], unit: []};
-     this.roomTypeName = null;
-     this.roomStatusName = null;
-     this.renovationName = null;
-     this.sexName = null;
      this.ownerSelect = [];
      this.roomInfo = new RoomTitle();
      this.ownerList = [];
      this.ownerinfo = new OwerList();
      this.ownerUserSelect = [];
      this.ownerSelect = [];
+     this.keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false, false];
  }
   // paging query
   public  nowpageEventHandle(event: any): void {
@@ -673,21 +740,66 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
         v.color = '#31C5C0';
       });
       item.color = '#FF8352';
-      this.getChargePieData();
+      this.getChargePieData(item.value);
   }
 
-  public  getChargePieData(): void {
-    this.owerSrv.getNewSystemChargeItemToatal({roomCode: this.pieChargeRoomCode}).subscribe(
-      value => {
-        console.log(value);
-        if (value.status === '1000') {
-          this.pieDatas = value.data.filter(v => {
-            return v.value !== null;
-          });
-        } else {
-          this.toolSrv.setToast('error', '请求失败', value.message);
+  // 会怄气饼状图的数据
+  public  getChargePieData(index): void {
+    if (index !== 2) {
+      this.owerSrv.getNewSystemChargeItemToatal({roomCode: this.pieChargeRoomCode}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            this.pieDatas = value.data.filter(v => {
+              return v.value !== null;
+            });
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
+          }
         }
+      );
+    } else if (index === 2) {
+      this.owerSrv.getYearChargeItemToatal({roomCode: this.pieChargeRoomCode}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            this.pieDatas = value.data.filter(v => {
+              return v.value !== null;
+            });
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
+          }
+        }
+      );
+    }
+  }
+
+  // 导出业主数据
+  public  importOutFileClick(): void {
+      if (this.searchOwerData.level !== '' && this.searchOwerData.code !== '') {
+         this.downOwnerInfoDialog = true;
+      } else {
+        this.toolSrv.setToast('error', '操作错位', '请先选择需要导出的小区');
       }
-    );
+  }
+
+  // 导出业主信息
+  public  downloadFileOwnerInfo(): void {
+    console.log(this.downLoadIndentity);
+    if (this.downLoadIndentity) {
+      this.owerSrv.downloadOwnerInfo({level: this.searchOwerData.level, code: this.searchOwerData.code , identity: this.downLoadIndentity}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            window.open(value.data);
+            this.downOwnerInfoDialog = false;
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
+          }
+        }
+      );
+    } else {
+      this.toolSrv.setToast('error', '操作失败', '请选择客户身份');
+    }
   }
 }

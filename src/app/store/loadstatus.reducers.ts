@@ -11,7 +11,7 @@ const initstate = true;
 // );
 
 
-export function counterReducer(state = initstate, action) {
+export function counterReducer(state = initstate, action: { type: any; }) {
   // 判断不同的状态做不同的数据处理
   switch (action.type) {
     case TRUE:  return  true;

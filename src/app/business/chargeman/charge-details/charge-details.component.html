@@ -269,9 +269,9 @@
              <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
                  <td  *ngFor="let col of columns" style="word-break: break-word">
-                   <span *ngIf="col !== 'rentalRenewalStatus' && col !== 'parkingSpaceType'"></span>{{rowData[col.field]}}
-                   <span *ngIf="col === 'rentalRenewalStatus'"></span>{{rowData[col.field] === 0? '非续租': '续租'}}
-                   <span *ngIf="col === 'rentalRenewalStatus'"></span>{{toolSrv.setValueToLabel(parkSpaceTypeOption, rowData[col.field])}}
+                   <span *ngIf="col !== 'rentalRenewalStatus' && col !== 'parkingSpaceType'">{{rowData[col.field]}}</span>
+                   <span *ngIf="col === 'rentalRenewalStatus'">{{rowData[col.field] === 0? '非续租': '续租'}}</span>
+                   <span *ngIf="col === 'parkingSpaceType'">{{toolSrv.setValueToLabel(parkSpaceTypeOption, rowData[col.field])}}</span>
                  </td>
                </tr>
              </ng-template>

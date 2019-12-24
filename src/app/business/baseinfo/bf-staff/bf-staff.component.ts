@@ -173,6 +173,8 @@ export class BfStaffComponent implements OnInit, OnDestroy {
     if (this.staffSelect === undefined || this.staffSelect.length === 0 ) {
       this.toolSrv.setToast('error',  '操作错误',  '请选择需要修改的项');
     } else if (this.staffSelect.length === 1) {
+      console.log(this.staffSelect[0]);
+      this.staffModifay = this.staffSelect[0];
       this.staffModifayDialog = true;
     } else {
       this.toolSrv.setToast('error',  '操作错误',  '只能选择一项进行修改');
@@ -183,6 +185,11 @@ export class BfStaffComponent implements OnInit, OnDestroy {
     this.toolSrv.setConfirmation('修改', '修改', () => {
       this.staffModifay.birthday = this.datePipe.transform(this.staffModifay.birthday , 'yyyy-MM-dd');
       this.staffModifay.hiredate = this.datePipe.transform(this.staffModifay.hiredate , 'yyyy-MM-dd');
+      this.staffModifay.enabled = this.toolSrv.setLabelToValue(this.enableOption, this.staffModifay.enabled);
+      this.staffModifay.loginStatus = this.toolSrv.setLabelToValue(this.loginStatusOption, this.staffModifay.loginStatus);
+      this.staffModifay.maritalStatus = this.toolSrv.setLabelToValue(this.maritalOption, this.staffModifay.maritalStatus);
+      this.staffModifay.politicalStatus = this.toolSrv.setLabelToValue(this.politicalStatusOption, this.staffModifay.politicalStatus);
+      this.staffModifay.educationalBackground = this.toolSrv.setLabelToValue(this.educationalOption, this.staffModifay.educationalBackground);
       this.staffSrv.updateStaffInfo(this.staffModifay).subscribe(
         value => {
           if (value.status === '1000') {
@@ -190,6 +197,8 @@ export class BfStaffComponent implements OnInit, OnDestroy {
             this.toolSrv.setToast('success',  '操作成功', value.message);
             this.clearData();
             this.staffInitialization();
+          } else {
+            this.toolSrv.setToast('error', '请求失败',  value.message);
           }
         }
       );
@@ -210,6 +219,8 @@ export class BfStaffComponent implements OnInit, OnDestroy {
               this.toolSrv.setToast('success', '操作成功', value.message);
               this.clearData();
               this.staffInitialization();
+            } else {
+              this.toolSrv.setToast('error', '请求失败',  value.message);
             }
           }
         );

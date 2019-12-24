@@ -26,9 +26,13 @@
         <img class="bf-tenant-header-img" src="assets/images/ic_add.png" alt="">
         <span>导 入</span>
       </div>
+      <div class="ui-g-1 bf-tenant-header-btn bf-owner-header-btn-import" (click)="importOutFileClick()" [hidden]="btnHiden[5].hidden">
+        <img class="bf-tenant-header-img" src="assets/images/ic_add.png" alt="">
+        <span>导  出</span>
+      </div>
     </div>
     <!--//搜索-->
-    <div class="ui-inputgroup bf-tenant-header-search" *ngIf="!btnHiden[5].hidden">
+    <div class="ui-inputgroup bf-tenant-header-search" *ngIf="!btnHiden[6].hidden">
       <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选搜索方式..." [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
       <input type="text" pInputText placeholder="请输入手机号" style="width: 7vw" [(ngModel)]="inputSearchData">
       <button id="disabled-btn" class="bf-tenant-header-btn-search" type="button"  (click)="tenantSearchClick()"  label="搜索">搜索</button>
@@ -86,53 +90,55 @@
   <p-dialog header="租客添加" [(visible)]="tenantDialog" [width]="900">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[0]}">
         <div class="ui-g-4">
           <label >*客户名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="tenantinfo.surname">
+          <input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="tenantinfo.surname" (blur)="changeInput(tenantinfo.surname, 0)">
         </div>
       </div>
 
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[1]}">
         <div class="ui-g-4">
           <label >*客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="tenantinfo.mobilePhone">
+          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="tenantinfo.mobilePhone" (blur)="changeInput(tenantinfo.mobilePhone, 1)">
+          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(tenantinfo.mobilePhone === undefined || tenantinfo.mobilePhone === '')? !toolSrv.verifyPhone.test(tenantinfo.mobilePhone): toolSrv.verifyPhone.test(tenantinfo.mobilePhone)"></p-message>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[2]}">
         <div class="ui-g-4">
           <label >*身份证号：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入身份证号..." [(ngModel)]="tenantinfo.idNumber">
+          <input  type="text" pInputText placeholder="请输入身份证号..." [(ngModel)]="tenantinfo.idNumber" (blur)="changeInput(tenantinfo.idNumber, 2)">
+          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(tenantinfo.idNumber === undefined || tenantinfo.idNumber === '')? (!this.toolSrv.verifyIdNumber.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber1.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber2.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber3.test(tenantinfo.idNumber) ): (toolSrv.verifyIdNumber.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber1.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber2.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber3.test(tenantinfo.idNumber))"></p-message>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyTenantInfoList[3]}">
         <div class="ui-g-4">
           <label >*是否正常缴费：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择注销状态..."  [(ngModel)]="tenantinfo.normalPaymentStatus"></p-dropdown>
+          <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择注销状态..."  [(ngModel)]="tenantinfo.normalPaymentStatus" (onChange)="changeInput(tenantinfo.normalPaymentStatus, 3)"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[4]}">
         <div class="ui-g-4">
           <label >*租房开始时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="tenantinfo.startTime" placeholder="请选择租房开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="tenantinfo.startTime" placeholder="请选择租房开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.startTime, 4)"></p-calendar>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[5]}">
         <div class="ui-g-4">
           <label >*租房结束时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="tenantinfo.endTime" placeholder="请选择租房结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="tenantinfo.endTime" placeholder="请选择租房结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.endTime, 5)"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">
@@ -154,52 +160,52 @@
   <p-dialog header="租客修改" [(visible)]="tenantModifyDialog" [width]="900">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[0]}">
         <div class="ui-g-4">
           <label >客户名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText [placeholder]="tenantinfo.surname" [(ngModel)]="tenantinfo.surname">
+          <input  type="text" pInputText [placeholder]="tenantinfo.surname" [(ngModel)]="tenantinfo.surname" (blur)="changeInput(tenantinfo.surname, 0)">
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[1]}">
         <div class="ui-g-4">
           <label >客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText [placeholder]="tenantinfo.mobilePhone" [(ngModel)]="tenantinfo.mobilePhone">
+          <input  type="text" pInputText [placeholder]="tenantinfo.mobilePhone" [(ngModel)]="tenantinfo.mobilePhone" (blur)="changeInput(tenantinfo.mobilePhone, 1)">
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[2]}">
         <div class="ui-g-4">
           <label >身份证号：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText [placeholder]="tenantinfo.idNumber" [(ngModel)]="tenantinfo.idNumber">
+          <input  type="text" pInputText [placeholder]="tenantinfo.idNumber" [(ngModel)]="tenantinfo.idNumber" (blur)="changeInput(tenantinfo.idNumber, 2)">
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyTenantInfoList[3]}">
         <div class="ui-g-4">
           <label >是否正常缴费：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" [placeholder]="tenantinfo.normalPaymentStatus"  [(ngModel)]="tenantinfo.normalPaymentStatus"></p-dropdown>
+          <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" [placeholder]="tenantinfo.normalPaymentStatus"  [(ngModel)]="tenantinfo.normalPaymentStatus" (onChange)="changeInput(tenantinfo.normalPaymentStatus, 3)"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[4]}">
         <div class="ui-g-4">
           <label >租房开始时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="tenantinfo.startTime" [placeholder]="tenantinfo.startTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="tenantinfo.startTime" [placeholder]="tenantinfo.startTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.startTime, 4)"></p-calendar>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[5]}">
         <div class="ui-g-4">
           <label >租房结束时间 ：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="tenantinfo.endTime" [placeholder]="tenantinfo.endTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="tenantinfo.endTime" [placeholder]="tenantinfo.endTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.endTime, 5)"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">
@@ -215,6 +221,25 @@
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="bf-tenant-dialog-Btn bf-tenant-dialog-Btn-sure" (click)="owerInfoModifyClick()">确认</button>
         <button class="bf-tenant-dialog-Btn bf-tenant-dialog-Btn-false" (click)="tenantModifyDialog=false;clearData()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog header="租客信息导出" [(visible)]="downtenantInfoDialog" [width]="600" >
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
+      <div class="ui-g-8">
+        <div class="ui-g-4">
+          <label >*客户身份：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <p-dropdown [options]="identityOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="downLoadIndentity"></p-dropdown>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="bf-tenant-dialog-Btn bf-tenant-dialog-Btn-sure" (click)="downloadFileOwnerInfo()">确认</button>
+        <button class="bf-tenant-dialog-Btn bf-tenant-dialog-Btn-false" (click)="downtenantInfoDialog=false;">取消</button>
       </div>
     </p-footer>
   </p-dialog>

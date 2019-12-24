@@ -22,7 +22,13 @@ export class PublicMethedService {
     today: '今天',
     clear: '清除'
   };
+  // 判断为手机号码
   public verifyPhone: RegExp = /^1[37458]\d{9}$/;
+  // 判断不能为空
+  public verifyNull: RegExp = /s/;
+  // 判断为汉字
+  public verifyName: RegExp =  /[\u4e00-\u9fa5]/;
+  // 判断身份证
   public verifyIdNumber: RegExp = /^[1-9][0-9]{5}(19|20)[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|31)|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))[0-9]{3}([0-9]|x|X)$/;
   public verifyIdNumber1: RegExp = /^((\s?[A-Za-z])|([A-Za-z]{2}))\d{6}(\([0−9aA]\)|[0-9aA])$/;   // 香港
   public verifyIdNumber2: RegExp = /^[a-zA-Z][0-9]{9}$/; // 台湾

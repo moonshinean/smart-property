@@ -11,7 +11,7 @@ import {
   InputTextModule,
   MessageModule, MessageService,
   MessagesModule, RadioButtonModule,
-  ScrollPanelModule, SpinnerModule, TreeModule
+  ScrollPanelModule, SpinnerModule, TabMenuModule, TabViewModule, TreeModule
 } from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
 import {FormsModule} from '@angular/forms';
@@ -20,6 +20,7 @@ import {LoadingModule} from '../../common/components/loading/loading.module';
 import {PublicMethedService} from '../../common/public/public-methed.service';
 import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
 import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
+import {MenuItem} from 'primeng/components/common/menuitem';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,7 @@ import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dial
     BasicTableModule,
     BasicDialogModule,
     InputSwitchModule,
-    TreeModule
+    TreeModule,
   ],
   providers: [MessageService, ConfirmationService, DatePipe, PublicMethedService]
 })

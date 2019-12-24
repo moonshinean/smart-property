@@ -76,6 +76,7 @@ export class RoomTitle {
   regionName?: any;
   buildingName?: any;
   unitName?: any;
+  floor?: any;
   roomCode?: any;
   roomSize?: any;
   roomType?: any;

@@ -152,6 +152,8 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
             this.parkingspaceAddDialog = false;
             this.parkingspaceInitialization();
 
+          }else  {
+            this.toolSrv.setToast('error', '操作失败', value.message);
           }
         }
       );

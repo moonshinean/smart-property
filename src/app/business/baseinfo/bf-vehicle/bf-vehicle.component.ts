@@ -212,11 +212,14 @@ export class BfVehicleComponent implements OnInit, OnDestroy {
     this.toolSrv.setConfirmation('增加', '增加', () => {
       this.vehicleSrv.addVehicleInfo(data).subscribe(
         value => {
+          console.log(value);
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', value.message);
             this.clearData();
             this.optionDialog.dialog = false;
             this.vehicleInitialization();
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
           }
         }
       );

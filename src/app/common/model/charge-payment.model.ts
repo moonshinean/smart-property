@@ -167,6 +167,10 @@ export  class CostSplitData {
   parentCode?: any;
   splitState?: any;
   oneMonthPropertyFee?: any;
+  firstStartTime?: any;
+  firstEndTime?: any;
+  secondStartTime?: any;
+  secondEndTime?: any;
 }
 
 // 绑定车位

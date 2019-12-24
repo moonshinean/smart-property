@@ -49,8 +49,21 @@ export class BfOwnerService {
   public  logoutOwnerInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/roomInfo/logout', body);
   }
+  // 业主信息导出
+  public  downloadOwnerInfo(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/excel/owner', body);
+  }
   // 新系统缴费记录
   public  getNewSystemChargeItemToatal(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/chart/nowChart', body);
+  }
+  // 当年缴费记录
+  public  getYearChargeItemToatal(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/chart/yearChart', body);
+  }
+
+ // 空置房导出
+  public  importFileOfVacantRoom(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/excel/vacantRoom', body);
   }
 }

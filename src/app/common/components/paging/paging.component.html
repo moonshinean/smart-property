@@ -5,7 +5,7 @@
     <li><a>第{{nowPage}}页/共{{totalPage}}页</a></li>
     <li *ngIf="true" >
       <a style="padding: 3px 0 3px 3px;">
-        <input type="number"  [(ngModel)]="skpPage" [ngStyle]="{'width':'4vw'}">
+        <input type="number"  [(ngModel)]="skpPage" [ngStyle]="{'width':'4vw'}" min="1">
         <span style="padding: 3px 10px 3px 10px;" (click)="appointPage($event)">跳转</span>
       </a>
     </li>

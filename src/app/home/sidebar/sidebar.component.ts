@@ -146,7 +146,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           // {label: '车辆种类', icon: 'pi pi-fw ', routerLink: ['/home/system/carkind']},
           // {label: '车辆品牌', icon: 'pi pi-fw ', routerLink: ['/home/system/carbrand']},
           // {label: '民族管理', icon: 'pi pi-fw ', routerLink: ['/home/system/nation']},
-          {label: '系统配置', icon: 'pi pi-fw ', routerLink: ['/home/system/config']},
+          // {label: '系统配置', icon: 'pi pi-fw ', routerLink: ['/home/system/config']},
           {label: '角色信息', icon: 'pi pi-fw ', routerLink: ['/home/system/part']},
           {label: '用户角色配置', icon: 'pi pi-fw ', routerLink: ['/home/system/role']},
           {label: '角色权限配置', icon: 'pi pi-fw ', routerLink: ['/home/system/permission']},
