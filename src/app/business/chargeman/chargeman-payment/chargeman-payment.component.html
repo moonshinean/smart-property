@@ -28,16 +28,6 @@
   <div class="chargeman-payment-table">
     <rbi-check-table-btn [option]="optionTable" [select]="paymentSelect" (detail)="detailClick($event)" (selectData)="selectData($event)"></rbi-check-table-btn>
     <br />
-<!--    <p-tabView>-->
-<!--      <p-tabPanel header="Header 1" [closable]="true" (click)="dilagClickAmplificationOpen()">-->
-<!--      </p-tabPanel>-->
-<!--    </p-tabView>-->
-<!--    <p-tabMenu>-->
-<!--      <ng-template pTemplate="dialogHiddenData" let-item let-i="index">-->
-<!--        //item content-->
-<!--      </ng-template>-->
-<!--    </p-tabMenu>-->
-
 <!--缩小放大-->
     <div style="background: #F5F5F5;">
       <div style="position: relative; display: inline-block; background: #C4C4C4;border-radius: 5px 5px 2px 2px; padding: 5px 8px;font-size: 14px;margin: 1px;border: 1px solid #C8C8C8" (click)="dilagClickAmplificationOpen(item)" *ngFor="let item of dialogHiddenData">
@@ -117,7 +107,7 @@
         <div class="ui-g-12" [hidden]=" deductionDamagesStatus === 0">
             <p-table [columns]="deductionDamagesTitle" [value]="deductionDamagesData"  [scrollable]="true"  scrollHeight="48vh"  [(selection)]="deductionDamagesSelect">
               <ng-template pTemplate="header" let-columns>
-                <tr >
+                <tr [ngStyle]="{'font-size': '12px'}">
                   <th style="width: 3em">
                     <p-tableHeaderCheckbox (click)="itemCalClick()"></p-tableHeaderCheckbox>
                   </th>
@@ -127,8 +117,8 @@
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-                <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
-                  <td style="width: 3em">
+                <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center', 'font-size': '12px'}">
+                  <td style="width: 3em" >
                     <p-tableCheckbox [value]="rowData" (click)="checkClickData(rowData, rowIndex)"></p-tableCheckbox>
                   </td>
                   <td  *ngFor="let col of columns" style="word-break: break-word">
@@ -144,7 +134,7 @@
         <div class="ui-g-12" [hidden]=" deductionDamagesStatus === 0">
               <p-table [columns]="parkspaceTitle" [value]="parkSpaceData"  [scrollable]="true"  scrollHeight="48vh"  [(selection)]="deductionDamagesSelect">
                 <ng-template pTemplate="header" let-columns>
-                  <tr >
+                  <tr  [ngStyle]="{'font-size': '12px'}">
                     <th *ngFor="let col of columns" >
                       {{col.header}}
                     </th>
@@ -152,7 +142,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
 
-                  <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
+                  <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center', 'font-size': '12px'}">
 
                     <td  *ngFor="let col of columns.slice(0 ,columns.length -1)" style="word-break: break-word">
                       {{rowData[col.field]}}
@@ -173,22 +163,24 @@
             <p-table   [columns]="paymentDialogTableTitle" [value]="paymentItemData"  [scrollable]="true" [resizableColumns]="true">
               <ng-template pTemplate="colgroup" let-columns>
                 <colgroup>
-                  <col *ngFor="let col of columns" style="width:180px">
+                  <col *ngFor="let col of columns.slice(0, 3)" style="width: 85px">
+                  <col *ngFor="let col of columns.slice(3, 6)" style="width: 95px">
+                  <col *ngFor="let col of columns.slice(6, columns.length)" style="width: 85px">
                 </colgroup>
               </ng-template>
               <ng-template pTemplate="header" let-columns>
-                <tr>
+                <tr [ngStyle]="{'font-size': '12px'}">
                   <th *ngFor="let col of columns" >
                     {{col.header}}
                   </th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-                <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
-                    <td *ngFor="let col of columns.slice(0, columns.length -4)" style="word-break: break-word">
+                <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center','font-size': '12px'}">
+                    <td *ngFor="let col of columns.slice(0, 1)" style="word-break: break-word">
                       {{rowData[col.field]}}
                     </td>
-                    <td  pEditableColumn *ngFor="let col of columns.slice(columns.length -4, columns.length-3)">
+                    <td  pEditableColumn *ngFor="let col of columns.slice(1, 2)">
                       <p-cellEditor *ngIf="rowData.splitState === 2">
                         <ng-template pTemplate="input">
                           <p-dropdown [options]="rowData['ownerSelection']" [(ngModel)]="rowData[col.field]" [style]="{'width':'100%'}" (onChange)="changeSurname(rowData[col.field], rowIndex)"></p-dropdown>
@@ -199,23 +191,23 @@
                       </p-cellEditor>
                       <span *ngIf="rowData.splitState !== 2">{{rowData[col.field]}}</span>
                     </td>
-                    <td *ngFor="let col of columns.slice(columns.length -3, columns.length-2)" style="word-break: break-word">
+                    <td *ngFor="let col of columns.slice(2, columns.length -2 )" style="word-break: break-word">
                       {{rowData[col.field]}}
                     </td>
-                    <td pEditableColumn *ngFor="let col of columns.slice(columns.length -2, columns.length-1)">
-                      <p-cellEditor>
-                        <ng-template pTemplate="input">
-                          <p-inputSwitch  [(ngModel)]="rowData[col.field]"  (onChange)="stateOfArrearChange(rowData[col.field], rowIndex)"></p-inputSwitch>
-                        </ng-template>
-                        <ng-template pTemplate="output">
-                          {{rowData[col.field] === true? '欠费': '未欠费'}}
-                        </ng-template>
-                      </p-cellEditor>
-                    </td >
-                    <td *ngFor="let col of columns.slice(columns.length -1, columns.length)" style="word-break: break-word">
-                      <button class="chargeman-payment-dialog-Btn" style="background: #55AB7F;height: 3vh" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState !== 1 && rowData.startTime !== null">拆分</button>
-                      <button class="chargeman-payment-dialog-Btn" style="background: #DCDCDC;height: 3vh" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState === 1 || rowData.startTime === null" disabled>拆分</button>
-                    </td>
+                  <td pEditableColumn *ngFor="let col of columns.slice(columns.length -2 , columns.length -1 )">
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <p-inputSwitch  [(ngModel)]="rowData[col.field]"  (onChange)="stateOfArrearChange(rowData[col.field], rowIndex)"></p-inputSwitch>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{rowData[col.field] === true? '欠费': '未欠费'}}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td >
+                  <td *ngFor="let col of columns.slice(columns.length -1 , columns.length)" style="word-break: break-word">
+                    <button class="chargeman-payment-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState !== 1 && rowData.startTime !== null">拆分</button>
+                    <button class="chargeman-payment-dialog-Btn" style="background: #DCDCDC;height: 3vh; width: 4vw" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState === 1 || rowData.startTime === null" disabled>拆分</button>
+                  </td>
                 </tr>
               </ng-template>
             </p-table>

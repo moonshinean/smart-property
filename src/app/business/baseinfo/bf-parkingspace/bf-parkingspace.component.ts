@@ -281,7 +281,7 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
   // 设置表格
   public  setTableOption(data1): void {
     this.parkingSpaceOption = {
-      width: '101.4%',
+      width: '100%',
       header: {
         data: [
           {field: 'villageName', header: '小区名称'},

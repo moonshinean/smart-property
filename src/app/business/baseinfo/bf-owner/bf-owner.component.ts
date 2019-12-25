@@ -11,6 +11,7 @@ import {SharedServiceService} from '../../../common/public/shared-service.servic
 import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {UpdateTreeService} from '../../../common/public/update-tree.service';
 
 @Component({
   selector: 'rbi-bf-owner',
@@ -166,6 +167,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
+    private updateTreeSrv: UpdateTreeService,
   ) {
     this.ownerSub = this.sharedSrv.changeEmitted$.subscribe(
       value => {
@@ -329,7 +331,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
 
   public  changeInput(data, index): void {
-    this.keyRoomInfoList[index] = !(data !== '' && data !== null);
+    this.keyRoomInfoList[index] = !(data !== '' && data !== null && data !== undefined);
   }
   public  addQuest(data): void {
     this.toolSrv.setConfirmation(data, data, () => {
@@ -356,6 +358,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
                 this.ownerAddDialog = false;
                 this.ownerModifayDialog = false;
                 this.clearData();
+                this.updateTreeSrv.emitChangeTheme('update');
               } else {
                 this.toolSrv.setToast('error', '操作失败', value.message);
               }
@@ -397,8 +400,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       } else {
         this.toolSrv.setToast('error', '添加失败', '请输入正确的用户名(只含中文汉字)');
       }
-
-
     } else {
       this.toolSrv.setToast('error', '添加失败', '信息未填写完整');
     }
@@ -457,7 +458,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
     } else if (this.ownerSelect.length === 1) {
       this.queryOwnerUpdateData(this.ownerSelect[0].roomCode);
-
       this.ownerModifayDialog = true;
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
@@ -502,6 +502,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
               this.toolSrv.setToast('success', '操作成功', value.message);
               this.ownerInitialization();
               this.clearData();
+              this.updateTreeSrv.emitChangeTheme('update');
             }
           }
         );
@@ -782,14 +783,12 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
         this.toolSrv.setToast('error', '操作错位', '请先选择需要导出的小区');
       }
   }
-
   // 导出业主信息
   public  downloadFileOwnerInfo(): void {
     console.log(this.downLoadIndentity);
     if (this.downLoadIndentity) {
       this.owerSrv.downloadOwnerInfo({level: this.searchOwerData.level, code: this.searchOwerData.code , identity: this.downLoadIndentity}).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             window.open(value.data);
             this.downOwnerInfoDialog = false;

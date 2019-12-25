@@ -34,7 +34,7 @@
     <!--//搜索-->
     <div class="ui-inputgroup bf-tenant-header-search" *ngIf="!btnHiden[6].hidden">
       <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选搜索方式..." [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入手机号" style="width: 7vw" [(ngModel)]="inputSearchData">
+      <input type="text" pInputText placeholder="请输入需要搜索的值"  [(ngModel)]="inputSearchData">
       <button id="disabled-btn" class="bf-tenant-header-btn-search" type="button"  (click)="tenantSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>
@@ -92,16 +92,17 @@
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[0]}">
         <div class="ui-g-4">
-          <label >*客户名称：</label>
+          <label ><span style="color: red">*</span>客户名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="tenantinfo.surname" (blur)="changeInput(tenantinfo.surname, 0)">
+          <span [hidden]="!this.keyTenantInfoList[0]">此字段为必填字段</span>
         </div>
       </div>
 
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[1]}">
         <div class="ui-g-4">
-          <label >*客户电话：</label>
+          <label ><span style="color: red">*</span>客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="tenantinfo.mobilePhone" (blur)="changeInput(tenantinfo.mobilePhone, 1)">
@@ -110,7 +111,7 @@
       </div>
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[2]}">
         <div class="ui-g-4">
-          <label >*身份证号：</label>
+          <label ><span style="color: red">*</span>身份证号：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入身份证号..." [(ngModel)]="tenantinfo.idNumber" (blur)="changeInput(tenantinfo.idNumber, 2)">
@@ -119,26 +120,29 @@
       </div>
       <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyTenantInfoList[3]}">
         <div class="ui-g-4">
-          <label >*是否正常缴费：</label>
+          <label ><span style="color: red">*</span>是否正常缴费：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择注销状态..."  [(ngModel)]="tenantinfo.normalPaymentStatus" (onChange)="changeInput(tenantinfo.normalPaymentStatus, 3)"></p-dropdown>
+          <span [hidden]="!this.keyTenantInfoList[3]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[4]}">
         <div class="ui-g-4">
-          <label >*租房开始时间：</label>
+          <label ><span style="color: red">*</span>租房开始时间：</label>
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="tenantinfo.startTime" placeholder="请选择租房开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.startTime, 4)"></p-calendar>
+          <span [hidden]="!this.keyTenantInfoList[4]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[5]}">
         <div class="ui-g-4">
-          <label >*租房结束时间：</label>
+          <label ><span style="color: red">*</span>租房结束时间：</label>
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="tenantinfo.endTime" placeholder="请选择租房结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.endTime, 5)"></p-calendar>
+          <span [hidden]="!this.keyTenantInfoList[5]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6">
@@ -162,50 +166,56 @@
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[0]}">
         <div class="ui-g-4">
-          <label >客户名称：</label>
+          <label ><span style="color: red">*</span>客户名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText [placeholder]="tenantinfo.surname" [(ngModel)]="tenantinfo.surname" (blur)="changeInput(tenantinfo.surname, 0)">
+          <span [hidden]="!this.keyTenantInfoList[0]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[1]}">
         <div class="ui-g-4">
-          <label >客户电话：</label>
+          <label ><span style="color: red">*</span>客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText [placeholder]="tenantinfo.mobilePhone" [(ngModel)]="tenantinfo.mobilePhone" (blur)="changeInput(tenantinfo.mobilePhone, 1)">
+          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(tenantinfo.mobilePhone === undefined || tenantinfo.mobilePhone === '')? !toolSrv.verifyPhone.test(tenantinfo.mobilePhone): toolSrv.verifyPhone.test(tenantinfo.mobilePhone)"></p-message>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[2]}">
         <div class="ui-g-4">
-          <label >身份证号：</label>
+          <label ><span style="color: red">*</span>身份证号：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText [placeholder]="tenantinfo.idNumber" [(ngModel)]="tenantinfo.idNumber" (blur)="changeInput(tenantinfo.idNumber, 2)">
+          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(tenantinfo.idNumber === undefined || tenantinfo.idNumber === '')? (!this.toolSrv.verifyIdNumber.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber1.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber2.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber3.test(tenantinfo.idNumber) ): (toolSrv.verifyIdNumber.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber1.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber2.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber3.test(tenantinfo.idNumber))"></p-message>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyTenantInfoList[3]}">
         <div class="ui-g-4">
-          <label >是否正常缴费：</label>
+          <label ><span style="color: red">*</span>是否正常缴费：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" [placeholder]="tenantinfo.normalPaymentStatus"  [(ngModel)]="tenantinfo.normalPaymentStatus" (onChange)="changeInput(tenantinfo.normalPaymentStatus, 3)"></p-dropdown>
+          <span [hidden]="!this.keyTenantInfoList[3]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[4]}">
         <div class="ui-g-4">
-          <label >租房开始时间：</label>
+          <label ><span style="color: red">*</span>租房开始时间：</label>
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="tenantinfo.startTime" [placeholder]="tenantinfo.startTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.startTime, 4)"></p-calendar>
+          <span [hidden]="!this.keyTenantInfoList[3]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyTenantInfoList[5]}">
         <div class="ui-g-4">
-          <label >租房结束时间 ：</label>
+          <label ><span style="color: red">*</span>租房结束时间 ：</label>
         </div>
         <div class="ui-g-8">
           <p-calendar [(ngModel)]="tenantinfo.endTime" [placeholder]="tenantinfo.endTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.endTime, 5)"></p-calendar>
+          <span [hidden]="!this.keyTenantInfoList[5]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6">
@@ -229,7 +239,7 @@
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-8">
         <div class="ui-g-4">
-          <label >*客户身份：</label>
+          <label ><span style="color: red">*</span>客户身份：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <p-dropdown [options]="identityOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="downLoadIndentity"></p-dropdown>

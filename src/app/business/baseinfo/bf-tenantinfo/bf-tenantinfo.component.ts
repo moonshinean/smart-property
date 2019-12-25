@@ -10,6 +10,7 @@ import {Dropdown} from 'primeng/dropdown';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
 import {ThemeService} from '../../../common/public/theme.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {UpdateTreeService} from '../../../common/public/update-tree.service';
 
 
 @Component({
@@ -126,7 +127,7 @@ export class BfTenantinfoComponent implements OnInit {
     private globalSrv: GlobalService,
     private datePipe: DatePipe,
     private shareSrv: SharedServiceService,
-    private themeSrv: ThemeService,
+    private themeSrv: ThemeService
   ) {
     this.themeSrv.changeEmitted$.subscribe(
       value => {
@@ -284,21 +285,32 @@ export class BfTenantinfoComponent implements OnInit {
 
   // ower modify
   public  owerInfoModifyClick(): void {
-    this.toolSrv.setConfirmation('修改', '修改', () => {
-      this.tenantinfo.endTime = this.datePipe.transform( this.tenantinfo.endTime , 'yyyy-MM-dd');
-      this.tenantinfo.startTime = this.datePipe.transform( this.tenantinfo.startTime , 'yyyy-MM-dd');
-      this.tenantSrv.addTenantInfo(this.tenantinfo).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.toolSrv.setToast('success', '操作成功', '修改成功');
-            this.searchJudgment(this.nowPage);
-            this.clearData();
-            this.tenantModifyDialog = false;
-          } else {
-            this.toolSrv.setToast('error', '操作失败', value.message);
-          }
-        });
+    const tenantList = ['surname', 'mobilePhone', 'idNumber', 'normalPaymentStatus', 'startTime', 'endTime'];
+    tenantList.forEach((v, index) => {
+      this.keyTenantInfoList[index] = this.tenantinfo[v] === undefined || this.tenantinfo[v] === '' || this.tenantinfo[v] === null;
     });
+    const passStatus = tenantList.some(val => {
+      return  this.tenantinfo[val] === undefined || this.tenantinfo[val] === '' || this.tenantinfo[val] === null;
+    });
+    if(!passStatus) {
+      this.toolSrv.setConfirmation('修改', '修改', () => {
+        this.tenantinfo.endTime = this.datePipe.transform( this.tenantinfo.endTime , 'yyyy-MM-dd');
+        this.tenantinfo.startTime = this.datePipe.transform( this.tenantinfo.startTime , 'yyyy-MM-dd');
+        this.tenantSrv.addTenantInfo(this.tenantinfo).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', '修改成功');
+              this.searchJudgment(this.nowPage);
+              this.clearData();
+              this.tenantModifyDialog = false;
+            } else {
+              this.toolSrv.setToast('error', '操作失败', value.message);
+            }
+          });
+      });
+    } else {
+      this.toolSrv.setToast('error', '操作失败', '信息未填完整,带*号的为必填字段');
+    }
   }
 
   public  tenantLogoutClick(): void {
@@ -421,7 +433,7 @@ export class BfTenantinfoComponent implements OnInit {
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
     this.tenantTableOption = {
-      width: '101.4%',
+      width: '100%',
       header: {
         data: [
           {field: 'buildingName', header: '楼栋名称'},

@@ -8,6 +8,8 @@ import {GlobalService} from '../../common/services/global.service';
 import {SharedServiceService} from '../../common/public/shared-service.service';
 import {ThemeService} from '../../common/public/theme.service';
 import {PublicMethedService} from '../../common/public/public-methed.service';
+import {Subscription} from 'rxjs';
+import {UpdateTreeService} from '../../common/public/update-tree.service';
 
 @Component({
   selector: 'rbi-home',
@@ -46,7 +48,8 @@ export class HomeComponent implements OnInit {
 
   public dataTrees: DataTree[];
   public dataTree: DataTree = new DataTree();
-
+  // 服务传参相关
+  public updateSub: Subscription;
   constructor(
     private homeSrv: HomeService,
     private route: ActivatedRoute,
@@ -54,7 +57,16 @@ export class HomeComponent implements OnInit {
     private globalSrv: GlobalService,
     private shareSrv: SharedServiceService,
     private toolSrv: PublicMethedService,
-  ) { }
+    private updateTreeSrv: UpdateTreeService,
+  ) {
+    this.updateSub = this.updateTreeSrv.changeEmitted$.subscribe(
+      value => {
+        // if(value ==)
+        console.log(value);
+        this.getTreeData();
+      }
+    );
+  }
 
   ngOnInit() {
     if (this.localSrv.getObject('theme').value) {
@@ -66,14 +78,7 @@ export class HomeComponent implements OnInit {
     if (this.route.snapshot.children[0].url[0].path === 'main') {
       this.sidbarHidden = true;
     }
-    this.globalSrv.queryTVillageTree().subscribe(
-      value => {
-        if (value.status === '1000') {
-          this.roomtree = value.data;
-          this.dataTrees = this.initializeTree(this.roomtree);
-        }
-      }
-    );
+   this.getTreeData();
   }
   // sidebar Hidden display
   public homeHiddenSidebar(e): void {
@@ -181,44 +186,6 @@ export class HomeComponent implements OnInit {
         this.setChangeTheme('green');
         break;
     }
-    // this.themeFlag += 1;
-    // this.localSrv.setObject('theme', {value: 'green', falg: this.themeFlag});
-    // // this.localSrv.set('theme', 'green');
-    // this.toolSrv.changeTheme('green');
-    // this.localSrv.set('themeFlag', this.themeFlag.toString());
-    // if ()
-    // this.themeList
-    // const home = document.getElementById('home');
-    // document.documentElement.style.setProperty('--bgc-theme', '#55AA80');
-    // document.documentElement.style.setProperty('--body-bgc', '#CBCBCB');
-    // document.documentElement.style.setProperty('--ft-sidebar-theme', '#fff');
-    // document.documentElement.style.setProperty('--ft-sidebar-hover-theme', '#000');
-    // document.documentElement.style.setProperty('--bgc-sidbarMunu', '#365244');
-    // document.documentElement.style.setProperty('--footer-bgc', '#fff');
-    // document.documentElement.style.setProperty('--footer-ft', '#000');
-    // document.documentElement.style.setProperty('--mokuai-bgc', '#F5F5F5');
-    // document.documentElement.style.setProperty('--paging-bgc', '#F5F5F5');
-    // document.documentElement.style.setProperty('--paging-ft', '#000');
-    // document.documentElement.style.setProperty('--paging-input', 'rgba(3,3,3,0.5)');
-    // document.documentElement.style.setProperty('--table-detail', '#6AB993');
-    // document.documentElement.style.setProperty('--header-bgc', '#4B9D76');
-    // this.themeSrv.emitChangeTheme({
-    //   siderbar: {ft: '#fff', ftHover: '#000'},
-    //   headerbar: {ft: '#fff', ftHover: '#000'},
-    //   table: {
-    //     header: {background: '#55AA80', color: '#fff'},
-    //     content: [{background: '#DBF3E6', color: '#000'}, {background: '#F5F5F5', color: '#000'}],
-    //     detailBtn: '#6AB993'
-    //   }
-    // });
-    // // localStorage.setItem('--bgc-them', '')
-    // // console.log(less);
-    // // less.modifyVars({
-    // //     '@background': '#ffffff',
-    // //     '@color': '#ffffff'
-    // //   }).then(() => {
-    // //     console.log(123);
-    // // });
   }
   public  setChangeTheme(data): void {
       this.homeSrv.setChangeTheme({theme: data}).subscribe(
@@ -231,5 +198,16 @@ export class HomeComponent implements OnInit {
             }
         }
       );
+  }
+
+  public  getTreeData(): void {
+    this.globalSrv.queryTVillageTree().subscribe(
+      value => {
+        if (value.status === '1000') {
+          this.roomtree = value.data;
+          this.dataTrees = this.initializeTree(this.roomtree);
+        }
+      }
+    );
   }
 }

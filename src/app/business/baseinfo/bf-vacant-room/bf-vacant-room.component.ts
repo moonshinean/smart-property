@@ -11,6 +11,7 @@ import {OwerList, RoomTitle} from '../../../common/model/bf-owner.model';
 import {BfOwnerService} from '../../../common/services/bf-owner.service';
 import {DatePipe} from '@angular/common';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {UpdateTreeService} from '../../../common/public/update-tree.service';
 
 @Component({
   selector: 'rbi-bf-vacant-room',
@@ -79,6 +80,8 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
     {label: '导出', hidden: true},
   ];
   public addroomVerifyStaus: any;
+
+  public keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false, false];
   // 选择日期相关
   public esDate: any;
   public vacantRoomSub: Subscription;
@@ -92,6 +95,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private owerSrv: BfOwnerService,
     private themeSrv: ThemeService,
+    private updateTreeSrv: UpdateTreeService,
   ) {
     this.themeSub = this.themeSrv.changeEmitted$.subscribe(
       value => {
@@ -174,6 +178,11 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
     }
     };
   }
+  // 表单检验
+  public  changeInput(data, index): void {
+    console.log(data);
+    this.keyRoomInfoList[index] = !(data !== '' && data !== null && data !== undefined);
+  }
   // 添加
   public  vacantRoomAddClick(): void {
     this.vacantAddDialog = true;
@@ -211,6 +220,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
             if (value.status === '1000') {
               this.queryVacantRoomPageData();
               this.vacantRoomSelect = [];
+              this.updateTreeSrv.emitChangeTheme('update');
               this.toolSrv.setToast('success', '操作成功', value.message);
             } else {
               this.toolSrv.setToast('success', '请求成功', value.message);
@@ -299,14 +309,18 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   // 添加房屋请求
   public  addVacantRoomSureClick(data): void {
     if (data === '添加') {
-      const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'floor', 'roomType', 'roomStatus'];
+      const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'floor', 'roomCode', 'roomSize',  'roomType', 'roomStatus'];
       // @ts-ignore
+      addRoomKeyList.forEach((val, index) => {
+        this.keyRoomInfoList[index] = this.roomInfo[val] === undefined || this.roomInfo[val] === null || this.roomInfo[val] === '';
+      });
+      console.log(this.keyRoomInfoList);
       this.addroomVerifyStaus =  addRoomKeyList.some((v) => {
 
         return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
       });
     } else {
-      const addRoomKeyList = ['villageName', 'regionName', 'unitName', 'roomCode', 'roomSize', 'floor', 'roomType', 'roomStatus', 'startBillingTime', 'realRecyclingHomeTime'];
+      const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'roomCode', 'roomSize', 'floor', 'roomType', 'roomStatus', 'startBillingTime', 'realRecyclingHomeTime'];
       // @ts-ignore
       this.addroomVerifyStaus =  addRoomKeyList.some((v) => {
 
@@ -339,6 +353,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
               this.ownerList = [];
               this.vacantRoomSelect = [];
               this.roomInfo = new RoomTitle();
+              this.updateTreeSrv.emitChangeTheme('update');
             } else {
               this.toolSrv.setToast('error', '操作失败', value.message);
             }

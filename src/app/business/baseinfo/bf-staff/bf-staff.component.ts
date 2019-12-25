@@ -356,7 +356,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
     this.optionTable = {
-      width: '101.4%',
+      width: '100%',
       header: {
         data: [
           {field: 'username', header: '用户名'},

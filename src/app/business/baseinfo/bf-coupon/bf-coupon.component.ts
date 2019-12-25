@@ -340,7 +340,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
     this.optionTable = {
-      width: '101.4%',
+      width: '100%',
       header: {
         data:  this.couponTableTitle,
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}

@@ -37,19 +37,19 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public selectCheckChargeItemList: any[] = [];
   public paymentDialogTableTitle = [
     {field: 'chargeName', header: '项目名称'},
-    {field: 'chargeStandard', header: '标准单价'},
-    {field: 'chargeUnit', header: '单位'},
-    {field: 'discount', header: '折扣'},
-    {field: 'datedif', header: '月/张数'},
+    {field: 'payerName', header: '缴费人姓名'},
     {field: 'amountReceivable', header: '应收金额'},
     {field: 'actualMoneyCollection', header: '实收金额'},
-    {field: 'usageAmount', header: '使用量'},
-    {field: 'currentReadings', header: '当前读数'},
-    {field: 'lastReading', header: '上次读数'},
     {field: 'startTime', header: '开始计费时间'},
     {field: 'dueTime', header: '结束计费时间'},
-    {field: 'payerName', header: '缴费人姓名'},
+    {field: 'usageAmount', header: '使用量'},
+    {field: 'lastReading', header: '上次读数'},
+    {field: 'currentReadings', header: '当前读数'},
+    {field: 'datedif', header: '月/张数'},
+    {field: 'chargeStandard', header: '标准单价'},
+    {field: 'discount', header: '折扣'},
     {field: 'payerPhone', header: '缴费人手机号'},
+    {field: 'chargeUnit', header: '单位'},
     {field: 'stateOfArrears', header: '欠费状态'},
     {field: 'operating', header: '操作'},
   ];
@@ -621,12 +621,10 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
     this.optionTable = {
-      width: '101%',
+      width: '100.5%',
       header: {
         data:  [
-          // {field: 'buildingName', header: '楼栋名称'},
           {field: 'roomCode', header: '房间编号'},
-          // {field: 'roomCode', header: '房间号'},
           {field: 'roomSize', header: '建筑面积'},
           {field: 'roomType', header: '房间类型'},
           {field: 'surname', header: '客户名称'},
@@ -636,6 +634,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           {field: 'oneMonthPropertyFee', header: '单月物业费'},
           {field: 'minMonth', header: '欠费月数'},
           {field: 'prepaidAmount', header: '预缴金额'},
+          {field: 'amountOfArrears', header: '欠费金额'},
           {field: 'operating', header: '操作'}],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
@@ -650,8 +649,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // show detail dialog (展示详情弹窗)
   public  detailClick(e): void {
-    console.log(e);
-    console.log(e.parkingSpaceManagementDOS.length);
     if (e.parkingSpaceManagementDOS.length !== 0) {
       this.dialogOption = {
         dialog: true,

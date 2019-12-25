@@ -444,7 +444,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
   // set table data （设置列表数据）
   public setTableOption(data1): void {
     this.tableOption = {
-      width: '101.4%',
+      width: '100%',
       header: {
         data: [
           {field: 'chargeCode', header: '项目编号'},
