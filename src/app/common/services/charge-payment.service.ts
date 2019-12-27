@@ -80,4 +80,9 @@ export class ChargePaymentService {
   public  deletePaymentParksplace(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/delete`, pamars);
   }
+
+  // 车位计算费用
+  public  calculateParksplaceFree(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/cash/register/calculate_parking_space_management_fee`, pamars);
+  }
 }

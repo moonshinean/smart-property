@@ -241,7 +241,14 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // 车位缴费
   public  parkSpacePaymentClick(): void {
-    this.paymentParkSpaceDialog = true;
+    if (this.paymentParkSpaceSelect === undefined || this.paymentParkSpaceSelect.length === 0) {
+      this.toolSrv.setToast('error', '操作错误', '请选择需要缴费的项');
+    } else if (this.paymentParkSpaceSelect.length === 1) {
+      this.calcParkSpaceFree(this.paymentParkSpaceSelect[0].parkingSpaceCode);
+      this.paymentParkSpaceDialog = true;
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行缴费');
+    }
   }
   // condition search 条件搜索）
   public paymentSearchClick(): void {
@@ -456,7 +463,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
    if (this.paymentParkSpaceSelect === undefined || this.paymentParkSpaceSelect.length === 0) {
      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
    } else if (this.paymentParkSpaceSelect.length === 1) {
-     const list = ['parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
+     const list = ['parkingSpaceManagementId', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
        'vehicleOriginalType', 'startTime'];
      list.forEach(value => {
        this.addParkSpace[value] = this.paymentParkSpaceSelect[0][value];
@@ -499,7 +506,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   // 确认修改
   public  modifyParkSpaceSureClick(): void {
     let passFlag = true;
-    const list = ['parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
+    const list = ['parkingSpaceManagementId', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
       'vehicleOriginalType', 'startTime'];
     list.forEach(v => {
       if (this.addParkSpace[v] === undefined || this.addParkSpace[v] === '') {
@@ -513,7 +520,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
             console.log(value);
             if (value.status === '1000') {
               this.toolSrv.setToast('success', '请求成功', value.message);
-              this.addParkSpaceOptionDialog = false;
+              this.modifyParkSpaceOptionDialog = false;
               this.addParkSpace = new AddSparkSpace();
               this.paymentParkSpaceSelect = [];
             } else {
@@ -524,5 +531,13 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     } else {
         this.toolSrv.setToast('error', '操作错误', '参数未填完整');
     }
+  }
+
+  public  calcParkSpaceFree(code): void {
+      this.paymentSrv.calculateParksplaceFree({parkingSpaceCode: code}).subscribe(
+        value => {
+          console.log(value);
+        }
+      );
   }
 }
