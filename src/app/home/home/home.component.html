@@ -8,28 +8,38 @@
     <!--</div>-->
   </div>
   <rbi-footer></rbi-footer>
-  <button style="position: absolute;outline: none; right: 2vw;top: 2vh;z-index: 999; width: 5vw;padding: 0.5vh;border: 0; border-radius: 10px; color: #fff" [ngStyle]="{'background': themeList[themeFlag].value}" (click)="changeTheme()">{{themeList[themeFlag].label}}</button>
+<!--  <button style="position: absolute;outline: none; right: 2vw;top: 2vh;z-index: 999; width: 5vw;padding: 0.5vh;border: 0; border-radius: 10px; color: #fff" [ngStyle]="{'background': themeList[themeFlag].value}" (click)="changeTheme()">{{themeList[themeFlag].label}}</button>-->
   <img src="assets/images/ic_tree.png" alt="" class="move-image" (click)="mouserEnter()" rbiAppdrag [hidden]="imageHidden">
 
   <p-dialog title="树结构" [positionLeft]=42 [positionTop]=150 [(visible)]="treeDialog" [responsive]="true" showEffect="fade" [modal]= false [maximizable]="false"  [baseZIndex]="10000"  [width]="340">
     <div class="ui-g ui-fluid">
-      <div class="ui-g-12">
-        <p-scrollPanel [style]="{width: '100%', height: '50vh'}">
+     <p-scrollPanel [ngStyle]="{width: '100%', height: '60vh'}">
+      <div class="ui-g-12" >
           <p-tree
             [value]="dataTrees"
             [(selection)]="dataTree"
             selectionMode="single"
-            (onNodeSelect)="treeOnNodeSelect($event)">
+            (onNodeSelect)="treeOnNodeSelect($event, 1)">
           </p-tree>
-        </p-scrollPanel>
       </div>
+      <div class="ui-g-12">
+          <p-tree
+            [value]="dataBusTrees"
+            [(selection)]="dataBusTree"
+            selectionMode="single"
+            (onNodeSelect)="treeOnNodeSelect($event, 2)">
+          </p-tree>
+      </div>
+       <div class="ui-g-12">
+         <p-tree
+           [value]="dataParkTrees"
+           [(selection)]="dataParkTree"
+           selectionMode="single"
+           (onNodeSelect)="treeOnNodeSelect($event, 3)">
+         </p-tree>
+       </div>
+     </p-scrollPanel>
     </div>
-<!--    <p-footer>-->
-<!--      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">-->
-<!--&lt;!&ndash;        <button  class="dialog-pop-btn dialog-pop-btn-sure" style="width: 4vw" (click)="dataTreeSureClick()">确认</button>&ndash;&gt;-->
-<!--        <button  class="dialog-pop-btn dialog-pop-btn-false" style="width: 4vw" (click)="treeDialog = false;">收起</button>-->
-<!--      </div>-->
-<!--    </p-footer>-->
   </p-dialog>
 </div>
 

@@ -27,7 +27,8 @@ export class BfTenantinfoComponent implements OnInit {
     pageSize: 10,
     pageNo: 1,
     code: '',
-    level: ''
+    level: '',
+    type: ''
   };
   public SearchTypeOption  = [
     {label: '手机号', value: 1},
@@ -140,6 +141,7 @@ export class BfTenantinfoComponent implements OnInit {
     this.shareSrv.changeEmitted$.subscribe(value => {
       this.searchTenantData.level = value.data.level;
       this.searchTenantData.code = value.data.code;
+      this.searchTenantData.type = value.data.type;
       this.roomCode = value.roomCode;
       this.queryTenantinfoPageData();
     });
@@ -154,6 +156,7 @@ export class BfTenantinfoComponent implements OnInit {
     if (this.shareSrv.SearchData !== undefined) {
      this.searchTenantData.level = this.shareSrv.SearchData.data.level;
      this.searchTenantData.code = this.shareSrv.SearchData.data.code;
+     this.searchTenantData.type = this.shareSrv.SearchData.data.type;
    }
     this.tenantInitialization();
   }
@@ -240,7 +243,6 @@ export class BfTenantinfoComponent implements OnInit {
   public  changeInput(data, index): void {
       this.keyTenantInfoList[index] = !(data !== null && data !== '');
   }
-
   // detail tenantInfo
   public  tenantDetailClick(e): void {
     this.tenantSrv.findTenantDetail({roomCode: e.roomCode, customerUserId: e.customerUserId}).subscribe(value => {
@@ -282,7 +284,6 @@ export class BfTenantinfoComponent implements OnInit {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
     }
   }
-
   // ower modify
   public  owerInfoModifyClick(): void {
     const tenantList = ['surname', 'mobilePhone', 'idNumber', 'normalPaymentStatus', 'startTime', 'endTime'];
@@ -501,7 +502,6 @@ export class BfTenantinfoComponent implements OnInit {
       }
     );
   }
-
   // 设置值转成名字
   public  setQueryDataValueToLabel(list): void {
     this.tableContent = list.map(v => {

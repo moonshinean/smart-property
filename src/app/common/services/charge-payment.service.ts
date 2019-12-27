@@ -56,7 +56,10 @@ export class ChargePaymentService {
   public setRoomCodeBindParkSpace(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/add`, pamars);
   }
-
+  // 车位修改
+  public changeParkSpace(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/update`, pamars);
+  }
 //  计算租赁车位费用
   public calculateRentalPackSpaceFree(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/cash/register/calculate_parking_space_rental_fee`, pamars);
@@ -68,4 +71,13 @@ export class ChargePaymentService {
   }
 
 
+ // 车位缴费查询
+  public  queryPaymentParkspalceData(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/findParkingAllByPage`, pamars);
+  }
+
+  // 车位删除
+  public  deletePaymentParksplace(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/delete`, pamars);
+  }
 }

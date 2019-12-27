@@ -45,8 +45,15 @@ export class GlobalService {
   public  queryTVillageTree(): Observable<any> {
     return this.http.post(environment.sysetUrl + `/villageChooze/findTree`, {});
   }
-
-  //更新接口
+  // 商业树结构
+  public  queryBusinessVillageTree(): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/villageChooze/findBusineseTree`, {});
+  }
+  // 车位树结构
+  public  queryParkspaceVillageTree(): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/findParkingCode`, {});
+  }
+  // 更新接口
   // query system status values
   public queryAdminchoose(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/setting/findAdmChoose`, pamars);

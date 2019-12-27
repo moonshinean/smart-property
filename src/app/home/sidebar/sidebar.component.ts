@@ -125,6 +125,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
       { title: '首页', item: [] , routingItem: []},
       { title: '收费管理', item: [], routingItem:  [
           {label: '物业缴费', icon: 'pi pi-fw ', routerLink: ['/home/charge/payment']},
+          {label: '专有车位缴费', icon: 'pi pi-fw ', routerLink: ['/home/charge/payparkspace']},
           {label: '缴费记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/details']},
           {label: '报表导出', icon: 'pi pi-fw ', routerLink: ['/home/charge/export']},
           // {label: '保证金', icon: 'pi pi-fw ', routerLink: ['/home/charge/margin']},
@@ -133,6 +134,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           // {label: '预缴记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/prepayment']},
           // {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
           {label: '历史数据', icon: 'pi pi-fw ', routerLink: ['/home/charge/history']},
+
           // {label: '车位管理', icon: 'pi pi-fw ', routerLink: ['/home/charge/parkspace']},
           // {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/charge/coupon']},
         ] },

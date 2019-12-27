@@ -21,6 +21,7 @@ import {PublicMethedService} from '../../common/public/public-methed.service';
 import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
 import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
 import {MenuItem} from 'primeng/components/common/menuitem';
+import { ChargePayParkspaceComponent } from './charge-pay-parkspace/charge-pay-parkspace.component';
 
 @NgModule({
   declarations: [

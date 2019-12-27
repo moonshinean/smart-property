@@ -40,7 +40,7 @@ export class HeaderComponent implements OnInit {
     // {router: '/home/chat', title: '在线客服', color: '#fff'},
     {router: '/home/coupon/total', title: '优惠券', color: this.ft},
     {router: '/home/refund/info', title: '退款', color: this.ft},
-    {router: '/home/system/config', title: '系统设置', color: this.ft},
+    {router: '/home/system/part', title: '系统设置', color: this.ft},
     {router: '/home/latepayment/latepaytotle', title: '违约金', color: this.ft},
   ];
 

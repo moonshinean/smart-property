@@ -31,7 +31,8 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     pageSize: 10,
     pageNo: 1,
     code: '',
-    level: ''
+    level: '',
+    type: '',
   };
   // public SearchOption = {village: [], region: [], building: [], unit: []};
   public inputSearchData = '';
@@ -177,6 +178,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
         }
         this.searchOwerData.level = value.data.level;
         this.searchOwerData.code = value.data.code;
+        this.searchOwerData.type = value.data.type;
         this.queryOwnerPageData();
         for (const roomKey in this.roomCodeInfo) {
           if (this.roomCodeInfo[roomKey] !== '') {
@@ -218,6 +220,8 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       }
       this.searchOwerData.level = this.sharedSrv.SearchData.data.level;
       this.searchOwerData.code = this.sharedSrv.SearchData.data.code;
+      this.searchOwerData.type = this.sharedSrv.SearchData.data.type;
+
     }
     this.ownerInitialization();
   }
