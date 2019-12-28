@@ -39,12 +39,18 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
   public parkingSpaceDetailOption: any;
   public parkingspaceDetailDialog: boolean;
   public parkingspaceDetail: Parkingspace = new Parkingspace();
-  public  SearchData = {
-      villageCode: '',
-      regionCode: '',
-      buildingCode:  '',
-      unitCode: '',
-      roomCode: ''
+  // 查询相关
+  public searchparkSpaceData = {
+    pageSize: 10,
+    pageNo: 1,
+    code: '',
+    level: '',
+    type: '',
+  };
+  public SearchData = {
+    villageCode: '',
+    regionCode: '',
+    buildingCode: '',
   };
   public deleteIds: any[] = [];
   public option: any;
@@ -93,6 +99,10 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
         this.SearchData.villageCode = value.villageCode;
         this.SearchData.regionCode = value.regionCode;
         this.SearchData.buildingCode = value.buildingCode;
+        this.searchparkSpaceData.code = value.data.code;
+        this.searchparkSpaceData.level = value.data.level;
+        this.searchparkSpaceData.type = value.data.type;
+        this.queryParkingSpacePageData();
       }
     );
   }
@@ -108,6 +118,9 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
       this.SearchData.buildingCode = this.sharedSrv.SearchData.buildingCode;
       this.SearchData.regionCode = this.sharedSrv.SearchData.regionCode;
       this.SearchData.villageCode = this.sharedSrv.SearchData.villageCode;
+      this.searchparkSpaceData.code = this.sharedSrv.SearchData.data.code;
+      this.searchparkSpaceData.level = this.sharedSrv.SearchData.data.level;
+      this.searchparkSpaceData.type = this.sharedSrv.SearchData.data.type;
     }
     this.parkingspaceInitialization();
   }
@@ -259,17 +272,22 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
     this.parkingspaceSelect = [];
   }
   public  queryParkingSpacePageData(): void {
-    this.parkingSpaceSrv.queryParkingSpace({pageNo: this.nowPage, pageSize: 10}).subscribe(
+    this.parkingSpaceSrv.queryParkingSpace(this.searchparkSpaceData).subscribe(
       value => {
-        this.loadHidden = true;
-        value.data.contents.forEach( v => {
-          v.parkingSpaceNature = this.toolSrv.setValueToLabel(this.parkSpaceNatureOption, v.parkingSpaceNature);
-          v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, v.parkingSpaceType);
-          v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption, v.parkingSpacePlace);
-        });
-        this.parkingSpaceContent = value.data.contents;
-        this.setTableOption(value.data.contents);
-        this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        console.log(value);
+        if (value.status === '1000') {
+          value.data.contents.forEach( v => {
+            v.parkingSpaceNature = this.toolSrv.setValueToLabel(this.parkSpaceNatureOption, v.parkingSpaceNature);
+            v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, v.parkingSpaceType);
+            v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption, v.parkingSpacePlace);
+          });
+          this.parkingSpaceContent = value.data.contents;
+          this.setTableOption(value.data.contents);
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        }else  {
+          this.toolSrv.setToast('error', '请求错误', value.message);
+        }
+
       }
     );
   }

@@ -81,7 +81,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   ];
   public addroomVerifyStaus: any;
 
-  public keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false, false];
+  public keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false];
   // 选择日期相关
   public esDate: any;
   public vacantRoomSub: Subscription;
@@ -309,7 +309,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   // 添加房屋请求
   public  addVacantRoomSureClick(data): void {
     if (data === '添加') {
-      const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'floor', 'roomCode', 'roomSize',  'roomType', 'roomStatus'];
+      const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'floor', 'roomCode', 'roomSize',  'roomType',];
       // @ts-ignore
       addRoomKeyList.forEach((val, index) => {
         this.keyRoomInfoList[index] = this.roomInfo[val] === undefined || this.roomInfo[val] === null || this.roomInfo[val] === '';
@@ -320,7 +320,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
         return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
       });
     } else {
-      const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'roomCode', 'roomSize', 'floor', 'roomType', 'roomStatus', 'startBillingTime', 'realRecyclingHomeTime'];
+      const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'roomCode', 'roomSize', 'floor', 'roomType', 'startBillingTime', 'realRecyclingHomeTime'];
       // @ts-ignore
       this.addroomVerifyStaus =  addRoomKeyList.some((v) => {
 

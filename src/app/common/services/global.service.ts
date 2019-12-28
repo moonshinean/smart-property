@@ -73,4 +73,9 @@ export class GlobalService {
   public  getChildrenRouter(pamars): Observable<any> {
     return this.http.post(environment.loginUrl + '/permission/findByParentCode', pamars);
   }
+
+//  查询支付方式
+  public  getPayMethods(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + '/setting/findPaymentMethod', pamars);
+  }
 }

@@ -99,7 +99,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     {field: 'remarks', header: '备注'},
   ];
   // 房屋添加检验
-  public keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false, false];
+  public keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false];
   public keyOwnerInfoList = [false, false, false, false, false];
   public ParkingSpaceList: any[] = [];
   public ownertableOption: any;
@@ -319,7 +319,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // sure add houser and owner info
   public  ownerSureClick(data): void {
-    const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'floor', 'roomCode', 'roomSize',  'roomType', 'roomStatus', 'startBillingTime', 'realRecyclingHomeTime'];
+    const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'floor', 'roomCode', 'roomSize',  'roomType', 'startBillingTime', 'realRecyclingHomeTime'];
     addRoomKeyList.forEach((v, index) => {
      this.keyRoomInfoList[index] = this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '';
    });
@@ -496,7 +496,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     if (this.ownerSelect === undefined || this.ownerSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
     } else {
-      this.toolSrv.setConfirmation('删除', `删除这${this.ownerSelect.length}项`, () => {
+      this.toolSrv.setConfirmation('删除', `删除所选房屋信息和业主信息`, () => {
         this.ownerSelect.forEach( v => {
           this.deleteId.push({roomCode: v.roomCode});
         });
@@ -690,7 +690,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       this.ownerSelect.forEach( v => {
        Logoutlist.push({roomCode: v.roomCode, customerUserId: v.customerUserId, identity: this.toolSrv.setLabelToValue(this.identityOption, v.identity)})
       });
-      this.toolSrv.setConfirmation('注销', `注销这${this.ownerSelect.length}项`, () => {
+      this.toolSrv.setConfirmation('注销', `注销选中的业主信息`, () => {
         this.owerSrv.logoutOwnerInfo({data: Logoutlist}).subscribe(
           value => {
             if (value.status === '1000') {

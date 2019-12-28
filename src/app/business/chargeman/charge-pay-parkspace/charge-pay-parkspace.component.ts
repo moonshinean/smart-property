@@ -10,8 +10,9 @@ import {ThemeService} from '../../../common/public/theme.service';
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 import {ChargePaymentService} from '../../../common/services/charge-payment.service';
 import {DataTree} from '../../../common/components/basic-dialog/dialog.model';
-import {AddSparkSpace, RentalAddSparkSpace} from '../../../common/model/charge-payment.model';
+import {AddSparkSpace, ChargePaymentAddOrder, RentalAddSparkSpace} from '../../../common/model/charge-payment.model';
 import {TreeNode} from '../../../common/model/shared-model';
+import {validate} from 'codelyzer/walkerFactory/walkerFn';
 
 @Component({
   selector: 'rbi-charge-pay-parkspace',
@@ -28,10 +29,14 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   public lincesePlateColorOption: any;
   public parkSpaceTypeOption: any;
   public parkSpacePlaceOption: any;
+  public paymentMethodOption: any;
   // 按钮权限相关
   public btnHiden = [
-    {label: '缴费', hidden: true},
+
     {label: '车位办理', hidden: true},
+    {label: '修改', hidden: true},
+    {label: '删除', hidden: true},
+    {label: '缴费', hidden: true},
     {label: '车位导入', hidden: true},
     {label: '搜索', hidden: true},
   ];
@@ -82,9 +87,46 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 输入缴费月数
+  public paymentMonth = 1;
+  public MonthDialog: boolean;
+  // 缴费信息
+  public paymentTotle: any;
+  public paymentMoney: any;
+  public Balance = 0;
+  public paymentOrderAdd: ChargePaymentAddOrder  = new ChargePaymentAddOrder();
+  public paymentAddTitle =  [
+    {name: '小区名称', value: '', label: 'villageName'},
+    {name: '地块名称', value: '', label: 'regionName'},
+    {name: '楼栋名称', value: '', label: 'buildingName'},
+    {name: '楼层', value: '', label: 'floor'},
+    {name: '车位编号', value: '', label: 'parkingSpaceCode'},
+    {name: '车位地点', value: '', label: 'parkingSpacePlace'},
+    {name: '车位类型', value: '', label: 'parkingSpaceType'},
+    {name: '车牌号', value: '', label: 'licensePlateNumber'},
+    {name: '车主姓名', value: '', label: 'authorizedPersonName'},
+    {name: '车主电话', value: '', label: 'authorizedPersonPhone'},
+    {name: '车主身份证', value: '', label: 'authorizedPersonIdNumber'},
+    {name: '车牌颜色', value: '', label: 'licensePlateColor'},
+    {name: '车牌类型', value: '', label: 'licensePlateType'},
+    {name: '原始车辆类型', value: '', label: 'vehicleOriginalType'},
+    {name: '项目名称', value: '', label: 'chargeName'},
+    {name: '收费标准', value: '', label: 'chargeStandard'},
+    {name: '收费单位', value: '', label: 'chargeUnit'},
+    {name: '缴费月数', value: '', label: 'datedif'},
+    {name: '折扣率', value: '', label: 'discount'},
+    {name: '项目类型', value: '', label: 'chargeType'},
+    {name: '开始时间', value: '', label: 'startTime'},
+    {name: '结束时间', value: '', label: 'dueTime'},
+  ];
+  public  parkSpaceData: RentalAddSparkSpace = new RentalAddSparkSpace();
+  // 打开链接列表
+  public openListDataPdf: any[] = [];
+  public openListLength: any;
   // 分页
   public option: any;
   public esDate: any;
+
   // 缴费相关
   public paymentParkSpaceDialog: any;
   constructor(
@@ -138,17 +180,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
         this.addParkSpace.parkingSpaceCode = this.SearchData.code;
       }
     }
-    this.toolSrv.getAdmStatus([
-      {settingType: 'LICENSE_PLATE_COLOR'}, {settingType: 'CWLX'},
-      {settingType: 'VEHICLE_ORIGINA_TYPE'}, {settingType: 'LICENSE_PLATE_TYPE'},
-      {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}], (data) => {
-      this.lincesePlateTypeOption = this.toolSrv.setListMap(data.LICENSE_PLATE_TYPE);
-      this.vehicleOriginaTypeOption = this.toolSrv.setListMap(data.VEHICLE_ORIGINA_TYPE);
-      this.lincesePlateColorOption = this.toolSrv.setListMap(data.LICENSE_PLATE_COLOR);
-      this.parkSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
-      this.parkSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
-      this.queryParrkSpacePaymentPage();
-    });
+    this.parkSpacePaymentInit();
     this.setBtnIsHidden();
   }
   ngOnDestroy(): void {
@@ -156,6 +188,31 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     this.themeSub.unsubscribe();
   }
 
+  public  parkSpacePaymentInit(): void {
+    this.toolSrv.getAdmStatus([
+      {settingType: 'LICENSE_PLATE_COLOR'}, {settingType: 'CWLX'},
+      {settingType: 'VEHICLE_ORIGINA_TYPE'}, {settingType: 'LICENSE_PLATE_TYPE'},
+      {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}, {settingType: 'PAEKING_SPACE_PLACE'},
+      {settingType: 'CWLX'}], (data) => {
+      this.lincesePlateTypeOption = this.toolSrv.setListMap(data.LICENSE_PLATE_TYPE);
+      this.vehicleOriginaTypeOption = this.toolSrv.setListMap(data.VEHICLE_ORIGINA_TYPE);
+      this.lincesePlateColorOption = this.toolSrv.setListMap(data.LICENSE_PLATE_COLOR);
+      this.parkSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
+      this.parkSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
+      this.queryParrkSpacePaymentPage();
+      this.globalSrv.getPayMethods({}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            this.paymentMethodOption = this.toolSrv.setListMap(value.data.PAYMENT_METHOD);
+          } else {
+            this.toolSrv.setToast('error', '支付方式查询错误', value.message);
+          }
+        }
+      );
+
+    });
+  }
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
     this.optionSpackTable = {
@@ -164,7 +221,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
         data:  [
           {field: 'parkingSpaceCode', header: '车位编号'},
           {field: 'contractNumber', header: '合同编号'},
-          {field: 'roomSize', header: '房屋面积'},
           {field: 'authorizedPersonName', header: '车主姓名'},
           {field: 'authorizedPersonPhone', header: '车主电话'},
           {field: 'authorizedPersonIdNumber', header: '车主身份证号'},
@@ -244,8 +300,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     if (this.paymentParkSpaceSelect === undefined || this.paymentParkSpaceSelect.length === 0) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要缴费的项');
     } else if (this.paymentParkSpaceSelect.length === 1) {
-      this.calcParkSpaceFree(this.paymentParkSpaceSelect[0].parkingSpaceCode);
-      this.paymentParkSpaceDialog = true;
+       this.MonthDialog = true;
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行缴费');
     }
@@ -265,54 +320,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // show detail dialog (展示详情弹窗)
   public  detailClick(e): void {
-    if (e.parkingSpaceManagementDOS.length !== 0) {
-      this.dialogOption = {
-        dialog: true,
-        tableHidden: true,
-        width: '1000',
-        type: 1,
-        title: '详情',
-        poplist: {
-          popContent: e,
-          popTitle:  [
-            {field: 'villageName', header: '小区名称'},
-            {field: 'regionName', header: '地块名称'},
-            {field: 'buildingName', header: '楼栋名称'},
-            {field: 'unitName', header: '单元名称'},
-            {field: 'roomCode', header: '房间编号'},
-            {field: 'roomSize', header: '建筑面积'},
-            {field: 'roomType', header: '房间类型'},
-            {field: 'surname', header: '客户名称'},
-            {field: 'sex', header: '客户性别'},
-            {field: 'idNumber', header: '身份证号'},
-            {field: 'mobilePhone', header: '客户电话'},
-            {field: 'dueTime', header: '物业费到期时间'},
-            {field: 'surplus', header: '预存金额'},
-            {field: 'prepaidAmount', header: '预缴金额'},
-            {field: 'minMonth', header: '欠费月数'},
-          ],
-        },
-        tablelist: {
-          width: '102%',
-          tableHeader: {
-            data: [
-              {field: 'buildingName', header: '楼栋名称'},
-              {field: 'roomCode', header: '房间编号'},
-              {field: 'parkingSpaceCode', header: '车位编号'},
-              {field: 'authorizedPersonName', header: '车主姓名'},
-              {field: 'authorizedPersonPhone', header: '车主电话'},
-              {field: 'remarks', header: '备注'},
-            ],
-            style: {background: '#F4F4F4', color: '#000', height: '6vh'}
-          },
-          tableContent: {
-            data: e.parkingSpaceManagementDOS,
-            styleone: {background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
-            styletwo: {background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
-          }
-        }
-      };
-    } else {
+      console.log(123);
       this.dialogOption = {
         dialog: true,
         tableHidden: false,
@@ -322,25 +330,22 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
         poplist: {
           popContent: e,
           popTitle: [
-            {field: 'villageName', header: '小区名称'},
-            {field: 'regionName', header: '地块名称'},
-            {field: 'buildingName', header: '楼栋名称'},
-            {field: 'unitName', header: '单元名称'},
-            {field: 'roomCode', header: '房间编号'},
-            {field: 'roomSize', header: '建筑面积'},
-            {field: 'roomType', header: '房间类型'},
-            {field: 'surname', header: '客户名称'},
-            {field: 'sex', header: '客户性别'},
-            {field: 'idNumber', header: '身份证号'},
-            {field: 'mobilePhone', header: '客户电话'},
-            {field: 'dueTime', header: '物业费到期时间'},
-            {field: 'surplus', header: '预存金额'},
-            {field: 'prepaidAmount', header: '预缴金额'},
-            {field: 'minMonth', header: '欠费月数'},
+            {field: 'parkingSpaceCode', header: '车位编号'},
+            {field: 'contractNumber', header: '合同编号'},
+            {field: 'floor', header: '楼层'},
+            {field: 'parkingSpacePlace', header: '车位地点'},
+            {field: 'parkingSpaceType', header: '车位类型'},
+            {field: 'authorizedPersonName', header: '车主姓名'},
+            {field: 'authorizedPersonPhone', header: '车主电话'},
+            {field: 'authorizedPersonIdNumber', header: '车主身份证号'},
+            {field: 'licensePlateNumber', header: '车牌号'},
+            {field: 'startTime', header: '开始时间'},
+            {field: 'dueTime', header: '结束时间'},
+            {field: 'licensePlateColor', header: '车牌颜色'},
+            {field: 'vehicleOriginalType', header: '车辆原始类型'},
           ],
         }
       };
-    }
   }
   // 设置按钮显示权限
   public  setBtnIsHidden(): void {
@@ -360,12 +365,8 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // 车位办理
   public  addParkSpaceClick(): void {
-
     this.addParkSpaceOptionDialog = true;
   }
-  // public  dataTreeClick(): void {
-  //     this.treeDialog = true;
-  // }
   // 导入车位文件
   public importParkplaceFilesClick(): void {
     this.UploadFileOption.width = '800';
@@ -419,11 +420,86 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   public paymentParkSpaceSureClick(): void {
     console.log('确认');
     console.log(this.paymentParkSpaceSelect);
+    if (this.paymentOrderAdd.paymentMethod === undefined) {
+      this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
+    } else {
+      const listKey = ['organizationId', 'villageName',
+        'villageCode', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode',
+        'unitName', 'roomCode', 'roomSize', 'surname', 'mobilePhone', 'idNumber',
+        'customerUserId'];
+      for (const key of listKey) {
+        if (key === 'roomSize') {
+           this.paymentOrderAdd[key] = 0;
+        } else {
+          this.paymentOrderAdd[key] = this.parkSpaceData[key];
+        }
+      }
+      this.paymentOrderAdd.oneMonthPropertyFee = 0;
+      this.paymentOrderAdd.surname = this.parkSpaceData.authorizedPersonName;
+      this.paymentOrderAdd.mobilePhone = this.parkSpaceData.authorizedPersonPhone;
+      this.paymentOrderAdd.idNumber = this.parkSpaceData.authorizedPersonIdNumber;
+      this.paymentOrderAdd.payerPhone = this.paymentOrderAdd.payerPhone === undefined ? '' : this.paymentOrderAdd.payerPhone;
+      this.paymentOrderAdd.payerName = this.paymentOrderAdd.payerName === undefined ? '' : this.paymentOrderAdd.payerName;
+      this.paymentOrderAdd.remark = this.paymentOrderAdd.remark === undefined ? '' : this.paymentOrderAdd.remark;
+      this.paymentOrderAdd.amountTotalReceivable = this.paymentTotle;
+      this.paymentOrderAdd.actualTotalMoneyCollection = this.paymentMoney;
+      this.paymentOrderAdd.billDetailedDOArrayList = [];
+
+      this.parkSpaceData.parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, this.parkSpaceData.parkingSpaceType);
+      this.parkSpaceData.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption, this.parkSpaceData.vehicleOriginalType);
+      this.parkSpaceData.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, this.parkSpaceData.licensePlateType);
+      this.parkSpaceData.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, this.parkSpaceData.licensePlateColor);
+      this.parkSpaceData.parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, this.parkSpaceData.parkingSpacePlace);
+      this.paymentOrderAdd.parkingSpaceCostDetailDOList = [];
+      this.paymentOrderAdd.parkingSpaceCostDetailDOList.push(this.parkSpaceData);
+
+      // console.log(this.parkSpaceData);
+      // this.paymentOrderAdd.parkingSpaceCostDetailDOList = this.paymentParkSpaceSelect.map(v => {
+      //   v.parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, v.parkingSpaceType);
+      //   v.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption, v.vehicleOriginalType);
+      //   v.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, v.licensePlateType);
+      //   v.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, v.licensePlateColor);
+      //   v.parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, v.parkingSpacePlace);
+      //   return v;
+      // });
+      this.paymentOrderAdd.costDeduction = [];
+      this.paymentOrderAdd.correctedAmount = this.Balance;
+      console.log(this.paymentOrderAdd);
+      this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
+        (value) => {
+          if (value.status === '1000') {
+            this.confirmationService.confirm({
+              message: `是否打印单据吗？`,
+              header: '缴费成功',
+              icon: 'pi pi-exclamation-triangle',
+              accept: () => {
+                this.openListLength = value.data.length;
+                value.data.forEach(v => {
+                  this.printBillDetail(v.orderId, v.organizationId);
+                  this.paymentParkSpaceDialog = false;
+                  this.paymentParkSpaceSelect = [];
+                  this.parkSpacePaymentInit();
+                });
+              },
+              reject: () => {
+                this.paymentParkSpaceDialog = false;
+                this.paymentParkSpaceSelect = [];
+                this.parkSpacePaymentInit();
+              }
+            });
+          } else {
+            this.toolSrv.setToast('error', '请求错误', value.message);
+          }
+        }
+      );
+    }
   }
   // 取消缴费
   public paymentParkSpaceFaleseClick(): void {
     console.log('取消');
     this.paymentParkSpaceDialog = false;
+    this.paymentParkSpaceSelect = [];
+    this.addParkSpace = new AddSparkSpace();
   }
   // // 树结构选择
   // public dataTreeSureClick(): void {
@@ -447,7 +523,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
         this.paymentSrv.deletePaymentParksplace({data: deleteList}).subscribe(
           value => {
             if (value.status === '1000') {
-              this.paymentSearchClick();
+              this.parkSpacePaymentInit();
               this.paymentParkSpaceSelect = [];
             } else {
               this.toolSrv.setToast('error', '删除失败', value.message);
@@ -458,16 +534,19 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     }
   }
 
- // 修改车位
- public  modifyParkSpaceClick(): void {
+  // 修改车位
+  public  modifyParkSpaceClick(): void {
    if (this.paymentParkSpaceSelect === undefined || this.paymentParkSpaceSelect.length === 0) {
      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
    } else if (this.paymentParkSpaceSelect.length === 1) {
-     const list = ['parkingSpaceManagementId', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
-       'vehicleOriginalType', 'startTime'];
-     list.forEach(value => {
-       this.addParkSpace[value] = this.paymentParkSpaceSelect[0][value];
-     });
+     for (let key in this.paymentParkSpaceSelect[0]) {
+       this.addParkSpace[key] = this.paymentParkSpaceSelect[0][key];
+     }
+     // const list = ['parkingSpaceManagementId', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
+     //   'vehicleOriginalType', 'startTime'];
+     // list.forEach(value => {
+     //
+     // });
      this.addParkSpace.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption,  this.addParkSpace.licensePlateColor);
      this.addParkSpace.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption,  this.addParkSpace.licensePlateType);
      this.addParkSpace.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption,  this.addParkSpace.vehicleOriginalType);
@@ -523,6 +602,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
               this.modifyParkSpaceOptionDialog = false;
               this.addParkSpace = new AddSparkSpace();
               this.paymentParkSpaceSelect = [];
+              this.parkSpacePaymentInit();
             } else {
               this.toolSrv.setToast('error', '请求失败', value.message);
             }
@@ -533,11 +613,69 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     }
   }
 
-  public  calcParkSpaceFree(code): void {
-      this.paymentSrv.calculateParksplaceFree({parkingSpaceCode: code}).subscribe(
+  public  calcParkSpaceFree(code, month): void {
+      this.paymentSrv.calculateParksplaceFree({parkingSpaceCode: code, datedif: month}).subscribe(
         value => {
           console.log(value);
+          if (value.status === '1000') {
+            this.parkSpaceData = value.data;
+            value.data.licensePlateColor = this.toolSrv.setValueToLabel(this.lincesePlateColorOption,  value.data.licensePlateColor);
+            value.data.licensePlateType = this.toolSrv.setValueToLabel(this.lincesePlateTypeOption,  value.data.licensePlateType);
+            value.data.vehicleOriginalType = this.toolSrv.setValueToLabel(this.vehicleOriginaTypeOption,  value.data.vehicleOriginalType);
+            value.data.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption,  value.data.parkingSpacePlace);
+            value.data.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption,  value.data.parkingSpaceType);
+            this.paymentAddTitle.forEach( v => {
+              v.value = value.data[v.label];
+            });
+
+            this.paymentTotle = value.data.amountReceivable;
+            this.paymentMoney = value.data.actualMoneyCollection;
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
+          }
         }
       );
+  }
+ // 缴费
+ public payParkSpaceSureClick(): void {
+    if (this.paymentMonth !== null) {
+      this.calcParkSpaceFree(this.paymentParkSpaceSelect[0].parkingSpaceCode, this.paymentMonth);
+      this.paymentParkSpaceDialog = true;
+      this.MonthDialog = false;
+    }else {
+      this.toolSrv.setToast('error', '操作错误', '请输入缴费月数');
+    }
+ }
+  // Calculated amount (计算金额)
+  public getBalance(e): void {
+    this.Balance = parseFloat(( e.target.value - this.paymentTotle).toFixed(2));
+  }
+
+  // 打印单据
+  public printBillDetail(orderIdData, organizationIdData): void {
+    // const newWindow = window.open();
+    // console.log(123);
+    this.paymentSrv.getPayDocument({orderId: orderIdData, organizationId: organizationIdData}).subscribe(
+      (data) => {
+        console.log(data);
+        if (data.status === '1000') {
+          if (data.data !== '' && data.data !== null) {
+            this.openListDataPdf.push(data.data);
+            console.log(this.openListDataPdf);
+            if (this.openListDataPdf.length === this.openListLength) {
+              this.openListDataPdf.forEach( (v, index) => {
+                window.open(v, index.toString());
+              });
+              this.parkSpacePaymentInit();
+              this.paymentParkSpaceDialog = false;
+            }
+          } else {
+            this.toolSrv.setToast('error', '操作失败', '数据为空');
+          }
+        } else {
+          this.toolSrv.setToast('error', '请求失败', data.message);
+        }
+      }
+    );
   }
 }

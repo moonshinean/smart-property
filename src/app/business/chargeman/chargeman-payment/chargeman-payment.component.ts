@@ -256,7 +256,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   // Initialize the charge record（初始化收费记录）
   public  paymentInitialization(): void {
      this.esDate = this.toolSrv.esDate;
-     this.toolSrv.getAdmStatus([{settingType: 'PAYMENT_METHOD'},
+     this.toolSrv.getAdmStatus([
       {settingType: 'ROOM_TYPE'}, {settingType: 'SEX'}, {settingType: 'IDENTITY'},
        {settingType: 'LICENSE_PLATE_COLOR'}, {settingType: 'DATEDIF'}, {settingType: 'CWLX'},
        {settingType: 'VEHICLE_ORIGINA_TYPE'}, {settingType: 'LICENSE_PLATE_TYPE'},
@@ -264,7 +264,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
        this.lincesePlateTypeOption = this.toolSrv.setListMap(data.LICENSE_PLATE_TYPE);
        this.vehicleOriginaTypeOption = this.toolSrv.setListMap(data.VEHICLE_ORIGINA_TYPE);
        this.roomTypeOption = this.toolSrv.setListMap(data.ROOM_TYPE);
-       this.paymentMethodOption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
+       // this.paymentMethodOption = this.toolSrv.setListMap(data.PAYMENT_METHOD);
        this.sexOption = this.toolSrv.setListMap(data.SEX);
        this.identityOption = this.toolSrv.setListMap(data.IDENTITY);
        this.lincesePlateColorOption = this.toolSrv.setListMap(data.LICENSE_PLATE_COLOR);
@@ -272,6 +272,16 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
        this.parkSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
        this.parkSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
        this.queryPaymentPage();
+       this.globalSrv.getPayMethods({}).subscribe(
+         value => {
+           console.log(value);
+           if (value.status === '1000') {
+             this.paymentMethodOption = this.toolSrv.setListMap(value.data.PAYMENT_METHOD);
+           } else {
+             this.toolSrv.setToast('error', '支付方式查询错误', value.message);
+           }
+         }
+       );
     });
     // this.paymentTableTitleStyle = { background: '#282A31', color: '#DEDEDE', height: '6vh'};
   }
@@ -353,6 +363,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
             console.log(value);
             this.setPaymentList(value);
             this.paymentTotle = value.data.amountTotalReceivable;
+            this.paymentActualTotal = value.data.actualTotalMoneyCollection;
             this.paymentReceivableTotle = value.data.actualTotalMoneyCollection;
             this.paymentMoney = value.data.actualTotalMoneyCollection;
           } else {
@@ -583,6 +594,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.rentalHiddenInfo = true;
     this.paymentItemData = [];
     this.paymentTotle = 0;
+    this.paymentActualTotal = 0;
     this.payItemDetail = new ChargeItemData();
     this.paymentOrderAdd = new ChargePaymentAddOrder();
     this.Balance = 0;
@@ -841,12 +853,17 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     });
     this.paymentSrv.getTotalBalace({parkingSpaceCostDetailDOList: this.parkSpaceData, costDeduction: this.deductionDamagesData, billDetailedDOArrayList: this.paymentItemData, actualTotalMoneyCollection: this.paymentMoney}).subscribe(
       value => {
-        console.log(value);
+
         if (value.status === '1000') {
            this.setPaymentList(value);
            this.paymentMoney = value.data.actualTotalMoneyCollection;
            this.paymentTotle = value.data.amountTotalReceivable;
+           this.paymentActualTotal = value.data.actualTotalMoneyCollection;
+           this.paymentReceivableTotle = value.data.actualTotalMoneyCollection;
            this.toolSrv.setToast('success', '计费成功', value.message);
+           this.Balance = 0;
+           console.log( this.paymentActualTotal);
+           console.log( this.paymentTotle);
         } else {
           this.toolSrv.setToast('error', '请求失败', value.message);
           if (this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus !== undefined) {

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {HomeService} from '../../common/services/home.service';
 import {ActivatedRoute} from '@angular/router';
 import {LocalStorageService} from '../../common/services/local-storage.service';
@@ -14,7 +14,7 @@ import {UpdateTreeService} from '../../common/public/update-tree.service';
 @Component({
   selector: 'rbi-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.less']
+  styleUrls: ['./home.component.less'],
 })
 export class HomeComponent implements OnInit {
   @ViewChild('mainStyle') mainStyle: Element;
@@ -72,6 +72,8 @@ export class HomeComponent implements OnInit {
         // if(value ==)
         console.log(value);
         this.getTreeData();
+        this.getBusinessTreeData();
+        this.getParkSpaceTreeData();
       }
     );
   }
@@ -291,8 +293,10 @@ export class HomeComponent implements OnInit {
 
   // 获取树结构的数据
   public  getTreeData(): void {
+    console.log(123);
     this.globalSrv.queryTVillageTree().subscribe(
       value => {
+        console.log(value);
         if (value.status === '1000') {
           this.roomtree = value.data;
           this.dataTrees = this.initializeTree(this.roomtree);

@@ -302,6 +302,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
   public  nowpageEventHandle(event: any): void {
     this.loadHidden = false;
     this.nowPage = event;
+    this.staffSelect = [];
     if (this.searchInputData !== '') {
       this.nowPage = 1;
       this.queryStaffInfoByRealName();

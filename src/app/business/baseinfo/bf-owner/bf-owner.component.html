@@ -123,31 +123,31 @@
           <span [hidden]="!this.keyRoomInfoList[7]">此字段为必选字段</span>
         </div>
       </div>
-      <div class="ui-g-6"  [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[8]}">
-        <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>房屋状态：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" placeholder="请选择房间状态..." [(ngModel)]="roomInfo.roomStatus" (onChange)="changeInput(roomInfo.roomStatus, 8)"></p-dropdown>
-          <span [hidden]="!this.keyRoomInfoList[8]">此字段为必选字段</span>
-        </div>
-      </div>
-      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[9]}">
+<!--      <div class="ui-g-6"  [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[8]}">-->
+<!--        <div class="ui-g-4 right">-->
+<!--          <label ><span style="color: red">*</span>房屋状态：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
+<!--          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" placeholder="请选择房间状态..." [(ngModel)]="roomInfo.roomStatus" (onChange)="changeInput(roomInfo.roomStatus, 8)"></p-dropdown>-->
+<!--          <span [hidden]="!this.keyRoomInfoList[8]">此字段为必选字段</span>-->
+<!--        </div>-->
+<!--      </div>-->
+      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[8]}">
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>物业费开始计费时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2010" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 9)"></p-calendar>
-          <span [hidden]="!this.keyRoomInfoList[9]">此字段为必填字段</span>
+          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2010" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 8)"></p-calendar>
+          <span [hidden]="!this.keyRoomInfoList[8]">此字段为必填字段</span>
         </div>
       </div>
-      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[10]}">
+      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[9]}">
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>实际交房时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2130" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 10)"></p-calendar>
-          <span [hidden]="!this.keyRoomInfoList[10]">此字段为必填字段</span>
+          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2130" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 9)"></p-calendar>
+          <span [hidden]="!this.keyRoomInfoList[9]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6">

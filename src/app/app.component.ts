@@ -8,6 +8,10 @@ import {LocalStorageService} from './common/services/local-storage.service';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent implements OnInit {
+  constructor(
+    private toolSrv: PublicMethedService,
+  ) {}
   ngOnInit(): void {
+    this.toolSrv.changeTheme('green');
   }
 }

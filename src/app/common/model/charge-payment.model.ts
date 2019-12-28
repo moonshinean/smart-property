@@ -71,11 +71,13 @@ export class ChargePaymentAddOrder {
   userId?: any; // 组织id
   surname?: any; // 业主姓名
   mobilePhone?: any; // 客户电话
+  idNumber?: any; // 身份证号
   payerPhone?: any; // 付款人电话
   payerName?: any; // 付款人姓名
   paymentMethod?: any; // 付款方式
   amountTotalReceivable?: any; // 总应收金额
   actualTotalMoneyCollection?: any; // 总实收金额
+  oneMonthPropertyFee?: any;
   surplus?: any; // 修正金额
   correctedAmount?: any; // 修正金额
   remark?: any; // 备注
