@@ -14,13 +14,13 @@
         <img class="bf-tenant-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 bf-tenant-header-btn bf-tenant-header-btn-delete" (click)="tenantDeleteClick()" [hidden]="btnHiden[2].hidden">
-        <img class="bf-tenant-header-img" src="assets/images/ic_delete.png" alt="">
-        <span>删 除</span>
-      </div>
-      <div class="ui-g-1 bf-tenant-header-btn bf-tenant-header-btn-Logout" (click)="tenantLogoutClick()" [hidden]="btnHiden[3].hidden">
+      <div class="ui-g-1 bf-tenant-header-btn bf-tenant-header-btn-Logout" (click)="tenantLogoutClick()" [hidden]="btnHiden[2].hidden">
         <img class="bf-tenant-header-img" src="assets/images/ic_delete.png" alt="">
         <span>注 销</span>
+      </div>
+      <div class="ui-g-1 bf-tenant-header-btn bf-tenant-header-btn-delete" (click)="tenantDeleteClick()" [hidden]="btnHiden[3].hidden">
+        <img class="bf-tenant-header-img" src="assets/images/ic_delete.png" alt="">
+        <span>删 除</span>
       </div>
       <div class="ui-g-1 bf-tenant-header-btn bf-owner-header-btn-import" (click)="AddMoreClick()" [hidden]="btnHiden[4].hidden">
         <img class="bf-tenant-header-img" src="assets/images/ic_add.png" alt="">
@@ -47,7 +47,6 @@
       (detail)="tenantDetailClick($event)">
     </rbi-check-table-btn>
   </div>
-  <!--详情弹窗-->
   <!--详情弹窗-->
   <p-dialog header="详细信息" [(visible)]="tenantDetailDialog" [width]="1100" class="tenant-detail">
     <!--Content-->
@@ -86,7 +85,7 @@
       </div>
     </p-footer>
   </p-dialog>
-  <!--业主资料-->
+  <!--租客添加-->
   <p-dialog header="租客添加" [(visible)]="tenantDialog" [width]="900">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
@@ -132,7 +131,7 @@
           <label ><span style="color: red">*</span>租房开始时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="tenantinfo.startTime" placeholder="请选择租房开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.startTime, 4)"></p-calendar>
+          <p-calendar [(ngModel)]="tenantinfo.startTime" placeholder="请选择租房开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(tenantinfo.startTime, 4)"></p-calendar>
           <span [hidden]="!this.keyTenantInfoList[4]">此字段为必填字段</span>
         </div>
       </div>
@@ -141,7 +140,7 @@
           <label ><span style="color: red">*</span>租房结束时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="tenantinfo.endTime" placeholder="请选择租房结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.endTime, 5)"></p-calendar>
+          <p-calendar [(ngModel)]="tenantinfo.endTime" placeholder="请选择租房结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(tenantinfo.endTime, 5)"></p-calendar>
           <span [hidden]="!this.keyTenantInfoList[5]">此字段为必填字段</span>
         </div>
       </div>
@@ -161,6 +160,7 @@
       </div>
     </p-footer>
   </p-dialog>
+  <!--租客修改-->
   <p-dialog header="租客修改" [(visible)]="tenantModifyDialog" [width]="900">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
@@ -205,7 +205,7 @@
           <label ><span style="color: red">*</span>租房开始时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="tenantinfo.startTime" [placeholder]="tenantinfo.startTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.startTime, 4)"></p-calendar>
+          <p-calendar [(ngModel)]="tenantinfo.startTime" [placeholder]="tenantinfo.startTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(tenantinfo.startTime, 4)"></p-calendar>
           <span [hidden]="!this.keyTenantInfoList[3]">此字段为必填字段</span>
         </div>
       </div>
@@ -214,7 +214,7 @@
           <label ><span style="color: red">*</span>租房结束时间 ：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="tenantinfo.endTime" [placeholder]="tenantinfo.endTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate" (onBlur)="changeInput(tenantinfo.endTime, 5)"></p-calendar>
+          <p-calendar [(ngModel)]="tenantinfo.endTime" [placeholder]="tenantinfo.endTime" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(tenantinfo.endTime, 5)"></p-calendar>
           <span [hidden]="!this.keyTenantInfoList[5]">此字段为必填字段</span>
         </div>
       </div>
@@ -234,7 +234,7 @@
       </div>
     </p-footer>
   </p-dialog>
-
+  <!--租客信息导出-->
   <p-dialog header="租客信息导出" [(visible)]="downtenantInfoDialog" [width]="600" >
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-8">
@@ -254,7 +254,6 @@
     </p-footer>
   </p-dialog>
   <!--文件上传-->
-<!--  <button class="bf-tenant-dialog-Btn bf-tenant-bottom-Btn" (click)="AddMoreClick()" >批量导入</button>-->
   <rbi-file-pop [UploadFileOption]="UploadFileOption" (event)="tenantUploadSureClick($event)"></rbi-file-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>

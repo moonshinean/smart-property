@@ -48,39 +48,39 @@
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >楼层：</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceAdd.floor">
+          <input type="number" pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceAdd.floor">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*车位地点：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位地点：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown [options]="parkSpacePlaceOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceAdd.parkingSpacePlace"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*车位编号：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位编号：</label>
         </div>
         <div class="ui-g-8">
           <input type="text" pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceAdd.parkingSpaceCode">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*车位性质：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位性质：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown [options]="parkSpaceNatureOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceAdd.parkingSpaceNature"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >车位面积：</label>
         </div>
         <div class="ui-g-8">
@@ -88,27 +88,27 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*车位类型：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位类型：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown [options]="parkSpaceTypeOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceAdd.parkingSpaceType"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*车位容车数量：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位容车数量：</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceAdd.vehicleCapacity">
+          <input type="number" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceAdd.vehicleCapacity">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >当前数量：</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceAdd.currentCapacity">
+          <input type="number" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceAdd.currentCapacity">
         </div>
       </div>
     </div>
@@ -124,7 +124,7 @@
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >小区：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -132,7 +132,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label>地块：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -140,7 +140,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >车位楼层：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -148,7 +148,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >车位编号：</label>
         </div>
         <div class="ui-g-8">
@@ -156,7 +156,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >车位地点：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -164,7 +164,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >车位性质：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -172,7 +172,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >车位面积：</label>
         </div>
         <div class="ui-g-8">
@@ -180,7 +180,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >车位类型：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -188,7 +188,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >车位容车数量：</label>
         </div>
         <div class="ui-g-8">
@@ -196,7 +196,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >车位当前容车数量：</label>
         </div>
         <div class="ui-g-8">

@@ -132,6 +132,7 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   }
   // Initialize latetotle data
   public  latetotleInitialization(): void {
+    console.log(123);
     this.queryData();
   }
 

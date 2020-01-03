@@ -82,6 +82,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   public addroomVerifyStaus: any;
 
   public keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false];
+  public keyOwnerInfoList = [false, false, false, false, false];
   // 选择日期相关
   public esDate: any;
   public vacantRoomSub: Subscription;
@@ -316,11 +317,13 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
       });
       console.log(this.keyRoomInfoList);
       this.addroomVerifyStaus =  addRoomKeyList.some((v) => {
-
         return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
       });
     } else {
-      const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'roomCode', 'roomSize', 'floor', 'roomType', 'startBillingTime', 'realRecyclingHomeTime'];
+      const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'floor', 'roomCode', 'roomSize',  'roomType', 'startBillingTime', 'realRecyclingHomeTime'];
+      addRoomKeyList.forEach((val, index) => {
+        this.keyRoomInfoList[index] = this.roomInfo[val] === undefined || this.roomInfo[val] === null || this.roomInfo[val] === '';
+      });
       // @ts-ignore
       this.addroomVerifyStaus =  addRoomKeyList.some((v) => {
 
@@ -337,6 +340,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
             return v;
           });
         }
+        this.roomInfo.villageName = this.toolSrv.setValueToLabel(this.villageOption, this.roomInfo.villageName);
         this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length);
         this.roomInfo.startBillingTime = this.datePipe.transform(this.roomInfo.startBillingTime, 'yyyy-MM-dd');
         this.roomInfo.realRecyclingHomeTime = this.datePipe.transform(this.roomInfo.realRecyclingHomeTime, 'yyyy-MM-dd');
@@ -373,20 +377,22 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   public  owerInfoClick(): void {
     console.log(this.ownerinfo);
     const ownerVertifyKeylist = ['surname', 'idNumber', 'mobilePhone', 'identity', 'normalPaymentStatus'];
+    ownerVertifyKeylist.forEach((v, index) => {
+      this.keyOwnerInfoList[index] = this.ownerinfo[v] === '' || this.ownerinfo[v] === undefined || this.ownerinfo[v] === null;
+    });
     const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
       return (this.ownerinfo[v] !== '' && this.ownerinfo[v] !== undefined && this.ownerinfo[v] !== null);
     });
     if (ownerInfoStatus) {
-      // if (this.toolSrv.verifyPhone.test(this.ownerinfo.mobilePhone)) {
-      //    if (this.toolSrv.verifyIdNumber.test(this.ownerinfo.idNumber)) {
-      this.ownerInfoSetValueToOwnerList();
-      //    } else {
-      //      this.toolSrv.setToast('error', '添加失败', '请输入正确的身份证号');
-      //    }
-      // } else {
-      //   this.toolSrv.setToast('error', '添加失败', '请输入正确的手机号');
-      // }
-
+      if (this.toolSrv.verifyPhone.test(this.ownerinfo.mobilePhone)) {
+         if (this.toolSrv.verifyIdNumber.test(this.ownerinfo.idNumber)) {
+           this.ownerInfoSetValueToOwnerList();
+         } else {
+           this.toolSrv.setToast('error', '添加失败', '请输入正确的身份证号');
+         }
+      } else {
+        this.toolSrv.setToast('error', '添加失败', '请输入正确的手机号');
+      }
     } else {
       this.toolSrv.setToast('error', '添加失败', '信息未填写完整');
     }
@@ -395,10 +401,6 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   // 将添加的业主信息set到业主列表中
   public  ownerInfoSetValueToOwnerList(): void {
     // 将业主信息状态转换为可以别的中文格式
-    // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
-    // this.roomInfo.realRecyclingHomeTime = this.datePipe.transform( this.roomInfo.realRecyclingHomeTime , 'yyyy-MM-dd');
-    // 、this.roomInfo.startBillingTime = this.datePipe.transform( this.roomInfo.startBillingTime , 'yyyy-MM-dd');
-    // this.roomInfo.renovationDeadline = this.datePipe.transform( this.roomInfo.renovationDeadline , 'yyyy-MM-dd');
     this.ownerinfo.identity = this.toolSrv.setValueToLabel(this.identityOption, this.ownerinfo.identity);
     this.ownerinfo.normalPaymentStatus = this.toolSrv.setValueToLabel(this.normalChargeOption, this.ownerinfo.normalPaymentStatus);
     // 添加业主信息到列表中
@@ -428,6 +430,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
     });
   }
 
+  // 导出文件点击判断
   public  importVacantRoomClick(): void {
       if (this.SearchData.code !== '' || this.SearchData.level !== '') {
          this.importExcalOfVacantRoom();
@@ -447,5 +450,10 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
           }
         }
       );
+  }
+  // 清除和输出化数据
+  public  clearData(): void {
+    this.keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false];
+    this.vacantRoomSelect = [];
   }
 }

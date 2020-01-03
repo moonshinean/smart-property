@@ -518,13 +518,13 @@ export class RefundInfoComponent implements OnInit, OnDestroy {
   // paging query
   public nowpageEventHandle(event: any): void {
     this.loadHidden = false;
-    this.nowPage = event;
+    this.nowPage = this.SearchData.pageNo = event;
     this.selectSearchType();
   }
   public queryPageData(): void {
     this.infoSrv.queryRefundInfoPage(this.SearchData).subscribe(
       val => {
-        // console.log(val);
+        console.log(val);
         this.loadHidden = true;
         if (val.status === '1000') {
             val.data.contents.forEach( v => {

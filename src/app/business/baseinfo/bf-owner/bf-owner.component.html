@@ -14,24 +14,24 @@
         <img class="bf-owner-header-img bf-owner-header-img-modify" src="assets/images/ic_modify.png" alt="">
         <span>修 改</span>
       </div>
-      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-delete" (click)="ownerDeleteClick()" [hidden]="btnHiden[2].hidden">
+      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-Logout" style="width: 7vw" (click)="logoutClick()" [hidden]="btnHiden[2].hidden">
         <img class="bf-owner-header-img" src="assets/images/ic_delete.png" alt="">
-        <span>删 除</span>
+        <span>注 销 业 主</span>
       </div>
-      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-Logout" (click)="logoutClick()" [hidden]="btnHiden[3].hidden">
+      <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-delete" style="width: 7vw" (click)="ownerDeleteClick()" [hidden]="btnHiden[3].hidden">
         <img class="bf-owner-header-img" src="assets/images/ic_delete.png" alt="">
-        <span>注 销</span>
+        <span>删 除 房 间</span>
       </div>
+
       <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-import" (click)="addMoreFileClick()" [hidden]="btnHiden[4].hidden">
         <img class="bf-owner-header-img" src="assets/images/ic_add.png" alt="">
         <span>导 入</span>
       </div>
       <div class="ui-g-1 bf-owner-header-btn bf-owner-header-btn-import" (click)="importOutFileClick()" [hidden]="btnHiden[5].hidden">
-<!--        <img class="bf-owner-header-img" src="assets/images/ic_add.png" alt="">-->
         <span>导 出</span>
       </div>
     </div>
-    <!--//搜索-->
+    <!--搜索-->
     <div class="ui-inputgroup bf-owner-header-search" *ngIf="!btnHiden[6].hidden">
       <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选查看范围..." (onChange)="searchTypeChange()" [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
       <input type="text" pInputText placeholder="请输入需要搜索的值" [(ngModel)]="inputSearchData" >
@@ -49,7 +49,6 @@
   </div>
   <!--增加弹窗-->
   <p-dialog header="房屋添加" [(visible)]="ownerAddDialog" [width]="1100" [closable]="false">
-    <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[0]}">
         <div class="ui-g-4 right">
@@ -123,21 +122,12 @@
           <span [hidden]="!this.keyRoomInfoList[7]">此字段为必选字段</span>
         </div>
       </div>
-<!--      <div class="ui-g-6"  [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[8]}">-->
-<!--        <div class="ui-g-4 right">-->
-<!--          <label ><span style="color: red">*</span>房屋状态：</label>-->
-<!--        </div>-->
-<!--        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-<!--          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" placeholder="请选择房间状态..." [(ngModel)]="roomInfo.roomStatus" (onChange)="changeInput(roomInfo.roomStatus, 8)"></p-dropdown>-->
-<!--          <span [hidden]="!this.keyRoomInfoList[8]">此字段为必选字段</span>-->
-<!--        </div>-->
-<!--      </div>-->
       <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[8]}">
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>物业费开始计费时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2010" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 8)"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 8)"></p-calendar>
           <span [hidden]="!this.keyRoomInfoList[8]">此字段为必填字段</span>
         </div>
       </div>
@@ -146,7 +136,7 @@
           <label ><span style="color: red">*</span>实际交房时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2130" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 9)"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 9)"></p-calendar>
           <span [hidden]="!this.keyRoomInfoList[9]">此字段为必填字段</span>
         </div>
       </div>
@@ -164,7 +154,7 @@
           <label >装修开始日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" ></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" ></p-calendar>
         </div>
       </div>
       <div class="ui-g-6" [hidden]="timeHide">
@@ -172,7 +162,7 @@
           <label >装修结束日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" ></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" ></p-calendar>
         </div>
       </div>
       <div class="ui-g-12" >
@@ -301,7 +291,7 @@
           <label ><span style="color: red">*</span>物业费开始计费时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 9)"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 9)"></p-calendar>
           <span [hidden]="!this.keyRoomInfoList[9]">此字段为必填字段</span>
         </div>
       </div>
@@ -310,7 +300,7 @@
           <label ><span style="color: red">*</span>实际交房时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 10)"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 10)"></p-calendar>
           <span [hidden]="!this.keyRoomInfoList[10]">此字段为必填字段</span>
         </div>
       </div>
@@ -328,7 +318,7 @@
           <label >装修开始日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6" [hidden]="timeHide">
@@ -336,7 +326,7 @@
           <label >装修结束日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-12">
@@ -384,8 +374,7 @@
   </p-dialog>
   <!--详情弹窗-->
   <p-dialog header="详细信息" [(visible)]="ownerDetailDialog" [width]="1100" class="owerDetail">
-    <!--Content-->
-  <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
+    <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
     <div class="ui-g ui-fluid" [ngStyle]="{'text-align':'center'}">
       <div class="ui-g-12" style="text-align: left">
         <h3>业主信息：</h3>
@@ -549,6 +538,7 @@
       </div>
     </p-footer>
   </p-dialog>
+  <!--业主修改-->
   <p-dialog header="业主修改" [(visible)]="ownerModifyDialog" [width]="900" [closable]="false">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
@@ -627,6 +617,7 @@
       </div>
     </p-footer>
   </p-dialog>
+  <!--业主导出信息设置-->
   <p-dialog header="业主导出信息设置" [(visible)]="downOwnerInfoDialog" [width]="600" [closable]="false">
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-8">
@@ -645,7 +636,6 @@
       </div>
     </p-footer>
   </p-dialog>
-<!--  <button class="bf-owner-dialog-Btn bf-owner-bottom-Btn" (click)="addMoreFileClick()" >批量导入</button>-->
   <rbi-file-pop [UploadFileOption]="UploadFileOption" (event)="ownerUploadSureClick($event)"></rbi-file-pop>
   <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>

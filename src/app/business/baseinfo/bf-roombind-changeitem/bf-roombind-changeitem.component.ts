@@ -75,6 +75,7 @@ export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
   ];
   public themeSub: Subscription;
   public roomBindChangeItemSub: Subscription;
+  public keyRoomInfo = false;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
     private roomBindChargeSrv: BfRoomBindChargeitemService,
@@ -129,6 +130,7 @@ export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
     this.loadHidden = false;
     this.roomBindChargeSrv.queryRoomChangeInfoById({}).subscribe(
       value => {
+        console.log(value);
         if (value.status === '1000') {
           value.data.forEach(v => {
             this.chargeItemOption.push({label: v.chargeName, value: v.chargeCode});
@@ -183,23 +185,32 @@ export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
       this.toolSrv.setToast('error', '操作失败', '请先选择房屋');
     }
   }
+
+  public  changeInput(data): void {
+      this.keyRoomInfo = data === undefined  || data === '' || data === null;
+  }
   // sure add houseinfo
   public  roombindAddSureClick(): void {
-    this.toolSrv.setConfirmation('增加', '增加', () => {
-      this.loadHidden = false;
-      this.roomBindChargeSrv.addRoomChangeInfo(this.roombindAdd).subscribe(
-        value => {
-          this.loadHidden = true;
-          if (value.status === '1000') {
-            this.toolSrv.setToast('success', '操作成功', '添加成功');
-            this.clearData();
-            this.roombindAddDialog = false;
-            this.roombindInitialization();
-          } else {
-            this.toolSrv.setToast('error', '操作失败', value.message);
-          }
-        });
-    });
+    if (this.roombindAdd.chargeCode !== undefined && this.roombindAdd.chargeCode !== '') {
+      this.toolSrv.setConfirmation('增加', '增加', () => {
+        this.loadHidden = false;
+        this.roomBindChargeSrv.addRoomChangeInfo(this.roombindAdd).subscribe(
+          value => {
+            this.loadHidden = true;
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', '添加成功');
+              this.clearData();
+              this.roombindAddDialog = false;
+              this.roombindInitialization();
+            } else {
+              this.toolSrv.setToast('error', '操作失败', value.message);
+            }
+          });
+      });
+    } else {
+      this.keyRoomInfo = true;
+      this.toolSrv.setToast('error', '操作错误', '缴费项目未选择');
+    }
   }
   // modify roombind
   public roombindModifyClick(): void {

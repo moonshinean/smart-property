@@ -7,7 +7,7 @@ import {TableModule} from 'primeng/table';
 import {
   ButtonModule, CalendarModule,
   ConfirmDialogModule,
-  DialogModule, DropdownModule, FileUploadModule,
+  DialogModule, DropdownModule, FileUploadModule, KeyFilterModule,
   MessageModule,
   MessagesModule,
   RadioButtonModule,
@@ -47,7 +47,7 @@ import {BfStaffComponent} from './bf-staff.component';
     TreeModule,
     ReactiveFormsModule,
     BasicTableModule,
-    BasicDialogModule
+    BasicDialogModule,
   ]
 })
 export class BfStaffModule { }

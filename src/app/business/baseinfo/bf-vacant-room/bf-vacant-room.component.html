@@ -114,15 +114,6 @@
           <span [hidden]="!this.keyRoomInfoList[7]">此字段为必选字段</span>
         </div>
       </div>
-<!--      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[8]}">-->
-<!--        <div class="ui-g-4 right">-->
-<!--          <label ><span style="color: red">*</span>房屋状态：</label>-->
-<!--        </div>-->
-<!--        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">-->
-<!--          <p-dropdown [options]="roomStatusOption"  scrollHeight="100px" placeholder="请选择房间状态..." [(ngModel)]="roomInfo.roomStatus" (onChange)="changeInput(roomInfo.roomStatus, 8)"></p-dropdown>-->
-<!--          <span [hidden]="!this.keyRoomInfoList[8]">此字段为必选字段</span>-->
-<!--        </div>-->
-<!--      </div>-->
       <div class="ui-g-6" >
         <div class="ui-g-4 right">
           <label >装修情况：</label>
@@ -136,7 +127,7 @@
           <label >装修开始日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" ></p-calendar>
         </div>
       </div>
       <div class="ui-g-6" [hidden]="timeHide">
@@ -144,14 +135,14 @@
           <label >装修结束日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate"></p-calendar>
         </div>
       </div>
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="bf-vacant-room-dialog-Btn bf-vacant-room-dialog-Btn-sure" (click)="addVacantRoomSureClick('添加')">确认</button>
-        <button class="bf-vacant-room-dialog-Btn bf-vacant-room-dialog-Btn-false" (click)="vacantAddDialog=false;">取消</button>
+        <button class="bf-vacant-room-dialog-Btn bf-vacant-room-dialog-Btn-false" (click)="vacantAddDialog=false;clearData()">取消</button>
       </div>
     </p-footer>
   </p-dialog>
@@ -200,25 +191,25 @@
           <label ><span style="color: red">*</span>楼层：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="number" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.floor">
+          <input  type="number" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.floor" (blur)="changeInput(roomInfo.floor, 4)">
           <span [hidden]="!this.keyRoomInfoList[4]">此字段为必选字段</span>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[5]}">
         <div class="ui-g-4 right">
-          <label for="addroomCode">*房间编号：</label>
+          <label for="addroomCode"><span style="color: red">*</span>房间编号：</label>
         </div>
         <div class="ui-g-8">
-          <input  type="text" pInputText disabled placeholder="请输入房间编号..." [(ngModel)]="roomInfo.roomCode">
+          <input  type="text" pInputText disabled placeholder="请输入房间编号..." [(ngModel)]="roomInfo.roomCode" (blur)="changeInput(roomInfo.roomCode, 5)">
           <span [hidden]="!this.keyRoomInfoList[5]">此字段为必选字段</span>
         </div>
       </div>
-      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[6]}">
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[6]}" >
         <div class="ui-g-4 right">
-          <label for="addroomSize">*房屋面积：</label>
+          <label for="addroomSize"><span style="color: red">*</span>房屋面积：</label>
         </div>
         <div class="ui-g-8">
-          <input  type="text" pInputText  placeholder="请输入房屋面积..." [(ngModel)]="roomInfo.roomSize">
+          <input  type="number" pInputText  placeholder="请输入房屋面积..." [(ngModel)]="roomInfo.roomSize"  (blur)="changeInput(roomInfo.roomSize, 6)">
           <span [hidden]="!this.keyRoomInfoList[6]">此字段为必选字段</span>
         </div>
       </div>
@@ -245,7 +236,7 @@
           <label ><span style="color: red">*</span>物业费开始计费时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 8)"></p-calendar>
           <span [hidden]="!this.keyRoomInfoList[8]">此字段为必选字段</span>
         </div>
       </div>
@@ -254,7 +245,7 @@
           <label ><span style="color: red">*</span>实际交房时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 9)"></p-calendar>
           <span [hidden]="!this.keyRoomInfoList[9]">此字段为必选字段</span>
         </div>
       </div>
@@ -271,7 +262,7 @@
           <label >装修开始日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationStartTime" placeholder="请选择装修开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6" [hidden]="timeHide">
@@ -279,7 +270,7 @@
           <label >装修结束日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="roomInfo.renovationDeadline" placeholder="请选择装修结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-12" >
@@ -320,7 +311,7 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="bf-vacant-room-dialog-Btn bf-vacant-room-dialog-Btn-sure" (click)="addVacantRoomSureClick('修改')">确认</button>
-        <button class="bf-vacant-room-dialog-Btn bf-vacant-room-dialog-Btn-false"  (click)="vacantModityDialog = false;this.vacantRoomSelect = [];">取消</button>
+        <button class="bf-vacant-room-dialog-Btn bf-vacant-room-dialog-Btn-false"  (click)="vacantModityDialog = false;clearData()">取消</button>
       </div>
     </p-footer>
   </p-dialog>
@@ -328,50 +319,68 @@
   <p-dialog header="业主添加" [(visible)]="ownerDialog" [width]="900">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*客户名称：</label>
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyOwnerInfoList[0]}">
+        <div class="ui-g-4 right">
+          <label ><span style="color: red">*</span>客户名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入客户名称..." [(ngModel)]="ownerinfo.surname">
+          <input  type="text" pInputText placeholder="请输入客户名称...(张先生)" [(ngModel)]="ownerinfo.surname" [pKeyFilter]="toolSrv.verifyName" [pValidateOnly]="true">
+          <p-message  severity="error" text="请输入符合规定的客户名称" [hidden]="(ownerinfo.surname === undefined || ownerinfo.surname === '')? !toolSrv.verifyName.test(ownerinfo.surname): toolSrv.verifyName.test(ownerinfo.surname)"></p-message>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*客户电话：</label>
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyOwnerInfoList[1]}">
+        <div class="ui-g-4 right">
+          <label ><span style="color: red">*</span>客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone">
-<!--          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(ownerinfo.mobilePhone === undefined || ownerinfo.mobilePhone === '')? !toolSrv.verifyPhone.test(ownerinfo.mobilePhone): toolSrv.verifyPhone.test(ownerinfo.mobilePhone)"></p-message>-->
+          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone" [pKeyFilter]="toolSrv.verifyPhone"  [pValidateOnly]="true">
+          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(ownerinfo.mobilePhone === undefined || ownerinfo.mobilePhone === '')? !toolSrv.verifyPhone.test(ownerinfo.mobilePhone): toolSrv.verifyPhone.test(ownerinfo.mobilePhone)"></p-message>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*客户身份：</label>
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyOwnerInfoList[2]}">
+        <div class="ui-g-4 right">
+          <label ><span style="color: red">*</span>客户身份：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <p-dropdown [options]="identityOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="ownerinfo.identity"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*身份号码：</label>
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyOwnerInfoList[3]}">
+        <div class="ui-g-4 right">
+          <label ><span style="color: red">*</span>身份号码：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入身份号码..." [(ngModel)]="ownerinfo.idNumber" >
-<!--          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(ownerinfo.idNumber === undefined || ownerinfo.idNumber === '')? !this.toolSrv.verifyIdNumber.test(ownerinfo.idNumber): toolSrv.verifyIdNumber.test(ownerinfo.idNumber)"></p-message>-->
+          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(ownerinfo.idNumber === undefined || ownerinfo.idNumber === '')? (!this.toolSrv.verifyIdNumber.test(ownerinfo.idNumber) || !this.toolSrv.verifyIdNumber1.test(ownerinfo.idNumber) || !this.toolSrv.verifyIdNumber2.test(ownerinfo.idNumber) || !this.toolSrv.verifyIdNumber3.test(ownerinfo.idNumber) ): (toolSrv.verifyIdNumber.test(ownerinfo.idNumber) || toolSrv.verifyIdNumber1.test(ownerinfo.idNumber) || toolSrv.verifyIdNumber2.test(ownerinfo.idNumber) || toolSrv.verifyIdNumber3.test(ownerinfo.idNumber))"></p-message>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addroomSize">*是否正常缴费：</label>
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyOwnerInfoList[4]}">
+        <div class="ui-g-4 right">
+          <label for="addroomSize"><span style="color: red">*</span>是否正常缴费：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择常缴费状态..."  [(ngModel)]="ownerinfo.normalPaymentStatus"></p-dropdown>
         </div>
       </div>
+
+      <!--      <div class="ui-g-6">-->
+      <!--        <div class="ui-g-4">-->
+      <!--          <label >*物业费开始计费时间：</label>-->
+      <!--        </div>-->
+      <!--        <div class="ui-g-8">-->
+      <!--          <p-calendar [(ngModel)]="ownerinfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <div class="ui-g-6">-->
+      <!--        <div class="ui-g-4">-->
+      <!--          <label >*实际交房时间：</label>-->
+      <!--        </div>-->
+      <!--        <div class="ui-g-8">-->
+      <!--          <p-calendar [(ngModel)]="ownerinfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>-->
+      <!--        </div>-->
+      <!--      </div>-->
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4 right">
           <label >备注：</label>
         </div>
         <div class="ui-g-8">

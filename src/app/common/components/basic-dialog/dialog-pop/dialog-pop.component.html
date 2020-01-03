@@ -4,12 +4,12 @@
     <div class="ui-g ui-fluid"  *ngIf="dialogOption.type === 'add'">
       <div class="ui-g-12">
         <!--<rbi-form-control [formValue]="form" [formdata]="formdata"></rbi-form-control>-->
-        <div class="form-control" [formGroup]="formContrl" *ngIf="formdata">
-          <div class="ui-g-6" *ngFor="let item of formdata" style="line-height: 4vh">
+        <div class="ui-g ui-fluid" [formGroup]="formContrl" *ngIf="formdata">
+          <div class="ui-g-6" *ngFor="let item of formdata">
             <div class="ui-g-4" style="text-align: right;line-height: 3vh">
-              <label [for]="item?.name"><em [hidden]="!item.required">*</em>{{item.label}}:</label>
+              <label [for]="item?.name"><em [hidden]="!item.required" style="color: red">*</em>{{item.label}}:</label>
             </div>
-            <div class="ui-g-8" *ngIf="item?.type === 'input'" style="line-height: 3vh">
+            <div class="ui-g-8" *ngIf="item?.type === 'input'" style="line-height: 2vh">
               <div [hidden]="!item?.disable">
                 <span *ngIf="formContrl.value[item?.name] !==''"><label style="color: #EDEDED">1</label>{{formContrl.value[item?.name]}}</span>
                 <span *ngIf="formContrl.value[item?.name] ===''"><label style="color: #EDEDED">1</label>{{item?.placeholder}}</span>
@@ -22,7 +22,7 @@
             <div class="ui-g-8" *ngIf="item?.type === 'dropdown'"  style="line-height: 2vh">
               <p-dropdown [id]="item?.name" scrollHeight="100px" [options]="item?.option"  [placeholder]="item?.placeholder" [formControlName]="item?.name" (onChange)="dataChange(item?.name, item?.value, item?.option)"></p-dropdown>
             </div>
-            <div class="ui-g-8" *ngIf="item?.type === 'date'"  style="line-height: 2vh">
+            <div class="ui-g-8" *ngIf="item?.type === 'date'"  style="line-height: 3vh">
               <p-calendar  [placeholder]="item?.placeholder" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy/mm/dd"  yearRange="1900:2050" [locale]="esDate"  [formControlName]="item?.name"></p-calendar>
             </div>
             <div class="ui-g-8" *ngIf="item?.type === 'radio'"  style="line-height: 3vh">
@@ -34,10 +34,10 @@
             <div class="ui-g-8" *ngIf="item?.type === 'checkbox'"  style="line-height: 3vh">
               <p-checkbox [label]="i?.label" [name]="i?.name" [value]="i?.value" [formControl]="formContrl.controls[item?.name]" *ngFor="let i of item?.value"></p-checkbox>
             </div>
-            <div class="ui-g-8" *ngIf="item?.type === 'tree' && treeData !== undefined"  style="line-height: 3vh">
+            <div class="ui-g-8" *ngIf="item?.type === 'tree' && treeData !== undefined"  style="line-height: 2vh">
               <input type="text" pInputText [id]="item?.name" [formControlName]="item?.name"  [placeholder]="item?.placeholder" (click)="dataTreeClick()" />
             </div>
-            <div class="ui-g-8" *ngIf="item?.type === 'tree' && treeData === undefined"  style="line-height: 3vh">
+            <div class="ui-g-8" *ngIf="item?.type === 'tree' && treeData === undefined"  style="line-height: 2vh">
               <input type="text" pInputText [id]="item?.name" [formControlName]="item?.name"  [placeholder]="item?.placeholder" (click)="dataTreeClick()" disabled/>
             </div>
           </div>

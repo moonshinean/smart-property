@@ -153,8 +153,8 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public btnHiden = [
       {label: '新增', hidden: true},
       {label: '修改', hidden: true},
-      {label: '删除', hidden: true},
       {label: '注销', hidden: true},
+      {label: '删除房间', hidden: true},
       {label: '导入', hidden: true},
       {label: '导出', hidden: true},
       {label: '搜索', hidden: true},
@@ -747,16 +747,16 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       item.color = '#FF8352';
       this.getChargePieData(item.value);
   }
-
   // 会怄气饼状图的数据
   public  getChargePieData(index): void {
-    if (index !== 2) {
+    console.log(index);
+    if (index === 1) {
       this.owerSrv.getNewSystemChargeItemToatal({roomCode: this.pieChargeRoomCode}).subscribe(
         value => {
           console.log(value);
           if (value.status === '1000') {
             this.pieDatas = value.data.filter(v => {
-              return v.value !== null;
+              return v.value !== null && v.value !== 0;
             });
           } else {
             this.toolSrv.setToast('error', '请求失败', value.message);
@@ -769,7 +769,20 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           console.log(value);
           if (value.status === '1000') {
             this.pieDatas = value.data.filter(v => {
-              return v.value !== null;
+              return v.value !== null && v.value !== 0;
+            });
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
+          }
+        }
+      );
+    }else {
+      this.owerSrv.getTotalChargeItemToatal({roomCode: this.pieChargeRoomCode}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            this.pieDatas = value.data.filter(v => {
+              return v.value !== null && v.value !== 0;
             });
           } else {
             this.toolSrv.setToast('error', '请求失败', value.message);

@@ -45,6 +45,9 @@
       position: absolute;
       margin-top: 5.3vh;
       right: 6vw;
+      input {
+        border: 1px solid #A6A6A6;
+      }
       .bf-toll-header-btn-search{
         outline: none;
         border:0;
@@ -136,18 +139,51 @@
     cursor:pointer;
 
   }
+  // 去除滚动条
+  ::ng-deep .ui-table-scrollable-body::-webkit-scrollbar {
+    display: inline;
+    //overflow: hidden
+  }
+  //::ng-deep .custombar .ui-scrollpanel-bar {
+  //  background-color: rgba(0, 0, 0, 0);
+  //  transition: background-color .3s;
+  //}
+  //::ng-deep .custombar .ui-scrollpanel-content{
+  //  padding-right: 0;
+  //}
+  ::ng-deep .ui-scrollpanel-content {
+    height: 25vh;
+  }
+  .detail {
+      span {
+        border: 1px solid #A6A6A6;
+        width: 223px;
+        height: 33px;
+        padding-left: 5px;
+        display: block;
+        background: #EDEDED;
+        line-height: 3.2vh;
+        border-radius: 4px;
+        color: #9E9E9E;
+      }
+  }
+
+  // 表单检验
+  .dropdownKeyFilter {
+    color: #8E0303;
+    ::ng-deep .ui-dropdown{
+      border: 1px solid #8E0303;
+    }
+  }
+  .InputKeyFilter {
+    color: #8E0303;
+    ::ng-deep .ui-inputtext{
+      border: 1px solid #8E0303;
+    }
+  }
 }
-p-dialog span {
-  border: 1px solid #A6A6A6;
-  width: 223px;
-  height: 33px;
-  padding-left: 5px;
-  display: block;
-  background: #EDEDED;
-  line-height: 3.2vh;
-  border-radius: 4px;
-  color: #9E9E9E;
-}
+
+
 //去掉table边框
 //::ng-deep .ui-table .ui-table-thead  .ui-table-thead{
 //  border: 0;
@@ -163,11 +199,4 @@ p-dialog span {
 ::ng-deep .ui-dialog-content{
   overflow: visible !important;
 }
-// 去除滚动条
-::ng-deep .ui-table-scrollable-body::-webkit-scrollbar {
-  display: inline;
-  //overflow:hidden
-}
-::ng-deep  .ui-table  .ui-table-tbody>tr>td {
-  overflow: visible !important;
-}
+

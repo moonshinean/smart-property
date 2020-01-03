@@ -5,7 +5,7 @@
   <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
   <!--顶部按钮-->
   <div class="bf-staff-header">
-    <div class=" ui-g-4">
+    <div class="ui-g-6">
       <div class="ui-g-1 bf-staff-header-btn bf-staff-header-btn-add" (click)="staffAddClick()" [hidden]="this.btnHiden[0].hidden">
         <img class="bf-staff-header-img-add" src="assets/images/ic_add.png" alt="">
         <span>增 加</span>
@@ -18,10 +18,17 @@
         <img class="bf-staff-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
       </div>
+<!--      <div class="ui-g-1 bf-staff-header-btn bf-staff-header-btn-delete" (click)="staffDeleteClick()" [hidden]="this.btnHiden[2].hidden">-->
+<!--        <img class="bf-staff-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+<!--        <span>删 除</span>-->
+<!--      </div>-->
+      <div class="ui-g-1 bf-staff-header-btn bf-staff-header-btn-delete" style="background: #0D7689;" (click)="staffResetClick()" [hidden]="this.btnHiden[3].hidden">
+        <span>重 置</span>
+      </div>
     </div>
     <!--搜索-->
-    <div class="ui-inputgroup bf-staff-header-search" *ngIf="!btnHiden[3].hidden">
-      <input type="text" pInputText placeholder="请输入员工姓名" [(ngModel)]="searchInputData">
+    <div class="ui-inputgroup bf-staff-header-search" *ngIf="!btnHiden[4].hidden">
+      <input type="text" pInputText placeholder="请输入员工用户名" [(ngModel)]="searchInputData">
       <button id="disabled-btn" class="bf-staff-header-btn-search" type="button"  (click)="staffSearchClick()">搜索</button>
     </div>
   </div>
@@ -35,65 +42,67 @@
     <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
 
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*部门名称：</label>
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[0]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>部门名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input type="text" pInputText placeholder="请选择部门.." (click)="DepartTreeClick()" [(ngModel)]="staffAdd.departmentName"/>
+          <input type="text" pInputText placeholder="请选择部门.." (click)="DepartTreeClick()" [(ngModel)]="staffAdd.departmentName" />
         </div>
       </div>
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="adduserId">用户ID：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<input id="adduserId" type="text" pInputText placeholder="请输入用户ID" [(ngModel)]="staffAdd.userId">-->
-        <!--</div>-->
-      <!--</div>-->
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addusername">*用户名：</label>
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[1]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label for="addusername"><span style="color: red">*</span>用户名：</label>
         </div>
         <div class="ui-g-8">
-          <input id="addusername" type="text" pInputText placeholder="请输入用户名" [(ngModel)]="staffAdd.username">
+          <input id="addusername" type="text" pInputText placeholder="请输入用户名" [(ngModel)]="staffAdd.username"  (blur)="changeInput(staffAdd.username, 1)">
         </div>
       </div>
-<!--      <div class="ui-g-6">-->
-<!--        <div class="ui-g-4">-->
-<!--          <label for="addusername">密码：</label>-->
-<!--        </div>-->
-<!--        <div class="ui-g-8">-->
-<!--          <input id="addpassword" type="password" pInputText placeholder="请输入用户名" [(ngModel)]="staffAdd.password">-->
-<!--        </div>-->
-<!--      </div>-->
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addrealName">*真实姓名：</label>
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[2]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label for="addrealName"><span style="color: red">*</span>真实姓名：</label>
         </div>
         <div class="ui-g-8">
-          <input id="addrealName" type="text" pInputText placeholder="请输入真实姓名" [(ngModel)]="staffAdd.realName">
+          <input id="addrealName" type="text" pInputText placeholder="请输入真实姓名" [(ngModel)]="staffAdd.realName"  (blur)="changeInput(staffAdd.realName, 2)">
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >*性别：</label>
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[3]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>性别：</label>
         </div>
         <div class="ui-g-8">
-            <p-radioButton type="radio" label="男"  value="男" name="group"  [(ngModel)]="staffAdd.sex"></p-radioButton>
-            <p-radioButton type="radio" label="女"  value="女" name="group" [ngStyle]="{'margin-left':'2vw'}" [(ngModel)]="staffAdd.sex"></p-radioButton>
+            <p-radioButton type="radio" label="男"  value="男" name="group"  [(ngModel)]="staffAdd.sex" (onClick)="changeInput(staffAdd.sex, 3)"></p-radioButton>
+            <p-radioButton type="radio" label="女"  value="女" name="group" [ngStyle]="{'margin-left':'2vw'}" [(ngModel)]="staffAdd.sex" (onClick)="changeInput(staffAdd.sex, 3)"></p-radioButton>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[4]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label for="addmobilePhone"><span style="color: red">*</span>手机号码：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addmobilePhone" type="number" pInputText placeholder="请输入手机号码" [(ngModel)]="staffAdd.mobilePhone" (blur)="changeInput(toolSrv.verifyPhone, 4)" maxLength="11">
+          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(staffAdd.mobilePhone === undefined || staffAdd.mobilePhone === '')? !toolSrv.verifyPhone.test(staffAdd.mobilePhone): toolSrv.verifyPhone.test(staffAdd.mobilePhone)"></p-message>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
+          <label for="addidentity">身份证号：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addidentity" type="number" pInputText placeholder="请输入身份证号" [(ngModel)]="staffAdd.identity">
+          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(staffAdd.identity === undefined || staffAdd.identity === '')? (!this.toolSrv.verifyIdNumber.test(staffAdd.identity) || !this.toolSrv.verifyIdNumber1.test(staffAdd.identity) || !this.toolSrv.verifyIdNumber2.test(staffAdd.identity) || !this.toolSrv.verifyIdNumber3.test(staffAdd.identity) ): (toolSrv.verifyIdNumber.test(staffAdd.identity) || toolSrv.verifyIdNumber1.test(staffAdd.identity) || toolSrv.verifyIdNumber2.test(staffAdd.identity) || toolSrv.verifyIdNumber3.test(staffAdd.identity))"></p-message>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
           <label >出生日期：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="staffAdd.birthday" placeholder="请选择出生日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy/mm/dd"  yearRange="1900:2050" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="staffAdd.birthday" placeholder="请选择出生日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addemail">E-mail：</label>
         </div>
         <div class="ui-g-8">
@@ -101,23 +110,16 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addrealName">地址：</label>
         </div>
         <div class="ui-g-8">
           <input  type="text" pInputText placeholder="请输入地址" [(ngModel)]="staffAdd.address">
         </div>
       </div>
+
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addmobilePhone">手机号码：</label>
-        </div>
-        <div class="ui-g-8">
-          <input id="addmobilePhone" type="text" pInputText placeholder="请输入手机号码" [(ngModel)]="staffAdd.mobilePhone">
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addmobilePhone">是否可用：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -125,31 +127,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addidentity">身份证号：</label>
-        </div>
-        <div class="ui-g-8">
-          <input id="addidentity" type="text" pInputText placeholder="请输入身份证号" [(ngModel)]="staffAdd.identity">
-        </div>
-      </div>
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="addportraitPath">头像地址：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<input id="addportraitPath" type="text" pInputText placeholder="请输入头像地址" [(ngModel)]="staffAdd.portraitPath">-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="addloginStatus">登录状态：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<p-dropdown id="addloginStatus" [options]="loginStatusOption"  scrollHeight="100px"  placeholder="请选择登录状态.." [(ngModel)]="staffAdd.loginStatus"></p-dropdown>-->
-        <!--</div>-->
-      <!--</div>-->
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="educationalBackground">学历：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -157,7 +135,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addworkingYears">工龄：</label>
         </div>
         <div class="ui-g-8">
@@ -165,15 +143,15 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >入职时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="staffAdd.hiredate" placeholder="请选择入职时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy/mm/dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="staffAdd.hiredate" placeholder="请选择入职时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2150" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="nativePlace">籍贯：</label>
         </div>
         <div class="ui-g-8">
@@ -181,7 +159,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="politicalStatus">政治面貌：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -189,7 +167,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="maritalStatus">婚姻状况：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
@@ -197,7 +175,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="volk">民族：</label>
         </div>
         <div class="ui-g-8">
@@ -205,7 +183,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="technicalTitle">职称：</label>
         </div>
         <div class="ui-g-8">
@@ -213,7 +191,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="remarks">备注：</label>
         </div>
         <div class="ui-g-8">
@@ -237,48 +215,32 @@
 
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >部门名称：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>部门名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input type="text" pInputText placeholder="请选择部门.." (click)="DepartTreeClick()" [(ngModel)]="staffModifay.departmentName"/>
         </div>
       </div>
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="modifyuserId">用户ID：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<input id="modifyuserId" type="text" pInputText [placeholder]="staffModifay.userId" [(ngModel)]="staffModifay.userId">-->
-        <!--</div>-->
-      <!--</div>-->
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addusername">用户名：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label for="addusername"><span style="color: red">*</span>用户名：</label>
         </div>
         <div class="ui-g-8">
           <input  type="text"  disabled pInputText [placeholder]="staffModifay.username" [(ngModel)]="staffModifay.username">
         </div>
       </div>
-<!--      <div class="ui-g-6">-->
-<!--        <div class="ui-g-4">-->
-<!--          <label for="addusername">密码：</label>-->
-<!--        </div>-->
-<!--        <div class="ui-g-8">-->
-<!--          <input  type="text" pInputText [placeholder]="staffModifay.password" [(ngModel)]="staffModifay.password">-->
-<!--        </div>-->
-<!--      </div>-->
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addrealName">真实姓名：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label for="addrealName"><span style="color: red">*</span>真实姓名：</label>
         </div>
         <div class="ui-g-8">
           <input  type="text" pInputText [placeholder]="staffModifay.realName" [(ngModel)]="staffModifay.realName">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >性别：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>性别：</label>
         </div>
         <div class="ui-g-8">
           <p-radioButton type="radio" label="男"  value="男" name="group"  [(ngModel)]="staffModifay.sex"></p-radioButton>
@@ -286,15 +248,23 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >出生日期：</label>
+        <div class="ui-g-4" style="text-align: right">
+          <label for="addmobilePhone"><span style="color: red">*</span>手机号码：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="staffModifay.birthday" [placeholder]="staffAdd.birthday" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
+          <input  type="text" pInputText [placeholder]="staffModifay.mobilePhone" [(ngModel)]="staffModifay.mobilePhone">
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
+          <label >出生日期：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="staffModifay.birthday" [placeholder]="staffAdd.birthday" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2150" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addemail">E-mail：</label>
         </div>
         <div class="ui-g-8">
@@ -302,7 +272,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addrealName">地址：</label>
         </div>
         <div class="ui-g-8">
@@ -310,55 +280,31 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label for="addmobilePhone">手机号码：</label>
-        </div>
-        <div class="ui-g-8">
-          <input  type="text" pInputText [placeholder]="staffModifay.mobilePhone" [(ngModel)]="staffModifay.mobilePhone">
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addmobilePhone">是否可用：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown scrollHeight="100px" [options]="enableOption"  [placeholder]="enableModifyDrapPlaceholder" [(ngModel)]="staffModifay.enabled"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addidentity">身份证号：</label>
         </div>
         <div class="ui-g-8">
           <input  type="text" pInputText [placeholder]="staffModifay.identity" [(ngModel)]="staffModifay.identity">
         </div>
       </div>
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="addportraitPath">头像地址：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<input type="text" pInputText [placeholder]="staffModifay.portraitPath" [(ngModel)]="staffModifay.portraitPath">-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="ui-g-6">-->
-        <!--<div class="ui-g-4">-->
-          <!--<label for="addloginStatus">登录状态：</label>-->
-        <!--</div>-->
-        <!--<div class="ui-g-8">-->
-          <!--<p-dropdown  [options]="loginStatusOption"  scrollHeight="100px"  [placeholder]="loginStatusModifyDrapPlaceholder" [(ngModel)]="staffModifay.loginStatus"></p-dropdown>-->
-        <!--</div>-->
-      <!--</div>-->
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="educationalBackground">学历：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown   [options]="educationalOption" scrollHeight="100px"  [placeholder]="educationalModifyDrapPlaceholder" [(ngModel)]="staffModifay.educationalBackground"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="addworkingYears">工龄：</label>
         </div>
         <div class="ui-g-8">
@@ -366,15 +312,15 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label >入职时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="staffModifay.hiredate" [placeholder]="staffModifay.hiredate" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2050" [locale]="esDate"></p-calendar>
+          <p-calendar [(ngModel)]="staffModifay.hiredate" [placeholder]="staffModifay.hiredate" [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"   yearRange="1900:2150" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="nativePlace">籍贯：</label>
         </div>
         <div class="ui-g-8">
@@ -382,23 +328,23 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="politicalStatus">政治面貌：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown    [options]="politicalStatusOption" scrollHeight="100px" [placeholder]="politicalStatusModifyDrapPlaceholder" [(ngModel)]="staffModifay.politicalStatus"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="maritalStatus">婚姻状况：</label>
         </div>
-        <div class="ui-g-8">
+        <div class="ui-g-8" style="line-height: 2vh">
           <p-dropdown  [options]="maritalOption" scrollHeight="100px"  [placeholder]="maritalModifyDrapPlaceholder" [(ngModel)]="staffModifay.maritalStatus"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="volk">民族：</label>
         </div>
         <div class="ui-g-8">
@@ -406,7 +352,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="technicalTitle">职称：</label>
         </div>
         <div class="ui-g-8">
@@ -414,7 +360,7 @@
         </div>
       </div>
       <div class="ui-g-6">
-        <div class="ui-g-4">
+        <div class="ui-g-4" style="text-align: right">
           <label for="remarks">备注：</label>
         </div>
         <div class="ui-g-8">
@@ -432,220 +378,8 @@
     </p-footer>
   </p-dialog>
 
-  <!--详情弹窗-->
-<!--  <p-dialog header="详情" [(visible)]="staffDetailDialog" [width]="800">
-    &lt;!&ndash;Content&ndash;&gt;
-    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh', 'text-align': 'center'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >组织名称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.organizationName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >部门名称：</label>
-        </div>
-        <div class="ui-g-8" >
-          <span>{{staffDetail.departmentName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >用户ID：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.userId}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >用户名：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.username}}</span>
-        </div>
-      </div>
-      &lt;!&ndash;<div class="ui-g-6">&ndash;&gt;
-        &lt;!&ndash;<div class="ui-g-4">&ndash;&gt;
-          &lt;!&ndash;<label >密码：</label>&ndash;&gt;
-        &lt;!&ndash;</div>&ndash;&gt;
-        &lt;!&ndash;<div class="ui-g-8">&ndash;&gt;
-          &lt;!&ndash;<span>{{staffDetail.password}}</span>&ndash;&gt;
-        &lt;!&ndash;</div>&ndash;&gt;
-      &lt;!&ndash;</div>&ndash;&gt;
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>真实姓名：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.realName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >性别：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.sex}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >出生日期：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.birthday}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >E-mail：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.email}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >地址：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.address}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>手机号码：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.mobilePhone}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >身份证号：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.identity}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >登录状态：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{loginStatusModifyDrapPlaceholder}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >头像地址：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.portraitPath}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >是否可用：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{enableModifyDrapPlaceholder}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >学历：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{enableModifyDrapPlaceholder}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >工龄：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.workingYears}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >入职时间：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.hiredate}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >籍贯：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.nativePlace}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >政治面貌：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{politicalStatusModifyDrapPlaceholder}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >婚姻状况：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{maritalModifyDrapPlaceholder}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >民族：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.volk}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >职称：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.technicalTitle}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >备注：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{staffDetail.remarks}}</span>
-        </div>
-      </div>
-      &lt;!&ndash;<div class="ui-g-6">&ndash;&gt;
-      &lt;!&ndash;<div class="ui-g-4">&ndash;&gt;
-      &lt;!&ndash;<label for="addportraitPath">头像地址：</label>&ndash;&gt;
-      &lt;!&ndash;</div>&ndash;&gt;
-      &lt;!&ndash;<div class="ui-g-8">&ndash;&gt;
-      &lt;!&ndash;<input id="addportraitPath" type="text" pInputText placeholder="请输入地块号" [(ngModel)]="staffAdd.portraitPath">&ndash;&gt;
-      &lt;!&ndash;</div>&ndash;&gt;
-      &lt;!&ndash;</div>&ndash;&gt;
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
-        &lt;!&ndash;<button class="bf-staff-dialog-Btn bf-staff-dialog-Btn-sure" (click)="staffModifySureClick()">确认</button>&ndash;&gt;
-        <button class="bf-staff-dialog-Btn bf-staff-dialog-Btn-false" (click)="staffDetailDialog=false">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>-->
   <!--区域选择-->
-  <p-dialog header="请选择部门" [(visible)]="departDialog" [responsive]="true" showEffect="fade" [maximizable]="true" [baseZIndex]="10000" [modal]="true" [width]="300" [height]="400">
+  <p-dialog header="请选择部门" [(visible)]="departDialog"  [width]="300" [height]="400">
     <div class="ui-g ui-fluid">
       <div class="ui-g-12">
         <!--(onNodeUnselect)="nodeUnselect($event)"-->

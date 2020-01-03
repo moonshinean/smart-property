@@ -61,6 +61,10 @@ export class BfOwnerService {
   public  getYearChargeItemToatal(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/chart/yearChart', body);
   }
+  // 总的缴费记录
+  public  getTotalChargeItemToatal(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/chart/totalChart', body);
+  }
 
  // 空置房导出
   public  importFileOfVacantRoom(body): Observable<any> {

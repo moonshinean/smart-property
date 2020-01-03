@@ -30,4 +30,7 @@ export class BfStaffService {
   public queryStaffInfoByRealName(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/user/findByName`, pamars);
   }
+  public staffResetPassword(pamars): Observable<any>  {
+      return this.http.post(environment.sysetUrl + `/user/resetPassword`, pamars);
+  }
 }

@@ -114,8 +114,8 @@ export class BfTenantinfoComponent implements OnInit {
   public btnHiden = [
     {label: '新增', hidden: true},
     {label: '修改', hidden: true},
-    {label: '删除', hidden: true},
     {label: '注销', hidden: true},
+    {label: '删除', hidden: true},
     {label: '导入', hidden: true},
     {label: '导出', hidden: true},
     {label: '搜索', hidden: true},

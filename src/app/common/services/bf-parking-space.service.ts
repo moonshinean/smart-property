@@ -12,7 +12,7 @@ export class BfParkingSpaceService {
     private http: HttpClient
   ) { }
   public  queryParkingSpace(pamars): Observable<any> {
-    return this.http.post(environment.chargeUrl +  `/parkingSpaceManagement/findParkingAllByPage`, pamars);
+    return this.http.post(environment.chargeUrl +  `/parkingSpace/findParkingAllByPage`, pamars);
   }
   public  addParkingSpace(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl +  `/parkingSpace/add`, pamars);

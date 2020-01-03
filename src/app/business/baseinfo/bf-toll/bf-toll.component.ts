@@ -107,6 +107,7 @@ export class BfTollComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  public keyRoomInfoList = [false, false, false, false, false, false];
 
   constructor(
     private toolSrv: PublicMethedService,
@@ -202,22 +203,38 @@ export class BfTollComponent implements OnInit, OnDestroy {
     this.tollAddDialog = true;
   }
 
+  public  changeInput(data, index): void {
+    this.keyRoomInfoList[index] = !(data !== '' && data !== null && data !== undefined);
+  }
+
+
   // sure add toll
   public tollAddSureClick(): void {
-    this.toolSrv.setConfirmation('增加', '增加', () => {
-        this.tollSrv.queryTollAdd({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
-          value => {
-            if (value.status === '1000') {
-              this.toolSrv.setToast('success', '操作成功', value.message);
-              this.tollInitialization();
-              this.tollAddDialog = false;
-              this.clearData();
-            } else {
-              this.toolSrv.setToast('error', '操作错误', '添加失败,' + value.message);
-            }
-          }
-        );
+    const list  = ['chargeName', 'chargeType', 'chargeUnit', 'refund', 'mustPay'];
+    list.forEach((v, index) => {
+      this.keyRoomInfoList[index] = this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
     });
+    const passlic = list.some(v => {
+      return  this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
+    });
+    if (!passlic) {
+       this.toolSrv.setConfirmation('增加', '增加', () => {
+         this.tollSrv.queryTollAdd({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
+           value => {
+             if (value.status === '1000') {
+               this.toolSrv.setToast('success', '操作成功', value.message);
+               this.tollInitialization();
+               this.tollAddDialog = false;
+               this.clearData();
+             } else {
+               this.toolSrv.setToast('error', '操作错误', '添加失败,' + value.message);
+             }
+           }
+         );
+       });
+     } else {
+       this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
+     }
   }
 
   // modify toll
@@ -234,7 +251,15 @@ export class BfTollComponent implements OnInit, OnDestroy {
 
   // sure modify toll
   public tollModifySureClick(): void {
-    this.toolSrv.setConfirmation('修改', '修改', () => {
+    const list  = ['chargeName', 'chargeType', 'chargeUnit', 'refund', 'enable', 'mustPay'];
+    list.forEach((v, index) => {
+      this.keyRoomInfoList[index] = this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
+    });
+    const passlic = list.some(v => {
+      return  this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
+    });
+    if (!passlic) {
+      this.toolSrv.setConfirmation('修改', '修改', () => {
         this.tollSrv.updateTollInfo({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
           value => {
             if (value.status === '1000') {
@@ -247,36 +272,11 @@ export class BfTollComponent implements OnInit, OnDestroy {
             }
           }
         );
-    //   } else {
-    //     this.modifytoll = [];
-    //     this.tollMoreInfo.forEach((v, index) => {
-    //       for (const Key in this.tollTitle) {
-    //         this.tollAddinfo[Key] = this.tollTitle[Key];
-    //       }
-    //       for (const vKey in v) {
-    //         this.tollAddinfo[vKey] = v[vKey];
-    //       }
-    //       if (index + 1 <= this.ids.length) {
-    //         this.tollAddinfo.id = this.ids[index].id;
-    //       } else {
-    //         this.tollAddinfo.id = null;
-    //       }
-    //       this.modifytoll.push(this.tollAddinfo);
-    //       this.tollAddinfo = new AddToll();
-    //     });
-    //     this.tollSrv.updateTollListinfo({data: this.modifytoll}).subscribe(
-    //       value => {
-    //         if (value.status === '1000') {
-    //           this.toolSrv.setToast('success', '操作成功', value.message);
-    //           this.tollInitialization();
-    //           this.tollModifyDialog = false;
-    //           this.clearData();
-    //         } else {
-    //           this.toolSrv.setToast('error', '操作错误', '修改失败,' + value.message);
-    //         }
-    //       }
-    //     )
-    });
+      });
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
+    }
+
   }
 
   // delete toll

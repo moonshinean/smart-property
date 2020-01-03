@@ -64,6 +64,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  public keyRoomInfoList = [false, false, false, false, false];
   // 搜索相关
   public searchInputData = '';
   // 按钮显示相关
@@ -71,6 +72,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
     {label: '新增', hidden: true},
     {label: '修改', hidden: true},
     {label: '删除', hidden: true},
+    {label: '重置', hidden: true},
     {label: '搜索', hidden: true},
   ];
   constructor(
@@ -148,25 +150,42 @@ export class BfStaffComponent implements OnInit, OnDestroy {
      this.staffModifay.departmentId = this.departTree.value;
      this.staffModifay.departmentName = this.departTree.label;
      this.departDialog = false;
+    this.keyRoomInfoList[0] = this.staffAdd.departmentName === undefined || this.staffAdd.departmentName  === null || this.staffAdd.departmentName  === '';
+  }
+  // 验证
+  public  changeInput(data, index): void {
+      this.keyRoomInfoList[index] = data === undefined || data === null || data === '';
   }
   // sure add staff
   public  staffAddSureClick(): void {
-    this.toolSrv.setConfirmation('增加', '增加', () => {
-      this.staffAdd.birthday = this.datePipe.transform(this.staffAdd.birthday , 'yyyy-MM-dd');
-      this.staffAdd.hiredate = this.datePipe.transform(this.staffAdd.hiredate , 'yyyy-MM-dd');
-      this.staffSrv.addStaffInfo(this.staffAdd).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.staffAddDialog = false;
-            this.toolSrv.setToast('success',  '操作成功', value.message);
-            this.clearData();
-            this.staffInitialization();
-          } else {
-            this.toolSrv.setToast('error',  '操作失败', value.message);
-          }
-        }
-      );
+    const ownerVertifyKeylist = ['departmentName', 'username', 'realName', 'sex', 'mobilePhone'];
+    ownerVertifyKeylist.forEach((v, index) => {
+      this.keyRoomInfoList[index] = this.staffAdd[v] === '' || this.staffAdd[v] === undefined || this.staffAdd[v] === null;
     });
+    console.log(this.keyRoomInfoList);
+    const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
+      return (this.staffAdd[v] !== '' && this.staffAdd[v] !== undefined && this.staffAdd[v] !== null);
+    });
+    if (ownerInfoStatus) {
+      this.toolSrv.setConfirmation('增加', '增加', () => {
+        this.staffAdd.birthday = this.datePipe.transform(this.staffAdd.birthday , 'yyyy-MM-dd');
+        this.staffAdd.hiredate = this.datePipe.transform(this.staffAdd.hiredate , 'yyyy-MM-dd');
+        this.staffSrv.addStaffInfo(this.staffAdd).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.staffAddDialog = false;
+              this.toolSrv.setToast('success',  '操作成功', value.message);
+              this.clearData();
+              this.staffInitialization();
+            } else {
+              this.toolSrv.setToast('error',  '操作失败', value.message);
+            }
+          }
+        );
+      });
+    } else {
+      this.toolSrv.setToast('error', '添加失败', '带*的信息未填写完整');
+    }
   }
   // modify staff
   public  staffModifyClick(): void {
@@ -292,11 +311,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
       this.staffAdd = new AddStaff();
       this.staffModifay = new AddStaff();
       this.staffSelect = [];
-      this.maritalOption = [];
-      this.enableOption = [];
-      this.politicalStatusOption = [];
-      this.loginStatusOption = [];
-      this.educationalOption = [];
+      this.keyRoomInfoList = [false, false, false, false, false];
   }
   // paging query
   public  nowpageEventHandle(event: any): void {
@@ -314,6 +329,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
   public  queryStaffPageData(): void {
         this.staffSrv.queryStaffInfoPage({pageNo: this.nowPage, pageSize: 10 }).subscribe(
           value => {
+            console.log(value);
             value.data.contents.forEach( v => {
               v.enabled = this.toolSrv.setValueToLabel(this.enableOption, v.enabled);
               v.loginStatus = this.toolSrv.setValueToLabel(this.loginStatusOption, v.loginStatus);
@@ -395,5 +411,27 @@ export class BfStaffComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+  // 重置密码
+  public  staffResetClick(): void {
+    if (this.staffSelect === undefined || this.staffSelect.length === 0 ) {
+      this.toolSrv.setToast('error',  '操作错误',  '请选择需要修改的项');
+    } else if (this.staffSelect.length === 1) {
+      this.toolSrv.setConfirmation('重置密码', '重置密码', () => {
+          this.staffSrv.staffResetPassword({userId: this.staffSelect[0].userId, phone:  this.staffSelect[0].mobilePhone, salt:  this.staffSelect[0].salt}).subscribe(
+            value => {
+              if (value.status === '1000') {
+                this.toolSrv.setToast('success', '请求成功', '重置成功');
+                this.clearData();
+                this.staffInitialization();
+              } else {
+                this.toolSrv.setToast('error', '重置失败', value.message);
+              }
+            }
+          );
+      });
+    } else {
+      this.toolSrv.setToast('error',  '操作错误',  '只能选择一项进行修改');
+    }
   }
 }
