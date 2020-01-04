@@ -476,7 +476,7 @@
           <label ><span style="color: red">*</span>客户电话：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone" [pKeyFilter]="toolSrv.verifyPhone"  [pValidateOnly]="true">
+          <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.mobilePhone" >
           <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(ownerinfo.mobilePhone === undefined || ownerinfo.mobilePhone === '')? !toolSrv.verifyPhone.test(ownerinfo.mobilePhone): toolSrv.verifyPhone.test(ownerinfo.mobilePhone)"></p-message>
         </div>
       </div>

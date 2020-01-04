@@ -65,6 +65,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
     detailBtn: ''
   };
   public keyRoomInfoList = [false, false, false, false, false];
+  public staffDialogtype: any;
   // 搜索相关
   public searchInputData = '';
   // 按钮显示相关
@@ -77,7 +78,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
   ];
   constructor(
     private staffSrv: BfStaffService,
-    private toolSrv: PublicMethedService,
+    public toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
     private datePipe: DatePipe,
@@ -135,8 +136,9 @@ export class BfStaffComponent implements OnInit, OnDestroy {
     this.staffAddDialog = true;
   }
   // 部门树查询
-  public  DepartTreeClick(): void {
+  public  DepartTreeClick(data): void {
     this.departDialog = true;
+    this.staffDialogtype = data;
     this.staffSrv.queryDepartTree({}).subscribe(
       value => {
         this.departTrees = this.initializeTree(value.data);
@@ -150,7 +152,12 @@ export class BfStaffComponent implements OnInit, OnDestroy {
      this.staffModifay.departmentId = this.departTree.value;
      this.staffModifay.departmentName = this.departTree.label;
      this.departDialog = false;
-    this.keyRoomInfoList[0] = this.staffAdd.departmentName === undefined || this.staffAdd.departmentName  === null || this.staffAdd.departmentName  === '';
+     if (this.staffDialogtype === 'add') {
+       this.keyRoomInfoList[0] = this.staffAdd.departmentName === undefined || this.staffAdd.departmentName  === null || this.staffAdd.departmentName  === '';
+     } else {
+       this.keyRoomInfoList[0] = this.staffModifay.departmentName === undefined || this.staffModifay.departmentName  === null || this.staffModifay.departmentName  === '';
+     }
+
   }
   // 验证
   public  changeInput(data, index): void {
@@ -201,27 +208,39 @@ export class BfStaffComponent implements OnInit, OnDestroy {
   }
   // sure modify staff
   public  staffModifySureClick(): void {
-    this.toolSrv.setConfirmation('修改', '修改', () => {
-      this.staffModifay.birthday = this.datePipe.transform(this.staffModifay.birthday , 'yyyy-MM-dd');
-      this.staffModifay.hiredate = this.datePipe.transform(this.staffModifay.hiredate , 'yyyy-MM-dd');
-      this.staffModifay.enabled = this.toolSrv.setLabelToValue(this.enableOption, this.staffModifay.enabled);
-      this.staffModifay.loginStatus = this.toolSrv.setLabelToValue(this.loginStatusOption, this.staffModifay.loginStatus);
-      this.staffModifay.maritalStatus = this.toolSrv.setLabelToValue(this.maritalOption, this.staffModifay.maritalStatus);
-      this.staffModifay.politicalStatus = this.toolSrv.setLabelToValue(this.politicalStatusOption, this.staffModifay.politicalStatus);
-      this.staffModifay.educationalBackground = this.toolSrv.setLabelToValue(this.educationalOption, this.staffModifay.educationalBackground);
-      this.staffSrv.updateStaffInfo(this.staffModifay).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.staffModifayDialog = false;
-            this.toolSrv.setToast('success',  '操作成功', value.message);
-            this.clearData();
-            this.staffInitialization();
-          } else {
-            this.toolSrv.setToast('error', '请求失败',  value.message);
-          }
-        }
-      );
+    const ownerVertifyKeylist = ['departmentName', 'username', 'realName', 'sex', 'mobilePhone'];
+    ownerVertifyKeylist.forEach((v, index) => {
+      this.keyRoomInfoList[index] = this.staffModifay[v] === '' || this.staffModifay[v] === undefined || this.staffModifay[v] === null;
     });
+    console.log(this.keyRoomInfoList);
+    const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
+      return (this.staffModifay[v] !== '' && this.staffModifay[v] !== undefined && this.staffModifay[v] !== null);
+    });
+    if (ownerInfoStatus) {
+      this.toolSrv.setConfirmation('修改', '修改', () => {
+        this.staffModifay.birthday = this.datePipe.transform(this.staffModifay.birthday , 'yyyy-MM-dd');
+        this.staffModifay.hiredate = this.datePipe.transform(this.staffModifay.hiredate , 'yyyy-MM-dd');
+        this.staffModifay.enabled = this.toolSrv.setLabelToValue(this.enableOption, this.staffModifay.enabled);
+        this.staffModifay.loginStatus = this.toolSrv.setLabelToValue(this.loginStatusOption, this.staffModifay.loginStatus);
+        this.staffModifay.maritalStatus = this.toolSrv.setLabelToValue(this.maritalOption, this.staffModifay.maritalStatus);
+        this.staffModifay.politicalStatus = this.toolSrv.setLabelToValue(this.politicalStatusOption, this.staffModifay.politicalStatus);
+        this.staffModifay.educationalBackground = this.toolSrv.setLabelToValue(this.educationalOption, this.staffModifay.educationalBackground);
+        this.staffSrv.updateStaffInfo(this.staffModifay).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.staffModifayDialog = false;
+              this.toolSrv.setToast('success',  '操作成功', value.message);
+              this.clearData();
+              this.staffInitialization();
+            } else {
+              this.toolSrv.setToast('error', '请求失败',  value.message);
+            }
+          }
+        );
+      });
+    } else {
+      this.toolSrv.setToast('error', '添加失败', '带*的信息未填写完整');
+    }
   }
   // delete staff
   public  staffDeleteClick(): void {

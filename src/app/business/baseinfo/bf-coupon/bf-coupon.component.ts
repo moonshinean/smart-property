@@ -116,6 +116,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
       this.optionEnable = this.toolSrv.setListMap(data.ENABLED);
       this.couponSrv.queryCouponType({}).subscribe(
         value => {
+          console.log(value);
           if (value.status === '1000') {
             value.data.forEach( v => {
               this.couponTypeData.push({label: v.settingName, value: v.settingCode});
@@ -137,6 +138,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     });
     this.couponSrv.queryEffectiveTime({}).subscribe(
       value => {
+        console.log(value);
         value.data.forEach( v => {
           if (v.settingName === '0' || v.settingName === 0) {
             this.EffectiveTime.push({label: '无限期', value: v.settingName});
@@ -246,12 +248,12 @@ export class BfCouponComponent implements OnInit, OnDestroy {
       this.formgroup = this.toolSrv.setFormGroup(this.form);
       const enable = this.couponSelect[0].enable === 1 ? '启用' : '禁用';
       this.formdata = [
-        {label: '优惠卷名称', type: 'input', name: 'couponName', option: '', placeholder: '请输入优惠卷名称'},
-        {label: '优惠卷类型', type: 'dropdown', name: 'couponType', option: this.couponTypeData, placeholder: this.couponSelect[0].couponType},
-        {label: '收费项目', type: 'dropdown', name: 'chargeCode', option: this.ChargeCodeData, placeholder: this.couponSelect[0].chargeCode},
-        {label: '有效时长', type: 'dropdown', name: 'effectiveTime', option: this.EffectiveTime, placeholder:  this.couponSelect[0].effectiveTime},
-        {label: '启用状态', type: 'dropdown', name: 'enable', option: this.optionEnable, placeholder: enable },
-        {label: '金额', type: 'input', name: 'money', option: '', placeholder: '请输入金额'},
+        {label: '优惠卷名称', type: 'input', name: 'couponName', option: '', placeholder: '请输入优惠卷名称', required: true},
+        {label: '优惠卷类型', type: 'dropdown', name: 'couponType', option: this.couponTypeData, placeholder: this.couponSelect[0].couponType, required: true},
+        {label: '收费项目', type: 'dropdown', name: 'chargeCode', option: this.ChargeCodeData, placeholder: this.couponSelect[0].chargeCode, required: true},
+        {label: '有效时长', type: 'dropdown', name: 'effectiveTime', option: this.EffectiveTime, placeholder:  this.couponSelect[0].effectiveTime, required: true},
+        {label: '启用状态', type: 'dropdown', name: 'enable', option: this.optionEnable, placeholder: '' , required: true},
+        {label: '金额', type: 'input', name: 'money', option: '', placeholder: '请输入金额', required: true},
       ];
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');
@@ -308,7 +310,6 @@ export class BfCouponComponent implements OnInit, OnDestroy {
       });
     }
   }
-
   // Paging request (分页请求)
   public  nowpageEventHandle(event: any): void {
     this.loadingHide = false;
@@ -399,12 +400,11 @@ export class BfCouponComponent implements OnInit, OnDestroy {
           this.couponModifySureClick(this.couponModify);
         }
       } else {
-        this.toolSrv.setToast('error', '操作错误', '请填写完整信息');
+        this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
       }
       // if ()
     }
   }
-
   // 设置按钮显示隐藏
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {

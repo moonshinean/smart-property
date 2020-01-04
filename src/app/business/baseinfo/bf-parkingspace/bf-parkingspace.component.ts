@@ -54,7 +54,7 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
   };
   public deleteIds: any[] = [];
   public option: any;
-  public loadHidden = true;
+  public keyparkingSpaceList = [false, false, false, false, false];
   // 按钮显示相关
   public btnHiden = [
     {label: '新增', hidden: true},
@@ -130,7 +130,6 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
   }
   // initialization parkingspace
   public parkingspaceInitialization(): void {
-    this.loadHidden = false;
     this.toolSrv.getAdmStatus([{settingType: 'CWLX'}, {settingType: 'CWXZ'}, {settingType: 'PAEKING_SPACE_PLACE'}], (data) => {
        console.log(data);
        this.parkSpaceNatureOption = this.toolSrv.setListMap(data.CWXZ);
@@ -147,30 +146,42 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
      this.toolSrv.setToast('error', '操作错误', '请选择地块或者楼栋');
    }
   }
+  // 验证
+  public  changeInput(data, index): void {
+    this.keyparkingSpaceList[index] = data === undefined || data === null || data === '';
+  }
   // sure add parkingspace
   public parkingspaceAddSureClick(): void {
     this.parkingspaceAdd.villageCode = this.SearchData.villageCode;
     this.parkingspaceAdd.regionCode = this.SearchData.regionCode;
     this.parkingspaceAdd.buildingCode = this.SearchData.buildingCode;
-    console.log(this.parkingspaceAdd);
-    // var
-    // this.parkingspaceAdd.parkingSpaceCode = this.parkingspaceAdd.regionCode + '-' + this.parkSpaceCode;
-    // console.log(  this.parkingspaceAdd);
-    this.toolSrv.setConfirmation('增加', '增加', () => {
-      this.parkingSpaceSrv.addParkingSpace(this.parkingspaceAdd).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.toolSrv.setToast('success', '操作成功', value.message);
-            this.clearData();
-            this.parkingspaceAddDialog = false;
-            this.parkingspaceInitialization();
-
-          }else  {
-            this.toolSrv.setToast('error', '操作失败', value.message);
-          }
-        }
-      );
+    const ownerVertifyKeylist = ['parkingSpaceCode', 'parkingSpacePlace', 'parkingSpaceType', 'parkingSpaceNature', 'vehicleCapacity'];
+    ownerVertifyKeylist.forEach((v, index) => {
+      this.keyparkingSpaceList[index] = this.parkingspaceAdd[v] === '' || this.parkingspaceAdd[v] === undefined || this.parkingspaceAdd[v] === null;
     });
+    console.log(this.keyparkingSpaceList);
+    const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
+      return (this.parkingspaceAdd[v] !== '' && this.parkingspaceAdd[v] !== undefined && this.parkingspaceAdd[v] !== null);
+    });
+    if (ownerInfoStatus) {
+      this.toolSrv.setConfirmation('增加', '增加', () => {
+        this.parkingSpaceSrv.addParkingSpace(this.parkingspaceAdd).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.clearData();
+              this.parkingspaceAddDialog = false;
+              this.parkingspaceInitialization();
+            } else  {
+              this.toolSrv.setToast('error', '操作失败', value.message);
+            }
+          }
+        );
+      });
+    } else {
+      this.toolSrv.setToast('error', '添加失败', '带*的信息未填写完整');
+    }
+
   }
    // show  parkingspace detail dialog
   public parkingspaceDetailClick(e): void {
@@ -217,22 +228,31 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
 
   // sure modify parkingspace
   public parkingspaceModifySureClick(): void {
-    // console.log(this.parkingspaceModify);
-    // this.parkingspaceModify.parkingSpaceCode = this.parkingspaceModify.parkingSpaceCode.slice(this.parkingspaceModify.parkingSpaceCode.lastIndexOf('-') + 1, this.parkingspaceModify.parkingSpaceCode.length);
-    console.log(this.parkingspaceModify);
-    this.toolSrv.setConfirmation('修改', '修改', () => {
-      this.parkingSpaceSrv.updateParkingSpace(this.parkingspaceModify).subscribe(
-        value => {
-          console.log(value);
-          if (value.status === '1000') {
-            this.toolSrv.setToast('success', '操作成功', value.message);
-            this.parkingspaceModifayDialog = false;
-            this.clearData();
-            this.parkingspaceInitialization();
-          }
-        }
-      );
+    const ownerVertifyKeylist = ['parkingSpaceCode', 'parkingSpacePlace', 'parkingSpaceType', 'parkingSpaceNature', 'vehicleCapacity'];
+    ownerVertifyKeylist.forEach((v, index) => {
+      this.keyparkingSpaceList[index] = this.parkingspaceModify[v] === '' || this.parkingspaceModify[v] === undefined || this.parkingspaceModify[v] === null;
     });
+    const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
+      return (this.parkingspaceModify[v] !== '' && this.parkingspaceModify[v] !== undefined && this.parkingspaceModify[v] !== null);
+    });
+    if (ownerInfoStatus) {
+      this.toolSrv.setConfirmation('修改', '修改', () => {
+        this.parkingSpaceSrv.updateParkingSpace(this.parkingspaceModify).subscribe(
+          value => {
+            console.log(value);
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.parkingspaceModifayDialog = false;
+              this.clearData();
+              this.parkingspaceInitialization();
+            }
+          }
+        );
+      });
+    } else {
+      this.toolSrv.setToast('error', '修改失败', '带*的信息未填写完整');
+    }
+
   }
 
   // Delete parking space information
@@ -263,10 +283,10 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
     this.parkingspaceSelect = [];
     this.parkSpaceTypemodify = null;
     this.parkSpaceNaturemodify = null;
+    this.keyparkingSpaceList = [false, false, false, false, false];
   }
   // paging query
   public nowpageEventHandle(event: any): void {
-    this.loadHidden = false;
     this.nowPage = event;
     this.queryParkingSpacePageData();
     this.parkingspaceSelect = [];
@@ -284,7 +304,7 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
           this.parkingSpaceContent = value.data.contents;
           this.setTableOption(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-        }else  {
+        } else  {
           this.toolSrv.setToast('error', '请求错误', value.message);
         }
 
@@ -381,9 +401,9 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
       if (v.label === '车位信息') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           // console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(item => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (item.title === val.label) {
                 val.hidden = false;
               }
             });

@@ -28,7 +28,7 @@
     </div>
     <!--搜索-->
     <div class="ui-inputgroup bf-staff-header-search" *ngIf="!btnHiden[4].hidden">
-      <input type="text" pInputText placeholder="请输入员工用户名" [(ngModel)]="searchInputData">
+      <input type="text" pInputText placeholder="请输入员工姓名" [(ngModel)]="searchInputData">
       <button id="disabled-btn" class="bf-staff-header-btn-search" type="button"  (click)="staffSearchClick()">搜索</button>
     </div>
   </div>
@@ -47,7 +47,7 @@
           <label ><span style="color: red">*</span>部门名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input type="text" pInputText placeholder="请选择部门.." (click)="DepartTreeClick()" [(ngModel)]="staffAdd.departmentName" />
+          <input type="text" pInputText placeholder="请选择部门.." (click)="DepartTreeClick('add')" [(ngModel)]="staffAdd.departmentName"/>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[1]}">
@@ -212,47 +212,56 @@
   <p-dialog header="信息修改" [(visible)]="staffModifayDialog" [width]="900" >
     <!--Content-->
     <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
-
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[0]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>部门名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input type="text" pInputText placeholder="请选择部门.." (click)="DepartTreeClick()" [(ngModel)]="staffModifay.departmentName"/>
+          <input type="text" pInputText placeholder="请选择部门.." (click)="DepartTreeClick('modify')" [(ngModel)]="staffModifay.departmentName" (blur)="changeInput(staffModifay.departmentName, 0)"/>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[1]}">
         <div class="ui-g-4" style="text-align: right">
           <label for="addusername"><span style="color: red">*</span>用户名：</label>
         </div>
         <div class="ui-g-8">
-          <input  type="text"  disabled pInputText [placeholder]="staffModifay.username" [(ngModel)]="staffModifay.username">
+          <input  type="text"  disabled pInputText [placeholder]="staffModifay.username" [(ngModel)]="staffModifay.username" (blur)="changeInput(staffModifay.username, 1)">
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[2]}">
         <div class="ui-g-4" style="text-align: right">
           <label for="addrealName"><span style="color: red">*</span>真实姓名：</label>
         </div>
         <div class="ui-g-8">
-          <input  type="text" pInputText [placeholder]="staffModifay.realName" [(ngModel)]="staffModifay.realName">
+          <input  type="text" pInputText [placeholder]="staffModifay.realName" [(ngModel)]="staffModifay.realName" (blur)="changeInput(staffModifay.realName, 2)">
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[3]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>性别：</label>
         </div>
         <div class="ui-g-8">
-          <p-radioButton type="radio" label="男"  value="男" name="group"  [(ngModel)]="staffModifay.sex"></p-radioButton>
-          <p-radioButton type="radio" label="女"  value="女" name="group" [ngStyle]="{'margin-left':'2vw'}" [(ngModel)]="staffModifay.sex"></p-radioButton>
+          <p-radioButton type="radio" label="男"  value="男" name="group"  [(ngModel)]="staffModifay.sex" (onClick)="changeInput(staffModifay.sex, 3)"></p-radioButton>
+          <p-radioButton type="radio" label="女"  value="女" name="group" [ngStyle]="{'margin-left':'2vw'}" [(ngModel)]="staffModifay.sex" (onClick)="changeInput(staffModifay.sex, 3)"></p-radioButton>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[4]}" >
         <div class="ui-g-4" style="text-align: right">
           <label for="addmobilePhone"><span style="color: red">*</span>手机号码：</label>
         </div>
         <div class="ui-g-8">
-          <input  type="text" pInputText [placeholder]="staffModifay.mobilePhone" [(ngModel)]="staffModifay.mobilePhone">
+          <input  type="text" pInputText [placeholder]="staffModifay.mobilePhone" [(ngModel)]="staffModifay.mobilePhone" (blur)="changeInput(staffModifay.mobilePhone, 4)">
+          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(staffModifay.mobilePhone === undefined || staffModifay.mobilePhone === '')? !toolSrv.verifyPhone.test(staffModifay.mobilePhone): toolSrv.verifyPhone.test(staffModifay.mobilePhone)"></p-message>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label for="addidentity">身份证号：</label>
+        </div>
+        <div class="ui-g-8">
+          <input  type="text" pInputText [placeholder]="staffModifay.identity" [(ngModel)]="staffModifay.identity">
+          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(staffModifay.identity === undefined || staffModifay.identity === '')? (!this.toolSrv.verifyIdNumber.test(staffModifay.identity) || !this.toolSrv.verifyIdNumber1.test(staffModifay.identity) || !this.toolSrv.verifyIdNumber2.test(staffModifay.identity) || !this.toolSrv.verifyIdNumber3.test(staffModifay.identity) ): (toolSrv.verifyIdNumber.test(staffModifay.identity) || toolSrv.verifyIdNumber1.test(staffModifay.identity) || toolSrv.verifyIdNumber2.test(staffModifay.identity) || toolSrv.verifyIdNumber3.test(staffModifay.identity))"></p-message>
         </div>
       </div>
       <div class="ui-g-6">
@@ -287,14 +296,7 @@
           <p-dropdown scrollHeight="100px" [options]="enableOption"  [placeholder]="enableModifyDrapPlaceholder" [(ngModel)]="staffModifay.enabled"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4" style="text-align: right">
-          <label for="addidentity">身份证号：</label>
-        </div>
-        <div class="ui-g-8">
-          <input  type="text" pInputText [placeholder]="staffModifay.identity" [(ngModel)]="staffModifay.identity">
-        </div>
-      </div>
+
       <div class="ui-g-6">
         <div class="ui-g-4" style="text-align: right">
           <label for="educationalBackground">学历：</label>

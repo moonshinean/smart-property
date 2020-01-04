@@ -195,6 +195,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  public keyChargeList = false;
 
   // 放大 缩小显示
   public dialogHiddenData = [];
@@ -377,10 +378,15 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       this.toolSrv.setToast('error', '操作错误', '请选择收费项目');
     }
   }
+  // 表单检验
+  public  changeInput(data): void {
+    this.keyChargeList = !(data !== '' && data !== null && data !== undefined);
+  }
   // sure  payment (缴费确认)
   public paymentSureClick(): void {
     if (this.paymentOrderAdd.paymentMethod === undefined) {
         this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
+        this.keyChargeList = true;
     } else {
         const listKey = ['organizationId', 'villageName',
           'villageCode', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode',

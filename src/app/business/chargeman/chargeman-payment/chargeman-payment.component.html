@@ -247,12 +247,12 @@
                 <input  type="text" pInputText (input)="getBalance($event)"  [(ngModel)]="this.paymentMoney">
               </div>
           </div>
-        <div class="ui-g-6" style="line-height:  3vh">
+        <div class="ui-g-6" style="line-height:  3vh"  [ngClass]="{dropdownKeyFilter: this.keyChargeList}">
               <div class="ui-g-3" style="text-align: right">
-                <label >缴费方式：</label>
+                <label ><span style="color: red">*</span>缴费方式：</label>
               </div>
               <div class="ui-g-7" style="line-height: 2vh;text-align: left">
-                <p-dropdown [options]="paymentMethodOption" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择支付方式..." [(ngModel)]="this.paymentOrderAdd.paymentMethod"></p-dropdown>
+                <p-dropdown [options]="paymentMethodOption" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择支付方式..." [(ngModel)]="paymentOrderAdd.paymentMethod" (onChange)="changeInput(paymentOrderAdd.paymentMethod)"></p-dropdown>
               </div>
           </div>
         <div class="ui-g-6" style="line-height:  3vh">

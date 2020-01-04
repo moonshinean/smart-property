@@ -47,6 +47,38 @@
   <p-dialog header="信息添加" [(visible)]="parkingspaceAddDialog" [width]="900">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyparkingSpaceList[0]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位编号：</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceAdd.parkingSpaceCode" (blur)="changeInput(parkingspaceAdd.parkingSpaceCode, 0)">
+        </div>
+      </div>
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyparkingSpaceList[1]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位地点：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="parkSpacePlaceOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceAdd.parkingSpacePlace" (onChange)="changeInput(parkingspaceAdd.parkingSpacePlace, 1)"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyparkingSpaceList[2]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位类型：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="parkSpaceTypeOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceAdd.parkingSpaceType" (onChange)="changeInput(parkingspaceAdd.parkingSpaceType, 2)"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyparkingSpaceList[3]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位性质：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="parkSpaceNatureOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceAdd.parkingSpaceNature" (onChange)="changeInput(parkingspaceAdd.parkingSpaceNature, 3)"></p-dropdown>
+        </div>
+      </div>
       <div class="ui-g-6">
         <div class="ui-g-4" style="text-align: right">
           <label >楼层：</label>
@@ -57,50 +89,18 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4" style="text-align: right">
-          <label ><span style="color: red">*</span>车位地点：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="parkSpacePlaceOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceAdd.parkingSpacePlace"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4" style="text-align: right">
-          <label ><span style="color: red">*</span>车位编号：</label>
-        </div>
-        <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceAdd.parkingSpaceCode">
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4" style="text-align: right">
-          <label ><span style="color: red">*</span>车位性质：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="parkSpaceNatureOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceAdd.parkingSpaceNature"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4" style="text-align: right">
           <label >车位面积：</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入车位面积..." [(ngModel)]="parkingspaceAdd.parkingSpaceArea">
+          <input type="number" pInputText placeholder="请输入车位面积..." [(ngModel)]="parkingspaceAdd.parkingSpaceArea">
         </div>
       </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4" style="text-align: right">
-          <label ><span style="color: red">*</span>车位类型：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="parkSpaceTypeOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceAdd.parkingSpaceType"></p-dropdown>
-        </div>
-      </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyparkingSpaceList[4]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>车位容车数量：</label>
         </div>
         <div class="ui-g-8">
-          <input type="number" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceAdd.vehicleCapacity">
+          <input type="number" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceAdd.vehicleCapacity" (blur)="changeInput(parkingspaceAdd.vehicleCapacity, 4)">
         </div>
       </div>
       <div class="ui-g-6">
@@ -147,28 +147,28 @@
           <input type="text"  pInputText  disabled  [(ngModel)]="parkingspaceModify.floor" >
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: keyparkingSpaceList[0]}">
         <div class="ui-g-4" style="text-align: right">
-          <label >车位编号：</label>
+          <label ><span style="color: red">*</span>车位编号：</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" disabled pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceModify.parkingSpaceCode">
+          <input type="text" disabled pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceModify.parkingSpaceCode" (blur)="changeInput(parkingspaceModify.parkingSpaceCode, 0)">
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyparkingSpaceList[1]}">
         <div class="ui-g-4" style="text-align: right">
-          <label >车位地点：</label>
+          <label ><span style="color: red">*</span>车位地点：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="parkSpacePlaceOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceModify.parkingSpacePlace"></p-dropdown>
+          <p-dropdown [options]="parkSpacePlaceOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceModify.parkingSpacePlace"  (onChange)="changeInput(parkingspaceModify.parkingSpacePlace, 1)"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyparkingSpaceList[2]}">
         <div class="ui-g-4" style="text-align: right">
-          <label >车位性质：</label>
+          <label ><span style="color: red">*</span>车位性质：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="parkSpaceNatureOption" scrollHeight="100px" [(ngModel)]="parkingspaceModify.parkingSpaceNature"></p-dropdown>
+          <p-dropdown [options]="parkSpaceNatureOption" scrollHeight="100px" [(ngModel)]="parkingspaceModify.parkingSpaceNature"  (onChange)="changeInput(parkingspaceModify.parkingSpaceNature, 2)"></p-dropdown>
         </div>
       </div>
       <div class="ui-g-6">
@@ -179,20 +179,20 @@
           <input type="text" pInputText placeholder="请输入车位面积..." [(ngModel)]="parkingspaceModify.parkingSpaceArea">
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyparkingSpaceList[3]}">
         <div class="ui-g-4" style="text-align: right">
-          <label >车位类型：</label>
+          <label ><span style="color: red">*</span>车位类型：</label>
         </div>
         <div class="ui-g-8" style="line-height: 2vh">
-          <p-dropdown [options]="parkSpaceTypeOption" scrollHeight="100px"  [(ngModel)]="parkingspaceModify.parkingSpaceType"></p-dropdown>
+          <p-dropdown [options]="parkSpaceTypeOption" scrollHeight="100px"  [(ngModel)]="parkingspaceModify.parkingSpaceType"  (onChange)="changeInput(parkingspaceModify.parkingSpaceType, 3)"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyparkingSpaceList[4]}">
         <div class="ui-g-4" style="text-align: right">
-          <label >车位容车数量：</label>
+          <label ><span style="color: red">*</span>车位容车数量：</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceModify.vehicleCapacity">
+          <input type="text" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceModify.vehicleCapacity" (blur)="changeInput(parkingspaceModify.vehicleCapacity, 4)">
         </div>
       </div>
       <div class="ui-g-6">

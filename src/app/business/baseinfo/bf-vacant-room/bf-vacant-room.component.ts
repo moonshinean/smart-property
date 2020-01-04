@@ -76,7 +76,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   public btnHiden = [
     {label: '新增', hidden: true},
     {label: '修改', hidden: true},
-    {label: '删除', hidden: true},
+    {label: '删除房间', hidden: true},
     {label: '导出', hidden: true},
   ];
   public addroomVerifyStaus: any;
@@ -88,7 +88,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   public vacantRoomSub: Subscription;
   // public msgs: Message[] = []; // 消息弹窗
   constructor(
-    private toolSrv: PublicMethedService,
+    public toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private vantRoomSrv: BfVacantRoomService,
     private sharedSrv: SharedServiceService,
@@ -440,16 +440,18 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   }
   // 导出文件
   public  importExcalOfVacantRoom(): void {
-      this.owerSrv.importFileOfVacantRoom({level: this.SearchData.level, code: this.SearchData.code}).subscribe(
-        value => {
-          console.log(value);
-          if (value.status === '1000') {
-            window.open(value.data);
-          } else {
-            this.toolSrv.setToast('error', '请求错误', value.message);
+      this.toolSrv.setConfirmation('导出', '导出空置房信息', () => {
+        this.owerSrv.importFileOfVacantRoom({level: this.SearchData.level, code: this.SearchData.code}).subscribe(
+          value => {
+            console.log(value);
+            if (value.status === '1000') {
+              window.open(value.data);
+            } else {
+              this.toolSrv.setToast('error', '请求错误', value.message);
+            }
           }
-        }
-      );
+        );
+      });
   }
   // 清除和输出化数据
   public  clearData(): void {
