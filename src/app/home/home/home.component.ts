@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit {
     // } else {
     //   this.toolSrv.changeTheme('green');
     // }
-    this.toolSrv.changeTheme('green');
+    this.toolSrv.changeTheme('hotblue');
     if (this.route.snapshot.children[0].url[0].path === 'main') {
       this.sidbarHidden = true;
     }

@@ -7,8 +7,8 @@
     <img src="assets/images/ic_header.png" class="header-title-userimg" [routerLink]="['/persion']">
   </div>
   <div class="header-titlebar" #titlebar>
-     <img src="assets/images/cloud.png" class="header-titlebar-titleimg">
-     <span class="header-titlebar-titlename">物业管理智慧策略系统</span>
+     <img src="assets/images/ic_header_icon.png" class="header-titlebar-titleimg">
+     <span class="header-titlebar-titlename">未来城物业管理智慧策略系统</span>
      <div class="header-titlebar-bar" #headerbar>
         <span  *ngFor="let item of item; let i = index" (click)="spanBarClick($event, i)"  [ngStyle]="{'color':item.color}">{{item.title}}</span>
      </div>

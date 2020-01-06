@@ -112,49 +112,20 @@ export class BfCouponComponent implements OnInit, OnDestroy {
       {field: 'operating', header: '操作'}
     ];
     this.loadingHide = false;
-    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}], (data) => {
+    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'COUPON_EFFECTIVE_TIME'},
+      {settingType: 'COUPON_TYPE'}, {settingType: 'CHARGE_TYPE'}], (data) => {
+      console.log(data);
       this.optionEnable = this.toolSrv.setListMap(data.ENABLED);
-      this.couponSrv.queryCouponType({}).subscribe(
-        value => {
-          console.log(value);
-          if (value.status === '1000') {
-            value.data.forEach( v => {
-              this.couponTypeData.push({label: v.settingName, value: v.settingCode});
-            });
-            this.couponSrv.queryChargeCode({}).subscribe(
-              val => {
-                console.log(val);
-                if (val.status === '1000') {
-                  val.data.forEach( v => {
-                    this.ChargeCodeData.push({label: v.chargeName, value: v.chargeCode});
-                  });
-                  this.queryData(this.nowPage);
-                }
-              }
-            );
-          }
+      this.couponTypeData = this.toolSrv.setListMap(data.COUPON_TYPE);
+      this.ChargeCodeData = this.toolSrv.setListMap(data.CHARGE_TYPE);
+      data.COUPON_EFFECTIVE_TIME.forEach( v => {
+        if (v.settingName === '0' || v.settingName === 0) {
+          this.EffectiveTime.push({label: '无限期', value: v.settingName});
+        } else{
+          this.EffectiveTime.push({label:  v.settingName === '永久有效' ?  v.settingName : v.settingName + '天', value: v.settingName});
         }
-      );
+      });
     });
-    this.couponSrv.queryEffectiveTime({}).subscribe(
-      value => {
-        console.log(value);
-        value.data.forEach( v => {
-          if (v.settingName === '0' || v.settingName === 0) {
-            this.EffectiveTime.push({label: '无限期', value: v.settingName});
-          } else {
-            this.EffectiveTime.push({label:  v.settingName + '天', value: v.settingName});
-          }
-        });
-      }
-    );
-    // this.toolSrv.getAdminStatus('ENABLED', (data) => {
-    //   if (data.length > 0) {
-    //     this.toolSrv.setDataFormat(data, '' , (list, label) => {
-    //       this.optionEnable = list;
-    //     });
-    //   }
-    // });
   }
   // Show add coupon popup window （显示添加优惠卷弹窗）
   public  couponAddClick(): void {
@@ -170,11 +141,11 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     });
     this.formgroup = this.toolSrv.setFormGroup(this.form);
     this.formdata = [
-      {label: '优惠卷名称', type: 'input', name: 'couponName', option: '', placeholder: '请输入优惠卷名称', required: true},
+      {label: '优惠卷名称', type: 'input', name: 'couponName', option: '', placeholder: '请输入优惠卷名称', required: true, disable: false},
       {label: '优惠卷类型', type: 'dropdown', name: 'couponType', option: this.couponTypeData, placeholder: '请选择优惠卷类型', required: true},
       {label: '收费项目', type: 'dropdown', name: 'chargeCode', option: this.ChargeCodeData, placeholder: '请选择收费项目', required: true},
       {label: '有效时长', type: 'dropdown', name: 'effectiveTime', option: this.EffectiveTime, placeholder: '请选择有效时长',  required: true},
-      {label: '金额', type: 'input', name: 'money', option: '', placeholder: '请输入金额',  required: true},
+      {label: '金额', type: 'input', name: 'money', option: '', placeholder: '请输入金额',  required: true,  disable: false},
     ];
   }
   // sure add coupon （添加确认请求）

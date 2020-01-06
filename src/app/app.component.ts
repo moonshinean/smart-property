@@ -12,6 +12,6 @@ export class AppComponent implements OnInit {
     private toolSrv: PublicMethedService,
   ) {}
   ngOnInit(): void {
-    this.toolSrv.changeTheme('green');
+    this.toolSrv.changeTheme('hotblue');
   }
 }

@@ -186,6 +186,9 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
    // show  parkingspace detail dialog
   public parkingspaceDetailClick(e): void {
     // this.parkingspaceDetail = e;
+    e.parkingSpaceNature = this.toolSrv.setValueToLabel(this.parkSpaceNatureOption, e.parkingSpaceNature.toString());
+    e.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, e.parkingSpaceType.toString());
+    e.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption, e.parkingSpacePlace.toString());
     this.parkingSpaceDetailOption = {
       dialog: true,
       tableHidden: false,
@@ -218,7 +221,11 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
     } else if (this.parkingspaceSelect.length === 1) {
       this.parkingspaceSelect[0].parkingSpaceNature = this.toolSrv.setLabelToValue(this.parkSpaceNatureOption,  this.parkingspaceSelect[0].parkingSpaceNature);
       this.parkingspaceSelect[0].parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption,  this.parkingspaceSelect[0].parkingSpaceType);
-      this.parkingspaceModify = this.parkingspaceSelect[0];
+      for (const inkey in this.parkingspaceSelect[0]) {
+        this.parkingspaceModify[inkey] = this.parkingspaceSelect[0][inkey];
+      }
+      this.parkingspaceModify.parkingSpacePlace = this.parkingspaceModify.parkingSpacePlace.toString();
+      // this.parkingspaceModify = this.parkingspaceSelect[0];
       console.log(this.parkingspaceSelect);
       this.parkingspaceModifayDialog = true;
     } else {
@@ -296,11 +303,11 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
       value => {
         console.log(value);
         if (value.status === '1000') {
-          value.data.contents.forEach( v => {
-            v.parkingSpaceNature = this.toolSrv.setValueToLabel(this.parkSpaceNatureOption, v.parkingSpaceNature);
-            v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, v.parkingSpaceType);
-            v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption, v.parkingSpacePlace);
-          });
+          // value.data.contents.forEach( v => {
+          //   v.parkingSpaceNature = this.toolSrv.setValueToLabel(this.parkSpaceNatureOption, v.parkingSpaceNature);
+          //   v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, v.parkingSpaceType);
+          //   v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption, v.parkingSpacePlace);
+          // });
           this.parkingSpaceContent = value.data.contents;
           this.setTableOption(value.data.contents);
           this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};

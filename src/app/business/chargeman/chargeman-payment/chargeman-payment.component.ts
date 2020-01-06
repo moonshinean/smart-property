@@ -196,7 +196,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     detailBtn: ''
   };
   public keyChargeList = false;
-
+  // 房屋添加检验
+  public keyChargeParkSpaceList = [false, false, false, false, false, false, false, false, false, false];
   // 放大 缩小显示
   public dialogHiddenData = [];
   constructor(
@@ -1263,16 +1264,12 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   // 缩小弹窗
   public closePaymentDialogClick(): void {
     this.paymentDialog = false;
-
-    console.log(this.dialogHiddenData.indexOf({label: '费用添加', dialog: 'paymentDialog'}));
-    console.log(this.dialogHiddenData);
     const listFlag =  this.dialogHiddenData.some( v => {
       return v.label === '费用添加';
     });
     if (!listFlag) {
       this.dialogHiddenData.push({label: '费用添加', dialog: 'paymentDialog'});
     }
-
   }
 }
 

@@ -73,7 +73,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
     {label: '新增', hidden: true},
     {label: '修改', hidden: true},
     {label: '删除', hidden: true},
-    {label: '重置', hidden: true},
+    {label: '重置密码', hidden: true},
     {label: '搜索', hidden: true},
   ];
   constructor(
@@ -421,6 +421,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
       if (v.label === '员工档案') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           value.data.forEach(item => {
+            console.log(value);
             this.btnHiden.forEach( val => {
               if (item.title === val.label) {
                 val.hidden = false;

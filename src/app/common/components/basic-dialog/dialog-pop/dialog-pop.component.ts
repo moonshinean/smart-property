@@ -25,7 +25,6 @@ export class DialogPopComponent implements OnInit, OnChanges {
   public dataTrees: DataTree[];
   public dataTree: DataTree = new DataTree();
   public treeDialog: boolean;
-  public disable = true;
   public flag = 0;
   public esDate = {
     firstDayOfWeek: 0,
@@ -44,24 +43,20 @@ export class DialogPopComponent implements OnInit, OnChanges {
   }
   // dialog sure
   public  SureClick(): void {
-    const  a = {};
     this.eventClick.emit({type: this.dialogOption.title, value: this.formContrl, invalid: !this.formContrl.invalid});
 
   }
   // input click event
   public  inputData(): void {
-    // this.treeData = undefined;
   }
   // Close the dialog
   public  CloseClick(): void {
     this.eventClick.emit('false');
     this.flag = 0;
-    // this.treeData = undefined;
   }
   // Initialization tree structure
   public  dataTreeClick(): void {
     this.dataTrees = this.initializeTree(this.treeData);
-    // console.log(this.dataTrees);
     this.treeDialog = true;
   }
   // Tree structure is not selected
@@ -76,10 +71,6 @@ export class DialogPopComponent implements OnInit, OnChanges {
   }
   // The life cycle onChanges
   ngOnChanges(changes: SimpleChanges): void {
-    // if (this.treeData) {
-    //   this.disable = true;
-    // }
-    console.log(this.formContrl);
   }
   // Tree structure initialization
   public initializeTree(data): any {

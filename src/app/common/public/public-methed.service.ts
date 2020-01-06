@@ -304,6 +304,60 @@ export class PublicMethedService {
       detailBtn: '#EDB4A2'
     }
   };
+  public hotblueTheme = [
+    {label: '--bgc-theme', value: '#527595'},
+    {label: '--body-bgc', value: '#E4E4E4'},
+    {label: '--ft-sidebar-theme', value: '#fff'},
+    {label: '--ft-sidebar-hover-theme', value: '#000'},
+    {label: '--bgc-sidbarMunu', value: '#527595'},
+    {label: '--footer-bgc', value: '#fff'},
+    {label: '--footer-ft', value: '#000'},
+    {label: '--mokuai-bgc', value: '#F5F5F5'},
+    {label: '--table-detail', value: '#7195B7'},
+    {label: '--paging-bgc', value: '#F5F5F5'},
+    {label: '--paging-ft', value: '#000'},
+    {label: '--paging-input', value: 'rgba(3,3,3,0.5)'},
+    {label: '--header-bgc', value: '#4F7290'},
+    {label: '--main-event-item', value: '#DBDBDB'},
+    {label: '--main-event-ft', value: '#000'},
+    {label: '--main-bgc', value: '#F5F5F5'},
+    {label: '--main-title', value: '#66849F'},
+    {label: '--main-box-shodow', value: '#5E6372'},
+  ];
+  public hotblueData  = {
+    siderbar: {ft: '#fff', ftHover: '#000'},
+    headerbar: {ft: '#fff', ftHover: '#000'},
+    main: {
+      table: {
+        header: {background: '#517495', color: '#fff'},
+        content: [{background: '#F5F5F5', color: '#000'},
+          {background: '#DFE9F3', color: '#000'}],
+      },
+      bar: {
+        background: '#F5F5F5',
+        tipcolor: '#333',
+        axislineColor: '#000',
+        axislabelColor: '#000',
+        lineGradientColor: ['#99C7F0', '#537798'],
+        linebgc: '#D0D0D0'
+      },
+      pie: {
+        background: '#F5F5F5',
+        colorList: ['#7DA5C9', '#406489', '#436B8E', '#395B77', '#273946'],
+        legendcolor: '#ccc',
+        labelColor: 'rgba(0, 0, 0, 0.7)',
+        labelLineColor: 'rgba(0, 0, 0, 0.3)',
+        itemStyle: '#48749B',
+        itemShodow: '#ECECEC'
+      }
+
+    },
+    table: {
+      header: {background: '#527595', color: '#fff'},
+      content: [{background: '#F5F5F5', color: '#000'}, {background: '#E5F0F5', color: '#000'}],
+      detailBtn: '#7195B7'
+    }
+  };
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -468,6 +522,7 @@ export class PublicMethedService {
       case 'blue': this.setTheme(this.blueTheme, this.blueData); break;
       case 'pink': this.setTheme(this.PinkTheme, this.PinkData); break;
       case 'brown': this.setTheme(this.brownTheme, this.brownData); break;
+      case 'hotblue': this.setTheme(this.hotblueTheme, this.hotblueData); break;
     }
 
   }

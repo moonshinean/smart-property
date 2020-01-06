@@ -39,7 +39,8 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
     pageSize: 10,
     pageNo: 1,
     code: '',
-    level: ''
+    level: '',
+    type: ''
   };
   // 按钮权限相关
   public btnHiden = [
@@ -88,6 +89,7 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
       value => {
         this.searchOwerData.level = value.data.level;
         this.searchOwerData.code = value.data.code;
+        this.searchOwerData.type = value.data.type;
         this.queryData();
       }
     );
@@ -103,6 +105,7 @@ export class LatepaymentOwnerComponent implements OnInit, OnDestroy {
     if (this.sharedSrv.SearchData !== undefined) {
       this.searchOwerData.level = this.sharedSrv.SearchData.data.level;
       this.searchOwerData.code = this.sharedSrv.SearchData.data.code;
+      this.searchOwerData.type = this.sharedSrv.SearchData.data.type;
     }
     this.searchOwerData.pageNo = 1;
     this.searchOwerData.pageSize = 10;

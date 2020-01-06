@@ -354,8 +354,7 @@
 
   <p-dialog header="租赁车位" [(visible)]="parkSpaceOptionDialog" [width]="800"  [transitionOptions]="'200ms'"  [closable]="false" [positionTop]="150">
     <div class="ui-g ui-fluid">
-
-      <div class="ui-g-6" style="line-height: 4vh">
+      <div class="ui-g-6" style="line-height: 4vh" [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[0]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>车牌号</label>
         </div>
@@ -363,7 +362,7 @@
           <input type="text" pInputText placeholder="请输入车牌号"  [(ngModel)]="rentalParkSpace.licensePlateNumber"/>
         </div>
       </div>
-      <div class="ui-g-6" style="line-height: 4vh">
+      <div class="ui-g-6" style="line-height: 4vh" [ngClass]="{dropdownKeyFilter: this.keyChargeParkSpaceList[1]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>是否续租</label>
         </div>
@@ -371,7 +370,7 @@
           <p-dropdown [options]="rentalRenewalStatusOption" placeholder="请选择续租状态" scrollHeight="100px" [(ngModel)]="rentalParkSpace.rentalRenewalStatus" (onChange)="rentalRenewalStatusChange($event)"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6" style="line-height: 4vh">
+      <div class="ui-g-6" style="line-height: 4vh" [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[2]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>租赁月数</label>
         </div>
@@ -379,7 +378,7 @@
           <input type="text" pInputText placeholder="请输入租赁月数"  [(ngModel)]="rentalParkSpace.datedif"/>
         </div>
       </div>
-      <div class="ui-g-6" style="line-height: 4vh" [hidden]="rentalHiddenInfo" >
+      <div class="ui-g-6" style="line-height: 4vh" [hidden]="rentalHiddenInfo" [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[3]}">
         <div class="ui-g-4" style="text-align: right">
           <label><span style="color: red">*</span>车位编号</label>
         </div>
@@ -387,7 +386,7 @@
           <input type="text" placeholder="请选择车位编号" pInputText (click)="dataTreeClick()" [(ngModel)]="rentalCode"/>
         </div>
       </div>
-      <div class="ui-g-6" style="line-height: 4vh" [hidden]="rentalHiddenInfo" >
+      <div class="ui-g-6" style="line-height: 4vh" [hidden]="rentalHiddenInfo" [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[4]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>开始计费时间</label>
         </div>
@@ -395,7 +394,7 @@
           <p-calendar [(ngModel)]="rentalParkSpace.startTime" placeholder="请选择开始计费日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
-      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh" [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[5]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>车主姓名</label>
         </div>
@@ -403,7 +402,7 @@
           <input type="text" pInputText  placeholder="请输入车主姓名" [(ngModel)]="rentalParkSpace.authorizedPersonName"/>
         </div>
       </div>
-      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh"  [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[6]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>车主电话</label>
         </div>
@@ -411,7 +410,7 @@
           <input type="text" pInputText placeholder="请输入车主电话" [(ngModel)]="rentalParkSpace.authorizedPersonPhone"/>
         </div>
       </div>
-      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh">
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh"  [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[7]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>车主身份证号</label>
         </div>
