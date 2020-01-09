@@ -361,6 +361,7 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   public  queryData(): void {
     this.lateSrv.queryLatePaymentPageData(this.SearchData).subscribe(
       value => {
+        console.log(value);
         if (value.status === '1000') {
           this.latepaymentContent = value.data.contents;
           this.setTableOption(value.data.contents);

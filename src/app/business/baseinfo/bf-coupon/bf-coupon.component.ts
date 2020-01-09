@@ -104,12 +104,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   // initialization houseinfo
   public  couponInitialization(): void {
     this.couponTableTitle = [
-      {field: 'chargeCode', header: '收费项目名称'},
-      // {field: 'couponCode', header: '优惠券编号'},
-      {field: 'couponName', header: '优惠券名称'},
-      {field: 'effectiveTime', header: '有效时长'},
-      {field: 'money', header: '金额'},
-      {field: 'operating', header: '操作'}
+
     ];
     this.loadingHide = false;
     this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'COUPON_EFFECTIVE_TIME'},
@@ -121,10 +116,11 @@ export class BfCouponComponent implements OnInit, OnDestroy {
       data.COUPON_EFFECTIVE_TIME.forEach( v => {
         if (v.settingName === '0' || v.settingName === 0) {
           this.EffectiveTime.push({label: '无限期', value: v.settingName});
-        } else{
-          this.EffectiveTime.push({label:  v.settingName === '永久有效' ?  v.settingName : v.settingName + '天', value: v.settingName});
+        } else {
+          this.EffectiveTime.push({label:  v.settingName === '永久有效' ?  v.settingName : v.settingName + '天', value: v.settingCode});
         }
       });
+      this.queryData(this.nowPage);
     });
   }
   // Show add coupon popup window （显示添加优惠卷弹窗）
@@ -150,6 +146,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   }
   // sure add coupon （添加确认请求）
   public  couponAddSureClick(data): void {
+    console.log(data);
     this.toolSrv.setConfirmation('增加', '增加', () => {
       this.couponSrv.addCoupon(data).subscribe(
         value => {
@@ -205,7 +202,9 @@ export class BfCouponComponent implements OnInit, OnDestroy {
           this.couponSelect[0].enable  = value.value;
         }
       });
-      this.couponModify = this.couponSelect[0];
+      // for (let key in this.couponSelect[0]) {
+      //   // this.couponModify[key] = this.couponSelect[0][key];
+      // }
       this.optionDialog = {
         type: 'add',
         title: '优惠卷修改',
@@ -232,6 +231,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   }
   // sure modify coupon （确定修改）
   public  couponModifySureClick(data): void {
+    console.log(data);
     if  (this.isChinese(data.couponType)) {
       data.couponType = this.toolSrv.setLabelToValue(this.couponTypeData, data.couponType);
     }
@@ -312,9 +312,16 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
     this.optionTable = {
-      width: '100%',
+      width: '101%',
       header: {
-        data:  this.couponTableTitle,
+        data:  [
+          {field: 'chargeCode', header: '收费项目名称'},
+          // {field: 'couponCode', header: '优惠券编号'},
+          {field: 'couponName', header: '优惠券名称'},
+          {field: 'effectiveTime', header: '有效时长'},
+          {field: 'money', header: '金额'},
+          {field: 'operating', header: '操作'}
+        ],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
       Content: {
@@ -366,8 +373,12 @@ export class BfCouponComponent implements OnInit, OnDestroy {
           this.couponAddSureClick(this.couponAdd);
         } else {
           for (const key in e.value.value) {
+
             this.couponModify[key] = e.value.value[key];
+            console.log(this.couponModify[key]);
+
           }
+          console.log(this.couponModify);
           this.couponModifySureClick(this.couponModify);
         }
       } else {

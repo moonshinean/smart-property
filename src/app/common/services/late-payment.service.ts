@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {environment} from '../../../environments/environment.prod';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -71,7 +71,7 @@ export class LatePaymentService {
    * 计算违约金
    */
   public  calcLatepayment(pamars): Observable<any> {
-      return this.http.post(environment.chargeUrl + '/liquidated/damages/onekeyCalculationLiquidatedDamages', pamars)
+      return this.http.post(environment.chargeUrl + '/liquidated/damages/onekeyCalculationLiquidatedDamages', pamars);
   }
 
 
