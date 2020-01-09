@@ -99,7 +99,7 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
         value.data.forEach( v => {
           this.RoleCodeList.push({label: v.roleName, value: v.roleCode});
         });
-        // console.log(this.RoleCodeList);
+        console.log(this.RoleCodeList);
         this.permissionAddDialog = true;
       }
     );
@@ -144,27 +144,36 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
         this.primitDeleteList = this.primitData.filter(v => {
           return this.primitDatas.indexOf(v) === -1;
         });
-        this.primitRoleList.forEach( v => {
-          this.primitDeleteList.forEach( val => {
-            if (v.label !== '总平台' && v.label !== '物业管理智慧策略系统') {
-              if (val.label === v.label) {
-                this.ids.push({roleCode: v.roleCode, permisCode: v.permisCode});
-              }
+        this.primitDeleteList.forEach( (item, index) => {
+          if (item.label === '总平台' || item.label === '物业管理智慧策略系统') {
+            this.primitDeleteList.splice(index, 1);
+          }
+        });
+        this.primitDeleteList.forEach( val => {
+          this.primitRoleList.forEach( v => {
+            if ( v.label  === val.label && val.value === v.permisCode) {
+              // console.log(v);
+              // console.log(val);
+              this.ids.push({roleCode: v.roleCode, permisCode: v.permisCode});
             }
+
           });
         });
-        this.permissionSrv.deleteRolePerimit({roleAndPermitCodes: this.ids}).subscribe(
-          (value) => {
-            if (value.status === '1000') {
-              this.permissionInitialization();
-              this.toolSrv.setToast('success', '操作成功', '删除成功');
-              this.permissionAddDialog = false;
-              this.permissionSelect = [];
-            } else {
-              this.toolSrv.setToast('error', '操作失败', value.message);
-            }
-          }
-        );
+        // console.log(this.primitDeleteList);
+        // console.log(this.primitRoleList);
+        // console.log(this.ids);
+        // this.permissionSrv.deleteRolePerimit({roleAndPermitCodes: this.ids}).subscribe(
+        //   (value) => {
+        //     if (value.status === '1000') {
+        //       this.permissionInitialization();
+        //       this.toolSrv.setToast('success', '操作成功', '删除成功');
+        //       this.permissionAddDialog = false;
+        //       this.permissionSelect = [];
+        //     } else {
+        //       this.toolSrv.setToast('error', '操作失败', value.message);
+        //     }
+        //   }
+        // );
       });
     } else {
       this.toolSrv.setToast('error' , '操作错误', '未选择数据');
@@ -184,7 +193,7 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
     } else {
       this.toolSrv.setConfirmation('删除', `删除这${this.permissionSelect.length}项`, () => {
         this.permissionSelect.forEach( v => {
-          this.ids.push(v.id);
+          this.ids.push({roleCode: v.roleCode, permisCode: v.permisCode});
         });
         this.permissionSrv.deleteRolePerimit({ids: this.ids.join(',')}).subscribe(
           (value) => {
@@ -209,6 +218,7 @@ export class SetPermissionComponent implements OnInit, OnDestroy {
     this.primitRoleList = [];
     this.permissionSrv.queryRolePermit({roleCode: e.value}).subscribe(
       (value) => {
+        console.log(value);
         value.data.forEach( v => {
           this.primitDatasList.push(v.permisCode);
           this.primitRoleList.push({label: v.title, roleCode: v.roleCode, permisCode: v.permisCode});
