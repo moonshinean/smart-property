@@ -202,9 +202,10 @@ export class BfCouponComponent implements OnInit, OnDestroy {
           this.couponSelect[0].enable  = value.value;
         }
       });
-      // for (let key in this.couponSelect[0]) {
-      //   // this.couponModify[key] = this.couponSelect[0][key];
-      // }
+      for (const key in this.couponSelect[0]) {
+        this.couponModify[key] = this.couponSelect[0][key];
+      }
+      console.log(this.couponSelect[0]);
       this.optionDialog = {
         type: 'add',
         title: '优惠卷修改',
@@ -219,7 +220,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
       const enable = this.couponSelect[0].enable === 1 ? '启用' : '禁用';
       this.formdata = [
         {label: '优惠卷名称', type: 'input', name: 'couponName', option: '', placeholder: '请输入优惠卷名称', required: true},
-        {label: '优惠卷类型', type: 'dropdown', name: 'couponType', option: this.couponTypeData, placeholder: this.couponSelect[0].couponType, required: true},
+        {label: '优惠卷类型', type: 'dropdown', name: 'couponType', option: this.couponTypeData, placeholder: '', required: true},
         {label: '收费项目', type: 'dropdown', name: 'chargeCode', option: this.ChargeCodeData, placeholder: this.couponSelect[0].chargeCode, required: true},
         {label: '有效时长', type: 'dropdown', name: 'effectiveTime', option: this.EffectiveTime, placeholder:  this.couponSelect[0].effectiveTime, required: true},
         {label: '启用状态', type: 'dropdown', name: 'enable', option: this.optionEnable, placeholder: '' , required: true},
@@ -231,18 +232,9 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   }
   // sure modify coupon （确定修改）
   public  couponModifySureClick(data): void {
-    console.log(data);
-    if  (this.isChinese(data.couponType)) {
-      data.couponType = this.toolSrv.setLabelToValue(this.couponTypeData, data.couponType);
-    }
-    if (this.isChinese(data.chargeCode)) {
-      data.chargeCode = this.toolSrv.setLabelToValue(this.ChargeCodeData, data.chargeCode);
-    }
-    if (data.effectiveTime.includes('天')) {
-      data.effectiveTime = data.effectiveTime.substring(0, data.effectiveTime.indexOf('天'));
-    } else {
-      data.effectiveTime = '0';
-    }
+    data.couponType = this.toolSrv.setLabelToValue(this.couponTypeData, data.couponType);
+    data.chargeCode = this.toolSrv.setLabelToValue(this.ChargeCodeData, data.chargeCode);
+    data.effectiveTime = this.toolSrv.setLabelToValue(this.EffectiveTime, data.effectiveTime);
     this.toolSrv.setConfirmation('修改', '修改', () => {
       this.couponSrv.updateCoupon(data).subscribe(
         value => {
@@ -346,7 +338,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
             item.enable = this.toolSrv.setValueToLabel(this.optionEnable, item.enable);
             // if (item.effectiveTime !== '无限期') {
             //   item.effectiveTime = item.effectiveTime + '天';
-            item.effectiveTime = (item.effectiveTime === '0') ? '无期限' : item.effectiveTime + '天';
+            item.effectiveTime = this.toolSrv.setValueToLabel(this.EffectiveTime, item.effectiveTime);
             // }
           });
           this.couponTableContent = values.data.contents;

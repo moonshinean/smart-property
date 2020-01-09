@@ -5,6 +5,7 @@ import {SetConfigComponent} from './set-config/set-config.component';
 import {SetPermissionComponent} from './set-permission/set-permission.component';
 import {SetRoleComponent} from './set-role/set-role.component';
 import {SetPartComponent} from './set-part/set-part.component';
+import {LoginLogComponent} from './login-log/login-log.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
       {path: 'permission', component: SetPermissionComponent},
       {path: 'role', component: SetRoleComponent},
       {path: 'part', component: SetPartComponent},
+      {path: 'log', component: LoginLogComponent},
     ]
   }
 ];

@@ -152,6 +152,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           {label: '角色信息', icon: 'pi pi-fw ', routerLink: ['/home/system/part']},
           {label: '用户角色配置', icon: 'pi pi-fw ', routerLink: ['/home/system/role']},
           {label: '角色权限配置', icon: 'pi pi-fw ', routerLink: ['/home/system/permission']},
+          {label: '登录日志', icon: 'pi pi-fw ', routerLink: ['/home/system/log']},
         ]},
       { title: '优惠券', item: [],  routingItem : [
           {label: '优惠券信息', icon: 'pi pi-fw ', routerLink: ['/home/coupon/total']},

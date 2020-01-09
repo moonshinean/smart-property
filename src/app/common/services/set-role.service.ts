@@ -30,4 +30,8 @@ export class SetRoleService {
  public  queryUserRole(pamars): Observable<any> {
      return this.http.post(environment.loginUrl + `/permit/config/findRoleByUserId`, pamars);
  }
+//  登录日志
+  public  queryLoginLog(pamars): Observable<any> {
+    return this.http.post(environment.loginUrl + `/findLoginLogByOrganizationId`, pamars);
+  }
 }

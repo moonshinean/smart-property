@@ -29,6 +29,7 @@ import { SetRoleComponent } from './set-role/set-role.component';
 import { SetPartComponent } from './set-part/set-part.component';
 import {PublicMethedService} from '../../common/public/public-methed.service';
 import {BasicTableModule} from '../../common/components/basic-table/basic-table.module';
+import { LoginLogComponent } from './login-log/login-log.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {BasicTableModule} from '../../common/components/basic-table/basic-table.
     SetConfigComponent,
     SetPermissionComponent,
     SetRoleComponent,
-    SetPartComponent
+    SetPartComponent,
+    LoginLogComponent
   ],
   imports: [
     CommonModule,
