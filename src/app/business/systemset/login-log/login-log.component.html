@@ -6,10 +6,12 @@
   <!--顶部按钮-->
   <div class=" login-log-header">
     <div class=" ui-g-4">
-      <!--<div class="ui-g-1  login-log-header-btn  login-log-header-btn-add" (click)="logAddClick()">-->
-      <!--<img class=" login-log-header-img-add" src="assets/images/ic_add.png" alt="">-->
-      <!--<span>增 加</span>-->
-      <!--</div>-->
+      <div class="ui-g-1  login-log-header-btn" >
+        <p-calendar [(ngModel)]="searchData.startTime" placeholder="请选择开始时间..." [monthNavigator]="true" [yearNavigator]="true" [readonlyInput]="true"  dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="toolSrv.esDate" (onSelect)="logSelectClick('startTime')" [showTime]="true"></p-calendar>
+      </div>
+      <div class="ui-g-1  login-log-header-btn" style="margin-left: 4vw">
+        <p-calendar [(ngModel)]="searchData.endTime" placeholder="请选择结束时间..." [monthNavigator]="true" [yearNavigator]="true" [readonlyInput]="true"    dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="toolSrv.esDate" (onSelect)="logSelectClick('endTime')" [showTime]="true"></p-calendar>
+      </div>
 <!--      <div class="ui-g-1  login-log-header-btn  login-log-header-btn-modify" (click)="logSearchClick()" [hidden]="btnHiden[0].hidden">-->
 <!--        <img class=" login-log-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
 <!--        <span>按时间搜索</span>-->
@@ -17,7 +19,7 @@
     </div>
     <!--搜索-->
     <div class="ui-inputgroup  login-log-header-search">
-      <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选择查询条件..."  [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
+    <p-dropdown [options]="SearchTypeOption"   scrollHeight="100px" placeholder="请选择查询条件..."  [style]="{'width': '8vw','margin-right': '1vw'}" [(ngModel)]="searchType"></p-dropdown>
     <input type="text" pInputText placeholder="请输入要查询的值"  [(ngModel)]="searchInput">
     <button   type="button"  (click)="logSearchClick()"  label="搜索" class="login-log-header-btn-search">搜索</button>
     <!--<span class="ui-inputgroup-addon" (click)="exportSearchClick($event)"><i class="fa fa-search"></i></span>-->
@@ -28,33 +30,33 @@
     <rbi-check-table-btn [select]="logSelect" (selectData)="selectData($event)" [option]="logOption"></rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
-  <p-dialog header="信息添加" [(visible)]="logDialog"  [width]="800">
-    <!--Content-->
-    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}" >
-      <div class="ui-g-6"  >
-        <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>开始时间：</label>
-        </div>
-        <div class="ui-g-8">
-          <p-calendar [(ngModel)]="searchData.startTime" placeholder="开始时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="toolSrv.esDate" ></p-calendar>
-        </div>
-      </div>
-      <div class="ui-g-6" >
-        <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>结束时间：</label>
-        </div>
-        <div class="ui-g-8">
-          <p-calendar [(ngModel)]="searchData.endTime" placeholder="结束时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="toolSrv.esDate" ></p-calendar>
-        </div>
-      </div>
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
-        <button  class="login-log-dialog-Btn login-log-dialog-Btn-sure" (click)="logSureClick()">确认</button>
-        <button  class="login-log-dialog-Btn login-log-dialog-Btn-false" (click)="logCloseClick()">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+<!--  <p-dialog header="时间段选择" [(visible)]="logDialog"  [width]="800">-->
+<!--    &lt;!&ndash;Content&ndash;&gt;-->
+<!--    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}" >-->
+<!--      <div class="ui-g-6"  >-->
+<!--        <div class="ui-g-4 right">-->
+<!--          <label ><span style="color: red">*</span>开始时间：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <p-calendar [(ngModel)]="searchData.startTime" placeholder="开始时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="toolSrv.esDate" ></p-calendar>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6" >-->
+<!--        <div class="ui-g-4 right">-->
+<!--          <label ><span style="color: red">*</span>结束时间：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <p-calendar [(ngModel)]="searchData.endTime" placeholder="结束时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="toolSrv.esDate" ></p-calendar>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <p-footer>-->
+<!--      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">-->
+<!--        <button  class="login-log-dialog-Btn login-log-dialog-Btn-sure" (click)="logSureClick()">确认</button>-->
+<!--        <button  class="login-log-dialog-Btn login-log-dialog-Btn-false" (click)="logCloseClick()">取消</button>-->
+<!--      </div>-->
+<!--    </p-footer>-->
+<!--  </p-dialog>-->
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
 </div>

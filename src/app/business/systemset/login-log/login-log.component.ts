@@ -5,6 +5,7 @@ import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
 import {ThemeService} from '../../../common/public/theme.service';
 import {SetRoleService} from '../../../common/services/set-role.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'rbi-login-log',
@@ -30,7 +31,7 @@ export class LoginLogComponent implements OnInit, OnDestroy {
   public SearchTypeOption = [
     {label: '用户名', value: 1},
     {label: '真实姓名', value: 2},
-    {label: '时间段', value: 3}
+    // {label: '时间段', value: 3}
   ];
   public btnHiden = [
     {label: '搜索', hidden: true},
@@ -55,7 +56,8 @@ export class LoginLogComponent implements OnInit, OnDestroy {
     public toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
-    private themeSrv: ThemeService
+    private themeSrv: ThemeService,
+    private datePipe: DatePipe,
   ) {
     this.themeSub = this.themeSrv.changeEmitted$.subscribe(
       value => {
@@ -89,7 +91,7 @@ export class LoginLogComponent implements OnInit, OnDestroy {
       case 0: this.toolSrv.setToast('error', '操作错误', '请选择查询条件'); break;
       case 1: this.clearSeachData('username', 'username'); this.searchData.username = this.searchInput; this.querylogPageData(); break;
       case 2: this.clearSeachData('realName', 'realName');  this.searchData.realName = this.searchInput; this.querylogPageData(); break;
-      case 3: this.clearSeachData('endTime', 'startTime'); this.logDialog = true; break;
+      // case 3: this.clearSeachData('endTime', 'startTime'); this.logDialog = true; break;
     }
   }
   public  judgSearchType(): void {
@@ -108,15 +110,15 @@ export class LoginLogComponent implements OnInit, OnDestroy {
       this.searchData.pageSize = 10;
     }
   }
-  public logSureClick(): void {
-    if (this.searchData.endTime !== '' || this.searchData.startTime !== '') {
-      this.logDialog = false;
-      this.querylogPageData();
-    }else {
-      this.toolSrv.setToast('error', '操作错误', '时间不能为空');
-    }
+  // public logSureClick(): void {
+  //   if (this.searchData.endTime !== '' || this.searchData.startTime !== '') {
+  //     this.logDialog = false;
+  //     this.querylogPageData();
+  //   } else {
+  //     this.toolSrv.setToast('error', '操作错误', '时间不能为空');
+  //   }
 
-  }
+  // }
   // 条件查询 {}
 
   // initialization data
@@ -130,9 +132,9 @@ export class LoginLogComponent implements OnInit, OnDestroy {
     this.logSelect = [];
   }
 
-  public  logCloseClick(): void {
-      this.logDialog = false;
-  }
+  // public  logCloseClick(): void {
+  //     this.logDialog = false;
+  // }
   // 设置表格
   public  setTableOption(data1): void {
     this.logOption = {
@@ -187,5 +189,32 @@ export class LoginLogComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  public  logSelectClick(data): void {
+    console.log(this.searchData.endTime);
+    if (data === 'endTime') {
+      if (this.searchData.endTime !== '' && this.searchData.startTime !== '') {
+
+
+        this.clearSeachData('endTime', 'startTime');
+        this.searchData.startTime = this.datePipe.transform(this.searchData.startTime, 'yyyy-MM-dd hh:mm');
+        this.searchData.endTime = this.datePipe.transform(this.searchData.endTime, 'yyyy-MM-dd hh:mm');
+        this.searchType = 3;
+        this.querylogPageData();
+      } else {
+        this.toolSrv.setToast('warn', '操作成功', '请选择开始时间');
+      }
+    } else {
+      // if ( )
+      if (this.searchData.endTime !== '' && this.searchData.startTime !== '') {
+        // this.searchData.endTime = this.datePipe.transform(this.searchData.endTime, 'yyyy-MM-dd');
+        // this.searchData.startTime = this.datePipe.transform(this.searchData.startTime, 'yyyy-MM-dd');
+        this.clearSeachData('endTime', 'startTime');
+        this.querylogPageData();
+      } else {
+        this.toolSrv.setToast('warn', '操作成功', '请选择结束时间');
+      }
+    }
   }
 }
