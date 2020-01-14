@@ -198,10 +198,11 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
       for (const key in this.vacantRoomSelect[0]) {
         this.roomInfo[key] = this.vacantRoomSelect[0][key];
       }
-      this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length )
+      this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length );
       this.roomInfo.roomType = this.toolSrv.setLabelToValue(this.roomTypeOption,  this.roomInfo.roomType);
       this.roomInfo.roomStatus = this.toolSrv.setLabelToValue(this.roomStatusOption,  this.roomInfo.roomStatus);
       this.roomInfo.renovationStatus = this.toolSrv.setLabelToValue(this.renovationStatusOption, this.roomInfo.renovationStatus);
+      this.timeHide = !(this.roomInfo.renovationStatus === '1');
       this.vacantModityDialog = true;
     } else {
       this.toolSrv.setToast('error', '操作错误', '只能选择一项进行修改');

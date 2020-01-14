@@ -99,6 +99,7 @@ export class LoginLogComponent implements OnInit, OnDestroy {
       case 1: this.clearSeachData('username', 'username'); this.querylogPageData(); break;
       case 2: this.clearSeachData('realName', 'realName');  this.querylogPageData(); break;
       case 3: this.clearSeachData('endTime', 'startTime'); this.querylogPageData(); break;
+      case 0: this.querylogPageData(); break;
     }
   }
   public  clearSeachData(data, data1): void {
@@ -127,7 +128,7 @@ export class LoginLogComponent implements OnInit, OnDestroy {
   }
   // paging query
   public  nowpageEventHandle(event: any): void {
-    this.pageNo = event;
+    this.pageNo = this.searchData.pageNo = event;
     this.judgSearchType();
     this.logSelect = [];
   }
@@ -166,7 +167,6 @@ export class LoginLogComponent implements OnInit, OnDestroy {
   public  querylogPageData(): void {
     this.logSrv.queryLoginLog(this.searchData).subscribe(
       (value) => {
-        this.loadHidden = true;
         this.logTableContent = value.data.contents;
         this.setTableOption(value.data.contents);
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};

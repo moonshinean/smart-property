@@ -663,6 +663,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  queryOwnerUpdateData(data): void {
       this.owerSrv.queryUpdateInfoByroomCode({roomCode: data}).subscribe(
         value => {
+          console.log(value);
           if (value.status === '1000') {
             this.ownerList = value.data.owner.map( v => {
               v.sex = this.toolSrv.setValueToLabel(this.sexOption, v.sex);
@@ -672,6 +673,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
             });
             this.roomInfo = value.data.roomInfo;
             this.roomInfo.renovationStatus = this.roomInfo.renovationStatus.toString();
+            this.timeHide = !(this.roomInfo.renovationStatus === '1');
             this.roomInfo.roomStatus = this.roomInfo.roomStatus.toString();
             this.roomInfo.roomType = this.roomInfo.roomType.toString();
             this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length)

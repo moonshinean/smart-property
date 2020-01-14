@@ -134,7 +134,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
-    private  toolSrv: PublicMethedService,
+    public  toolSrv: PublicMethedService,
     private datePipe: DatePipe,
     private  sharedSrv: SharedServiceService,
     private themeSrv: ThemeService
@@ -350,7 +350,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   // 设置按钮显示权限
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
-      if (v.label === '物业缴费') {
+      if (v.label === '专有车位缴费') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           value.data.forEach(item => {
             this.btnHiden.forEach( val => {

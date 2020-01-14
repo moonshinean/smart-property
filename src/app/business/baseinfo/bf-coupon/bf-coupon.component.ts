@@ -150,12 +150,18 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     this.toolSrv.setConfirmation('增加', '增加', () => {
       this.couponSrv.addCoupon(data).subscribe(
         value => {
-          this.toolSrv.setToast('success', '操作成功', value.message);
-          this.couponAdd = new AddBfCoupon();
-          this.optionDialog.dialog = false;
-          this.formgroup.reset();
-          this.couponInitialization();
-          this.clearData();
+          console.log(value);
+          if  (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', value.message);
+            this.couponAdd = new AddBfCoupon();
+            this.optionDialog.dialog = false;
+            this.formgroup.reset();
+            this.couponInitialization();
+            this.clearData();
+          } else {
+            this.toolSrv.setToast('error', '操作失败', value.message);
+          }
+
         }
       );
     });
