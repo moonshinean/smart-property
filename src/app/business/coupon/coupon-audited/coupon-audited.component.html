@@ -22,7 +22,7 @@
     <!--//搜索-->
     <div class="ui-inputgroup coupon-audited-header-search" *ngIf="!btnHiden[0].hidden">
       <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入手机号码" style="width: 7vw" [(ngModel)]="searchData">
+      <input type="text" pInputText placeholder="请输入手机号码"  [(ngModel)]="searchData">
       <button id="disabled-btn" class="coupon-audited-header-btn-search" type="button"  (click)="couponAuditedSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>

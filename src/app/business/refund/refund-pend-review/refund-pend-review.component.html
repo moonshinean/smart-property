@@ -26,7 +26,7 @@
     <!--//搜索-->
     <div class="ui-inputgroup refund-pend-review-header-search" *ngIf="!btnHiden[1].hidden">
       <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="searchData">
+      <input type="text" pInputText placeholder="请输入电话或房间号" [(ngModel)]="searchData">
       <button id="disabled-btn" class="refund-pend-review-header-btn-search" type="button"  (click)="refundPendReviewSearchClick()" >搜索</button>
     </div>
   </div>

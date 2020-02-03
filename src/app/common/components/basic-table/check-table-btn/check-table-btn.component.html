@@ -123,7 +123,7 @@
   </div>
 <!--显示费用信息的-->
   <div *ngIf="option.type === 4">
-    <p-table [columns]="option.header.data" [value]="option.Content.data"  [scrollable]="true"   scrollHeight="40vh"  [style]="{'width':  option?.width}"  [(selection)]="select"  (onRowSelect)="selectClick($event)"  (onRowUnselect)="noSelectClick($event)">
+    <p-table [columns]="option.header.data" [value]="option.Content.data"  [scrollable]="true"   scrollHeight="48vh"  [style]="{'width':  option?.width}"  [(selection)]="select"  (onRowSelect)="selectClick($event)"  (onRowUnselect)="noSelectClick($event)">
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th [ngStyle]="option.header.style" style="width: 3em">

@@ -32,7 +32,7 @@
     <!--//搜索-->
     <div class="ui-inputgroup refund-no-header-search" *ngIf="!btnHiden[0].hidden">
       <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入缴费人"  style="width: 7vw" [(ngModel)]="searchData">
+      <input type="text" pInputText placeholder="请输入缴费人"  [(ngModel)]="searchData">
       <button id="disabled-btn" class="refund-no-header-btn-search" type="button"  (click)="refundNoSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>

@@ -804,7 +804,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // 导出业主信息
   public  downloadFileOwnerInfo(): void {
-    console.log(this.downLoadIndentity);
     if (this.downLoadIndentity) {
       this.owerSrv.downloadOwnerInfo({level: this.searchOwerData.level, code: this.searchOwerData.code , identity: this.downLoadIndentity}).subscribe(
         value => {

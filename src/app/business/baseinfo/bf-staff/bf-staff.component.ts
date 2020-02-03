@@ -379,7 +379,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
              this.staffTableContent = value.data.contents;
              this. setTableOption(value.data.contents);
              this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
-           }else {
+           } else {
              this.toolSrv.setToast('error', '搜索失败', value.message);
            }
         }
@@ -392,7 +392,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
     this.optionTable = {
-      width: '100%',
+      width: '101.4%',
       header: {
         data: [
           {field: 'username', header: '用户名'},

@@ -310,7 +310,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
     this.optionTable = {
-      width: '101%',
+      width: '100%',
       header: {
         data:  [
           {field: 'chargeCode', header: '收费项目名称'},
