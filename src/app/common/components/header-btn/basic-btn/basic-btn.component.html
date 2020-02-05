@@ -20,7 +20,7 @@
 
   <!--//搜索-->
   <div class="ui-inputgroup basic-btn-header-search" *ngIf="!btnOption.btnlist[btnOption.btnlist.length -1].hidden">
-    <p-dropdown [options]="searchOption"   scrollHeight="100px"  [(ngModel)]="searchType" [ngStyle]="{'width':'7vw','margin-right':'5vw'}" placeholder="请选择搜索范围"></p-dropdown>
+    <p-dropdown [options]="searchOption"   scrollHeight="100px"  [(ngModel)]="searchType" [ngStyle]="{'margin-right':'2vw'}" placeholder="请选择搜索范围"></p-dropdown>
     <input type="text" pInputText placeholder="请输入搜索的值" style="padding-left: 2px" [(ngModel)]="serchData">
     <button id="disabled-btn" class="basic-btn-header-btn-search" type="button"  (click)="SearchClick()"  label="搜索">搜索</button>
   </div>

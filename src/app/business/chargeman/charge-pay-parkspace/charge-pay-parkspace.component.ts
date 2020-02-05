@@ -338,6 +338,9 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
             {field: 'authorizedPersonName', header: '车主姓名'},
             {field: 'authorizedPersonPhone', header: '车主电话'},
             {field: 'authorizedPersonIdNumber', header: '车主身份证号'},
+            {field: 'surname', header: '业主姓名'},
+            {field: 'mobilePhone', header: '业主电话'},
+            {field: 'idNumber', header: '业主身份证号'},
             {field: 'licensePlateNumber', header: '车牌号'},
             {field: 'startTime', header: '开始时间'},
             {field: 'dueTime', header: '结束时间'},
@@ -365,7 +368,12 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // 车位办理
   public  addParkSpaceClick(): void {
-    this.addParkSpaceOptionDialog = true;
+    console.log(this.addParkSpace.parkingSpaceCode);
+    if (this.addParkSpace.parkingSpaceCode !== undefined) {
+      this.addParkSpaceOptionDialog = true;
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请选择树结构上的车位编号');
+    }
   }
   // 导入车位文件
   public importParkplaceFilesClick(): void {
@@ -557,15 +565,17 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
  }
   // 确认添加
   public  addParkSpaceSureClick(): void {
+    console.log(this.addParkSpace);
     let passFlag = true;
-    const list = ['parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
-      'vehicleOriginalType', 'startTime'];
+    const list = ['parkingSpaceCode', 'startTime'];
     list.forEach(v => {
       if ( this.addParkSpace[v] === undefined ||  this.addParkSpace[v] === '') {
         passFlag = false;
       }
     });
-    this.addParkSpace.startTime = this.datePipe.transform(this.addParkSpace.startTime, 'yyyy-MM-dd');
+    if (this.addParkSpace.startTime) {
+      this.addParkSpace.startTime = this.datePipe.transform(this.addParkSpace.startTime, 'yyyy-MM-dd');
+    }
     if (passFlag) {
       this.paymentSrv.setRoomCodeBindParkSpace(this.addParkSpace).subscribe(value => {
         console.log(value);
@@ -574,6 +584,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
           this.addParkSpaceOptionDialog = false;
           this.addParkSpace = new AddSparkSpace();
           this.paymentParkSpaceSelect = [];
+          this.parkSpacePaymentInit();
         } else {
           this.toolSrv.setToast('error', '请求失败', value.message);
         }
@@ -636,8 +647,8 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
         }
       );
   }
- // 缴费
- public payParkSpaceSureClick(): void {
+  // 缴费
+  public payParkSpaceSureClick(): void {
     if (this.paymentMonth !== null) {
       this.calcParkSpaceFree(this.paymentParkSpaceSelect[0].parkingSpaceCode, this.paymentMonth);
       this.paymentParkSpaceDialog = true;
@@ -677,5 +688,10 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  public clearData(): void {
+      this.addParkSpace = new AddSparkSpace();
+      this.paymentParkSpaceSelect = [];
   }
 }

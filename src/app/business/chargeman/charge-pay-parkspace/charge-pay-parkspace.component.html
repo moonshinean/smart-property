@@ -147,17 +147,25 @@
 
   <p-dialog header="车位办理" [(visible)]="addParkSpaceOptionDialog" [width]="1000"  [transitionOptions]="'200ms'"  [closable]="false">
     <div class="ui-g ui-fluid">
-      <div class="ui-g-6"  style="line-height: 4vh">
+<!--      <div class="ui-g-6"  style="line-height: 4vh">-->
+<!--        <div class="ui-g-4" style="text-align: right">-->
+<!--          <label><span style="color: red">*</span>车位编号</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <input type="text" placeholder="请选择车位编号" pInputText  [(ngModel)]="addParkSpace.parkingSpaceCode"/>-->
+<!--        </div>-->
+<!--      </div>-->
+      <div class="ui-g-6" style="line-height: 4vh">
         <div class="ui-g-4" style="text-align: right">
-          <label><span style="color: red">*</span>车位编号</label>
+          <label ><span style="color: red">*</span>开始计费时间</label>
         </div>
-        <div class="ui-g-8">
-          <input type="text" placeholder="请选择车位编号" pInputText  [(ngModel)]="addParkSpace.parkingSpaceCode"/>
+        <div class="ui-g-8" style="line-height: 2.5vh">
+          <p-calendar [(ngModel)]="addParkSpace.startTime" placeholder="请选择开始计费日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
       <div class="ui-g-6"  style="line-height: 4vh">
         <div class="ui-g-4" style="text-align: right">
-          <label ><span style="color: red">*</span>车主姓名</label>
+          <label >车主姓名</label>
         </div>
         <div class="ui-g-8">
           <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.authorizedPersonName"/>
@@ -183,20 +191,37 @@
       </div>
       <div class="ui-g-6"  style="line-height: 4vh">
         <div class="ui-g-4" style="text-align: right">
+          <label >业主姓名</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.surname"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >业主电话</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.mobilePhone"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >业主身份电话</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.idNumber"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
           <label >车牌号</label>
         </div>
         <div class="ui-g-8" >
           <input type="text" pInputText placeholder="请输入车牌号" [(ngModel)]="addParkSpace.licensePlateNumber"/>
         </div>
       </div>
-      <div class="ui-g-6" style="line-height: 4vh">
-        <div class="ui-g-4" style="text-align: right">
-          <label >开始计费时间</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2.5vh">
-          <p-calendar [(ngModel)]="addParkSpace.startTime" placeholder="请选择开始计费日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
-        </div>
-      </div>
+
       <div class="ui-g-6"  style="line-height: 4vh">
         <div class="ui-g-4" style="text-align: right">
           <label >车牌颜色</label>
@@ -225,7 +250,7 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="charge-pay-parkspace-dialog-Btn charge-pay-parkspace-dialog-Btn-sure" (click)="addParkSpaceSureClick()">确认</button>
-        <button class="charge-pay-parkspace-dialog-Btn charge-pay-parkspace-dialog-Btn-false" (click)="addParkSpaceOptionDialog = false; paymentParkSpaceSelect = []">取消</button>
+        <button class="charge-pay-parkspace-dialog-Btn charge-pay-parkspace-dialog-Btn-false" (click)="addParkSpaceOptionDialog = false; clearData()">取消</button>
       </div>
     </p-footer>
   </p-dialog>
@@ -261,7 +286,31 @@
           <label >车主身份证号</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText disabled placeholder="请输入授权人身份证号" [(ngModel)]="addParkSpace.authorizedPersonIdNumber"/>
+          <input type="text" pInputText  placeholder="请输入授权人身份证号" [(ngModel)]="addParkSpace.authorizedPersonIdNumber"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >业主姓名</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.surname"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >业主电话</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.mobilePhone"/>
+        </div>
+      </div>
+      <div class="ui-g-6"  style="line-height: 4vh">
+        <div class="ui-g-4" style="text-align: right">
+          <label >业主身份电话</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.idNumber"/>
         </div>
       </div>
       <div class="ui-g-6"  style="line-height: 4vh">
@@ -308,7 +357,7 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="charge-pay-parkspace-dialog-Btn charge-pay-parkspace-dialog-Btn-sure" (click)="modifyParkSpaceSureClick()">确认</button>
-        <button class="charge-pay-parkspace-dialog-Btn charge-pay-parkspace-dialog-Btn-false" (click)="modifyParkSpaceOptionDialog = false; paymentParkSpaceSelect = []">取消</button>
+        <button class="charge-pay-parkspace-dialog-Btn charge-pay-parkspace-dialog-Btn-false" (click)="modifyParkSpaceOptionDialog = false;clearData()">取消</button>
       </div>
     </p-footer>
   </p-dialog>

@@ -9,7 +9,7 @@
       <div class="ui-g-1  login-log-header-btn" >
         <p-calendar [(ngModel)]="searchData.startTime" placeholder="请选择开始时间..." [monthNavigator]="true" [yearNavigator]="true" [readonlyInput]="true"  dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="toolSrv.esDate" (onSelect)="logSelectClick('startTime')" [showTime]="true"></p-calendar>
       </div>
-      <div class="ui-g-1  login-log-header-btn" style="margin-left: 4vw">
+      <div class="ui-g-1  login-log-header-btn" style="margin-left: 6vw">
         <p-calendar [(ngModel)]="searchData.endTime" placeholder="请选择结束时间..." [monthNavigator]="true" [yearNavigator]="true" [readonlyInput]="true"    dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="toolSrv.esDate" (onSelect)="logSelectClick('endTime')" [showTime]="true"></p-calendar>
       </div>
 <!--      <div class="ui-g-1  login-log-header-btn  login-log-header-btn-modify" (click)="logSearchClick()" [hidden]="btnHiden[0].hidden">-->
