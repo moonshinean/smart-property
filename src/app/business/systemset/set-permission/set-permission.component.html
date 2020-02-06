@@ -31,7 +31,7 @@
     <rbi-check-table-btn [select]="permissionSelect" (selectData)="selectData($event)" [option]="permissionOption"></rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
-  <p-dialog header="信息添加" [(visible)]="permissionAddDialog"  [width]="800" (onHide)="permissionAddCloseClick()">
+  <p-dialog header="信息配置" [(visible)]="permissionAddDialog"  [width]="800" (onHide)="permissionAddCloseClick()">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}" >
       <div class="ui-g-12" [ngStyle]="{'line-height':'3vh'}">

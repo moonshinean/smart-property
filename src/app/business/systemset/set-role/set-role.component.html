@@ -31,7 +31,7 @@
     <rbi-check-table-btn [select]="roleSelect" (selectData)="selectData($event)" [option]="roleOption"></rbi-check-table-btn>
   </div>
   <!--增加弹窗-->
-  <p-dialog header="信息添加" [(visible)]="roleAddDialog"  [width]="800" (onHide)="roleAddCloseClick()">
+  <p-dialog header="信息配置" [(visible)]="roleAddDialog"  [width]="800" (onHide)="roleAddCloseClick()">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}" >
       <div class="ui-g-12" [ngStyle]="{'line-height':'2vh'}">

@@ -596,8 +596,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   // 确认修改
   public  modifyParkSpaceSureClick(): void {
     let passFlag = true;
-    const list = ['parkingSpaceManagementId', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
-      'vehicleOriginalType', 'startTime'];
+    const list = ['parkingSpaceCode', 'startTime'];
     list.forEach(v => {
       if (this.addParkSpace[v] === undefined || this.addParkSpace[v] === '') {
         passFlag = false;

@@ -435,7 +435,7 @@ export class BfStaffComponent implements OnInit, OnDestroy {
   // 重置密码
   public  staffResetClick(): void {
     if (this.staffSelect === undefined || this.staffSelect.length === 0 ) {
-      this.toolSrv.setToast('error',  '操作错误',  '请选择需要修改的项');
+      this.toolSrv.setToast('error',  '操作错误',  '请选择需要重置的项');
     } else if (this.staffSelect.length === 1) {
       this.toolSrv.setConfirmation('重置密码', '重置密码', () => {
           this.staffSrv.staffResetPassword({userId: this.staffSelect[0].userId, phone:  this.staffSelect[0].mobilePhone, salt:  this.staffSelect[0].salt}).subscribe(

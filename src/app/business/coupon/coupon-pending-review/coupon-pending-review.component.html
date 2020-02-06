@@ -13,7 +13,7 @@
     </div>
     <div class="ui-inputgroup coupon-pending-review-header-search"  *ngIf="!btnHiden[1].hidden">
       <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'8vw','margin-right':'2vw'}"></p-dropdown>
-      <input type="text" pInputText placeholder="请输入手机号码"  [(ngModel)]="searchData">
+      <input type="text" pInputText placeholder="请输入需要搜索的值"  [(ngModel)]="searchData">
       <button id="disabled-btn" class="coupon-pending-review-header-btn-search" type="button"  (click)="couponPendingReviewSearchClick()"  label="搜索">搜索</button>
     </div>
   </div>
