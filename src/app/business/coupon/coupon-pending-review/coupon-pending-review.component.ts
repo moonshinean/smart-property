@@ -220,6 +220,7 @@ export class CouponPendingReviewComponent implements OnInit, OnDestroy {
   }
   // 确认审核
   public  refundPendingReviewSureClick(e): void {
+    console.log(e);
     if (e === '通过') {
       this.couponPendingReviewSrv.couponPendingReviewPassById({id: this.couponPendingReviewSelect[0].id}).subscribe(
         value => {

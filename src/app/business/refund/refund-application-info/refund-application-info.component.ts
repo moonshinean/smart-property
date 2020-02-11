@@ -70,6 +70,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
     pageNo: 1,
     pageSize: 10
   };
+  public deleteIds = [];
   public searchOption = [
     {label: '手机号', value: 1},
     {label: '房间号', value: 2},
@@ -134,7 +135,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
     });
   }
   // applicationInfo detail
-  public  applicationInfoDeleteClick(e): void {
+  public applicationInfoDetailClick(e): void {
     this.applicationDetailOption = {
       dialog: true,
       tableHidden: false,
@@ -182,6 +183,30 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
         ],
       }
     };
+  }
+  // 删除数据
+  public applicationInfoDeleteClick(): void {
+    if (this.applicationInfoSelect === undefined || this.applicationInfoSelect.length === 0) {
+      this.toolSrv.setToast('error', '操作错误', '请选择需要删除的项');
+    } else {
+      this.toolSrv.setConfirmation('删除', '删除' + this.applicationInfoSelect.length + '项', () => {
+        this.applicationInfoSelect.forEach( v => {
+          this.deleteIds.push(v.id);
+        });
+        this.applicationInfoSrv.deleteRefundInfo({ids: this.deleteIds.join(',')}).subscribe(
+          value => {
+            if (value.status === '1000' ) {
+              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.clearData();
+              this.applicationInfoInitialization();
+            } else {
+              this.toolSrv.setToast('error', '操作失败', value.message);
+
+            }
+          }
+        );
+      });
+    }
   }
   // modify applicationInfo
   public applicationInfoModifyClick(): void {
@@ -250,6 +275,23 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
       {label: '退还银行卡金额', type: 'input', name: 'transferCardAmount', option: '', placeholder: ''},
       {label: '抵扣物业费金额', type: 'input', name: 'deductionPropertyFee', option: '', placeholder: ''},
     ];
+  }
+  // 确认修改
+  public updateApplicationInfo(data): void {
+    console.log(data);
+    this.applicationInfoSrv.modifyRefundApplicationInfo({id: data.id, deductionPropertyFee: data.deductionPropertyFee, transferCardAmount: data.transferCardAmount, remarks: data.remarks}).subscribe(
+      value => {
+        if (value.status === '1000' ) {
+          this.toolSrv.setToast('success', '操作成功', value.message);
+          this.clearData();
+          this.optionDialog.dialog = false;
+          this.applicationInfoInitialization();
+        } else {
+          this.toolSrv.setToast('error', '操作失败', value.message);
+
+        }
+      }
+    );
   }
   // clearData
   public clearData(): void {
@@ -332,8 +374,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
         }
         console.log(this.modifyApplication);
       }
-
-      console.log(e);
+      this.updateApplicationInfo(this.modifyApplication);
       // this.couponTotalAddSureClick();
     }
   }

@@ -107,12 +107,19 @@ export class BfCouponComponent implements OnInit, OnDestroy {
 
     ];
     this.loadingHide = false;
+    this.couponSrv.queryChargeCode({}).subscribe(
+      value => {
+        console.log(value);
+        value.data.forEach(v => {
+          this.ChargeCodeData.push({label: v.chargeName, value: v.chargeCode});
+        });
+      }
+    );
     this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'COUPON_EFFECTIVE_TIME'},
-      {settingType: 'COUPON_TYPE'}, {settingType: 'CHARGE_TYPE'}], (data) => {
+      {settingType: 'COUPON_TYPE'}], (data) => {
       console.log(data);
       this.optionEnable = this.toolSrv.setListMap(data.ENABLED);
       this.couponTypeData = this.toolSrv.setListMap(data.COUPON_TYPE);
-      this.ChargeCodeData = this.toolSrv.setListMap(data.CHARGE_TYPE);
       data.COUPON_EFFECTIVE_TIME.forEach( v => {
         if (v.settingName === '0' || v.settingName === 0) {
           this.EffectiveTime.push({label: '无限期', value: v.settingName});

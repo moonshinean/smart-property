@@ -60,6 +60,14 @@ export class RefundService {
   public  queryRefundApplicationInfoPage(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/refund/findApplicationByPage`, pamars);
   }
+  // 删除信息
+  public  deleteRefundApplicationInfo(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/refund/delete`, pamars);
+  }
+  // 修改信息
+  public  modifyRefundApplicationInfo(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/refund/update_refund_application`, pamars);
+  }
 
   /**
    * 退款初审模块
