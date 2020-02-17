@@ -13,6 +13,7 @@ export class EchartsBarPortComponent implements OnInit, OnChanges {
   @Input() public data: any;
   @Input() public title: any;
   @Input() public themeColor: any;
+  public dataTitle = [];
 
   constructor(
   ) {
@@ -23,142 +24,247 @@ export class EchartsBarPortComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // this.optionsport = {
+    //   backgroundColor: this.themeColor.background,
+    //   color: this.themeColor.colorList,
+    //   legend: {
+    //     data: this.title,
+    //     // itemWidth: 15,
+    //     itemHeight: 10,
+    //     top: '0',
+    //     // orient: 'vertical',
+    //     textStyle: {
+    //       color: this.themeColor.legendcolor,
+    //       // fontSize:'1px'
+    //     },
+    //   },
+    //   tooltip: {
+    //     trigger: 'item',
+    //     formatter: '{a} <br/>{b} : {c} ({d}%)'
+    //   },
+    //   visualMap: {
+    //     show: false,
+    //     min: 80,
+    //     max: 600,
+    //     inRange: {
+    //       colorLightness: [0, 1]
+    //     }
+    //   },
+    //   series: [
+    //     {
+    //       name: '访问来源',
+    //       type: 'pie',
+    //       radius: '70%',
+    //       center: ['50%', '60%'],
+    //       data: this.data.sort( function(a, b) {
+    //         return a.value - b.value;
+    //       }),
+    //       roseType: 'radius',
+    //       label: {
+    //         normal: {
+    //           textStyle: {
+    //             color: this.themeColor.labelColor
+    //           }
+    //         }
+    //       },
+    //       labelLine: {
+    //         normal: {
+    //           lineStyle: {
+    //             color: this.themeColor.labelLineColor
+    //           },
+    //           smooth: 0.2,
+    //           length: 10,
+    //           length2: 20
+    //         }
+    //       },
+    //       itemStyle: {
+    //         normal: {
+    //           color: this.themeColor.itemStyle,
+    //           shadowBlur: 200,
+    //           shadowColor: this.themeColor.itemShodow
+    //         }
+    //       },
+    //       animationType: 'scale',
+    //       animationEasing: 'elasticOut',
+    //     }
+    //   ]
+    // };
+    // this.optionSport();
+    console.log(this.data);
+    this.data.forEach(v => {
+      this.dataTitle.push(v.name);
+    });
     this.optionsport = {
-      backgroundColor: this.themeColor.background,
-      color: this.themeColor.colorList,
-      legend: {
-        data: this.title,
-        // itemWidth: 15,
-        itemHeight: 10,
-        top: '0',
-        // orient: 'vertical',
-        textStyle: {
-          color: this.themeColor.legendcolor,
-          // fontSize:'1px'
-        },
+      backgroundColor: '#F4F4F4',
+      color: ['#EAEA26', '#906BF9', '#FE5656', '#01E17E', '#3DD1F9', '#FFAD05'],
+      // title: {
+      //     text: '网络/安全设备',
+      //     left: '60',
+      //     top: 0,
+      //     textAlign: 'center',
+      //     textStyle: {
+      //         color: '#fff',
+      //         fontSize: 14,
+      //         fontWeight: 0
+      //     }
+      // },
+      grid: {
+        left: -100,
+        top: 5,
+        bottom: 10,
+        right: 50,
+        // containLabel: true
       },
       tooltip: {
         trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)'
+        formatter: '{b} : {c} ({d}%)'
       },
-      visualMap: {
-        show: false,
-        min: 80,
-        max: 600,
-        inRange: {
-          colorLightness: [0, 1]
+      legend: {
+        type:  'plain',
+        orient:  'horizontal',
+        // x: "right",
+        top:  '0',
+        left: '0',
+        // bottom: "0%",
+        itemWidth: 16,
+        itemHeight: 8,
+        itemGap: 16,
+        textStyle: {
+          color: '#A3E2F4',
+          fontSize: 12,
+          fontWeight: 0
+        },
+        data: this.dataTitle
+      },
+      polar: {},
+      angleAxis: {
+        interval: 6,
+        type: 'category',
+        data: [],
+        z: 10,
+        axisLine: {
+            show: false,
+            lineStyle: {
+                color: '#C7D0D6',
+                width: 1,
+                type: 'solid'
+            },
+        },
+        axisLabel: {
+            interval: 0,
+            show: true,
+            color: '#C7D0D6',
+            margin: 8,
+            fontSize: 16
+        },
+    },
+    radiusAxis: {
+        min: 20,
+        max: 100,
+        interval: 20,
+        axisLine: {
+            show: false,
+            lineStyle: {
+                color: '#C7D0D6',
+                width: 1,
+                type: 'solid'
+            },
+        },
+        axisLabel: {
+            formatter: '{value} %',
+            show: false,
+            padding: [0, 0, 10, 0],
+            color: '#0B3E5E',
+            fontSize: 16
+        },
+        splitLine: {
+            lineStyle: {
+                color: '#C7D0D6',
+                width: 2,
+                type: 'solid'
+            }
         }
-      },
-      series: [
-        {
-          name: '访问来源',
-          type: 'pie',
-          radius: '70%',
-          center: ['50%', '60%'],
-          data: this.data.sort( function(a, b) {
-            return a.value - b.value;
-          }),
-          roseType: 'radius',
-          label: {
-            normal: {
-              textStyle: {
-                color: this.themeColor.labelColor
-              }
-            }
+    },
+      calculable: true,
+      series: [{
+        type: 'pie',
+        radius: ['10%', '10.5%'],
+        // center:['40%', '50%'],
+        hoverAnimation: false,
+        labelLine: {
+          normal: {
+            show: false,
+            length: 2,
+            length2: 2
           },
-          labelLine: {
-            normal: {
-              lineStyle: {
-                color: this.themeColor.labelLineColor
-              },
-              smooth: 0.2,
-              length: 10,
-              length2: 20
-            }
-          },
+          emphasis: {
+            show: false
+          }
+        },
+        data: [{
+          name: '',
+          value: 0,
           itemStyle: {
             normal: {
-              color: this.themeColor.itemStyle,
-              shadowBlur: 200,
-              shadowColor: this.themeColor.itemShodow
+              color: '#0B4A6B'
             }
+          }
+        }]
+      }, {
+        type: 'pie',
+        radius: ['5%', '5.5%'],
+        // center:['40%', '50%'],
+        hoverAnimation: false,
+        labelLine: {
+          normal: {
+            show: false,
+            length: 2,
+            length2: 2
           },
-          animationType: 'scale',
-          animationEasing: 'elasticOut',
-        }
-      ]
+          emphasis: {
+            show: false
+          }
+        },
+        data: [{
+          name: '',
+          value: 0,
+          itemStyle: {
+            normal: {
+              color: '#0B4A6B'
+            }
+          }
+        }]
+      }, {
+        stack: 'a',
+        type: 'pie',
+        radius: ['20%', '80%'],
+        roseType: 'area',
+        // center:['40%', '50%'],
+        zlevel: 10,
+        label: {
+          normal: {
+            show: true,
+            formatter: '{c}',
+            textStyle: {
+              fontSize: 10,
+            },
+          },
+          emphasis: {
+            show: true
+          }
+        },
+        labelLine: {
+          normal: {
+            show: true,
+            length: 10,
+            length2: 15
+          },
+          emphasis: {
+            show: false
+          }
+        },
+        data: this.data
+      }, ]
     };
-    // this.optionSport();
   }
-  // public  optionSport(): void {
-  //   this.optionsport  = {
-  //     backgroundColor: '#33353C',
-  //
-  //     title: {
-  //       text: '事件类型统计',
-  //       // left: 'right',
-  //       top: 30,
-  //       right: 40,
-  //       textStyle: {
-  //         color: '#fff'
-  //       }
-  //     },
-  //
-  //     tooltip : {
-  //       trigger: 'item',
-  //       formatter: "{a} <br/>{b} : {c} ({d}%)"
-  //     },
-  //
-  //     visualMap: {
-  //       show: false,
-  //       min: 80,
-  //       max: 600,
-  //       inRange: {
-  //         colorLightness: [0, 1]
-  //       }
-  //     },
-  //     series : [
-  //       {
-  //         name:'访问来源',
-  //         type:'pie',
-  //         radius : '55%',
-  //         center: ['50%', '50%'],
-  //         data:this.data.sort(function (a, b) { return a.value - b.value; }),
-  //         roseType: 'radius',
-  //         label: {
-  //           normal: {
-  //             textStyle: {
-  //               color: 'rgba(255, 255, 255, 0.7)'
-  //             }
-  //           }
-  //         },
-  //         labelLine: {
-  //           normal: {
-  //             lineStyle: {
-  //               color: 'rgba(255, 255, 255, 0.3)'
-  //             },
-  //             smooth: 0.2,
-  //             length: 10,
-  //             length2: 20
-  //           }
-  //         },
-  //         itemStyle: {
-  //           normal: {
-  //             color: '#5699E0',
-  //             shadowBlur: 200,
-  //             shadowColor: 'rgba(0, 0, 0, 0.5)'
-  //           }
-  //         },
-  //
-  //         animationType: 'scale',
-  //         animationEasing: 'elasticOut',
-  //         animationDelay: function (idx) {
-  //           return Math.random() * 200;
-  //         }
-  //       }
-  //     ]
-  //   };
-  //
-  // }
-
 }

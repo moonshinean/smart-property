@@ -157,6 +157,7 @@ export class BfTenantinfoComponent implements OnInit {
      this.searchTenantData.level = this.shareSrv.SearchData.data.level;
      this.searchTenantData.code = this.shareSrv.SearchData.data.code;
      this.searchTenantData.type = this.shareSrv.SearchData.data.type;
+      this.roomCode = this.shareSrv.SearchData.roomCode;
    }
     this.tenantInitialization();
   }

@@ -38,6 +38,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
      code: '',
      pageNo: 1,
      pageSize: 10,
+     type: ''
   };
   // 业主信息弹窗
   public ownerDialog: boolean;
@@ -110,6 +111,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
       value => {
         this.SearchData.level = value.data.level;
         this.SearchData.code = value.data.code;
+        this.SearchData.type = value.data.type;
         this.queryVacantRoomPageData();
       }
     );
@@ -125,6 +127,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
     if (this.sharedSrv.SearchData !== undefined) {
         this.SearchData.level = this.sharedSrv.SearchData.data.level;
         this.SearchData.code = this.sharedSrv.SearchData.data.code;
+      this.SearchData.type = this.sharedSrv.SearchData.data.type;
     }
     this.initVacantRoomInfo();
   }

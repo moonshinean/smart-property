@@ -34,7 +34,7 @@
     }
     .bf-staff-header-btn-delete{
       margin-left: 1vw;
-      background: #A84847;
+      background: #e43331;
       .bf-staff-header-img-delete{
         width: 18px;
         height: 18px;
@@ -134,10 +134,6 @@
   .bf-staff-dialog-Btn-false{
     background: #9E9E9E;
   }
-  ::ng-deep .ui-dialog .ui-widget-content{
-    background: #DCDCDC;
-    //overflow: visible !important;
-  }
   ::ng-deep .ui-dialog-titlebar{
     font-size: 1rem;
     text-align: center;
@@ -150,5 +146,13 @@
   }
 }
 ::ng-deep .ui-dialog-content{
+  overflow: visible !important;
+}
+::ng-deep .home[_ngcontent-c2] .ui-dialog-titlebar {
+  background: #344358;
+  color: #fff;
+}
+::ng-deep .home[_ngcontent-c2] .ui-dialog .ui-widget-content {
+  background: #f0f0f0;
   overflow: visible !important;
 }

@@ -1,21 +1,23 @@
 <div class="login">
+  <img src="assets/images/ic_loginbgc.jpg" alt="" style="width: 100vw;height: 100vh">
     <div class="login-title">
       <img src="assets/images/logo.png" alt="" style="width: 120px;margin: auto 0">
     </div>
+  <div style="position: absolute;top: -6vh;z-index: 9999;text-align: center;margin: auto 0;width: 100vw">
     <div class="login-box">
       <!--头部-->
       <div class="login-box-title">
-<!--         <div class="login-box-background-two">-->
-           <img src="assets/images/ic_login_title.png" alt="" style="width: 655px;height: 150px;position: absolute;left: -27px;top: -34px;">
-<!--         </div>-->
-         <div style="position: absolute;margin-left: 145px;top: 2.4vh;z-index: 99999">
-           <img src="assets/images/login_icon.png" style="height: 25px;width: 52px; vertical-align: bottom;">
-           <span style="letter-spacing: 0.1em; font-family: 微软雅黑;font-size: 18px">未来城物业管理智慧策略系统</span>
-         </div>
-       </div>
+        <!--         <div class="login-box-background-two">-->
+        <img src="assets/images/ic_login_title.png" alt="" style="width: 655px;height: 150px;position: absolute;left: -27px;top: -34px;">
+        <!--         </div>-->
+        <div style="position: absolute;margin-left: 145px;top: 2.4vh;z-index: 99999">
+          <img src="assets/images/login_icon.png" style="height: 25px;width: 52px; vertical-align: bottom;">
+          <span style="letter-spacing: 0.1em; font-family: 微软雅黑;font-size: 18px">未来城物业管理智慧策略系统</span>
+        </div>
+      </div>
       <!--中间-->
       <div class="login-box-form" [formGroup]="userLogin">
-        <span style="color: #8AA0B5; padding: 2vh 2vw;letter-spacing: 0.5em; font-weight: 600; display: inline-block; font-family: '微软雅黑 Light'">请登录</span>
+        <span style="color: #537696; padding: 2vh 2vw;letter-spacing: 0.5em; font-weight: 600; display: inline-block; font-family: '微软雅黑 Light'">请登录</span>
         <div>
           <div class="ui-inputgroup login-box-form-btn">
             <label for="userName" >用 户 名:</label>
@@ -43,6 +45,8 @@
         </div>
       </div>
     </div>
+  </div>
+
   <rbi-loading [hidden]="loadHidden" style="position: absolute;left: 45vw;top:40vh;z-index: 99999"></rbi-loading>
   <p-messages  [closable]="true" [style]="{'position':'fixed','left': '0', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
 </div>

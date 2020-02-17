@@ -14,10 +14,10 @@
           <p-dropdown [options]="exportTypeOption" scrollHeight="100px" placeholder="请选择报表类型..." [(ngModel)]="exportCode" (onChange)="exportTypeChange($event)"></p-dropdown>
         </div>
       </div>
-      <div style="margin-left: 2vw" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableSetClick()" [hidden]="btnHiden[1].hidden">
+      <div style="margin-left: 2vw;background: #e8a52b" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableSetClick()" [hidden]="btnHiden[1].hidden">
         <span>表格设置</span>
       </div>
-      <div style="margin-left: 2vw" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableClick()" [hidden]="btnHiden[2].hidden">
+      <div style="margin-left: 2vw;background: #449D44" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableClick()" [hidden]="btnHiden[2].hidden">
          <span>报表导出</span>
       </div>
     </div>

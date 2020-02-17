@@ -32,7 +32,7 @@
     }
     .refund-info-header-btn-delete{
       margin-left: 1vw;
-      background: #A84847;
+      background: #e43331;
       .refund-info-header-img-delete{
         width: 18px;
         height: 18px;
@@ -134,9 +134,6 @@
     font-size: 1rem;
     text-align: center;
   }
-  ::ng-deep .ui-dialog .ui-widget-content{
-    background: #DCDCDC;
-  }
 }
 ::ng-deep .ui-dialog-content{
   overflow: visible ;
@@ -147,10 +144,11 @@
 ::ng-deep .ui-datepicker {
   height: 48vh;
 }
-//::ng-deep .ui-scrollpanel-wrapper{
-//  overflow: visible ;
-//}
-//::ng-deep .ui-dropdown-panel .ui-dropdown-list{
-//  z-index: 999 !important;
-//  overflow: visible !important;
-//}
+::ng-deep .home[_ngcontent-c2] .ui-dialog-titlebar {
+  background: #344358;
+  color: #fff;
+}
+::ng-deep .home[_ngcontent-c2] .ui-dialog .ui-widget-content {
+  background: #f0f0f0;
+  overflow: visible !important;
+}

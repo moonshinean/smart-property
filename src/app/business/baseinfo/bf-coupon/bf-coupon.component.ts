@@ -218,7 +218,6 @@ export class BfCouponComponent implements OnInit, OnDestroy {
       for (const key in this.couponSelect[0]) {
         this.couponModify[key] = this.couponSelect[0][key];
       }
-      console.log(this.couponSelect[0]);
       this.optionDialog = {
         type: 'add',
         title: '优惠卷修改',

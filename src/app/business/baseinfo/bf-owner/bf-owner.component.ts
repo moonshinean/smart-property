@@ -353,7 +353,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       this.roomInfo.realRecyclingHomeTime = this.datePipe.transform( this.roomInfo.realRecyclingHomeTime , 'yyyy-MM-dd');
       this.roomInfo.startBillingTime = this.datePipe.transform( this.roomInfo.startBillingTime , 'yyyy-MM-dd');
       // this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, );
-      console.log(this.roomInfo);
       this.owerSrv.addRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
             value => {
               if (value.status === '1000') {

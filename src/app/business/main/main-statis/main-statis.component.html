@@ -3,14 +3,19 @@
     <div class="statis">
       <div class="Payment">
         <h4>事件类型统计</h4>
-        <rbi-echarts-bar-port [data]="Bardata" [title]="Bartitle" [themeColor]="this.themePieColor"></rbi-echarts-bar-port>
+<!--        <div style="padding-right: 2vw">-->
+          <rbi-echarts-bar-port [data]="Bardata" [title]="Bartitle" [themeColor]="this.themePieColor"></rbi-echarts-bar-port>
+<!--        </div>-->
       </div>
       <div class="Payment first">
 <!--        <img src="assets/images/ic_refrue.png" alt=""  (click)="refresh($event)">-->
 <!--        &lt;!&ndash;<img src="http://www.gyrbi.com/SmartProperty/assets/images/ic_refrue.png" alt=""  (click)="refresh($event)">&ndash;&gt;-->
 <!--        <span class="bar_text">点击刷新</span>-->
         <h4>本周缴费统计</h4>
-        <rbi-echarts-pie-general  [themeColor]="this.themeBarColor" [barData]="piedata.barData" [lineData]="piedata.lineData" [data]="piedata.data"></rbi-echarts-pie-general>
+
+          <rbi-echarts-pie-general  [themeColor]="this.themeBarColor" [barData]="piedata.barData" [lineData]="piedata.lineData" [data]="piedata.data"></rbi-echarts-pie-general>
+
+
       </div>
       <div class="Payment second">
         <!--<img src="http://www.gyrbi.com/SmartProperty/assets/images/ic_jiantou.png" alt="" >-->

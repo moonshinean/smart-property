@@ -32,7 +32,7 @@
     }
     .set-permission-header-btn-delete{
       margin-left: 1vw;
-      background: #A84847;
+      background: #e43331;
       .set-permission-header-img-delete{
         width: 18px;
         height: 18px;
@@ -89,19 +89,16 @@
   .set-permission-dialog-Btn-false{
     background: #9E9E9E;
   }
-  ::ng-deep .ui-dialog .ui-widget-content{
-    background: #DCDCDC;
-  }
   ::ng-deep .ui-dialog-titlebar{
     font-size: 1rem;
     text-align: center;
   }
   ::ng-deep  .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-label.ui-state-highlight {
-    background: #DCDCDC;
+    background: #f0f0f0;
     color: #000;
   }
   ::ng-deep  .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-label.ui-state-highlight:hover {
-    background: #DCDCDC;
+    background: #f0f0f0;
     color: #000;
   }
 }
@@ -109,10 +106,11 @@
 ::ng-deep .ui-dialog-content{
   overflow: visible !important;
 }
-//::ng-deep .ui-tree .ui-treenode-content span{
-//  background: #fff;
-//  color: #000;
-//}
-
-//body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-label.ui-state-highlight
-//body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-label.ui-state-highlight
+::ng-deep .home[_ngcontent-c2] .ui-dialog-titlebar {
+  background: #344358;
+  color: #fff;
+}
+::ng-deep .home[_ngcontent-c2] .ui-dialog .ui-widget-content {
+  background: #f0f0f0;
+  overflow: visible !important;
+}

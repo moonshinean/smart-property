@@ -107,7 +107,7 @@ export class LatepaymentTotalComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.btnOption.btnlist = [
       {label: '修改', src: 'assets/images/ic_modify.png', style: {background: '#3A78DA', marginLeft: '2vw'} , hidden: true },
-      {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#A84847', marginLeft: '1vw'} , hidden: true},
+      {label: '删除', src: 'assets/images/ic_delete.png', style: {background: '#e43331', marginLeft: '1vw'} , hidden: true},
       {label: '导入', src: '', style: {background: '#55AB7F', marginLeft: '1vw'} ,  hidden: true},
       {label: '搜索', src: '', style: '' , hidden: true},
     ];

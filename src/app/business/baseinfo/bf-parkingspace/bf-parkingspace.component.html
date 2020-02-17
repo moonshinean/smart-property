@@ -212,96 +212,96 @@
     </p-footer>
   </p-dialog>
   <!--详情弹窗-->
-  <p-dialog header="详情弹窗" [(visible)]="parkingspaceDetailDialog" [width]="900">
-    <!--Content-->
-    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >小区：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <span>{{parkingspaceDetail.organizationName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >小区：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <span>{{parkingspaceDetail.villageName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label>地块：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <span>{{parkingspaceDetail.regionName}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >车位编号：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{parkingspaceDetail.parkingSpaceCode}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >车位性质：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-          <span>{{parkSpaceNaturemodify}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >车位面积：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{parkingspaceDetail.parkingSpaceArea}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >车位类型：</label>
-        </div>
-        <div class="ui-g-8" style="line-height: 2vh">
-         <span>{{parkSpaceTypemodify}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >车位容车数量：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{parkingspaceDetail.vehicleCapacity}}</span>
-        </div>
-      </div>
-      <div class="ui-g-6">
-        <div class="ui-g-4">
-          <label >当前可车辆容车量：</label>
-        </div>
-        <div class="ui-g-8">
-          <span>{{parkingspaceDetail.vehicleCapacity}}</span>
-        </div>
-      </div>
-      <!--<div class="ui-g-6">-->
-      <!--<div class="ui-g-4">-->
-      <!--<label >当前可车辆容车量：</label>-->
-      <!--</div>-->
-      <!--<div class="ui-g-8">-->
-      <!--<input type="text" pInputText placeholder="请输入当前可车辆容车量" [(ngModel)]="parkingspaceModify.currentCapacity">-->
-      <!--</div>-->
-      <!--</div>-->
-    </div>
-    <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
-        <button class="bf-parkingspace-dialog-Btn bf-parkingspace-dialog-Btn-false"  (click)="parkingspaceDetailDialog=false;clearData()">取消</button>
-      </div>
-    </p-footer>
-  </p-dialog>
+<!--  <p-dialog header="详情弹窗" [(visible)]="parkingspaceDetailDialog" [width]="900">-->
+<!--    &lt;!&ndash;Content&ndash;&gt;-->
+<!--    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >小区：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--          <span>{{parkingspaceDetail.organizationName}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >小区：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--          <span>{{parkingspaceDetail.villageName}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label>地块：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--          <span>{{parkingspaceDetail.regionName}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >车位编号：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <span>{{parkingspaceDetail.parkingSpaceCode}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >车位性质：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--          <span>{{parkSpaceNaturemodify}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >车位面积：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <span>{{parkingspaceDetail.parkingSpaceArea}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >车位类型：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8" style="line-height: 2vh">-->
+<!--         <span>{{parkSpaceTypemodify}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >车位容车数量：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <span>{{parkingspaceDetail.vehicleCapacity}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="ui-g-6">-->
+<!--        <div class="ui-g-4">-->
+<!--          <label >当前可车辆容车量：</label>-->
+<!--        </div>-->
+<!--        <div class="ui-g-8">-->
+<!--          <span>{{parkingspaceDetail.vehicleCapacity}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      &lt;!&ndash;<div class="ui-g-6">&ndash;&gt;-->
+<!--      &lt;!&ndash;<div class="ui-g-4">&ndash;&gt;-->
+<!--      &lt;!&ndash;<label >当前可车辆容车量：</label>&ndash;&gt;-->
+<!--      &lt;!&ndash;</div>&ndash;&gt;-->
+<!--      &lt;!&ndash;<div class="ui-g-8">&ndash;&gt;-->
+<!--      &lt;!&ndash;<input type="text" pInputText placeholder="请输入当前可车辆容车量" [(ngModel)]="parkingspaceModify.currentCapacity">&ndash;&gt;-->
+<!--      &lt;!&ndash;</div>&ndash;&gt;-->
+<!--      &lt;!&ndash;</div>&ndash;&gt;-->
+<!--    </div>-->
+<!--    <p-footer>-->
+<!--      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">-->
+<!--        <button class="bf-parkingspace-dialog-Btn bf-parkingspace-dialog-Btn-false"  (click)="parkingspaceDetailDialog=false;clearData()">取消</button>-->
+<!--      </div>-->
+<!--    </p-footer>-->
+<!--  </p-dialog>-->
   <rbi-detail-pop [dialogOption]="parkingSpaceDetailOption"></rbi-detail-pop>
   <rbi-file-pop [UploadFileOption]="UploadFileOption" (event)="ownerUploadSureClick($event)"></rbi-file-pop>
   <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>

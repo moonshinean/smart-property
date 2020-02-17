@@ -39,7 +39,7 @@
     }
     .charge-pay-parkspace-header-btn-delete{
       margin-left: 1vw;
-      background: #A84847;
+      background: #e43331;
     }
     //.charge-pay-parkspace-header-dropdown{
     //  width: 2vw;
@@ -48,9 +48,6 @@
     ::ng-deep .ui-dropdown{
       //  //width: 5% !important;
       min-width: 0;
-    }
-    .charge-pay-parkspace-header-btn-delete:hover{
-      background: #743131;
     }
     .charge-pay-parkspace-header-search{
       position: absolute;
@@ -136,9 +133,6 @@
   ::ng-deep .ui-dialog-content{
     overflow: visible ;
   }
-  ::ng-deep .ui-dialog .ui-widget-content{
-    background: #DCDCDC;
-  }
   ::ng-deep .ui-dialog-titlebar{
     text-align: center;
     font-size: 1rem;
@@ -158,6 +152,13 @@
       padding: 0.2em;
     }
   }
-
 }
 
+::ng-deep .home[_ngcontent-c2] .ui-dialog-titlebar {
+  background: #344358;
+  color: #fff;
+}
+::ng-deep .home[_ngcontent-c2] .ui-dialog .ui-widget-content {
+  background: #f0f0f0;
+  overflow: visible !important;
+}

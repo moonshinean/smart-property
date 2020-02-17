@@ -81,7 +81,7 @@
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>单元名称：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
           <input  type="text" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.unitName" (blur)="changeInput(roomInfo.unitName, 3)">
           <span [hidden]="!this.keyRoomInfoList[3]">此字段为必填字段</span>
         </div>
@@ -144,7 +144,7 @@
         <div class="ui-g-4 right">
           <label >装修情况：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
           <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" placeholder="请选择装修情况..." [(ngModel)]="roomInfo.renovationStatus" (onChange)="renovationChange($event)"></p-dropdown>
         </div>
       </div>
@@ -201,14 +201,14 @@
       </div>
     </div>
     <p-footer>
-      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerSureClick('添加')">确认</button>
         <button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-false" (click)="ownerAddDialog=false; clearData()">取消</button>
       </div>
     </p-footer>
   </p-dialog>
   <!--修改弹窗-->
-  <p-dialog header="信息修改" [(visible)]="ownerModifayDialog" [width]="1300" [closable]="false">
+  <p-dialog header="房屋修改" [(visible)]="ownerModifayDialog" [width]="1300" [closable]="false">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
       <div class="ui-g-6">
