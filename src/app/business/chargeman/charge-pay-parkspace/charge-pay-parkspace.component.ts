@@ -368,7 +368,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // 车位办理
   public  addParkSpaceClick(): void {
-    console.log(this.addParkSpace.parkingSpaceCode);
     if (this.addParkSpace.parkingSpaceCode !== undefined) {
       this.addParkSpaceOptionDialog = true;
     } else {
@@ -691,6 +690,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
 
   public clearData(): void {
       this.addParkSpace = new AddSparkSpace();
+      this.addParkSpace.parkingSpaceCode = this.SearchData.code;
       this.paymentParkSpaceSelect = [];
   }
 }

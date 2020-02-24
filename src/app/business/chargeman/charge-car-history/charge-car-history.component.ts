@@ -1,19 +1,19 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FileOption} from '../../../common/components/basic-dialog/basic-dialog.model';
 import {Subscription} from 'rxjs';
+import {ChargeHistoryService} from '../../../common/services/charge-history.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
 import {ThemeService} from '../../../common/public/theme.service';
-import {ChargeHistoryService} from '../../../common/services/charge-history.service';
 
 @Component({
-  selector: 'rbi-charge-history',
-  templateUrl: './charge-history.component.html',
-  styleUrls: ['./charge-history.component.less']
+  selector: 'rbi-charge-car-history',
+  templateUrl: './charge-car-history.component.html',
+  styleUrls: ['./charge-car-history.component.less']
 })
-export class ChargeHistoryComponent implements OnInit, OnDestroy {
+export class ChargeCarHistoryComponent implements OnInit, OnDestroy {
 
   public option: any;
   public paymentDetailTableContnt: any;
@@ -29,11 +29,7 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
     {label: '身份证号', value: 4},
   ];
   public SearchData = {
-    villageCode: '',
-    regionCode: '',
-    buildingCode:  '',
-    unitCode: '',
-    roomCode: '',
+    parkingSpaceCode: '',
     pageNo: 1,
     pageSize: 10
   };
@@ -101,6 +97,7 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
       }
       // this
     }
+    console.log(123);
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -131,7 +128,15 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
         break;
     }
   }
-
+  // 搜索事件
+  public  parkSearchClick(): void {
+    if (this.searchData !== undefined && this.searchData !== null) {
+      this.SearchData.parkingSpaceCode = this.searchData;
+      this.SearchData.pageNo = 1;
+      this.SearchData.pageSize = 10;
+      this.queryData();
+    }
+  }
   // charge item detail
   public  detailsDialogClick(e): void {
     this.detailsDialog = {
@@ -143,22 +148,11 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
       poplist: {
         popContent: e,
         popTitle:  [
-          {field: 'roomCode', header: '房间编号'},
-          {field: 'deliveryTime', header: '交付时间'},
-          {field: 'startTime', header: '开始计费时间'},
-          {field: 'roomSize', header: '住房面积'},
+          {field: 'parkingSpaceCode', header: '车位编号'},
+          {field: 'startTime', header: '计费开始时间'},
           {field: 'vacancyCharge', header: '空置费'},
-          {field: 'paidInPropertyFee', header: '实收物业费'},
-          {field: 'decorationManagementFee', header: '装修管理费'},
-          {field: 'garbageCollectionAndTransportationFee', header: '垃圾清运费'},
-          {field: 'decorationDeposit', header: '装修保证金'},
-          {field: 'refundedDecorationDeposit', header: '已退装修保证金'},
-          {field: 'deductedDecorationDeposit', header: '已抵扣装修保证金'},
-          {field: 'cashCoupon', header: '物业代金券'},
-          {field: 'oldPropertyBringsNew', header: '老带新'},
-          {field: 'deductionThreeWayFees', header: '三通费抵扣'},
-          {field: 'reductionIncome', header: '冲减收入'},
-          {field: 'idt', header: '上传时间'},
+          {field: 'amountReceivable', header: '应收车位管理费'},
+          {field: 'actualMoneyCollection', header: '实收车位管理费'},
           {field: 'remarks', header: '备注'},
         ],
       }
@@ -185,15 +179,11 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
       width: '100%',
       header: {
         data:  [
-          {field: 'roomCode', header: '房间编号'},
-          {field: 'deliveryTime', header: '交付时间'},
-          {field: 'startTime', header: '开始计费时间'},
-          {field: 'roomSize', header: '住房面积'},
+          {field: 'parkingSpaceCode', header: '车位编号'},
+          {field: 'startTime', header: '计费开始时间'},
           {field: 'vacancyCharge', header: '空置费'},
-          {field: 'paidInPropertyFee', header: '实收物业费'},
-          {field: 'decorationManagementFee', header: '装修管理费'},
-          {field: 'garbageCollectionAndTransportationFee', header: '垃圾清运费'},
-          {field: 'idt', header: '上传时间'},
+          {field: 'amountReceivable', header: '应收车位管理费'},
+          {field: 'actualMoneyCollection', header: '实收车位管理费'},
           {field: 'operating', header: '操作'}],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
       },
@@ -211,9 +201,10 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
   // 上传文件
   public  uploadFileSureClick(e): void {
     if (e.getAll('file').length !== 0) {
-      this.chargeHistorySrv.imporChargeHistoryData(e).subscribe(
+      this.chargeHistorySrv.imporParkingHistoryData(e).subscribe(
         value => {
           if (value.status === '1000') {
+            console.log(value);
             this.uploadRecordOption = {
               width: '900',
               dialog: true,
@@ -221,21 +212,21 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
               totalNumber: value.data.totalNumber,
               realNumber: value.data.realNumber,
               uploadOption: {
-                width: '102%',
+                width: '100%',
                 tableHeader: {
                   data: [
                     {field: 'code', header: '序号'},
-                    {field: 'roomCode', header: '房间编号'},
+                    {field: 'roomCode', header: '车位编号'},
                     {field: 'result', header: '结果'},
                     {field: 'remarks', header: '备注'},
                   ],
-                    style: { background: '#F4F4F4', color: '#000', height: '6vh'}
-                  },
-                  tableContent: {
-                    data: value.data.logOldBillsDOS,
-                    styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
-                    styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
-                  }
+                  style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+                },
+                tableContent: {
+                  data: value.data.logOldBillsDOS,
+                  styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+                  styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+                }
               }
             };
             this.queryData();
@@ -252,7 +243,7 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
   }
   // 查询数据
   public  queryData(): void {
-    this.chargeHistorySrv.queryChargeHistoryPageInfo(this.SearchData).subscribe(
+    this.chargeHistorySrv.queryParkingHistoryPageInfo(this.SearchData).subscribe(
       (value) => {
         console.log(value);
         this.loadHidden = true;
@@ -270,7 +261,7 @@ export class ChargeHistoryComponent implements OnInit, OnDestroy {
   // 设置按钮显示权限
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
-      if (v.label === '历史数据') {
+      if (v.label === '专有车位历史数据') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           console.log(value);
           value.data.forEach( item => {

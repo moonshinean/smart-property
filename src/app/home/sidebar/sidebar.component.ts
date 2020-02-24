@@ -46,7 +46,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
   }
 
   ngOnInit() {
-    if(this.themeSrv.setTheme !== undefined) {
+    if (this.themeSrv.setTheme !== undefined) {
       this.ftHover = this.themeSrv.setTheme.siderbar.ftHover;
       this.ft  = this.themeSrv.setTheme.siderbar.ft;
     }
@@ -134,6 +134,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           // {label: '预缴记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/prepayment']},
           // {label: '历史报表', icon: 'pi pi-fw ', routerLink: ['/home/charge/historicalreport']},
           {label: '历史数据', icon: 'pi pi-fw ', routerLink: ['/home/charge/history']},
+          {label: '专有车位历史数据', icon: 'pi pi-fw ', routerLink: ['/home/charge/parkhistory']},
 
           // {label: '车位管理', icon: 'pi pi-fw ', routerLink: ['/home/charge/parkspace']},
           // {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/charge/coupon']},
@@ -185,6 +186,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
             this.items = [];
             this.homeSrv.getChildrenRouter({parentCode: v.permisCode}).subscribe(
               (value) => {
+                console.log(value);
                 h.routingItem.forEach( val => {
                  value.data.forEach( data => {
                     if (val.label === data.title) {

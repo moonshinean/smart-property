@@ -293,10 +293,8 @@ export class HomeComponent implements OnInit {
 
   // 获取树结构的数据
   public  getTreeData(): void {
-    console.log(123);
     this.globalSrv.queryTVillageTree().subscribe(
       value => {
-        console.log(value);
         if (value.status === '1000') {
           this.roomtree = value.data;
           this.dataTrees = this.initializeTree(this.roomtree);

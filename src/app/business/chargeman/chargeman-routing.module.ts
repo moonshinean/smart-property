@@ -17,6 +17,7 @@ const routes: Routes = [
       {path: 'prepayment', loadChildren: './charge-prepayment/charge-prepayment.module#ChargePrepaymentModule'},
       {path: 'history', loadChildren: './charge-history/charge-history.module#ChargeHistoryModule'},
       {path: 'payparkspace', loadChildren: './charge-pay-parkspace/charge-pay-parkspace.module#ChargePayParkspaceModule'},
+      {path: 'parkhistory', loadChildren: './charge-car-history/charge-car-history.module#ChargeCarHistoryModule'},
       // {path: 'historicalreport', loadChildren: './charge-historicalreport/charge-historicalreport.module#ChargeHistoricalreportModule'},
       // {path: 'parkspace', loadChildren: './charge-parkspace/charge-parkspace.module#ChargeParkspaceModule'},
     ]
