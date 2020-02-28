@@ -54,7 +54,7 @@
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>小区名称：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
           <p-dropdown [options]="villageOption"  scrollHeight="100px" placeholder="请选择小区..."  [(ngModel)]="roomInfo.villageName" (onChange)="changeInput(roomInfo.villageName, 0)"></p-dropdown>
           <span [hidden]="!this.keyRoomInfoList[0]">此字段为必选字段</span>
         </div>
@@ -68,76 +68,76 @@
           <span [hidden]="!this.keyRoomInfoList[1]">此字段为必填字段</span>
         </div>
       </div>
-      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[2]}">
+      <div class="ui-g-6" >
         <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>楼栋名称：</label>
+          <label >楼栋名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入楼栋名称..." [(ngModel)]="roomInfo.buildingName" (blur)="changeInput(roomInfo.buildingName, 2)">
+<!--          <span [hidden]="!this.keyRoomInfoList[2]">此字段为必填字段</span>-->
+        </div>
+      </div>
+      <div class="ui-g-6"  >
+        <div class="ui-g-4 right">
+          <label >单元名称：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
+          <input  type="text" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.unitName" (blur)="changeInput(roomInfo.unitName, 3)">
+<!--          <span [hidden]="!this.keyRoomInfoList[3]">此字段为必填字段</span>-->
+        </div>
+      </div>
+      <div class="ui-g-6"  >
+        <div class="ui-g-4 right">
+          <label >楼层：</label>
+        </div>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+          <input  type="number" pInputText placeholder="请输入楼层..." [(ngModel)]="roomInfo.floor" (blur)="changeInput(roomInfo.floor, 4)">
+<!--          <span [hidden]="!this.keyRoomInfoList[4]">此字段为必填字段</span>-->
+        </div>
+      </div>
+      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[2]}">
+        <div class="ui-g-4 right">
+          <label for="addroomCode"><span style="color: red">*</span>房间编号：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addroomCode" type="text" pInputText placeholder="请输入房间编号..."  [(ngModel)]="roomInfo.roomCode" (blur)="changeInput(roomInfo.roomCode, 2)">
           <span [hidden]="!this.keyRoomInfoList[2]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[3]}">
         <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>单元名称：</label>
+          <label for="addroomSize"><span style="color: red">*</span>房屋面积：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
-          <input  type="text" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.unitName" (blur)="changeInput(roomInfo.unitName, 3)">
+        <div class="ui-g-8">
+          <input id="addroomSize" type="text" pInputText placeholder="请输入房屋面积..." [(ngModel)]="roomInfo.roomSize" (blur)="changeInput(roomInfo.roomSize, 3)">
           <span [hidden]="!this.keyRoomInfoList[3]">此字段为必填字段</span>
         </div>
       </div>
-      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[4]}" >
-        <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>楼层：</label>
+      <div class="ui-g-6"  [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[4]}">
+        <div class="ui-g-4 right" >
+          <label ><span style="color: red">*</span>房屋类型：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="number" pInputText placeholder="请输入楼层..." [(ngModel)]="roomInfo.floor" (blur)="changeInput(roomInfo.floor, 4)">
-          <span [hidden]="!this.keyRoomInfoList[4]">此字段为必填字段</span>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
+          <p-dropdown [options]="roomTypeOption"  scrollHeight="100px" placeholder="请选择房屋类型..."  [(ngModel)]="roomInfo.roomType" (onChange)="changeInput(roomInfo.roomType, 4)"></p-dropdown>
+          <span [hidden]="!this.keyRoomInfoList[4]">此字段为必选字段</span>
         </div>
       </div>
       <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[5]}">
         <div class="ui-g-4 right">
-          <label for="addroomCode"><span style="color: red">*</span>房间编号：</label>
+          <label ><span style="color: red">*</span>物业费开始计费时间：</label>
         </div>
         <div class="ui-g-8">
-          <input id="addroomCode" type="text" pInputText placeholder="请输入房间编号..."  [(ngModel)]="roomInfo.roomCode" (blur)="changeInput(roomInfo.roomCode, 5)">
+          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onSelect)="changeInput(roomInfo.startBillingTime, 5)"></p-calendar>
           <span [hidden]="!this.keyRoomInfoList[5]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[6]}">
         <div class="ui-g-4 right">
-          <label for="addroomSize"><span style="color: red">*</span>房屋面积：</label>
-        </div>
-        <div class="ui-g-8">
-          <input id="addroomSize" type="text" pInputText placeholder="请输入房屋面积..." [(ngModel)]="roomInfo.roomSize" (blur)="changeInput(roomInfo.roomSize, 6)">
-          <span [hidden]="!this.keyRoomInfoList[6]">此字段为必填字段</span>
-        </div>
-      </div>
-      <div class="ui-g-6"  [ngClass]="{dropdownKeyFilter: this.keyRoomInfoList[7]}">
-        <div class="ui-g-4 right" >
-          <label ><span style="color: red">*</span>房屋类型：</label>
-        </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomTypeOption"  scrollHeight="100px" placeholder="请选择房屋类型..."  [(ngModel)]="roomInfo.roomType" (onChange)="changeInput(roomInfo.roomType, 7)"></p-dropdown>
-          <span [hidden]="!this.keyRoomInfoList[7]">此字段为必选字段</span>
-        </div>
-      </div>
-      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[8]}">
-        <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>物业费开始计费时间：</label>
-        </div>
-        <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 8)"></p-calendar>
-          <span [hidden]="!this.keyRoomInfoList[8]">此字段为必填字段</span>
-        </div>
-      </div>
-      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[9]}">
-        <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>实际交房时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 9)"></p-calendar>
-          <span [hidden]="!this.keyRoomInfoList[9]">此字段为必填字段</span>
+          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onSelect)="changeInput(roomInfo.realRecyclingHomeTime, 6)"></p-calendar>
+          <span [hidden]="!this.keyRoomInfoList[6]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6">
@@ -229,7 +229,7 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>楼栋名称：</label>
+          <label >楼栋名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText disabled  placeholder="请输入楼栋名称" [(ngModel)]="roomInfo.buildingName">
@@ -237,19 +237,19 @@
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>单元名称：</label>
+          <label >单元名称：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText disabled placeholder="请输入单元名称" [(ngModel)]="roomInfo.unitName">
         </div>
       </div>
-      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[4]}">
+      <div class="ui-g-6">
         <div class="ui-g-4 right">
-          <label ><span style="color: red">*</span>楼层：</label>
+          <label >楼层：</label>
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <input  type="number" pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.floor" (blur)="changeInput(roomInfo.floor, 4)">
-          <span [hidden]="!this.keyRoomInfoList[4]">此字段为必填字段</span>
+          <input  type="number"   disabled pInputText placeholder="请输入单元名称..." [(ngModel)]="roomInfo.floor" >
+<!--          <span [hidden]="!this.keyRoomInfoList[4]">此字段为必填字段</span>-->
         </div>
       </div>
       <div class="ui-g-6">
@@ -260,55 +260,55 @@
           <input  type="text" pInputText disabled placeholder="请输入房间编号..." [(ngModel)]="roomInfo.roomCode">
         </div>
       </div>
-      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[6]}">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[3]}">
         <div class="ui-g-4 right">
           <label for="addroomSize"><span style="color: red">*</span>房屋面积：</label>
         </div>
         <div class="ui-g-8">
-          <input  type="text" pInputText  placeholder="请输入房屋面积..." [(ngModel)]="roomInfo.roomSize" (blur)="changeInput(roomInfo.roomSize, 6)">
-          <span [hidden]="!this.keyRoomInfoList[6]">此字段为必填字段</span>
+          <input  type="text" pInputText  placeholder="请输入房屋面积..." [(ngModel)]="roomInfo.roomSize" (blur)="changeInput(roomInfo.roomSize, 3)">
+          <span [hidden]="!this.keyRoomInfoList[3]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>房屋类型：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
           <p-dropdown [options]="roomTypeOption" disabled placeholder="请选择房屋类型" scrollHeight="100px"  [(ngModel)]="roomInfo.roomType"></p-dropdown>
         </div>
       </div>
-      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[8]}">
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: this.keyRoomInfoList[4]}">
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>房屋状态：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
-          <p-dropdown [options]="roomStatusOption" placeholder="请选择房屋状态"  scrollHeight="100px"   [(ngModel)]="roomInfo.roomStatus" (blur)="changeInput(roomInfo.roomStatus.roomSize, 8)"></p-dropdown>
-          <span [hidden]="!this.keyRoomInfoList[8]">此字段为必填字段</span>
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
+          <p-dropdown [options]="roomStatusOption" placeholder="请选择房屋状态"  scrollHeight="100px"   [(ngModel)]="roomInfo.roomStatus" (blur)="changeInput(roomInfo.roomStatus, 4)"></p-dropdown>
+          <span [hidden]="!this.keyRoomInfoList[4]">此字段为必填字段</span>
         </div>
       </div>
-      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[9]}">
+      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[5]}">
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>物业费开始计费时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 9)"></p-calendar>
-          <span [hidden]="!this.keyRoomInfoList[9]">此字段为必填字段</span>
+          <p-calendar [(ngModel)]="roomInfo.startBillingTime" placeholder="物业费开始计费时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.startBillingTime, 5)"></p-calendar>
+          <span [hidden]="!this.keyRoomInfoList[5]">此字段为必填字段</span>
         </div>
       </div>
-      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[10]}">
+      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: this.keyRoomInfoList[6]}">
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>实际交房时间：</label>
         </div>
         <div class="ui-g-8">
-          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 10)"></p-calendar>
-          <span [hidden]="!this.keyRoomInfoList[10]">此字段为必填字段</span>
+          <p-calendar [(ngModel)]="roomInfo.realRecyclingHomeTime" placeholder="实际交房时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2150" [locale]="esDate" (onBlur)="changeInput(roomInfo.realRecyclingHomeTime, 6)"></p-calendar>
+          <span [hidden]="!this.keyRoomInfoList[6]">此字段为必填字段</span>
         </div>
       </div>
       <div class="ui-g-6">
         <div class="ui-g-4 right">
           <label >装修情况：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
           <p-dropdown [options]="renovationStatusOption"  scrollHeight="100px" [(ngModel)]="roomInfo.renovationStatus" placeholder="请选择装修状态" (onChange)="renovationChange($event)"></p-dropdown>
 
         </div>

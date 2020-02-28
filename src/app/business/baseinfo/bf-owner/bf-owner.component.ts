@@ -99,7 +99,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     {field: 'remarks', header: '备注'},
   ];
   // 房屋添加检验
-  public keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false];
+  public keyRoomInfoList = [false, false, false, false, false, false, false];
   public keyOwnerInfoList = [false, false, false, false, false];
   public ParkingSpaceList: any[] = [];
   public ownertableOption: any;
@@ -319,10 +319,18 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // sure add houser and owner info
   public  ownerSureClick(data): void {
-    const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'floor', 'roomCode', 'roomSize',  'roomType', 'startBillingTime', 'realRecyclingHomeTime'];
-    addRoomKeyList.forEach((v, index) => {
-     this.keyRoomInfoList[index] = this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '';
-   });
+    let addRoomKeyList;
+    if (data !== '修改') {
+      addRoomKeyList = ['villageName', 'regionName',  'roomCode', 'roomSize',  'roomType',  'startBillingTime', 'realRecyclingHomeTime'];
+      addRoomKeyList.forEach((v, index) => {
+        this.keyRoomInfoList[index] = this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '';
+      });
+    } else  {
+      addRoomKeyList = ['villageName', 'regionName',  'roomCode', 'roomSize',  'roomType',  'roomStatus', 'startBillingTime', 'realRecyclingHomeTime'];
+      addRoomKeyList.forEach((v, index) => {
+        this.keyRoomInfoList[index] = this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '';
+      });
+    }
     const addroomVerifyStaus = addRoomKeyList.some( v => {
     return (this.roomInfo[v] === undefined || this.roomInfo[v] === null || this.roomInfo[v] === '');
     });
@@ -363,6 +371,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
                 this.clearData();
                 this.updateTreeSrv.emitChangeTheme('update');
               } else {
+                this.roomInfo.villageName = this.toolSrv.setLabelToValue(this.villageOption,  this.roomInfo.villageName);
                 this.toolSrv.setToast('error', '操作失败', value.message);
               }
             }
@@ -575,7 +584,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
      this.ownerinfo = new OwerList();
      this.ownerUserSelect = [];
      this.ownerSelect = [];
-     this.keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false, false];
+     this.keyRoomInfoList = [false, false, false, false, false, false, false];
  }
   // paging query
   public  nowpageEventHandle(event: any): void {
@@ -662,7 +671,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   public  queryOwnerUpdateData(data): void {
       this.owerSrv.queryUpdateInfoByroomCode({roomCode: data}).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.ownerList = value.data.owner.map( v => {
               v.sex = this.toolSrv.setValueToLabel(this.sexOption, v.sex);
@@ -670,12 +678,16 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
               v.normalPaymentStatus = this.toolSrv.setValueToLabel(this.normalChargeOption, v.normalPaymentStatus);
               return v;
             });
+
             this.roomInfo = value.data.roomInfo;
-            this.roomInfo.renovationStatus = this.roomInfo.renovationStatus.toString();
+            if (this.roomInfo.renovationStatus) {
+              this.roomInfo.renovationStatus = this.roomInfo.renovationStatus.toString();
+            }
             this.timeHide = !(this.roomInfo.renovationStatus === '1');
             this.roomInfo.roomStatus = this.roomInfo.roomStatus.toString();
             this.roomInfo.roomType = this.roomInfo.roomType.toString();
-            this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length)
+            this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, this.roomInfo.roomCode.length);
+
           } else {
             this.toolSrv.setToast('error', '请求失败', value.message);
           }
@@ -729,9 +741,9 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
       if (v.label === '业主资料') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           console.log(value);
-          value.data.forEach(v => {
+          value.data.forEach(items => {
             this.btnHiden.forEach( val => {
-              if (v.title === val.label) {
+              if (items.title === val.label) {
                 val.hidden = false;
               }
             });
@@ -750,11 +762,9 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // 会怄气饼状图的数据
   public  getChargePieData(index): void {
-    console.log(index);
     if (index === 1) {
       this.owerSrv.getNewSystemChargeItemToatal({roomCode: this.pieChargeRoomCode}).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.pieDatas = value.data.filter(v => {
               return v.value !== null && v.value !== 0;
@@ -767,7 +777,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     } else if (index === 2) {
       this.owerSrv.getYearChargeItemToatal({roomCode: this.pieChargeRoomCode}).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.pieDatas = value.data.filter(v => {
               return v.value !== null && v.value !== 0;
@@ -780,7 +789,6 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     }else {
       this.owerSrv.getTotalChargeItemToatal({roomCode: this.pieChargeRoomCode}).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.pieDatas = value.data.filter(v => {
               return v.value !== null && v.value !== 0;

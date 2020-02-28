@@ -82,7 +82,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   ];
   public addroomVerifyStaus: any;
 
-  public keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false];
+  public keyRoomInfoList = [false, false, false, false, false, false, false, false];
   public keyOwnerInfoList = [false, false, false, false, false];
   // 选择日期相关
   public esDate: any;
@@ -314,7 +314,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   // 添加房屋请求
   public  addVacantRoomSureClick(data): void {
     if (data === '添加') {
-      const addRoomKeyList = ['villageName', 'regionName', 'buildingName', 'unitName', 'floor', 'roomCode', 'roomSize',  'roomType',];
+      const addRoomKeyList = ['villageName', 'regionName', 'roomCode', 'roomSize',  'roomType',];
       // @ts-ignore
       addRoomKeyList.forEach((val, index) => {
         this.keyRoomInfoList[index] = this.roomInfo[val] === undefined || this.roomInfo[val] === null || this.roomInfo[val] === '';
@@ -363,6 +363,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
               this.roomInfo = new RoomTitle();
               this.updateTreeSrv.emitChangeTheme('update');
             } else {
+              this.roomInfo.villageName = this.toolSrv.setLabelToValue(this.villageOption, this.roomInfo.villageName);
               this.toolSrv.setToast('error', '操作失败', value.message);
             }
           }
@@ -459,7 +460,8 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   }
   // 清除和输出化数据
   public  clearData(): void {
-    this.keyRoomInfoList = [false, false, false, false, false, false, false, false, false, false];
+    this.keyRoomInfoList = [false, false, false, false, false, false, false];
     this.vacantRoomSelect = [];
+    this.roomInfo = new RoomTitle();
   }
 }
