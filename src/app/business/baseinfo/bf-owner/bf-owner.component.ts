@@ -389,23 +389,17 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
   }
   // submit owner and roomInfo
   public  owerInfoClick(data): void {
-    console.log(this.ownerinfo);
     const ownerVertifyKeylist = ['surname', 'idNumber', 'mobilePhone', 'identity', 'normalPaymentStatus'];
     ownerVertifyKeylist.forEach((v, index) => {
       this.keyOwnerInfoList[index] = this.ownerinfo[v] === '' || this.ownerinfo[v] === undefined || this.ownerinfo[v] === null;
     });
-    console.log(this.keyOwnerInfoList);
     const ownerInfoStatus  = ownerVertifyKeylist.every( v => {
        return (this.ownerinfo[v] !== '' && this.ownerinfo[v] !== undefined && this.ownerinfo[v] !== null);
     });
     if (ownerInfoStatus) {
       if (this.toolSrv.verifyName.test(this.ownerinfo.surname)) {
         if (this.toolSrv.verifyPhone.test(this.ownerinfo.mobilePhone)) {
-          if (this.toolSrv.verifyIdNumber.test(this.ownerinfo.idNumber)) {
-            this.ownerInfoSetValueToOwnerList(data);
-          } else {
-            this.toolSrv.setToast('error', '添加失败', '请输入正确的身份证号');
-          }
+          this.ownerInfoSetValueToOwnerList(data);
         } else {
           this.toolSrv.setToast('error', '添加失败', '请输入正确的手机号');
         }

@@ -114,14 +114,13 @@
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入身份证号..." [(ngModel)]="tenantinfo.idNumber" (blur)="changeInput(tenantinfo.idNumber, 2)">
-          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(tenantinfo.idNumber === undefined || tenantinfo.idNumber === '')? (!this.toolSrv.verifyIdNumber.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber1.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber2.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber3.test(tenantinfo.idNumber) ): (toolSrv.verifyIdNumber.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber1.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber2.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber3.test(tenantinfo.idNumber))"></p-message>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyTenantInfoList[3]}">
         <div class="ui-g-4">
           <label ><span style="color: red">*</span>是否正常缴费：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
           <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择注销状态..."  [(ngModel)]="tenantinfo.normalPaymentStatus" (onChange)="changeInput(tenantinfo.normalPaymentStatus, 3)"></p-dropdown>
           <span [hidden]="!this.keyTenantInfoList[3]">此字段为必填字段</span>
         </div>
@@ -188,7 +187,6 @@
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText [placeholder]="tenantinfo.idNumber" [(ngModel)]="tenantinfo.idNumber" (blur)="changeInput(tenantinfo.idNumber, 2)">
-          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(tenantinfo.idNumber === undefined || tenantinfo.idNumber === '')? (!this.toolSrv.verifyIdNumber.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber1.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber2.test(tenantinfo.idNumber) || !this.toolSrv.verifyIdNumber3.test(tenantinfo.idNumber) ): (toolSrv.verifyIdNumber.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber1.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber2.test(tenantinfo.idNumber) || toolSrv.verifyIdNumber3.test(tenantinfo.idNumber))"></p-message>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyTenantInfoList[3]}">

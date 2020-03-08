@@ -5,11 +5,19 @@
   <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
   <!--顶部按钮-->
   <div class="charge-history-header">
-    <div class="ui-g-1 charge-history-header-btn charge-history-header-btn-add" (click)="uploadFileClick()" [hidden]="btnHiden[0].hidden">
+    <div class="ui-g-1 charge-history-header-btn charge-history-header-btn-add" (click)="uploadFileClick(1)" [hidden]="btnHiden[0].hidden">
       <!--        <img class="charge-margin-header-img-add" src="assets/images/ic_add.png" alt="">-->
       <span>导  入</span>
     </div>
-
+    <div class="ui-g-1 charge-history-header-btn charge-history-header-btn-add" style="background-color:#E8A52B;" (click)="uploadFileClick(2)" [hidden]="btnHiden[1].hidden">
+      <!--        <img class="charge-margin-header-img-add" src="assets/images/ic_add.png" alt="">-->
+      <span>导入累计</span>
+    </div>
+    <!--搜索-->
+    <div class="ui-inputgroup charge-history-header-search" *ngIf="!btnHiden[2].hidden">
+      <input type="text" pInputText placeholder="请输入需要搜索的房间号.."  [(ngModel)]="searchData" />
+      <button id="disabled-btn" class="charge-history-header-btn-search" type="button"  (click)="historySearchClick()"  label="搜索">搜索</button>
+    </div>
   </div>
   <!--<button class="charge-history-dialog-Btn charge-history-dialog-Btn-sure" style="position: absolute;top: 18.7vh;right: 5vw;z-index: 10000">搜索</button>-->
   <!--表格-->

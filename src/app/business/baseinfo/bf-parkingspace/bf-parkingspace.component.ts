@@ -294,7 +294,7 @@ export class BfParkingspaceComponent implements OnInit, OnDestroy {
   }
   // paging query
   public nowpageEventHandle(event: any): void {
-    this.nowPage = event;
+   this.searchparkSpaceData.pageNo =  this.nowPage = event;
     this.queryParkingSpacePageData();
     this.parkingspaceSelect = [];
   }

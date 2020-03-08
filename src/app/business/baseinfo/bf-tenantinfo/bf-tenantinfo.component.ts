@@ -248,7 +248,6 @@ export class BfTenantinfoComponent implements OnInit {
   public  tenantDetailClick(e): void {
     this.tenantSrv.findTenantDetail({roomCode: e.roomCode, customerUserId: e.customerUserId}).subscribe(value => {
       if (value.status === '1000') {
-        console.log(value);
         this.tenantMoreDetail = this.tenantMoreDetail.map(v => {
           v.value = e[v.field];
           return v;

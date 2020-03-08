@@ -1105,11 +1105,14 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.parkSpaceOptionDialog = false;
     this.paymentSrv.calculateRentalPackSpaceFree({roomCode: this.paymentSelect[0].roomCode, parkingSpaceCostDetailDO: this.parkSpaceData[this.editRentalParkspaceDataFlag]}).subscribe(
       value => {
-        console.log(value);
          if (value.status === '1000') {
-           for (const key in    this.parkSpaceData[this.editRentalParkspaceDataFlag]) {
-             this.parkSpaceData[this.editRentalParkspaceDataFlag][key] = value.data[key];
-           }
+           this.parkSpaceData.splice(0, 1);
+           value.data.forEach(v => {
+              this.parkSpaceData.push(v);
+           });
+           // for (const key in this.parkSpaceData[this.editRentalParkspaceDataFlag]) {
+           //   this.parkSpaceData[this.editRentalParkspaceDataFlag][key] = value.data[key];
+           // }
            this.getTotalBalaceData();
            this.toolSrv.setToast('success', '请求成功', value.message);
            // this.parkSpaceData[this.editRentalParkspaceDataFlag]['parkingSpaceType'] = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, this.parkSpaceData[this.editRentalParkspaceDataFlag]['parkingSpaceType']);

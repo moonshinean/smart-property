@@ -351,7 +351,6 @@
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入身份号码..." [(ngModel)]="ownerinfo.idNumber" >
-          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(ownerinfo.idNumber === undefined || ownerinfo.idNumber === '')? (!this.toolSrv.verifyIdNumber.test(ownerinfo.idNumber) || !this.toolSrv.verifyIdNumber1.test(ownerinfo.idNumber) || !this.toolSrv.verifyIdNumber2.test(ownerinfo.idNumber) || !this.toolSrv.verifyIdNumber3.test(ownerinfo.idNumber) ): (toolSrv.verifyIdNumber.test(ownerinfo.idNumber) || toolSrv.verifyIdNumber1.test(ownerinfo.idNumber) || toolSrv.verifyIdNumber2.test(ownerinfo.idNumber) || toolSrv.verifyIdNumber3.test(ownerinfo.idNumber))"></p-message>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyOwnerInfoList[4]}">

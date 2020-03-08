@@ -484,7 +484,7 @@
         <div class="ui-g-4 right">
           <label ><span style="color: red">*</span>客户身份：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
           <p-dropdown [options]="identityOption"  scrollHeight="100px" placeholder="请选择客户身份..."  [(ngModel)]="ownerinfo.identity"></p-dropdown>
         </div>
       </div>
@@ -494,14 +494,13 @@
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入身份号码..." [(ngModel)]="ownerinfo.idNumber" >
-          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(ownerinfo.idNumber === undefined || ownerinfo.idNumber === '')? (!this.toolSrv.verifyIdNumber.test(ownerinfo.idNumber) || !this.toolSrv.verifyIdNumber1.test(ownerinfo.idNumber) || !this.toolSrv.verifyIdNumber2.test(ownerinfo.idNumber) || !this.toolSrv.verifyIdNumber3.test(ownerinfo.idNumber) ): (toolSrv.verifyIdNumber.test(ownerinfo.idNumber) || toolSrv.verifyIdNumber1.test(ownerinfo.idNumber) || toolSrv.verifyIdNumber2.test(ownerinfo.idNumber) || toolSrv.verifyIdNumber3.test(ownerinfo.idNumber))"></p-message>
         </div>
       </div>
       <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyOwnerInfoList[4]}">
         <div class="ui-g-4 right">
           <label for="addroomSize"><span style="color: red">*</span>是否正常缴费：</label>
         </div>
-        <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
+        <div class="ui-g-8" [ngStyle]="{'line-height':'3vh'}">
           <p-dropdown [options]="normalChargeOption"  scrollHeight="100px" placeholder="请选择常缴费状态..."  [(ngModel)]="ownerinfo.normalPaymentStatus"></p-dropdown>
         </div>
       </div>
@@ -566,7 +565,6 @@
         </div>
         <div class="ui-g-8" [ngStyle]="{'line-height':'2vh'}">
           <input  type="text" pInputText placeholder="请输入客户电话..." [(ngModel)]="ownerinfo.idNumber">
-          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(ownerinfo.idNumber === undefined || ownerinfo.idNumber === '')? !this.toolSrv.verifyIdNumber.test(ownerinfo.idNumber): toolSrv.verifyIdNumber.test(ownerinfo.idNumber)"></p-message>
         </div>
       </div>
       <div class="ui-g-6">

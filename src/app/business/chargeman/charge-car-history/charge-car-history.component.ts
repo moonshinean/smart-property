@@ -38,6 +38,7 @@ export class ChargeCarHistoryComponent implements OnInit, OnDestroy {
   // 按钮权限相关
   public btnHiden = [
     {label: '导入', hidden: true},
+    {label: '导入累计', hidden: true},
     {label: '搜索', hidden: true},
   ];
   // 缴费相关
@@ -48,6 +49,7 @@ export class ChargeCarHistoryComponent implements OnInit, OnDestroy {
   // 其他相关
   public cleanTimer: any; // 清除时钟
   public loadHidden = true;
+  public importType: any;
   // 树结构订阅
   public detailSub: Subscription;
   // 切换主题
@@ -97,7 +99,6 @@ export class ChargeCarHistoryComponent implements OnInit, OnDestroy {
       }
       // this
     }
-    console.log(123);
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
       this.table.tableContent = this.themeSrv.setTheme.table.content;
@@ -168,7 +169,8 @@ export class ChargeCarHistoryComponent implements OnInit, OnDestroy {
     this.selectSearchType();
   }
 
-  public  uploadFileClick(): void {
+  public  uploadFileClick(value): void {
+    this.importType = value;
     this.uploadFileOption.width = '900';
     this.uploadFileOption.dialog = true;
     this.uploadFileOption.files = [];
@@ -201,41 +203,77 @@ export class ChargeCarHistoryComponent implements OnInit, OnDestroy {
   // 上传文件
   public  uploadFileSureClick(e): void {
     if (e.getAll('file').length !== 0) {
-      this.chargeHistorySrv.imporParkingHistoryData(e).subscribe(
-        value => {
-          if (value.status === '1000') {
-            console.log(value);
-            this.uploadRecordOption = {
-              width: '900',
-              dialog: true,
-              title: '上传记录',
-              totalNumber: value.data.totalNumber,
-              realNumber: value.data.realNumber,
-              uploadOption: {
-                width: '100%',
-                tableHeader: {
-                  data: [
-                    {field: 'code', header: '序号'},
-                    {field: 'roomCode', header: '车位编号'},
-                    {field: 'result', header: '结果'},
-                    {field: 'remarks', header: '备注'},
-                  ],
-                  style: { background: '#F4F4F4', color: '#000', height: '6vh'}
-                },
-                tableContent: {
-                  data: value.data.logOldBillsDOS,
-                  styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
-                  styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+      if (this.importType === 1) {
+        this.chargeHistorySrv.imporParkingHistoryData(e).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.uploadRecordOption = {
+                width: '900',
+                dialog: true,
+                title: '上传记录',
+                totalNumber: value.data.totalNumber,
+                realNumber: value.data.realNumber,
+                uploadOption: {
+                  width: '100%',
+                  tableHeader: {
+                    data: [
+                      {field: 'code', header: '序号'},
+                      {field: 'roomCode', header: '车位编号'},
+                      {field: 'result', header: '结果'},
+                      {field: 'remarks', header: '备注'},
+                    ],
+                    style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+                  },
+                  tableContent: {
+                    data: value.data.logOldBillsDOS,
+                    styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+                    styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+                  }
                 }
-              }
-            };
-            this.queryData();
-            this.uploadFileOption.files = [];
-          } else {
-            this.toolSrv.setToast('error', '操作失败', value.message);
+              };
+              this.queryData();
+              this.uploadFileOption.files = [];
+            } else {
+              this.toolSrv.setToast('error', '操作失败', value.message);
+            }
           }
-        }
-      );
+        );
+      } else {
+        this.chargeHistorySrv.importCalcData(e).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.uploadRecordOption = {
+                width: '900',
+                dialog: true,
+                title: '上传记录',
+                totalNumber: value.data.totalNumber,
+                realNumber: value.data.realNumber,
+                uploadOption: {
+                  width: '100%',
+                  tableHeader: {
+                    data: [
+                      {field: 'code', header: '序号'},
+                      {field: 'roomCode', header: '车位编号'},
+                      {field: 'result', header: '结果'},
+                      {field: 'remarks', header: '备注'},
+                    ],
+                    style: { background: '#F4F4F4', color: '#000', height: '6vh'}
+                  },
+                  tableContent: {
+                    data: value.data.logOldBillsDOS,
+                    styleone: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'},
+                    styletwo: { background: '#FFFFFF', color: '#000', height: '2vw', textAlign: 'center'}
+                  }
+                }
+              };
+              this.queryData();
+              this.uploadFileOption.files = [];
+            } else {
+              this.toolSrv.setToast('error', '操作失败', value.message);
+            }
+          }
+        );
+      }
     } else {
       this.toolSrv.setToast('error', '操作错误', '请选择文件');
     }

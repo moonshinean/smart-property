@@ -63,13 +63,10 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   // 上传车位信息
   public UploadFileOption: FileOption = new FileOption();
   public uploadRecordOption: any;
-  // 树结构相关
-  public treeDialog: boolean;
-  public dataTrees: DataTree[];
-  public dataTree: DataTree = new DataTree();
+
   // 车位办理
   public addParkSpaceOptionDialog: boolean;
-  public rentalParkSpace: RentalAddSparkSpace  = new RentalAddSparkSpace();
+
   // 修改车位
   public modifyParkSpaceOptionDialog: boolean;
   // 车位指定
@@ -242,23 +239,23 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
 
   // 判断搜索方式
-  public  searchJudgment(page): void {
-    switch (this.searchType) {
-      case 0:  this.queryParrkSpacePaymentPage(); break;
-      case 1:  this.setCondition('phone', '请输入需要搜索的手机号', page); break;
-      case 2:  this.setCondition('roomCode', '请输入需要搜索的房间号', page); break;
-      case 3:  this.setCondition('surname', '请输入需要搜索的客户名称', page); break;
-      case 4:  this.setCondition('idNumber', '请输入需要搜索的身份证号', page); break;
-      default: break;
-    }
-  }
-  public  setCondition(confition, message, pageNo): void {
-    if (this.searchData !== '') {
-      // this.queryTerantPageByCondition(confition, this.searchData, pageNo);
-    } else {
-      this.toolSrv.setToast('error', '操作错误', message);
-    }
-  }
+  // public  searchJudgment(page): void {
+  //   switch (this.searchType) {
+  //     case 0:  this.queryParrkSpacePaymentPage(); break;
+  //     case 1:  this.setCondition('phone', '请输入需要搜索的手机号', page); break;
+  //     case 2:  this.setCondition('roomCode', '请输入需要搜索的房间号', page); break;
+  //     case 3:  this.setCondition('surname', '请输入需要搜索的客户名称', page); break;
+  //     case 4:  this.setCondition('idNumber', '请输入需要搜索的身份证号', page); break;
+  //     default: break;
+  //   }
+  // }
+  // public  setCondition(confition, message, pageNo): void {
+  //   if (this.searchData !== '') {
+  //     this.queryTerantPageByCondition(confition, this.searchData, pageNo);
+  //   } else {
+  //     this.toolSrv.setToast('error', '操作错误', message);
+  //   }
+  // }
   // 重置数据
   public  setSearData(label): void {
     for (const serchKey in this.SearchData) {
@@ -308,11 +305,12 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   // condition search 条件搜索）
   public paymentSearchClick(): void {
     this.nowPage = this.SearchData.pageNo = 1;
-    if (this.searchData !== '') {
-      // this.searchJudgment();
-    } else {
-      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
-    }
+    this.queryParrkSpacePaymentPage();
+    // if (this.searchData !== '') {
+    //   // this.searchJudgment();
+    // } else {
+    //   this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+    // }
   }
   // select data （选择数据）
   public  selectData(e): void {
@@ -425,8 +423,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // 确认缴费
   public paymentParkSpaceSureClick(): void {
-    console.log('确认');
-    console.log(this.paymentParkSpaceSelect);
     if (this.paymentOrderAdd.paymentMethod === undefined) {
       this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
     } else {

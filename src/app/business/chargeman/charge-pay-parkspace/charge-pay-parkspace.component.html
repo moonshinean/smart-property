@@ -168,7 +168,7 @@
           <label >车主姓名</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.authorizedPersonName"/>
+          <input type="text" pInputText  placeholder="请输入车主姓名" [(ngModel)]="addParkSpace.authorizedPersonName"/>
         </div>
       </div>
       <div class="ui-g-6"  style="line-height: 4vh">
@@ -176,7 +176,7 @@
           <label >车主电话</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入授权人电话" [(ngModel)]="addParkSpace.authorizedPersonPhone"/>
+          <input type="text" pInputText placeholder="请输入车主电话" [(ngModel)]="addParkSpace.authorizedPersonPhone"/>
           <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(addParkSpace.authorizedPersonPhone === undefined || addParkSpace.authorizedPersonPhone === '')? !toolSrv.verifyPhone.test( addParkSpace.authorizedPersonPhone): toolSrv.verifyPhone.test(addParkSpace.authorizedPersonPhone)"></p-message>
         </div>
       </div>
@@ -185,8 +185,7 @@
           <label >车主身份证号</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText placeholder="请输入授权人身份证号" [(ngModel)]="addParkSpace.authorizedPersonIdNumber"/>
-          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(addParkSpace.authorizedPersonIdNumber === undefined || addParkSpace.authorizedPersonIdNumber === '')? (!this.toolSrv.verifyIdNumber.test(addParkSpace.authorizedPersonIdNumber) || !this.toolSrv.verifyIdNumber1.test(addParkSpace.authorizedPersonIdNumber) || !this.toolSrv.verifyIdNumber2.test(addParkSpace.authorizedPersonIdNumber) || !this.toolSrv.verifyIdNumber3.test(addParkSpace.authorizedPersonIdNumber) ): (toolSrv.verifyIdNumber.test(addParkSpace.authorizedPersonIdNumber) || toolSrv.verifyIdNumber1.test(addParkSpace.authorizedPersonIdNumber) || toolSrv.verifyIdNumber2.test(addParkSpace.authorizedPersonIdNumber) || toolSrv.verifyIdNumber3.test(addParkSpace.authorizedPersonIdNumber))"></p-message>
+          <input type="text" pInputText placeholder="请输入车主身份证号" [(ngModel)]="addParkSpace.authorizedPersonIdNumber"/>
         </div>
       </div>
       <div class="ui-g-6"  style="line-height: 4vh">
@@ -194,7 +193,7 @@
           <label >业主姓名</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.surname"/>
+          <input type="text" pInputText  placeholder="请输入业主姓名" [(ngModel)]="addParkSpace.surname"/>
         </div>
       </div>
       <div class="ui-g-6"  style="line-height: 4vh">
@@ -202,7 +201,7 @@
           <label >业主电话</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.mobilePhone"/>
+          <input type="text" pInputText  placeholder="请输入业主电话" [(ngModel)]="addParkSpace.mobilePhone"/>
           <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(addParkSpace.mobilePhone === undefined || addParkSpace.mobilePhone === '')? !toolSrv.verifyPhone.test( addParkSpace.mobilePhone): toolSrv.verifyPhone.test(addParkSpace.mobilePhone)"></p-message>
         </div>
       </div>
@@ -211,8 +210,7 @@
           <label >业主身份号码</label>
         </div>
         <div class="ui-g-8">
-          <input type="text" pInputText  placeholder="请输入授权人姓名" [(ngModel)]="addParkSpace.idNumber"/>
-          <p-message  severity="error" text="请输入符合规定的身份证号码" [hidden]="(addParkSpace.idNumber === undefined || addParkSpace.idNumber === '')? (!this.toolSrv.verifyIdNumber.test(addParkSpace.idNumber) || !this.toolSrv.verifyIdNumber1.test(addParkSpace.idNumber) || !this.toolSrv.verifyIdNumber2.test(addParkSpace.idNumber) || !this.toolSrv.verifyIdNumber3.test(addParkSpace.idNumber) ): (toolSrv.verifyIdNumber.test(addParkSpace.idNumber) || toolSrv.verifyIdNumber1.test(addParkSpace.idNumber) || toolSrv.verifyIdNumber2.test(addParkSpace.idNumber) || toolSrv.verifyIdNumber3.test(addParkSpace.idNumber))"></p-message>
+          <input type="text" pInputText  placeholder="请输入业主身份号码" [(ngModel)]="addParkSpace.idNumber"/>
         </div>
       </div>
       <div class="ui-g-6"  style="line-height: 4vh">
