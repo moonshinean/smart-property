@@ -138,7 +138,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public option: any;
   public phoneErrorToast = true;
   public esDate: any;
-  // ccRegex: RegExp = /[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/;
+  public lincePlate: RegExp = /^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$/;
   // public msgs: Message[] = []; // 消息弹窗
   public paymentItemListIndex: any;
   public deductionDamagesListIndex: any;
@@ -205,7 +205,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
-    private  toolSrv: PublicMethedService,
+    public  toolSrv: PublicMethedService,
     private datePipe: DatePipe,
     private  sharedSrv: SharedServiceService,
     private themeSrv: ThemeService
@@ -491,9 +491,11 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     if (this.paymentSelect === undefined || this.paymentSelect.length === 0 ) {
       this.toolSrv.setToast('error', '操作错误', '请选择需要缴费的项');
     } else if (this.paymentSelect.length === 1) {
+      this.paymentProject = [];
       this.paymentSrv.searchChargeItem({roomCode: this.paymentSelect[0].roomCode}).subscribe(
         (value) => {
           if (value.status === '1000') {
+
             value.data.forEach( v => {
               if (v.chargeWay === 4) {
                 this.selectCheckChargeItemList.push(v.chargeName);
@@ -869,18 +871,19 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
            this.paymentReceivableTotle = value.data.actualTotalMoneyCollection;
            this.toolSrv.setToast('success', '计费成功', value.message);
            this.Balance = 0;
-           console.log( this.paymentActualTotal);
-           console.log( this.paymentTotle);
         } else {
-          this.toolSrv.setToast('error', '请求失败', value.message);
-          if (this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus !== undefined) {
-            this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus =  this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus === 0 ? 1 : 0;
+          if (this.deductionDamagesData[this.deductionDamagesListIndex]) {
+            if (this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus !== undefined) {
+              this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus =  this.deductionDamagesData[this.deductionDamagesListIndex].deductionStatus === 0 ? 1 : 0;
+            }
+            this.deductionDamagesSelect.splice(this.deductionDamagesSelect.indexOf(this.deductionDamagesItem), 1);
+            // 获取抵扣项目勾选中的抵扣项目
+            this.deductionDamagesSelect =  this.deductionDamagesData.filter(v => {
+              return v.deductionStatus === 1;
+            });
           }
-          this.deductionDamagesSelect.splice(this.deductionDamagesSelect.indexOf(this.deductionDamagesItem), 1);
-          // 获取抵扣项目勾选中的抵扣项目
-          this.deductionDamagesSelect =  this.deductionDamagesData.filter(v => {
-            return v.deductionStatus === 1;
-          });
+          console.log(this.deductionDamagesData[this.deductionDamagesListIndex]);
+          // this.toolSrv.setToast('error', '请求失败', value.message);
           this.paymentItemData =  this.paymentItemData.map( v => {
             v.stateOfArrears = v.stateOfArrears !== 0;
             return v;
@@ -891,6 +894,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // 设置费用的列表
   public setPaymentList(data): void {
+    console.log(data);
     // 费用明细的列表
     // this.deductionDamagesSelect = [];
     this.paymentItemData = data.data.billDetailedDOArrayList.map( v => {
@@ -900,9 +904,11 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     });
     this.deductionDamagesData = data.data.costDeduction;
     // 获取抵扣项目勾选中的抵扣项目
-    this.deductionDamagesSelect = data.data.costDeduction.filter(v => {
-      return v.deductionStatus === 1;
-    });
+    if (data.data.costDeduction)  {
+      this.deductionDamagesSelect = data.data.costDeduction.filter(v => {
+        return v.deductionStatus === 1;
+      });
+    }
     // console.log(this.deductionDamagesSelect);
     this.paymentAddTitle.forEach(v => {
       v.value = this.paymentSelect[0][v.label];
@@ -918,31 +924,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         return v;
     });
   }
-  // 车位指定弹窗
-  public addParkplaceClick(): void {
-    if (this.paymentSelect === undefined || this.paymentSelect.length === 0 ) {
-      this.toolSrv.setToast('error', '操作错误', '请选择需要办理的项');
-    } else if (this.paymentSelect.length === 1) {
-      this.addParkSpace = new AddSparkSpace();
-      const addParkTitleList = ['villageCode', 'villageName', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode', 'unitName',
-        'customerUserId', 'surname', 'idNumber', 'mobilePhone', 'roomCode', 'roomSize', 'organizationId', 'organizationName'];
-      addParkTitleList.forEach(v => {
-        this.addParkSpace[v] = this.paymentSelect[0][v];
-      });
-      this.paymentSrv.getRoomTree({}).subscribe(
-          value => {
-            // if (value === 1005) {
-            this.dataTrees = this.initializeTree(value.data, 'parkSpace');
-            // }
-            // console.log(value);
-          }
-        );
-      this.addParkSpaceOptionDialog = true;
-    } else {
-      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行车位办理');
-    }
 
-  }
   // 树形结构点击
   public dataTreeClick(): void {
     this.treeDialog = true;
@@ -1032,36 +1014,10 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     }
     console.log(this.rentalParkSpace);
   }
-  //   给房间绑定车位
-  // public setRoombindparkSpaceClick(): void {
-  //     let passFlag = true;
-  //     const list =['contractNumber', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
-  //     'vehicleOriginalType', 'startTime'];
-  //     list.forEach(v => {
-  //        console.log(this.addParkSpace[v]);
-  //        if ( this.addParkSpace[v] === undefined ||  this.addParkSpace[v] === '') {
-  //            passFlag = false;
-  //        }
-  //     });
-  //     this.addParkSpace.startTime = this.datePipe.transform(this.addParkSpace.startTime, 'yyyy-MM-dd');
-  //     if (passFlag) {
-  //       this.paymentSrv.setRoomCodeBindParkSpace(this.addParkSpace).subscribe(value => {
-  //         console.log(value);
-  //         if (value.status === '1000') {
-  //           this.toolSrv.setToast('success', '请求成功', value.message);
-  //           this.addParkSpaceOptionDialog = false;
-  //           this.addParkSpace = new AddSparkSpace();
-  //           this.paymentSelect = [];
-  //         } else {
-  //           this.toolSrv.setToast('error', '请求失败', value.message);
-  //         }
-  //       });
-  //     } else {
-  //       this.toolSrv.setToast('error', '操作错误', '参数未填完整');
-  //     }
-  // }
+
   // 编辑租赁车位的数据
   public editRentalParkingSpaceClick(index): void {
+    console.log(this.parkSpaceData[index].rentalRenewalStatus);
     this.editRentalParkspaceDataFlag = index;
     // this.parkSpaceData[index]
     this.parkSpaceData[index].parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, this.parkSpaceData[index].parkingSpaceType);
@@ -1070,6 +1026,11 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.parkSpaceData[index].licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, this.parkSpaceData[index].licensePlateColor);
     this.parkSpaceData[index].parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, this.parkSpaceData[index].parkingSpacePlace);
     this.parkSpaceData[index].rentalRenewalStatus = this.toolSrv.setLabelToValue(this.rentalRenewalStatusOption, this.parkSpaceData[index].rentalRenewalStatus);
+    if (this.parkSpaceData[index].rentalRenewalStatus === null) {
+      this.rentalHiddenInfo = true;
+    }else {
+      this.rentalHiddenInfo = this.parkSpaceData[index].rentalRenewalStatus === '1';
+    }
     for (const key in this.parkSpaceData[index]) {
       this.rentalParkSpace[key] = this.parkSpaceData[index][key];
     }
@@ -1092,6 +1053,44 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // 租赁车位信息确认后的按钮
   public rentalparkSpaceClick(): void {
+    if (this.rentalParkSpace.rentalRenewalStatus === '1') {
+      const listPark = ['licensePlateNumber', 'rentalRenewalStatus', 'datedif'];
+      const passStatus = listPark.some(value => {
+        return  (this.rentalParkSpace[value] === null || this.rentalParkSpace[value] === '' || this.rentalParkSpace[value] === undefined);
+      });
+      if (!passStatus) {
+        if (this.lincePlate.test(this.rentalParkSpace.licensePlateNumber)) {
+          this.setrentalParkSpaceQuest();
+        } else {
+          this.toolSrv.setToast('error', '错误提示', '车牌号码不符合规则');
+        }
+      }
+    } else {
+     const rentalParklist = ['licensePlateNumber', 'rentalRenewalStatus', 'datedif', 'startTime', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'parkingSpacePlace', 'parkingSpaceType'];
+     const pass = rentalParklist.some(value => {
+       return  (this.rentalParkSpace[value] === null || this.rentalParkSpace[value] === '' || this.rentalParkSpace[value] === undefined);
+      });
+      if (!pass) {
+        if (this.rentalCode !== undefined && this.rentalCode !== null) {
+          if (this.lincePlate.test(this.rentalParkSpace.licensePlateNumber)) {
+             if (this.toolSrv.verifyPhone.test(this.rentalParkSpace.authorizedPersonPhone)) {
+                this.setrentalParkSpaceQuest();
+             } else {
+               this.toolSrv.setToast('error', '错误提示', '车主手机号码不符合规则');
+             }
+          } else {
+            this.toolSrv.setToast('error', '错误提示', '车牌号码不符合规则');
+          }
+        } else {
+          this.toolSrv.setToast('error', '错误提示', '带星号的数据未选择');
+        }
+      } else {
+        this.toolSrv.setToast('error', '错误提示', '带星号的数据未填写完整');
+      }
+    }
+  }
+  // 编辑车位数据计费请求
+  public setrentalParkSpaceQuest(): void {
     for (const key in this.rentalParkSpace) {
       this.parkSpaceData[this.editRentalParkspaceDataFlag][key] = this.rentalParkSpace[key];
     }
@@ -1105,21 +1104,34 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.parkSpaceOptionDialog = false;
     this.paymentSrv.calculateRentalPackSpaceFree({roomCode: this.paymentSelect[0].roomCode, parkingSpaceCostDetailDO: this.parkSpaceData[this.editRentalParkspaceDataFlag]}).subscribe(
       value => {
-         if (value.status === '1000') {
-           this.parkSpaceData.splice(0, 1);
-           value.data.forEach(v => {
-              this.parkSpaceData.push(v);
-           });
-           // for (const key in this.parkSpaceData[this.editRentalParkspaceDataFlag]) {
-           //   this.parkSpaceData[this.editRentalParkspaceDataFlag][key] = value.data[key];
-           // }
-           this.getTotalBalaceData();
-           this.toolSrv.setToast('success', '请求成功', value.message);
-           // this.parkSpaceData[this.editRentalParkspaceDataFlag]['parkingSpaceType'] = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, this.parkSpaceData[this.editRentalParkspaceDataFlag]['parkingSpaceType']);
-           // this.parkSpaceData[this.editRentalParkspaceDataFlag]['rentalRenewalStatus'] = this.toolSrv.setValueToLabel(this.rentalRenewalStatusOption, this.parkSpaceData[this.editRentalParkspaceDataFlag]['rentalRenewalStatus']);
-         } else {
-           this.toolSrv.setToast('error', '请求失败', value.message);
-         }
+        if (value.status === '1000') {
+          console.log(value.data);
+          value.data.forEach(v => {
+            if (v.chargeType === '5') {
+              if (v.notRentedNumber < 1) {
+                this.toolSrv.setConfirmationWarn('租赁车位提醒', '可出租车位数量不足, 是否继续出租', () => {
+                  this.parkSpaceData = [];
+                  value.data.forEach(val1 => {
+                    this.parkSpaceData.push(val1);
+                  });
+                  this.getTotalBalaceData();
+                });
+              } else {
+                this.parkSpaceData = [];
+                value.data.forEach(val => {
+                  this.parkSpaceData.push(val);
+                  this.getTotalBalaceData();
+                });
+              }
+            }
+          });
+
+          this.toolSrv.setToast('success', '请求成功', value.message);
+          // this.parkSpaceData[this.editRentalParkspaceDataFlag]['parkingSpaceType'] = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, this.parkSpaceData[this.editRentalParkspaceDataFlag]['parkingSpaceType']);
+          // this.parkSpaceData[this.editRentalParkspaceDataFlag]['rentalRenewalStatus'] = this.toolSrv.setValueToLabel(this.rentalRenewalStatusOption, this.parkSpaceData[this.editRentalParkspaceDataFlag]['rentalRenewalStatus']);
+        } else {
+          this.toolSrv.setToast('error', '请求失败', value.message);
+        }
       }
     );
   }
@@ -1241,12 +1253,12 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
      const flag = this.deductionDamagesData.some(v => {
        return v.deductionStatus === 1;
      });
-     if(flag) {
+     if (flag) {
        this.deductionDamagesData.forEach(val => {
           val.deductionStatus = 0;
        });
      } else {
-       this.deductionDamagesData.forEach(val =>{
+       this.deductionDamagesData.forEach(val => {
          val.deductionStatus = 1;
        });
      }
@@ -1273,6 +1285,17 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     if (!listFlag) {
       this.dialogHiddenData.push({label: '费用添加', dialog: 'paymentDialog'});
     }
+  }
+  // 租赁弹窗取消
+  public  rentalParkSpaceFalse(): void {
+    this.parkSpaceOptionDialog = false;
+    this.rentalHiddenInfo = true;
+    this.parkSpaceData[this.editRentalParkspaceDataFlag].rentalRenewalStatus = this.toolSrv.setValueToLabel(this.rentalRenewalStatusOption, this.parkSpaceData[this.editRentalParkspaceDataFlag].rentalRenewalStatus);
+    this.parkSpaceData[this.editRentalParkspaceDataFlag].parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, this.parkSpaceData[this.editRentalParkspaceDataFlag].parkingSpaceType);
+    this.parkSpaceData[this.editRentalParkspaceDataFlag].vehicleOriginalType = this.toolSrv.setValueToLabel(this.vehicleOriginaTypeOption, this.parkSpaceData[this.editRentalParkspaceDataFlag].vehicleOriginalType);
+    this.parkSpaceData[this.editRentalParkspaceDataFlag].licensePlateType = this.toolSrv.setValueToLabel(this.lincesePlateTypeOption, this.parkSpaceData[this.editRentalParkspaceDataFlag].licensePlateType);
+    this.parkSpaceData[this.editRentalParkspaceDataFlag].licensePlateColor = this.toolSrv.setValueToLabel(this.lincesePlateColorOption, this.parkSpaceData[this.editRentalParkspaceDataFlag].licensePlateColor);
+    this.parkSpaceData[this.editRentalParkspaceDataFlag].parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption, this.parkSpaceData[this.editRentalParkspaceDataFlag].parkingSpacePlace);
   }
 }
 

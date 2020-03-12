@@ -304,7 +304,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // condition search 条件搜索）
   public paymentSearchClick(): void {
-    this.nowPage = this.SearchData.pageNo = 1;
+    // this.nowPage = this.SearchData.pageNo = 1;
     this.queryParrkSpacePaymentPage();
     // if (this.searchData !== '') {
     //   // this.searchJudgment();

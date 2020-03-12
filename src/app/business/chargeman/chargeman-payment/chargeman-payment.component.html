@@ -360,6 +360,7 @@
         </div>
         <div class="ui-g-8">
           <input type="text" pInputText placeholder="请输入车牌号"  [(ngModel)]="rentalParkSpace.licensePlateNumber"/>
+          <p-message  severity="error" text="请输入合格的车牌号" [hidden]="(rentalParkSpace.licensePlateNumber  === null || rentalParkSpace.licensePlateNumber  === undefined || rentalParkSpace.licensePlateNumber  === '') ? !this.lincePlate.test(rentalParkSpace.licensePlateNumber): this.lincePlate.test(rentalParkSpace.licensePlateNumber)"></p-message>
         </div>
       </div>
       <div class="ui-g-6" style="line-height: 4vh" [ngClass]="{dropdownKeyFilter: this.keyChargeParkSpaceList[1]}">
@@ -380,7 +381,7 @@
       </div>
       <div class="ui-g-6" style="line-height: 4vh" [hidden]="rentalHiddenInfo" [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[3]}">
         <div class="ui-g-4" style="text-align: right">
-          <label>车位编号</label>
+          <label><span style="color: red">*</span>地块编号</label>
         </div>
         <div class="ui-g-8">
           <input type="text" placeholder="请选择车位编号" pInputText (click)="dataTreeClick()" [(ngModel)]="rentalCode"/>
@@ -408,6 +409,7 @@
         </div>
         <div class="ui-g-8">
           <input type="text" pInputText placeholder="请输入车主电话" [(ngModel)]="rentalParkSpace.authorizedPersonPhone"/>
+          <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(rentalParkSpace.authorizedPersonPhone === null || rentalParkSpace.authorizedPersonPhone === undefined || rentalParkSpace.authorizedPersonPhone === '')? !toolSrv.verifyPhone.test( rentalParkSpace.authorizedPersonPhone): toolSrv.verifyPhone.test(rentalParkSpace.authorizedPersonPhone)"></p-message>
         </div>
       </div>
       <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh"  [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[7]}">
@@ -472,7 +474,7 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" (click)="rentalparkSpaceClick()">确认</button>
-        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" (click)="parkSpaceOptionDialog = false;this.rentalHiddenInfo = true;">取消</button>
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" (click)="rentalParkSpaceFalse()">取消</button>
       </div>
     </p-footer>
   </p-dialog>

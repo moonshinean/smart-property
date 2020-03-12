@@ -426,6 +426,19 @@ export class PublicMethedService {
     });
   }
 
+
+  public  setConfirmationWarn(title, message, callback: (...args: any[]) => any): void {
+    this.confirmationService.confirm({
+      message: `${message}？`,
+      header: `${title}`,
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        callback();
+      },
+      reject: () => {
+      }
+    });
+  }
   /**
    * 将值装换位字母
    * @param list
