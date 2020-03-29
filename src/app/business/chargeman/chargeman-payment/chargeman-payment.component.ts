@@ -325,13 +325,15 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // sure selectPreject payment （选择项目确认）
   public paymentProjectSureClick(): void {
+    console.log(this.payItemDetail);
+
     // 获取选中的收费项目
     const list  = this.paymentProject.filter( v => {
       return v.check === 1;
     });
     if (list.length > 0 ) {
       // 组装请求参数
-      const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus', 'identity'];
+      const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus', 'identity', 'oneMonthPropertyFee'];
       for (const key of keyList) {
         if (key === 'identity') {
           this.payItemDetail[key] = this.toolSrv.setLabelToValue(this.identityOption, this.paymentSelect[0][key]);
@@ -359,7 +361,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         }
       );
       // 计费请求
-      // console.log(this.payItemDetail);
       this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(value => {
           if (value.status === '1000') {
             console.log(value);
@@ -894,7 +895,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // 设置费用的列表
   public setPaymentList(data): void {
-    console.log(data);
     // 费用明细的列表
     // this.deductionDamagesSelect = [];
     this.paymentItemData = data.data.billDetailedDOArrayList.map( v => {

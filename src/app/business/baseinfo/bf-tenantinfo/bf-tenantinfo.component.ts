@@ -421,9 +421,12 @@ export class BfTenantinfoComponent implements OnInit {
   }
   // 分页请求
   public  nowpageEventHandle(event: any): void {
+    console.log(123);
     this.nowPage = event;
     this.searchTenantData.pageNo = this.nowPage;
     this.tenantSelect = [];
+    this.searchJudgment(this.nowPage);
+
   }
 
 //  选择数据

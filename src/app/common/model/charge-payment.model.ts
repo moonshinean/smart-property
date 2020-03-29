@@ -41,6 +41,7 @@ export class ChargeItemData {
   customerUserId?: any; // 客户id
   surplus?: any; // 用户余额
   roomCode?: any; // 房屋编号
+  oneMonthPropertyFee?: any;
   chargeItem?: ChargeItems[] = [];
 
 }
