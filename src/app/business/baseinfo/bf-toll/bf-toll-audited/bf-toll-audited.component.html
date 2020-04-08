@@ -1,0 +1,74 @@
+<div class="bf-toll-audited">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="bf-toll-audited-header">
+    <div class="ui-g-12">
+      <!--      <div class="ui-g-1   bf-toll-audited-header-btn   bf-toll-audited-header-btn-add" (click)="couponAddClick()" [hidden]="this.btnHiden[0].hidden">-->
+      <!--        <img class="  bf-toll-audited-header-img-add" src="assets/images/ic_add.png" alt="">-->
+      <!--        <span>增 加</span>-->
+      <!--      </div>-->
+      <!--      <div class="ui-g-1   bf-toll-audited-header-btn   bf-toll-audited-header-btn-modify" (click)="couponModifyClick()" [hidden]="this.btnHiden[1].hidden">-->
+      <!--        <img class="  bf-toll-audited-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
+      <!--        <span>修 改</span>-->
+      <!--      </div>-->
+      <!--      <div class="ui-g-1   bf-toll-audited-header-btn   bf-toll-audited-header-btn-delete" (click)="couponDeleteClick()" [hidden]="this.btnHiden[2].hidden">-->
+      <!--        <img class="  bf-toll-audited-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+      <!--        <span>删 除</span>-->
+      <!--      </div>-->
+    </div>
+    <!--//搜索-->
+    <!--    <div class="ui-inputgroup   bf-toll-audited-header-search">-->
+    <!--      <input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="couponSeachData">-->
+    <!--      <button id="disabled-btn" class="  bf-toll-audited-header-btn-search" type="button"  (click)="couponSearchClick()"  label="搜索">搜索</button>-->
+    <!--    </div>-->
+  </div>
+  <!--表格-->
+  <div class="bf-toll-audited-table">
+    <rbi-check-table-btn [select]="couponSelect" (selectData)="selectData($event)" [option]="optionTable" (detail)="houseDetailClick($event)"></rbi-check-table-btn>
+  </div>
+
+  <!--详情弹窗-->
+  <p-dialog header="信息详情" [(visible)]="tollDetailDialog" [width]="1000" [closable]="false" class="detail">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+      <div class="ui-g-6" *ngFor="let item of detailTollTitle">
+        <div class="ui-g-4" style="text-align: right">
+          <label >{{item.name}}：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{item.value}}</span>
+        </div>
+      </div>
+      <div class="ui-g-12" *ngIf="detailTollList.length !== 0">
+        <p-table [columns]="TollMoreTitleDetail" [value]="detailTollList" [scrollable]="true" scrollHeight="30vh">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th *ngFor="let col of columns">
+                {{col.header}}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+              <td *ngFor="let col of columns" style="text-align: center">
+                {{rowData[col.field]}}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <!--        </p-scrollPanel>-->
+
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <!--<button class="bf-toll-info-dialog-Btn bf-toll-info-dialog-Btn-sure" (click)="tollDetailClick()">确认</button>-->
+        <button class="bf-toll-audited-dialog-Btn bf-toll-audited-dialog-Btn-false"  (click)="tollDetailDialog=false;clearData()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+</div>

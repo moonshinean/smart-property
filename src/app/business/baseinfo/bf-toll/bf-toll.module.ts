@@ -7,11 +7,11 @@ import {TableModule} from 'primeng/table';
 import {
   ButtonModule, CalendarModule,
   ConfirmDialogModule,
-  DialogModule, DropdownModule, FileUploadModule,
+  DialogModule, DropdownModule, FileUploadModule, InputTextareaModule,
   MessageModule,
   MessagesModule,
   RadioButtonModule,
-  ScrollPanelModule, TreeModule
+  ScrollPanelModule, TabMenuModule, TreeModule
 } from 'primeng/primeng';
 import {DataViewModule} from 'primeng/dataview';
 import {PagingModule} from '../../../common/components/paging/paging.module';
@@ -20,10 +20,18 @@ import {LoadingModule} from '../../../common/components/loading/loading.module';
 import {BasicTableModule} from '../../../common/components/basic-table/basic-table.module';
 import {BasicDialogModule} from '../../../common/components/basic-dialog/basic-dialog.module';
 import {BfTollComponent} from './bf-toll.component';
+import { BfTollInfoComponent } from './bf-toll-info/bf-toll-info.component';
+import { BfTollReviewComponent } from './bf-toll-review/bf-toll-review.component';
+import { BfTollAuditComponent } from './bf-toll-audit/bf-toll-audit.component';
+import { BfTollAuditedComponent } from './bf-toll-audited/bf-toll-audited.component';
 
 @NgModule({
   declarations: [
-    BfTollComponent
+    BfTollComponent,
+    BfTollInfoComponent,
+    BfTollReviewComponent,
+    BfTollAuditComponent,
+    BfTollAuditedComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +55,9 @@ import {BfTollComponent} from './bf-toll.component';
     TreeModule,
     ReactiveFormsModule,
     BasicTableModule,
-    BasicDialogModule
+    BasicDialogModule,
+    TabMenuModule,
+    InputTextareaModule
   ]
 })
 export class BfTollModule { }

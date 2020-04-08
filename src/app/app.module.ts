@@ -32,7 +32,7 @@ import {PublicMethedService} from './common/public/public-methed.service';
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}, // 拦截器进入
-    {provide: LocationStrategy, useClass: HashLocationStrategy}
+    {provide: LocationStrategy, useClass: HashLocationStrategy}  // 配置哈希路由
   ],
 
   bootstrap: [AppComponent]

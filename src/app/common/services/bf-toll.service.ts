@@ -43,4 +43,25 @@ export class BfTollService {
     return this.http.post(environment.sysetUrl + `/charge/findChargeDetail`, pamars);
   }
 
+  // 待复审——查询
+  public getTollReviewPageData(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/findSecondApplication`, pamars);
+  }
+  // 待初审——查询
+  public getTollAuditPageData(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/findFirstApplication`, pamars);
+  }
+  // 审核通过——查询
+  public getTollAuditedPageData(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/findFinishApplication`, pamars);
+  }
+
+  // 待初审——审核
+  public auditTollToUpdate(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/firstAuditApplication`, pamars);
+  }
+  // 待初审——审核
+  public reviewTollToUpdate(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/secondAuditApplication`, pamars);
+  }
 }

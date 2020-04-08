@@ -23,6 +23,12 @@ export const environment = {
   // sysetUrl: 'http://192.168.28.212:8847/cloud_house_admin',
   // chargeUrl: 'http://192.168.28.212:8849/cloud_house_interactive',
   // loginUrl: 'http://192.168.28.212:8848/cloud_house_auth entication',
+
+  // 正式服
+  // loginUrl: 'http://139.9.225.140:8848/cloud_house_authentication',
+  // chargeUrl: 'http://139.9.225.140:8849/cloud_house_interactive',
+  // chargeUrl: 'http://192.168.28.139:8849/cloud_house_interactive',
+  // sysetUrl: 'http://139.9.225.140:8847/cloud_house_admin',
 };
 
 /*

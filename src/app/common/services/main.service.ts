@@ -13,4 +13,11 @@ export class MainService {
   public  getEvent(body): Observable<any> {
       return this.http.post(environment.chargeUrl + '/event/findByPage', body);
   }
+
+  public  getVillageInfo(body): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/statistics/village_info', body);
+  }
+  public  getChargeTypeDataInfo(body): Observable<any> {
+    return this.http.post(environment.chargeUrl + '/statistics/total_revenue/charge_type', body);
+  }
 }

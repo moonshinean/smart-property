@@ -1,0 +1,94 @@
+<div class="bf-house">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="bf-house-header">
+    <div class="ui-g-12">
+<!--      <div class="ui-g-1   bf-house-header-btn   bf-house-header-btn-add" (click)="couponAddClick()" [hidden]="this.btnHiden[0].hidden">-->
+<!--        <img class="  bf-house-header-img-add" src="assets/images/ic_add.png" alt="">-->
+<!--        <span>增 加</span>-->
+<!--      </div>-->
+<!--      <div class="ui-g-1   bf-house-header-btn   bf-house-header-btn-modify" (click)="couponModifyClick()" [hidden]="this.btnHiden[1].hidden">-->
+<!--        <img class="  bf-house-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
+<!--        <span>修 改</span>-->
+<!--      </div>-->
+<!--      <div class="ui-g-1   bf-house-header-btn   bf-house-header-btn-delete" (click)="couponDeleteClick()" [hidden]="this.btnHiden[2].hidden">-->
+<!--        <img class="  bf-house-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+<!--        <span>删 除</span>-->
+<!--      </div>-->
+    </div>
+    <!--//搜索-->
+    <!--    <div class="ui-inputgroup   bf-house-header-search">-->
+    <!--      <input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="couponSeachData">-->
+    <!--      <button id="disabled-btn" class="  bf-house-header-btn-search" type="button"  (click)="couponSearchClick()"  label="搜索">搜索</button>-->
+    <!--    </div>-->
+  </div>
+  <!--表格-->
+  <div class="bf-house-table">
+    <rbi-check-table-btn [select]="couponSelect" (selectData)="selectData($event)" [option]="optionTable" (detail)="houseDetailClick($event)"></rbi-check-table-btn>
+  </div>
+
+  <!--详情弹窗-->
+  <p-dialog header="详细信息" [(visible)]="houseDetailDialog" [width]="1100" class="houseDetail">
+    <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
+      <div class="ui-g ui-fluid" [ngStyle]="{'text-align':'center'}">
+        <div class="ui-g-12" style="text-align: left">
+          <h3>房间信息：</h3>
+        </div>
+        <div class="ui-g-6" *ngFor="let item of owerMoreDetailDetail" style="line-height: 4vh">
+          <div class="ui-g-4" style="text-align: right">
+            <label>{{item.label}}：</label>
+          </div>
+          <div class="ui-g-8" >
+            <span >{{item.value}}</span>
+          </div>
+        </div>
+        <div class="ui-g-12" style="text-align: left" *ngIf="ownerList.length !== 0">
+          <h3>用户信息：</h3>
+        </div>
+        <p-scrollPanel [style]="{width:'99%',height: 'auto'}" styleClass="custombar" *ngIf="ownerList !== []">
+          <p-table [columns]="ownerDetailTitle" [value]="ownerList"  [style]="{'width': '100%'}">
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns" [ngStyle]="{'height': '5vh'}">
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF', 'color':'#000'}">
+                <td  *ngFor="let col of columns" [ngStyle]="{'overflow-x': 'auto'}">
+                  {{rowData[col.field]}}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-scrollPanel>
+        <div class="ui-g-12" style="text-align: left" >
+          <h3>缴费信息：</h3>
+        </div>
+        <div class="ui-g-12" style="position: relative" >
+          <div *ngIf="this.pieDatas.length === 0">未查询到该用户的缴费记录</div>
+          <div style="position: absolute;z-index: 99999;right: 5vw;top: 10vh" *ngIf="this.pieDatas.length !== 0">
+            <div style="margin: 3vh 0" *ngFor="let item of pieBtnList">
+              <button class="bf-house-dialog-pie-btn" [ngStyle]="{'background': item.color}" (click)="changePieDataClick(item)">{{item.label}}</button>
+            </div>
+          </div>
+          <div class="ui-g-12" *ngIf="this.pieDatas.length !== 0">
+            <rbi-echarts-payment-pie [datas]="this.pieDatas"></rbi-echarts-payment-pie>
+          </div>
+        </div>
+
+      </div>
+    </p-scrollPanel>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <!--<button class="bf-owner-dialog-Btn bf-owner-dialog-Btn-sure" (click)="ownerModifySureClick()">确认</button>-->
+        <button class="bf-house-dialog-Btn bf-house-dialog-Btn-false"  (click)="houseDetailDialog=false">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+</div>

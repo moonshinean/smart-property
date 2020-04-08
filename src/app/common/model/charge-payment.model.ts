@@ -107,6 +107,7 @@ export class ChargeItemDetail {
   payerPhone?: any;
   payerName?: any;
   customerUserId?: any;
+  waterElectricId?: any;
   // endTime?: any;
   // arrearsType?: any;
 }

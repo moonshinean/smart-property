@@ -24,76 +24,8 @@ export class EchartsBarPortComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // this.optionsport = {
-    //   backgroundColor: this.themeColor.background,
-    //   color: this.themeColor.colorList,
-    //   legend: {
-    //     data: this.title,
-    //     // itemWidth: 15,
-    //     itemHeight: 10,
-    //     top: '0',
-    //     // orient: 'vertical',
-    //     textStyle: {
-    //       color: this.themeColor.legendcolor,
-    //       // fontSize:'1px'
-    //     },
-    //   },
-    //   tooltip: {
-    //     trigger: 'item',
-    //     formatter: '{a} <br/>{b} : {c} ({d}%)'
-    //   },
-    //   visualMap: {
-    //     show: false,
-    //     min: 80,
-    //     max: 600,
-    //     inRange: {
-    //       colorLightness: [0, 1]
-    //     }
-    //   },
-    //   series: [
-    //     {
-    //       name: '访问来源',
-    //       type: 'pie',
-    //       radius: '70%',
-    //       center: ['50%', '60%'],
-    //       data: this.data.sort( function(a, b) {
-    //         return a.value - b.value;
-    //       }),
-    //       roseType: 'radius',
-    //       label: {
-    //         normal: {
-    //           textStyle: {
-    //             color: this.themeColor.labelColor
-    //           }
-    //         }
-    //       },
-    //       labelLine: {
-    //         normal: {
-    //           lineStyle: {
-    //             color: this.themeColor.labelLineColor
-    //           },
-    //           smooth: 0.2,
-    //           length: 10,
-    //           length2: 20
-    //         }
-    //       },
-    //       itemStyle: {
-    //         normal: {
-    //           color: this.themeColor.itemStyle,
-    //           shadowBlur: 200,
-    //           shadowColor: this.themeColor.itemShodow
-    //         }
-    //       },
-    //       animationType: 'scale',
-    //       animationEasing: 'elasticOut',
-    //     }
-    //   ]
-    // };
-    // this.optionSport();
+    console.log(123);
     console.log(this.data);
-    this.data.forEach(v => {
-      this.dataTitle.push(v.name);
-    });
     this.optionsport = {
       backgroundColor: '#F4F4F4',
       color: ['#EAEA26', '#906BF9', '#FE5656', '#01E17E', '#3DD1F9', '#FFAD05'],
@@ -119,23 +51,23 @@ export class EchartsBarPortComponent implements OnInit, OnChanges {
         trigger: 'item',
         formatter: '{b} : {c} ({d}%)'
       },
-      legend: {
-        type:  'plain',
-        orient:  'horizontal',
-        // x: "right",
-        top:  '0',
-        left: '0',
-        // bottom: "0%",
-        itemWidth: 16,
-        itemHeight: 8,
-        itemGap: 16,
-        textStyle: {
-          color: '#A3E2F4',
-          fontSize: 12,
-          fontWeight: 0
-        },
-        data: this.dataTitle
-      },
+      // legend: {
+      //   type:  'plain',
+      //   orient:  'horizontal',
+      //   // x: "right",
+      //   top:  '0',
+      //   left: '0',
+      //   // bottom: "0%",
+      //   itemWidth: 16,
+      //   itemHeight: 8,
+      //   itemGap: 16,
+      //   textStyle: {
+      //     color: '#A3E2F4',
+      //     fontSize: 12,
+      //     fontWeight: 0
+      //   },
+      //   data: this.dataTitle
+      // },
       polar: {},
       angleAxis: {
         interval: 6,

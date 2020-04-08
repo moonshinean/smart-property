@@ -69,8 +69,6 @@ export class HomeComponent implements OnInit {
   ) {
     this.updateSub = this.updateTreeSrv.changeEmitted$.subscribe(
       value => {
-        // if(value ==)
-        console.log(value);
         this.getTreeData();
         this.getBusinessTreeData();
         this.getParkSpaceTreeData();
@@ -219,7 +217,6 @@ export class HomeComponent implements OnInit {
       this.dataTree = new DataTree();
       this.dataBusTree = new DataTree();
     }
-    console.log(e);
     this.SearchData.data.level = e.node.level;
     this.SearchData.data.code = e.node.value;
     this.setSearhData(e.node);
@@ -317,7 +314,6 @@ export class HomeComponent implements OnInit {
   public  getParkSpaceTreeData(): void {
     this.globalSrv.queryParkspaceVillageTree().subscribe(
       value => {
-        console.log(value);
         if (value.status === '1000') {
           this.roomtree = value.data;
           this.dataParkTrees = this.initializeParkTree(this.roomtree);

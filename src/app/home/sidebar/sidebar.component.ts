@@ -109,8 +109,9 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
       { title: '基础信息', item: [], routingItem: [
           {label: '业主资料', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/owner']},
           {label: '租户资料', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/tenantinfo']},
+          {label: '房间资料', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/house']},
           {label: '空置房信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/vacant']},
-          {label: '收费项目', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/toll']},
+          {label: '收费项目', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/toll/info']},
           {label: '收费项目配置', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/roomCharge']},
           // {label: '工作组', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/workgroup']},
           {label: '员工档案', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/staff']},
@@ -186,7 +187,6 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
             this.items = [];
             this.homeSrv.getChildrenRouter({parentCode: v.permisCode}).subscribe(
               (value) => {
-                console.log(value);
                 h.routingItem.forEach( val => {
                  value.data.forEach( data => {
                     if (val.label === data.title) {
@@ -206,7 +206,6 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           }
         });
       });
-      console.log(this.btnListPermisCode);
     } else {
       this.ItemData = this.localSrv.getObject('sidebarItem');
     }

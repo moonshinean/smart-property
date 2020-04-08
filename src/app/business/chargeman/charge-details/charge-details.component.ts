@@ -432,6 +432,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   public  queryData(): void {
     this.chargeDetailSrv.queryChargeDataPage(this.SearchData).subscribe(
       (value) => {
+        console.log(value);
         if (value.status === '1000') {
           if (value.data.contents.length === 0) {
             if (this.SearchData.pageNo !== 1) {
@@ -448,6 +449,8 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
             this.paymentDetailTableContnt = value.data.contents;
             this.setTableOption(value.data.contents);
           }
+        } else {
+          this.toolSrv.setToast('error', '请求失败', '数据查询失败');
         }
         this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
       }
