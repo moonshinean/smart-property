@@ -256,35 +256,39 @@ export class BfTollInfoComponent implements OnInit {
   // sure modify toll
   public tollModifySureClick(): void {
     this.tollModifyDialog = false;
-    this.tollApplacationDialog = true;
-    // const list  = ['chargeName', 'chargeType', 'chargeUnit', 'refund', 'enable', 'mustPay'];
-    // list.forEach((v, index) => {
-    //   this.keyRoomInfoList[index] = this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
-    // });
-    // const passlic = list.some(v => {
-    //   return  this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
-    // });
-    // if (!passlic) {
-    //   this.toolSrv.setConfirmation('修改', '修改', () => {
-    //     this.tollSrv.updateTollInfo({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
-    //       value => {
-    //         if (value.status === '1000') {
-    //           this.toolSrv.setToast('success', '操作成功', value.message);
-    //           this.tollInitialization();
-    //           this.tollModifyDialog = false;
-    //           this.clearData();
-    //         } else {
-    //           this.toolSrv.setToast('error', '操作错误', '修改失败,' + value.message);
-    //         }
-    //       }
-    //     );
-    //   });
-    // } else {
-    //   this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
-    // }
-
+    const list  = ['chargeName', 'chargeType', 'chargeUnit', 'refund', 'enable', 'mustPay'];
+    list.forEach((v, index) => {
+      this.keyRoomInfoList[index] = this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
+    });
+    const passlic = list.some(v => {
+      return  this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
+    });
+    if (!passlic) {
+      this.tollApplacationDialog = true;
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
+    }
   }
-
+  // 修改申请
+  public  tollApplicationClick(): void {
+    if (this.tollTitle !== undefined && this.tollTitle !== '') {
+      this.tollSrv.updateTollInfo({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.tollInitialization();
+              this.tollModifyDialog = false;
+              this.tollApplacationDialog = false;
+              this.clearData();
+            } else {
+              this.toolSrv.setToast('error', '操作错误', '修改失败,' + value.message);
+            }
+          }
+      );
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请填写申请原因');
+    }
+  }
   // delete toll
   public tollDeleteClick(): void {
     if (this.tollSelect === undefined || this.tollSelect.length === 0) {
@@ -344,6 +348,7 @@ export class BfTollInfoComponent implements OnInit {
     this.tollrefundMedify = null;
     this.tollEnableMedify = null;
     this.tollChargeTypeMedify = null;
+
   }
 
   // Add a piece of data
@@ -520,13 +525,18 @@ export class BfTollInfoComponent implements OnInit {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '收费项目') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
-          console.log(value);
           value.data.forEach( res => {
-            this.btnHiden.forEach( val => {
-              if (res.title === val.label) {
-                val.hidden = false;
+              if (res.title === '项目信息') {
+                this.globalSrv.getChildrenRouter({parentCode: res.permisCode}).subscribe(val => {
+                  this.btnHiden.forEach(btnItem => {
+                    val.data.forEach(item => {
+                      if (item.title === btnItem.label) {
+                        btnItem.hidden = false;
+                      }
+                    });
+                  });
+                });
               }
-            });
           });
         });
       }

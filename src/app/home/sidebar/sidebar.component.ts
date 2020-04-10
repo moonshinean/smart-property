@@ -182,6 +182,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
     ];
     if (this.localSrv.getObject('sidebarItem') === 1 || this.localSrv.getObject('sidebarItem') === null ) {
       this.localSrv.getObject('item').forEach(v => {
+        console.log();
         this.ItemData.forEach( h => {
           if (v.title === h.title) {
             this.items = [];

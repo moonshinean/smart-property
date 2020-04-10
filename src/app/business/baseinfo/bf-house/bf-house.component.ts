@@ -29,6 +29,7 @@ export class BfHouseComponent implements OnInit, OnChanges {
     level: '',
     type: '',
   };
+  public houseSeachData = '';
   // 状态相关
   public roomStatusOption: any[] = [];
   public renovationStatusOption: any[] = [];
@@ -293,5 +294,23 @@ export class BfHouseComponent implements OnInit, OnChanges {
       );
     }
   }
+ // 根据房间号搜索
+   public  houseSearchClick(): void {
+     this.houseSrv.getRoomInfoByroomCodeSearch({roomCode: this.houseSeachData, pageNo: 1, pageSize: 10 }).subscribe(val => {
+       if (val.status === '1000') {
+         val.data.contents.forEach( item => {
+           item.roomStatus  = this.toolSrv.setValueToLabel(this.roomStatusOption, item.roomStatus);
+           item.roomType = this.toolSrv.setValueToLabel(this.roomTypeOption, item.roomType);
+           item.renovationStatus = this.toolSrv.setValueToLabel(this.renovationStatusOption, item.renovationStatus);
+         });
+         this.couponTableContent = val.data.contents;
+         this.setTableOption(val.data.contents);
+         this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage:  val.data.pageNo};
+       } else {
+         this.toolSrv.setToast('error', '查询失败', val.message);
+       }
+     });
+
+   }
 }
 

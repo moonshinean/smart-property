@@ -37,10 +37,19 @@ export class BfTollService {
       return this.http.post(environment.sysetUrl + `/charge/deleteChargeDetail`, pamars);
   }
   public updateTollInfo(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/charge/update`, pamars);
+    return this.http.post(environment.sysetUrl + `/charge/addCache`, pamars);
   }
   public getTolldetail(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/charge/findChargeDetail`, pamars);
+  }
+
+  public getAuditTolldetail(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/findApplyByCode`, pamars);
+  }
+
+  // 修改申请查询
+  public getChangeTollApplicationPageData(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/findApplication`, pamars);
   }
 
   // 待复审——查询

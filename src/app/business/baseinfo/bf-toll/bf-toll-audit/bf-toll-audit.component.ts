@@ -33,6 +33,10 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
   public parkingSpaceTypeOption: any[] = [];
   public parkingSpacePlaceOption: any[] = [];
   public datedifOption: any[] = [];
+  public auditStatusOption: any[] = [];
+  public mustPayOption: any[] = [];
+  public refundOption: any[] = [];
+
   public tollTitle: BfTollTitle = new BfTollTitle();
   // 详情相关
   public houseDetailDialog: boolean;
@@ -69,14 +73,18 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
     {field: 'refund', name: '是否可退款', value: ''},
     {field: 'enable', name: '启用状态', value: ''},
     {field: 'mustPay', name: '是否必缴', value: ''},
+    {field: 'first_auditor', name: '初审人', value: ''},
+    {field: 'first_audit_time', name: '初审时间', value: ''},
+    {field: 'second_auditor', name: '复审人', value: ''},
+    {field: 'second_audit_time', name: '复审时间', value: ''},
   ];
   // 审核相关
   public reviewOption: any;
   // 按钮显示相关
   public btnHiden = [
-    {label: '新增', hidden: true},
-    {label: '修改', hidden: true},
-    {label: '删除', hidden: true},
+    {label: '审核', hidden: true},
+    // {label: '修改', hidden: true},
+    // {label: '删除', hidden: true},
     // {label: '搜索', hidden: true},
   ];
   public themeSub: Subscription;
@@ -116,6 +124,7 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
     this.auditInitialization();
+    this.setBtnIsHidden();
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.themeSub.unsubscribe();
@@ -123,37 +132,40 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
   // initialization houseinfo
   public  auditInitialization(): void {
     this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
-      {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}], (data) => {
+      {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}, {settingType: 'AUDIT_STATUS'}, {settingType: 'REFUND'},
+      {settingType: 'MUST_PAY'}], (data) => {
       this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
+      this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
       this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
+      this.refundOption = this.toolSrv.setListMap(data.REFUND);
+      this.mustPayOption = this.toolSrv.setListMap(data.MUST_PAY);
       this.parkingSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
       this.enableOption = this.toolSrv.setListMap(data.ENABLED);
+      this.queryData();
     });
-    this.queryData();
   }
   // detail couponInfo (详情信息)
   public  houseDetailClick(e): void {
+    // console.log(e);
     this.houseDetailDialog = true;
     this.tollTitle = e;
     this.detailTollTitle.forEach( v => {
       v.value = e[v.field];
     });
-    this.getTollDetailInfo(e.chargeCode, 'detail');
+    this.getTollDetailInfo(e.code);
   }
   // 收费项目详情信息查询
-  public getTollDetailInfo(data, type): void {
-    this.tollSrv.getTolldetail({chargeCode: data}).subscribe(
+  public getTollDetailInfo(data): void {
+    this.tollSrv.getAuditTolldetail({code: data}).subscribe(
       value => {
         if (value.status === '1000') {
-          if (type === 'detail') {
-            this.detailTollList = value.data.chargeDetail.map( v => {
-              v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
-              v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkingSpacePlaceOption, v.parkingSpacePlace);
-              v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceType);
-              return v;
-            });
-            this.tollDetailDialog = true;
-          }
+          this.detailTollList = value.data.chargeDetail.map( v => {
+            v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
+            v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkingSpacePlaceOption, v.parkingSpacePlace);
+            v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceType);
+            return v;
+          });
+          this.tollDetailDialog = true;
         } else {
           this.toolSrv.setToast('error', '请求错误', value.message);
         }
@@ -182,6 +194,7 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
   // clear data (清除数据)
   public  clearData(): void {
     this.tollSelect = [];
+
     // this.modifyCouponType = null;
     // this.modifyChargeName = null;
     // this.modifyEffectiveTime = null;
@@ -198,12 +211,14 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
       width: '100%',
       header: {
         data:  [
-          {field: 'chargeCode', header: '项目编号'},
           {field: 'chargeName', header: '项目名称'},
           {field: 'chargeType', header: '项目类型'},
           {field: 'chargeStandard', header: '收费单价'},
           {field: 'chargeUnit', header: '收费单位'},
           {field: 'enable', header: '是否启用'},
+          {field: 'status', header: '审核状态'},
+          {field: 'applicant', header: '修改申请人'},
+          {field: 'applyTime', header: '修改申请时间'},
           {field: 'operating', header: '操作'}
         ],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
@@ -224,6 +239,9 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
         if (values.status === '1000') {
           values.data.contents.forEach( item => {
             item.enable  = this.toolSrv.setValueToLabel(this.enableOption, item.enable);
+            item.status  = this.toolSrv.setValueToLabel(this.auditStatusOption, item.status);
+            item.refund = this.toolSrv.setValueToLabel(this.refundOption, item.refund);
+            item.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, item.mustPay);
           });
           this.couponTableContent = values.data.contents;
           this.setTableOption(values.data.contents);
@@ -238,49 +256,49 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
   // 确认审核
   public  tollReviewSureClick(e): void {
     if (e === '通过') {
-      this.tollSrv.auditTollToUpdate({}).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.toolSrv.setToast('success' , '操作成功', value.message);
-            this.clearData();
-            this.auditInitialization();
-          } else {
-            this.toolSrv.setToast('error' , '操作失败', value.message);
-
-          }
-        }
-      );
+       this.auditTollChangeToRequest(2);
     } else if (e === '不通过') {
-      // this.couponReviewSrv.couponReviewNoPassById({id: this.couponReviewSelect[0].id}).subscribe(
-      //   value => {
-      //     if (value.status === '1000') {
-      //       this.toolSrv.setToast('success' , '操作成功', value.message);
-      //       this.clearData();
-      //       this.couponReviewInitialization();
-      //     } else {
-      //       this.toolSrv.setToast('error' , '操作失败', value.message);
-      //
-      //     }
-      //   }
-      // );
+      this.auditTollChangeToRequest(0);
     } else {
       this.clearData();
     }
   }
+  // 审核请求
+  public auditTollChangeToRequest(code): void {
+    this.tollSrv.auditTollToUpdate({code: this.tollSelect[0].code, status: code}).subscribe(
+      value => {
+        if (value.status === '1000') {
+          this.toolSrv.setToast('success' , '操作成功', value.message);
+          this.clearData();
+          this.auditInitialization();
+          this.reviewOption.dialog = false;
+        } else {
+          this.toolSrv.setToast('error' , '操作失败', value.message);
+
+        }
+      }
+    );
+  }
   // 设置按钮显示隐藏
-  // public  setBtnIsHidden(): void {
-  //   this.localSrv.getObject('btnParentCodeList').forEach(v => {
-  //     if (v.label === '收费项目') {
-  //       this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
-  //         value.data.forEach(res => {
-  //           this.btnHiden.forEach( val => {
-  //             if (res.title === val.label) {
-  //               val.hidden = false;
-  //             }
-  //           });
-  //         });
-  //       });
-  //     }
-  //   });
-  // }
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '收费项目') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          value.data.forEach( res => {
+            if (res.title === '待初审') {
+              this.globalSrv.getChildrenRouter({parentCode: res.permisCode}).subscribe(val => {
+                this.btnHiden.forEach(btnItem => {
+                  val.data.forEach(item => {
+                    if (item.title === btnItem.label) {
+                      btnItem.hidden = false;
+                    }
+                  });
+                });
+              });
+            }
+          });
+        });
+      }
+    });
+  }
 }

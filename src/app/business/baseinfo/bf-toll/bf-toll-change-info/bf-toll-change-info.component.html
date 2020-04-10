@@ -1,0 +1,195 @@
+<div class="bf-toll-change-info">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="bf-toll-change-info-header">
+    <div class="ui-g-12">
+<!--            <div class="ui-g-1   bf-toll-change-info-header-btn   bf-toll-change-info-header-btn-add" (click)="couponAddClick()" [hidden]="this.btnHiden[0].hidden">-->
+<!--              <img class="  bf-toll-change-info-header-img-add" src="assets/images/ic_add.png" alt="">-->
+<!--              <span>增 加</span>-->
+<!--            </div>-->
+            <div class="ui-g-1   bf-toll-change-info-header-btn   bf-toll-change-info-header-btn-modify" (click)="changeinfoModifyClick()" [hidden]="this.btnHiden[0].hidden">
+<!--              <img class="  bf-toll-change-info-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
+              <span>修 改</span>
+            </div>
+      <!--      <div class="ui-g-1   bf-toll-change-info-header-btn   bf-toll-change-info-header-btn-delete" (click)="couponDeleteClick()" [hidden]="this.btnHiden[2].hidden">-->
+      <!--        <img class="  bf-toll-change-info-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+      <!--        <span>删 除</span>-->
+      <!--      </div>-->
+    </div>
+    <!--//搜索-->
+    <!--    <div class="ui-inputgroup   bf-toll-change-info-header-search">-->
+    <!--      <input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="couponSeachData">-->
+    <!--      <button id="disabled-btn" class="  bf-toll-change-info-header-btn-search" type="button"  (click)="couponSearchClick()"  label="搜索">搜索</button>-->
+    <!--    </div>-->
+  </div>
+  <!--表格-->
+  <div class="bf-toll-change-info-table">
+    <rbi-check-table-btn [select]="changeInfoSelect" (selectData)="selectData($event)" [option]="optionTable" (detail)="houseDetailClick($event)"></rbi-check-table-btn>
+  </div>
+  <!--修改弹窗-->
+  <p-dialog header="信息修改" [(visible)]="tollModifyDialog" [width]="1000" [closable]="false">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label><span style="color: red">*</span>项目名称：</label>
+        </div>
+        <div class="ui-g-8">
+          <input  type="text" pInputText placeholder="请输入收费项目名称" [(ngModel)]="tollTitle.chargeName" >
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>项目类型：</label>
+        </div>
+        <div class="ui-g-8"  style="line-height: 2vh">
+          <p-dropdown  disabled [options]="chargeTypeOption" scrollHeight="100px"  [(ngModel)]="tollTitle.chargeType"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>收费单位：</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入收费单位" [(ngModel)]="tollTitle.chargeUnit">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label >收费单价：</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入收费单价" [(ngModel)]="tollTitle.chargeStandard">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>是否可退款：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="refundOption"  scrollHeight="100px"  [(ngModel)]="tollTitle.refund"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>启用状态：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="enableOption" scrollHeight="100px"  [(ngModel)]="tollTitle.enable"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>是否必缴：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="mustPayOption" scrollHeight="100px"  [(ngModel)]="tollTitle.mustPay"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4"  style="text-align: right">
+          <label >申请原因：</label>
+        </div>
+        <div class="ui-g-8">
+          <textarea  type="text" pInputTextarea  [rows]="5" [cols]="20" placeholder="请输入申请原因" [(ngModel)]="tollTitle.applyReason" ></textarea>
+        </div>
+      </div>
+      <div class="ui-g-12">
+        <p-scrollPanel [style]="{width:'100%',height: '25vh'}" styleClass="custombar">
+          <p-table [columns]="moreTollMoreTitle" [value]="tollMoreInfo" >
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns">
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'background' : '#FFFFFF'}">
+                <td [ngStyle]="{'text-align': 'center'}">
+                  {{rowIndex+1}}
+                </td>
+                <td  *ngFor="let col of columns.slice(1,columns.length - 1); let i = index" pEditableColumn>
+                  <p-cellEditor *ngIf="col.header === '车位地点' || col.header === '车位类型' || col.header === '缴费月数' ">
+                    <ng-template pTemplate="input">
+                      <p-dropdown [options]="setOptionList[col.field]" scrollHeight="100px" [(ngModel)]="rowData[col.field]"></p-dropdown>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{this.toolSrv.setValueToLabel(setOptionList[col.field], rowData[col.field])}}
+                    </ng-template>
+                  </p-cellEditor>
+                  <p-cellEditor *ngIf="col.header !== '车位地点' && col.header !== '车位类型' && col.header !== '缴费月数' ">
+                    <ng-template pTemplate="input">
+                      <input pInputText type="text" [(ngModel)]="rowData[col.field]">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{rowData[col.field]}}
+                    </ng-template>
+                  </p-cellEditor>
+                </td>
+                <td [ngStyle]="{'text-align': 'center'}">
+                  <button class="bf-toll-info-Modifydialog-Btn"  (click)="deleteTollMoreClick(rowIndex)">删除</button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-scrollPanel>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <button class="bf-toll-change-info-dialog-Btn bf-toll-change-info-dialog-Btn-sure" (click)="addMoreTollClick()">添加</button>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button class="bf-toll-change-info-dialog-Btn bf-toll-change-info-dialog-Btn-sure" (click)="tollModifySureClick()">确认</button>
+        <button class="bf-toll-change-info-dialog-Btn bf-toll-change-info-dialog-Btn-false"  (click)="tollModifyDialog=false;clearData()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <!--详情弹窗-->
+  <p-dialog header="信息详情" [(visible)]="tollDetailDialog" [width]="1000" [closable]="false" class="detail">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
+      <div class="ui-g-6" *ngFor="let item of detailTollTitle">
+        <div class="ui-g-4" style="text-align: right">
+          <label >{{item.name}}：</label>
+        </div>
+        <div class="ui-g-8">
+          <span>{{item.value}}</span>
+        </div>
+      </div>
+      <div class="ui-g-12" *ngIf="detailTollList.length !== 0">
+        <p-table [columns]="TollMoreTitleDetail" [value]="detailTollList" [scrollable]="true" scrollHeight="30vh">
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th *ngFor="let col of columns">
+                {{col.header}}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+              <td *ngFor="let col of columns" style="text-align: center">
+                {{rowData[col.field]}}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <!--        </p-scrollPanel>-->
+
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <!--<button class="bf-toll-info-dialog-Btn bf-toll-info-dialog-Btn-sure" (click)="tollDetailClick()">确认</button>-->
+        <button class="bf-toll-change-info-dialog-Btn bf-toll-change-info-dialog-Btn-false"  (click)="tollDetailDialog=false;clearData()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+</div>

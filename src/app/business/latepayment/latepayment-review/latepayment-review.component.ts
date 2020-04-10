@@ -265,7 +265,6 @@ export class LatepaymentReviewComponent implements OnInit, OnDestroy {
   }
   // sure review pass
   public  reviewPassClick(e): void {
-       // console.log(e);
       if (e === '通过') {
         // 审核通过时的请求
         this.lateSrv.reviewLatePaymentPass({id: this.latereviewSelect[0].id}).subscribe(
@@ -289,7 +288,6 @@ export class LatepaymentReviewComponent implements OnInit, OnDestroy {
           }
         );
       } else {
-        console.log(12);
         this.reviewOption.dialog = false;
       }
   }

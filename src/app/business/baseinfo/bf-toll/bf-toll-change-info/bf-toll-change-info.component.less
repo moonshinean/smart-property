@@ -1,8 +1,9 @@
-.bf-house{
+.bf-toll-change-info{
   //头部按钮
-  .bf-house-header {
+  .bf-toll-change-info-header {
     height: 12vh;
-    .bf-house-header-btn {
+    padding-left: 1vw;
+    .bf-toll-change-info-header-btn {
       color: #fff;
       width: 6vw;
       margin-top: 4vh;
@@ -12,30 +13,30 @@
       border-radius: 5px;
       cursor:pointer;
     }
-    .bf-house-header-btn-add {
+    .bf-toll-change-info-header-btn-add {
       margin-left: 2vw;
       background: #55AB7F;
-      .bf-house-header-img-add{
+      .bf-toll-change-info-header-img-add{
         width: 18px;
         height: 18px;
         vertical-align: bottom;
         margin-right: 5px;
       }
     }
-    .bf-house-header-btn-modify{
+    .bf-toll-change-info-header-btn-modify{
       margin-left: 1vw;
       background: #3A78DA;
-      .bf-house-header-img-modify {
+      .bf-toll-change-info-header-img-modify {
         width: 20px;
         height: 20px;
         vertical-align: bottom;
         margin-right: 5px;
       }
     }
-    .bf-house-header-btn-delete{
+    .bf-toll-change-info-header-btn-delete{
       margin-left: 1vw;
       background: #e43331;
-      .bf-house-header-img-delete{
+      .bf-toll-change-info-header-img-delete{
         width: 18px;
         height: 18px;
         vertical-align: bottom;
@@ -46,29 +47,29 @@
       width: 5% !important;
       min-width: 6em;
     }
-    .bf-house-header-search{
+    .bf-toll-change-info-header-search{
       position: absolute;
       margin-top: 5.3vh;
       right: 6vw;
-      input {
-        border: 1px solid #A6A6A6;
-      }
-      .bf-house-header-btn-search{
+      .bf-toll-change-info-header-btn-search{
         outline: none;
         border:0;
-        background: var(--table-detail);
+        background: #5E6372;
         width: 5vw;
         color: #fff;
         margin-left: 1vw;
         border-radius: 5px;
         cursor:pointer;
       }
+      .bf-toll-change-info-header-btn-search:hover{
+        background: #4B5062;
+      }
     }
 
 
   }
   //表格
-  .bf-house-table{
+  .bf-toll-change-info-table{
     margin-left: 2vw;
     margin-right: 2vw;
     //margin-top: 14vh;
@@ -83,7 +84,7 @@
     //::ng-deep .custombar .ui-scrollpanel-content{
     //  padding-right: 0;
     //}
-    .bf-house-table-Btn{
+    .bf-toll-change-info-table-Btn{
       width: 6vw;
       text-align: center;
       border-radius: 5px;
@@ -96,13 +97,13 @@
       cursor:pointer;
 
     }
-    .bf-house-table-Btn:hover{
+    .bf-toll-change-info-table-Btn:hover{
       background: #50588E;
     }
   }
 
   //弹框按钮
-  .bf-house-dialog-Btn{
+  .bf-toll-change-info-dialog-Btn{
     width: 4vw;
     text-align: center;
     border-radius: 5px;
@@ -112,16 +113,28 @@
     border: 0;
     cursor:pointer;
   }
-  .bf-house-dialog-Btn-sure{
+  .bf-toll-info-Modifydialog-Btn{
+    width: 4vw;
+    border-radius: 5px;
+    height: 3.5vh;
+    outline: none;
+    color: #fff;
+    border: 0;
+    background: red;
+    //text-align: center;
+    cursor:pointer;
+
+  }
+  .bf-toll-change-info-dialog-Btn-sure{
     background: #449D44;
   }
-  .bf-house-dialog-Btn-sure:hover{
+  .bf-toll-change-info-dialog-Btn-sure:hover{
     background: #275D27;
   }
-  .bf-house-dialog-Btn-false{
+  .bf-toll-change-info-dialog-Btn-false{
     background: #9E9E9E;
   }
-  .bf-house-bottom-Btn {
+  .bf-toll-change-info-bottom-Btn {
     background: #449D44;
     right: 6vw;
     position: absolute;
@@ -131,24 +144,8 @@
     //margin-top: 2vh;
 
   }
-  .houseDetail {
-    span {
-      border: 1px solid #A6A6A6;
-      width: 228px;
-      height: 33px;
-      display: block;
-      background: #EDEDED;
-      line-height: 3.2vh;
-      border-radius: 4px;
-      color: #464646;
-      word-break: break-word;
-      overflow-y: auto;
-    }
-    ::ng-deep .ui-g-1, .ui-g-2, .ui-g-3, .ui-g-4, .ui-g-5, .ui-g-6, .ui-g-7, .ui-g-8, .ui-g-9, .ui-g-10, .ui-g-11, .ui-g-12 {
-      padding: 0.2em;
-    }
-  }
-  .bf-house-dialog-pie-btn {
+
+  .bf-toll-change-info-dialog-pie-btn {
     width: 6vw;
     text-align: center;
     border-radius: 4px;

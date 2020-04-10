@@ -299,18 +299,18 @@
   <p-dialog header="修改申请" [(visible)]="tollApplacationDialog" [width]="800" [closable]="false">
     <!--Content-->
     <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh', 'text-align': 'center'}">
-      <div class="ui-g-8" style="">
+      <div class="ui-g-8" >
         <div class="ui-g-4"  >
           <label for="addchargeUnit">申请原因：</label>
         </div>
         <div class="ui-g-8">
-          <textarea  type="text" pInputTextarea  [rows]="5" [cols]="20" placeholder="请输入收费单位" [(ngModel)]="tollTitle.chargeUnit" ></textarea>
+          <textarea  type="text" pInputTextarea  [rows]="5" [cols]="20" placeholder="请输入申请原因" [(ngModel)]="tollTitle.applyReason" ></textarea>
         </div>
       </div>
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
-        <button class="bf-toll-info-dialog-Btn bf-toll-info-dialog-Btn-sure" (click)="tollDetailClick()">确认</button>
+        <button class="bf-toll-info-dialog-Btn bf-toll-info-dialog-Btn-sure" (click)="tollApplicationClick()">确认</button>
         <button class="bf-toll-info-dialog-Btn bf-toll-info-dialog-Btn-false"  (click)="tollApplacationDialog=false;clearData()">取消</button>
       </div>
     </p-footer>

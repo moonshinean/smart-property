@@ -31,6 +31,9 @@ export class BfTollAuditedComponent implements OnInit, OnChanges {
   public parkingSpacePlaceOption: any[] = [];
   public datedifOption: any[] = [];
   public enableOption: any[] = [];
+  public auditStatusOption: any[] = [];
+  public mustPayOption: any[] = [];
+  public refundOption: any[] = [];
   // 详情相关
   public tollTitle: BfTollTitle = new BfTollTitle();
   public tollDetailDialog: boolean;
@@ -53,6 +56,10 @@ export class BfTollAuditedComponent implements OnInit, OnChanges {
     {field: 'refund', name: '是否可退款', value: ''},
     {field: 'enable', name: '启用状态', value: ''},
     {field: 'mustPay', name: '是否必缴', value: ''},
+    {field: 'first_auditor', name: '初审人', value: ''},
+    {field: 'first_audit_time', name: '初审时间', value: ''},
+    {field: 'second_auditor', name: '复审人', value: ''},
+    {field: 'second_audit_time', name: '复审时间', value: ''},
   ];
   // 其他相关
   public dialogOption: any;
@@ -68,9 +75,9 @@ export class BfTollAuditedComponent implements OnInit, OnChanges {
   };
   // 按钮显示相关
   public btnHiden = [
-    {label: '新增', hidden: true},
-    {label: '修改', hidden: true},
-    {label: '删除', hidden: true},
+    {label: '审核', hidden: true},
+    // {label: '修改', hidden: true},
+    // {label: '删除', hidden: true},
     // {label: '搜索', hidden: true},
   ];
   public themeSub: Subscription;
@@ -109,17 +116,26 @@ export class BfTollAuditedComponent implements OnInit, OnChanges {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
-    this.houseInitialization();
+    this.auditedInitialization();
+    this.setBtnIsHidden();
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.themeSub.unsubscribe();
   }
   // initialization houseinfo
-  public  houseInitialization(): void {
-    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}], (data) => {
+  public  auditedInitialization(): void {
+    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
+      {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}, {settingType: 'AUDIT_STATUS'}, {settingType: 'REFUND'},
+      {settingType: 'MUST_PAY'}], (data) => {
+      this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
+      this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
+      this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
+      this.refundOption = this.toolSrv.setListMap(data.REFUND);
+      this.mustPayOption = this.toolSrv.setListMap(data.MUST_PAY);
+      this.parkingSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
       this.enableOption = this.toolSrv.setListMap(data.ENABLED);
+      this.queryData();
     });
-    this.queryData();
   }
   // detail couponInfo (详情信息)
   public  houseDetailClick(e): void {
@@ -128,22 +144,21 @@ export class BfTollAuditedComponent implements OnInit, OnChanges {
     this.detailTollTitle.forEach( v => {
       v.value = e[v.field];
     });
-    this.getTollDetailInfo(e.chargeCode, 'detail');
+    this.getTollDetailInfo(e.code);
   }
   // 收费项目详情信息查询
-  public getTollDetailInfo(data, type): void {
-    this.tollSrv.getTolldetail({chargeCode: data}).subscribe(
+  public getTollDetailInfo(data): void {
+    this.tollSrv.getAuditTolldetail({code: data}).subscribe(
       value => {
+        console.log(value);
         if (value.status === '1000') {
-          if (type === 'detail') {
-            this.detailTollList = value.data.chargeDetail.map( v => {
-              v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
-              v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkingSpacePlaceOption, v.parkingSpacePlace);
-              v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceType);
-              return v;
-            });
-            this.tollDetailDialog = true;
-          }
+          this.detailTollList = value.data.chargeDetail.map( v => {
+            v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
+            v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkingSpacePlaceOption, v.parkingSpacePlace);
+            v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceType);
+            return v;
+          });
+          this.tollDetailDialog = true;
         } else {
           this.toolSrv.setToast('error', '请求错误', value.message);
         }
@@ -175,12 +190,15 @@ export class BfTollAuditedComponent implements OnInit, OnChanges {
       width: '100%',
       header: {
         data:  [
-          {field: 'chargeCode', header: '项目编号'},
+          // {field: 'chargeCode', header: '项目编号'},
           {field: 'chargeName', header: '项目名称'},
           {field: 'chargeType', header: '项目类型'},
           {field: 'chargeStandard', header: '收费单价'},
           {field: 'chargeUnit', header: '收费单位'},
           {field: 'enable', header: '是否启用'},
+          {field: 'applicant', header: '修改申请人'},
+          {field: 'applyTime', header: '修改申请时间'},
+          {field: 'status', header: '审核状态'},
           {field: 'operating', header: '操作'}
         ],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}
@@ -198,10 +216,15 @@ export class BfTollAuditedComponent implements OnInit, OnChanges {
   public  queryData(): void {
     this.tollSrv.getTollAuditedPageData(this.searchOwerData).subscribe(
       (values) => {
+        console.log(values);
         if (values.status === '1000') {
           values.data.contents.forEach( item => {
             item.enable  = this.toolSrv.setValueToLabel(this.enableOption, item.enable);
+            item.status  = this.toolSrv.setValueToLabel(this.auditStatusOption, item.status);
+            item.refund = this.toolSrv.setValueToLabel(this.refundOption, item.refund);
+            item.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, item.mustPay);
           });
+          console.log(values.data.contents);
           this.couponTableContent = values.data.contents;
           this.setTableOption(values.data.contents);
           this.option = {total: values.data.totalRecord, row: values.data.pageSize, nowpage:  values.data.pageNo};
@@ -212,19 +235,25 @@ export class BfTollAuditedComponent implements OnInit, OnChanges {
     );
   }
   // 设置按钮显示隐藏
-  // public  setBtnIsHidden(): void {
-  //   this.localSrv.getObject('btnParentCodeList').forEach(v => {
-  //     if (v.label === '收费项目') {
-  //       this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
-  //         value.data.forEach(res => {
-  //           this.btnHiden.forEach( val => {
-  //             if (res.title === val.label) {
-  //               val.hidden = false;
-  //             }
-  //           });
-  //         });
-  //       });
-  //     }
-  //   });
-  // }
+  public  setBtnIsHidden(): void {
+    this.localSrv.getObject('btnParentCodeList').forEach(v => {
+      if (v.label === '收费项目') {
+        this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          value.data.forEach( res => {
+            if (res.title === '审核通过') {
+              this.globalSrv.getChildrenRouter({parentCode: res.permisCode}).subscribe(val => {
+                this.btnHiden.forEach(btnItem => {
+                  val.data.forEach(item => {
+                    if (item.title === btnItem.label) {
+                      btnItem.hidden = false;
+                    }
+                  });
+                });
+              });
+            }
+          });
+        });
+      }
+    });
+  }
 }

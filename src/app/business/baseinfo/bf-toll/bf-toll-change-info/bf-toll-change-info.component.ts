@@ -1,4 +1,5 @@
 import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {BfTollTitle, ModifyTollDrop, TollMoreInfo} from '../../../../common/model/bf-toll.model';
 import {Subscription} from 'rxjs';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {GlobalService} from '../../../../common/services/global.service';
@@ -7,16 +8,15 @@ import {PublicMethedService} from '../../../../common/public/public-methed.servi
 import {BfTollService} from '../../../../common/services/bf-toll.service';
 import {ThemeService} from '../../../../common/public/theme.service';
 import {SharedServiceService} from '../../../../common/public/shared-service.service';
-import {BfTollTitle} from '../../../../common/model/bf-toll.model';
 
 @Component({
-  selector: 'rbi-bf-toll-review',
-  templateUrl: './bf-toll-review.component.html',
-  styleUrls: ['./bf-toll-review.component.less']
+  selector: 'rbi-bf-toll-change-info',
+  templateUrl: './bf-toll-change-info.component.html',
+  styleUrls: ['./bf-toll-change-info.component.less']
 })
-export class BfTollReviewComponent implements OnInit, OnChanges {
+export class BfTollChangeInfoComponent implements OnInit, OnChanges {
 
-  public reviewSelect: any[] = [];
+  public changeInfoSelect: any[] = [];
   public couponTableContent: any;
   // 查询相关
   public searchOwerData = {
@@ -34,6 +34,7 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
   public auditStatusOption: any[] = [];
   public mustPayOption: any[] = [];
   public refundOption: any[] = [];
+  public chargeTypeOption: any[] = [];
   // 详情相关
   public tollTitle: BfTollTitle = new BfTollTitle();
   public tollDetailDialog: boolean;
@@ -61,13 +62,31 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
     {field: 'second_auditor', name: '复审人', value: ''},
     {field: 'second_audit_time', name: '复审时间', value: ''},
   ];
+  // 修改相关
+  public tollMoreInfo: TollMoreInfo[] = [];
+  public moreTollMoreTitle = [
+    {field: 'id', header: '序号'},
+    {field: 'areaMin', header: '面积最小值'},
+    {field: 'areaMax', header: '面积最大值'},
+    {field: 'datedif', header: '缴费月数'},
+    {field: 'money', header: '金额'},
+    {field: 'discount', header: '折扣'},
+    {field: 'parkingSpacePlace', header: '车位地点'},
+    {field: 'parkingSpaceType', header: '车位类型'},
+    {field: 'operating', header: '操作'},
+  ];
+  public setOptionList = {
+    datedif: '',
+    parkingSpacePlace: '',
+    parkingSpaceType: ''
+  };
   // 其他相关
   public dialogOption: any;
   public optionTable: any;
-
+  public normalChargeOption: any[] = [];
+  // 修改相关
+  public tollModifyDialog: boolean;
   public option: any;
-  // 审核相关
-  public reviewOption: any;
   public table = {
     tableheader: {background: '', color: ''},
     tableContent: [
@@ -75,11 +94,15 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  // 删除
+  public ids = [];
+  public tollModifyData: ModifyTollDrop = new ModifyTollDrop();
+  public tollModifyDatas: ModifyTollDrop[] = [];
   // 按钮显示相关
   public btnHiden = [
     // {label: '新增', hidden: true},
-    // {label: '修改', hidden: true},
-    {label: '审核', hidden: true},
+    {label: '修改', hidden: true},
+    // {label: '删除', hidden: true},
     // {label: '搜索', hidden: true},
   ];
   public themeSub: Subscription;
@@ -118,28 +141,31 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
-    this.reviewInitialization();
-    this.setBtnIsHidden();
+    this.auditedInitialization();
+    this.setBtnIsHidden()
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.themeSub.unsubscribe();
   }
   // initialization houseinfo
-  public  reviewInitialization(): void {
-    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
+  public  auditedInitialization(): void {
+    this.toolSrv.getAdmStatus([{settingType: 'CHARGE_TYPE'}, {settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
       {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}, {settingType: 'AUDIT_STATUS'}, {settingType: 'REFUND'},
       {settingType: 'MUST_PAY'}], (data) => {
       this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
+      this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
       this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
+      this.refundOption = this.toolSrv.setListMap(data.REFUND);
+      this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
+      this.mustPayOption = this.toolSrv.setListMap(data.MUST_PAY);
       this.parkingSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
       this.enableOption = this.toolSrv.setListMap(data.ENABLED);
-      this.refundOption = this.toolSrv.setListMap(data.REFUND);
-      this.mustPayOption = this.toolSrv.setListMap(data.MUST_PAY);
-      this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
+      this.setOptionList.parkingSpaceType = this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
+      this.setOptionList.parkingSpacePlace = this.parkingSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
+      this.setOptionList.datedif = this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
       this.queryData();
     });
   }
-  // detail couponInfo (详情信息)
   // detail couponInfo (详情信息)
   public  houseDetailClick(e): void {
     this.tollDetailDialog = true;
@@ -147,20 +173,46 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
     this.detailTollTitle.forEach( v => {
       v.value = e[v.field];
     });
-    this.getTollDetailInfo(e.code);
+    this.getTollDetailInfo(e.code, 'detail');
+  }
+  // modify toll
+  public changeinfoModifyClick(): void {
+    if (this.changeInfoSelect === undefined || this.changeInfoSelect.length === 0) {
+      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
+    } else if (this.changeInfoSelect.length === 1) {
+      this.getTollDetailInfo(this.changeInfoSelect[0].code, 'modify');
+
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '请选择需要修改的项');
+    }
   }
   // 收费项目详情信息查询
-  public getTollDetailInfo(data): void {
+  public getTollDetailInfo(data, type): void {
     this.tollSrv.getAuditTolldetail({code: data}).subscribe(
       value => {
         if (value.status === '1000') {
-          this.detailTollList = value.data.chargeDetail.map( v => {
-            v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
-            v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkingSpacePlaceOption, v.parkingSpacePlace);
-            v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceType);
-            return v;
-          });
-          this.tollDetailDialog = true;
+          if (type === 'detail') {
+            this.detailTollList = value.data.chargeDetail.map( v => {
+              v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
+              v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkingSpacePlaceOption, v.parkingSpacePlace);
+              v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceType);
+              return v;
+            });
+            this.tollDetailDialog = true;
+          } else {
+            value.data.chargeDetail.forEach( v => {
+              this.ids.push(v.id);
+            });
+            this.tollMoreInfo =   value.data.chargeDetail;
+            this.tollTitle = value.data.chargeItem;
+            this.tollTitle.chargeType = this.tollTitle.chargeType.toString();
+            this.tollTitle.refund = this.tollTitle.refund.toString();
+            this.tollTitle.enable = this.tollTitle.enable.toString();
+            this.tollTitle.mustPay = this.tollTitle.mustPay.toString();
+            this.tollModifyDialog = true;
+            // console.log(this.tollMoreInfo);
+            this.tollModifyDialog = true;
+          }
         } else {
           this.toolSrv.setToast('error', '请求错误', value.message);
         }
@@ -171,21 +223,78 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
   public  nowpageEventHandle(event: any): void {
     this.searchOwerData.pageNo = event;
     this.queryData();
-    this.reviewSelect = [];
+    this.changeInfoSelect = [];
   }
   // clear data (清除数据)
   public  clearData(): void {
-    this.reviewSelect = [];
-    this.reviewOption.dialog = false;
+    this.changeInfoSelect = [];
     // this.modifyCouponType = null;
     // this.modifyChargeName = null;
     // this.modifyEffectiveTime = null;
     // this.couponModify = new ModifyBfCoupon();
     // this.couponAdd = new AddBfCoupon();
   }
+  // delete moreTollMore
+  public deleteTollMoreClick(index): void {
+    if (index + 1 > this.ids.length) {
+      this.tollMoreInfo.splice(index, 1);
+    } else {
+      this.tollSrv.deleteTollList({id: this.ids[index]}).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.ids.splice(index, 1);
+            this.tollMoreInfo.splice(index, 1);
+          } else {
+            this.toolSrv.setToast('error', '删除失败', value.message);
+          }
+        }
+      );
+    }
+  }
+  // Add a piece of data
+  public addMoreTollClick(): void {
+    this.tollMoreInfo.push({
+      areaMin: '',
+      areaMax: '',
+      money: '',
+      datedif: '',
+      discount: '10',
+      parkingSpacePlace: '',
+      parkingSpaceType: ''
+    });
+    this.tollModifyData.datedif = '请选择月数';
+    this.tollModifyData.parkingSpaceNature = '请选择车位性质';
+    this.tollModifyData.parkingSpaceType = '请选择车位类型';
+    this.tollModifyDatas.push(this.tollModifyData);
+  }
+
+  // sure modify toll
+  public tollModifySureClick(): void {
+    this.tollModifyDialog = false;
+    const list  = ['chargeName', 'chargeType', 'chargeUnit', 'refund', 'enable', 'mustPay'];
+    const passlic = list.some(v => {
+      return  this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
+    });
+    if (!passlic) {
+      this.tollSrv.updateTollInfo({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.toolSrv.setToast('success', '操作成功', value.message);
+            this.auditedInitialization();
+            this.tollModifyDialog = false;
+            this.clearData();
+          } else {
+            this.toolSrv.setToast('error', '操作错误', '修改失败,' + value.message);
+          }
+        }
+      );
+    } else {
+      this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
+    }
+  }
   // Select data （选择数据）
   public  selectData(e): void {
-    this.reviewSelect = e;
+    this.changeInfoSelect = e;
   }
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
@@ -217,17 +326,19 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
   }
   // Paging query data （分页查询数据）
   public  queryData(): void {
-    this.tollSrv.getTollReviewPageData(this.searchOwerData).subscribe(
+    this.tollSrv.getChangeTollApplicationPageData(this.searchOwerData).subscribe(
       (values) => {
+        console.log(values);
         if (values.status === '1000') {
-          values.data.contents.forEach( item => {
-            item.enable  = this.toolSrv.setValueToLabel(this.enableOption, item.enable);
-            item.status  = this.toolSrv.setValueToLabel(this.auditStatusOption, item.status);
-            item.refund = this.toolSrv.setValueToLabel(this.refundOption, item.refund);
-            item.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, item.mustPay);
+          this.couponTableContent = values.data.contents.map( val => {
+            val.enable  = this.toolSrv.setValueToLabel(this.enableOption, val.enable);
+            val.status  = this.toolSrv.setValueToLabel(this.auditStatusOption, val.status);
+            val.refund = this.toolSrv.setValueToLabel(this.refundOption, val.refund);
+            val.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, val.mustPay);
+            return val;
           });
-          this.couponTableContent = values.data.contents;
-          this.setTableOption(values.data.contents);
+           // = values.data.contents;
+          this.setTableOption(this.couponTableContent);
           this.option = {total: values.data.totalRecord, row: values.data.pageSize, nowpage:  values.data.pageNo};
         } else {
           this.toolSrv.setToast('error', '查询失败', values.message);
@@ -235,51 +346,13 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
       }
     );
   }
-  // 审核
-  public  couponReviewClick(): void {
-    if (this.reviewSelect.length === 0) {
-      this.toolSrv.setToast('error', '操作错误', '请选择需要审核的项');
-    } else if (this.reviewSelect.length === 1) {
-      this.reviewOption = {
-        width: '500',
-        dialog: true
-      };
-    } else {
-      this.toolSrv.setToast('error', '操作错误', '只能选择一项进行审核');
-    }
-  }
-  // 确认审核
-  public  tollReviewSureClick(e): void {
-    if (e === '通过') {
-         this.aduitTollChange(3);
-    } else if (e === '不通过') {
-      this.aduitTollChange(0);
-    } else {
-      this.clearData();
-    }
-  }
-  // 审核请求
-  public  aduitTollChange(code): void {
-    this.tollSrv.reviewTollToUpdate({code: this.reviewSelect[0].code, status: code}).subscribe(
-      value => {
-        if (value.status === '1000') {
-          this.toolSrv.setToast('success' , '操作成功', value.message);
-          this.clearData();
-          this.reviewInitialization();
-        } else {
-          this.toolSrv.setToast('error' , '操作失败', value.message);
 
-        }
-      }
-    );
-  }
-  // 设置按钮显示隐藏
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '收费项目') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           value.data.forEach( res => {
-            if (res.title === '待复审') {
+            if (res.title === '变动记录') {
               this.globalSrv.getChildrenRouter({parentCode: res.permisCode}).subscribe(val => {
                 this.btnHiden.forEach(btnItem => {
                   val.data.forEach(item => {
@@ -295,4 +368,5 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
       }
     });
   }
+
 }

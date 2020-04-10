@@ -23,4 +23,8 @@ export class BfHouseService {
   public  getNowChartInfo(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/chart/nowChart`, pamars);
   }
+  // 获取图像信息
+  public  getRoomInfoByroomCodeSearch(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/useRoom/findUseRoomByRoomCode`, pamars);
+  }
 }

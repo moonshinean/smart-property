@@ -281,7 +281,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
     console.log(data);
     this.applicationInfoSrv.modifyRefundApplicationInfo({id: data.id, deductionPropertyFee: data.deductionPropertyFee, transferCardAmount: data.transferCardAmount, remarks: data.remarks}).subscribe(
       value => {
-        if (value.status === '1000' ) {
+        if (value.status === '1000') {
           this.toolSrv.setToast('success', '操作成功', value.message);
           this.clearData();
           this.optionDialog.dialog = false;
@@ -309,6 +309,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
   public  queryApplicationPageData(): void {
     this.applicationInfoSrv.queryRefundApplicationInfoPage(this.SearchData).subscribe(
       value => {
+        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
             value.data.contents.forEach( v => {

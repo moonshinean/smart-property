@@ -79,9 +79,6 @@ export class RefundService {
   public passRefundAudited(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl +  `/refund/preliminaryExaminationPass`, pamars);
   }
-  public  RefundNoPassStatus(pamars): Observable<any> {
-    return this.http.post(environment.sysetUrl + `/refund/examineNoPass`, pamars);
-  }
 
 
   /**
@@ -94,6 +91,11 @@ export class RefundService {
   public paasRefundAuditedInfo(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl +  `/refund/reviewPass`, pamars);
   }
+
+  /**
+   *  审核不通过
+   *   @param pamars id 审核id
+   */
   public RefundNoPaasAudited(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl +  `/refund/examineNoPass`, pamars);
   }

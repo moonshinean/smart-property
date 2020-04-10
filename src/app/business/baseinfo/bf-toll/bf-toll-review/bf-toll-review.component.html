@@ -6,7 +6,7 @@
   <!--顶部按钮-->
   <div class="bf-toll-review-header">
     <div class="ui-g-12">
-            <div class="ui-g-1   bf-toll-review-header-btn   bf-toll-review-header-btn-add" (click)="couponReviewClick()">
+            <div class="ui-g-1   bf-toll-review-header-btn   bf-toll-review-header-btn-add" (click)="couponReviewClick()" [hidden]="this.btnHiden[0].hidden">
 <!--              <img class="  bf-toll-review-header-img-add" src="assets/images/ic_add.png" alt="">-->
               <span>审 核</span>
             </div>

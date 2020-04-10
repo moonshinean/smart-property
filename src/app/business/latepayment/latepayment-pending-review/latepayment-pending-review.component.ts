@@ -275,6 +275,7 @@ export class LatepaymentPendingReviewComponent implements OnInit, OnDestroy {
         }
       );
     } else if (e === '不通过') {
+
       // 审核不通过时的请求
       this.lateSrv.reviewLatePaymentNoPass({id: this.latependreviewSelect[0].id}).subscribe(
         value => {

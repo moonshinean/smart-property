@@ -251,7 +251,7 @@ export class RefundReviewComponent implements OnInit, OnDestroy {
         }
       );
     } else if (e === '不通过') {
-      this.refundReviewSrv.RefundNoPassStatus({id: this.refundReviewSelect[0].id}).subscribe(
+      this.refundReviewSrv.RefundNoPaasAudited({id: this.refundReviewSelect[0].id}).subscribe(
         value => {
           this.toolSrv.setToast('success' , '操作成功', value.message);
           this.clearData();
