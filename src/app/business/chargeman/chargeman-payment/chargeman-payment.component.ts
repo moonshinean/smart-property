@@ -883,7 +883,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
               return v.deductionStatus === 1;
             });
           }
-          console.log(this.deductionDamagesData[this.deductionDamagesListIndex]);
+          // console.log(this.deductionDamagesData[this.deductionDamagesListIndex]);
           // this.toolSrv.setToast('error', '请求失败', value.message);
           this.paymentItemData =  this.paymentItemData.map( v => {
             v.stateOfArrears = v.stateOfArrears !== 0;
@@ -1120,8 +1120,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
                 this.parkSpaceData = [];
                 value.data.forEach(val => {
                   this.parkSpaceData.push(val);
-                  this.getTotalBalaceData();
                 });
+                this.getTotalBalaceData();
               }
             }
           });

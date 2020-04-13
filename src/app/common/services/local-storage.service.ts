@@ -8,12 +8,12 @@ export class LocalStorageService {
 
   public eventBus: Subject<any> = new Subject<any>();
   public persons: Subject<any> = new Subject<any>();
-  public userSessionStorage: any;
+  public userSessionStorage = sessionStorage;
   constructor() {
-    if (!sessionStorage) {
-      throw new Error('Current browser does not support Local Storage');
-    }
-    this.userSessionStorage = sessionStorage;
+    // if (!sessionStorage) {
+    //   throw new Error('Current browser does not support Local Storage');
+    // }
+    // this.userSessionStorage = sessionStorage;
   }
   public set(key: string, value: string): void {
     this.userSessionStorage[key] = value;
@@ -33,5 +33,9 @@ export class LocalStorageService {
 
   public remove(key: string): any {
     this.userSessionStorage.removeItem(key);
+  }
+
+  public clear(): any {
+    this.userSessionStorage.clear();
   }
 }

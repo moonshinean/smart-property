@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit{
     if (!(this.isOrTrue('username') && this.isOrTrue('password'))) {
       this.userLogin.setValue( {username: this.localSessionStorage.get('username'), password: this.localSessionStorage.get('password')});
     }
+    // this.localSessionStorage.clear();
   }
   // user click event
   public  userLoginClick(user): void {
@@ -76,6 +77,7 @@ export class LoginComponent implements OnInit{
             // console.log(v);
             this.item.push({permisCode: v.permisCode , title: v.title});
           });
+          console.log(value.data.token);
           this.localSessionStorage.setObject('item', this.item);
           this.localSessionStorage.setObject('sidebarItem', 1);
           this.route.navigate(['/home/main']);
