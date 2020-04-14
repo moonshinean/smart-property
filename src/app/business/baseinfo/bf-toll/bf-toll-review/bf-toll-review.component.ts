@@ -56,10 +56,10 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
     {field: 'refund', name: '是否可退款', value: ''},
     {field: 'enable', name: '启用状态', value: ''},
     {field: 'mustPay', name: '是否必缴', value: ''},
-    {field: 'first_auditor', name: '初审人', value: ''},
-    {field: 'first_audit_time', name: '初审时间', value: ''},
-    {field: 'second_auditor', name: '复审人', value: ''},
-    {field: 'second_audit_time', name: '复审时间', value: ''},
+    {field: 'firstAuditor', name: '初审人', value: ''},
+    {field: 'firstAuditTime', name: '初审时间', value: ''},
+    {field: 'secondAuditor', name: '复审人', value: ''},
+    {field: 'secondAuditTime', name: '复审时间', value: ''},
   ];
   // 其他相关
   public dialogOption: any;
@@ -142,7 +142,7 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
   // detail couponInfo (详情信息)
   // detail couponInfo (详情信息)
   public  houseDetailClick(e): void {
-    this.tollDetailDialog = true;
+    // this.tollDetailDialog = true;
     this.tollTitle = e;
     this.detailTollTitle.forEach( v => {
       v.value = e[v.field];
