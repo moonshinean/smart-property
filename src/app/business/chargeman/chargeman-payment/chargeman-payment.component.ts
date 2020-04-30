@@ -197,7 +197,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   };
   public keyChargeList = false;
   // 房屋添加检验
-  public keyChargeParkSpaceList = [false, false, false, false, false, false, false, false, false, false];
+  public keyChargeParkSpaceList = [false, false, false, false, false, false];
   // 放大 缩小显示
   public dialogHiddenData = [];
   constructor(
@@ -325,12 +325,12 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // sure selectPreject payment （选择项目确认）
   public paymentProjectSureClick(): void {
-    console.log(this.payItemDetail);
 
     // 获取选中的收费项目
     const list  = this.paymentProject.filter( v => {
       return v.check === 1;
     });
+    console.log(list);
     if (list.length > 0 ) {
       // 组装请求参数
       const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus', 'identity', 'oneMonthPropertyFee'];
@@ -342,9 +342,16 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         }
       }
       this.payItemDetail.chargeItem = list.map( v => {
-         return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
-           datedif: v.datedif, chargeStandard: v.chargeStandard};
+         if (v.chargeWay !== 6) {
+           return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
+             datedif: v.datedif, chargeStandard: v.chargeStandard};
+         } else {
+           return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
+             datedif: v.datedif, chargeStandard: v.chargeStandard, multiple: v.multiple, usageAmount: v.usageAmount};
+         }
       });
+      console.log(this.payItemDetail);
+
       // 查询拆分业主
       this.paymentSrv.getUserInfoByRoomCode({roomCode: this.paymentSelect[0].roomCode}).subscribe(
         value => {
@@ -419,17 +426,14 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         this.paymentOrderAdd.correctedAmount = this.Balance;
         this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
           (value) => {
-            console.log(value);
             if (value.status === '1000') {
               this.confirmationService.confirm({
                 message: `是否打印单据吗？`,
                 header: '缴费成功',
                 icon: 'pi pi-exclamation-triangle',
                 accept: () => {
-                  // const list = ['a', 'b', 'c', 'e'];
                   this.openListLength = value.data.length;
                   value.data.forEach(v => {
-                    // window.open('http://www.baidu.com');
                     this.printBillDetail(v.orderId, v.organizationId);
                   });
                 },
@@ -496,7 +500,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       this.paymentSrv.searchChargeItem({roomCode: this.paymentSelect[0].roomCode}).subscribe(
         (value) => {
           if (value.status === '1000') {
-
+            console.log(value);
             value.data.forEach( v => {
               if (v.chargeWay === 4) {
                 this.selectCheckChargeItemList.push(v.chargeName);
@@ -507,6 +511,10 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
                 this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, parkingSpaceCode: v.parkingSpaceCode,
                   chargeType: v.chargeType, datedif: 0, chargeWay: v.chargeWay, check: 0, minMonth: 1,
                   chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: JSON.parse(v.chargeStandards)[0].value});
+              } else if (v.chargeWay === 6) {
+                this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, parkingSpaceCode: v.parkingSpaceCode,
+                  chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 0, minMonth: 1, multiple: 1, usageAmount: 0,
+                  chargeStandards: JSON.parse(v.chargeStandards), chargeStandard: v.chargeStandard});
               } else  {
                 this.paymentProject.push({chargeCode: v.chargeCode, chargeName: v.chargeName, parkingSpaceCode: v.parkingSpaceCode,
                   chargeType: v.chargeType, datedif: 1, chargeWay: v.chargeWay, check: 0, minMonth: 1,
@@ -759,10 +767,19 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public costSplitClick(e, index): void {
       this.paymentItemListIndex = index;
       this.costSplitData = e;
+      this.paymentSrv.getCostSplitStartTime({roomCode: this.paymentSelect[0].roomCode}).subscribe(val => {
+        console.log(val);
+        if (val.status === '1000') {
+          this.costSplitData.firstStartTime = val.data;
+          this.costSplitDialog = true;
+          this.SelectDateClick(1);
+        } else {
+          this.toolSrv.setToast('error', '请求失败', val.message);
+        }
+      });
       // this.costSplitData.spiltTime = e.startTime;
       // this.setDate(e.startTime, this.minDate);
       // this.setDate(e.dueTime, this.maxDate);
-      this.costSplitDialog = true;
   }
   // 监听时间选择
   public SelectDateClick(data): void {
@@ -829,10 +846,11 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // 拆分列表切换用户设置其电话和id
   public changeSurname(name, index): void {
+    console.log(this.ownerList);
     this.ownerList.forEach(v => {
       if (name === v.surname) {
         this.paymentItemData[index].payerPhone = v.mobilePhone;
-        this.paymentItemData[index].customerUserId = v.customerUserId;
+        this.paymentItemData[index].payerUserId = v.customerUserId;
       }
     });
   }
@@ -1066,18 +1084,14 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-     const rentalParklist = ['licensePlateNumber', 'rentalRenewalStatus', 'datedif', 'startTime', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'parkingSpacePlace', 'parkingSpaceType'];
+     const rentalParklist = ['licensePlateNumber', 'rentalRenewalStatus', 'datedif', 'startTime', 'parkingSpacePlace', 'parkingSpaceType'];
      const pass = rentalParklist.some(value => {
        return  (this.rentalParkSpace[value] === null || this.rentalParkSpace[value] === '' || this.rentalParkSpace[value] === undefined);
       });
       if (!pass) {
         if (this.rentalCode !== undefined && this.rentalCode !== null) {
           if (this.lincePlate.test(this.rentalParkSpace.licensePlateNumber)) {
-             if (this.toolSrv.verifyPhone.test(this.rentalParkSpace.authorizedPersonPhone)) {
-                this.setrentalParkSpaceQuest();
-             } else {
-               this.toolSrv.setToast('error', '错误提示', '车主手机号码不符合规则');
-             }
+              this.setrentalParkSpaceQuest();
           } else {
             this.toolSrv.setToast('error', '错误提示', '车牌号码不符合规则');
           }

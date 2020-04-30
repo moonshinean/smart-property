@@ -27,5 +27,9 @@ export class BfParkingSpaceService {
   public  importFileWithParkSpace(body): Observable<any> {
     return  this.http.post(environment.chargeUrl + '/parkingSpace/import', body);
   }
+ // 条件查询
+  public  queryParkingSpaceByCode(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl +  `/parkingSpace/findByParkingSpaceCodePage`, pamars);
+  }
 
 }

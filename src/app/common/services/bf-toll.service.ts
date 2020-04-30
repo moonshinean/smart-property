@@ -47,6 +47,10 @@ export class BfTollService {
     return this.http.post(environment.sysetUrl + `/charge/findApplyByCode`, pamars);
   }
 
+  public updateTollChangeInfo(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/charge/updateCache`, pamars);
+  }
+
   // 修改申请查询
   public getChangeTollApplicationPageData(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/charge/findApplication`, pamars);

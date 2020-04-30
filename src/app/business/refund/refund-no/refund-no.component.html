@@ -61,12 +61,12 @@
             </td>
             <td>
               <button class="refund-no-table-Btn refund-no-table-Btn-detail" (click)="refundNoDetailClick(rowData)" >详情</button>
-              <span *ngIf="rowData.refundStatus !== '未退'">
-                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474; margin-top: 1vh"  (click)="InfoRefundClick(rowData)"  [disabled]="rowData.refundStatus !== '未退'">退款申请</button>
-              </span>
-              <span *ngIf="rowData.refundStatus === '未退'">
+              <div *ngIf="rowData.refundStatus !== '未退'" style="display: inline-block">
+                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474; margin-top: 0.5vh"  (click)="InfoRefundClick(rowData)"  [disabled]="rowData.refundStatus !== '未退'">退款申请</button>
+              </div>
+              <div *ngIf="rowData.refundStatus === '未退'" style="display: inline-block">
                 <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="margin-top: 0.5vh" (click)="InfoRefundClick(rowData)" >退款申请</button>
-              </span>
+              </div>
             </td>
           </tr>
           <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':this.table.tableContent[1].background,'color':this.table.tableContent[1].color,'text-align': 'center','height':'2vw'}">
@@ -78,12 +78,12 @@
             </td>
             <td>
               <button class="refund-no-table-Btn refund-no-table-Btn-detail" (click)="refundNoDetailClick(rowData)" >详情</button>
-              <span *ngIf="rowData.refundStatus !== '未退'">
-                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474" (click)="InfoRefundClick(rowData)" aria-disabled="true"  [disabled]="rowData.refundStatus !== '未退'">退款申请</button>
-              </span>
-              <span *ngIf="rowData.refundStatus === '未退'">
-                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" (click)="InfoRefundClick(rowData)" >退款申请</button>
-              </span>
+              <div *ngIf="rowData.refundStatus !== '未退'" style="display: inline-block">
+                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="background: #747474;margin-top: 0.5vh" (click)="InfoRefundClick(rowData)" aria-disabled="true"  [disabled]="rowData.refundStatus !== '未退'">退款申请</button>
+              </div>
+              <div *ngIf="rowData.refundStatus === '未退'" style="display: inline-block">
+                <button class="refund-no-table-Btn refund-no-table-Btn-Refund" style="margin-top: 0.5vh" (click)="InfoRefundClick(rowData)" >退款申请</button>
+              </div>
             </td>
           </tr>
         </ng-template>
@@ -157,8 +157,70 @@
     </div>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="refund-no-dialog-Btn refund-no-dialog-Btn-sure" (click)="budgetClick()">预 算</button>
         <button class="refund-no-dialog-Btn refund-no-dialog-Btn-sure" (click)="refundSureClick()">确 认</button>
         <button class="refund-no-dialog-Btn refund-no-dialog-Btn-false" (click)="RefundDialog = false;clearData()">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <!--  显示预算-->
+  <p-dialog header="预算详情" [(visible)]="budgetDialog" [width]="800" >
+    <!--Content-->
+    <div class="ui-g ui-fluid" style="line-height: 4vh">
+      <!--报表显示数据-->
+      <div class="ui-g-6">
+        <div class = "ui-g-4" style="text-align: right">
+            房间编号:
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText disabled [(ngModel)]="budgetClass.roomCode">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class = "ui-g-4" style="text-align: right">
+          房间面积:
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText disabled [(ngModel)]="budgetClass.roomSize">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class = "ui-g-4" style="text-align: right">
+          月份:
+        </div>
+        <div class="ui-g-8">
+          <input type="number" pInputText  [(ngModel)]="budgetClass.datedif" (change)="budgetFree()">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class = "ui-g-4" style="text-align: right">
+          物业费:
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText  [(ngModel)]="budgetClass.amoutReceivable" disabled>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class = "ui-g-4" style="text-align: right">
+          开始时间:
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="budgetClass.startTime" placeholder="请选择开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2100" [locale]="esDate" disabled></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class = "ui-g-4" style="text-align: right">
+          结束时间:
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="budgetClass.endTime" placeholder="请选择结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2100" [locale]="esDate" disabled></p-calendar>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+<!--        <button class="refund-no-dialog-Btn refund-no-dialog-Btn-sure">确 认</button>-->
+        <button class="refund-no-dialog-Btn refund-no-dialog-Btn-false" (click)="budgetCancle()">取 消</button>
       </div>
     </p-footer>
   </p-dialog>

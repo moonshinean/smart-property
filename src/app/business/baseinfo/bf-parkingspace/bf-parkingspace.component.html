@@ -22,22 +22,12 @@
         <img class="bf-parkingspace-header-img" src="assets/images/ic_add.png" alt="">
         <span>导 入</span>
       </div>
-<!--      <div style="margin-top: 4.5vh;font-size: 0.875rem;margin-left: 1vw">-->
-<!--        <label style="color: #fff;margin-left: 0.5vw" >小区：</label>-->
-<!--        <p-dropdown [options]="SearchOption.village"  scrollHeight="100px" placeholder="请选择小区..." (onChange)="VillageChange($event)"></p-dropdown>-->
-<!--        <label style="color: #fff;margin-left: 0.5vw">地块：</label>-->
-<!--        <p-dropdown [options]="SearchOption.region" scrollHeight="100px" placeholder="请选择地块..." (onChange)="regionChange($event)"></p-dropdown>-->
-<!--        <label style="color: #fff;margin-left: 0.5vw">楼栋：</label>-->
-<!--        <p-dropdown [options]="SearchOption.building"  scrollHeight="100px" placeholder="请选择楼栋..." (onChange)="buildingChange($event)"></p-dropdown>-->
-<!--        <label style="color: #fff;margin-left: 0.5vw">单元：</label>-->
-<!--        <p-dropdown [options]="SearchOption.unit"   scrollHeight="100px" placeholder="请选择单元..." (onChange)="unitChange($event)"></p-dropdown>-->
-<!--      </div>-->
     </div>
     <!--//搜索-->
-<!--    <div class="ui-inputgroup bf-parkingspace-header-search">-->
-<!--      <input type="text" pInputText placeholder="请输入缴费人" #input style="width: 7vw">-->
-<!--      <button id="disabled-btn" class="bf-parkingspace-header-btn-search" type="button"  (click)="parkingspaceSearchClick()"  label="搜索">搜索</button>-->
-<!--    </div>-->
+    <div class="ui-inputgroup bf-parkingspace-header-search" *ngIf="!btnHiden[4].hidden">
+      <input type="text" pInputText placeholder="请输入车位编号" [(ngModel)]="searchData">
+      <button id="disabled-btn" class="bf-parkingspace-header-btn-search" type="button"  (click)="parkingspaceSearchClick()"  label="搜索">搜索</button>
+    </div>
   </div>
   <!--表格-->
   <div class="bf-parkingspace-table">

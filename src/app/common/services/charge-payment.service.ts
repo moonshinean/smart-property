@@ -75,7 +75,10 @@ export class ChargePaymentService {
   public  queryPaymentParkspalceData(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/findParkingAllByPage`, pamars);
   }
-
+  // 车位条件搜索
+  public  searcSpalceDataByType(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/findByCondition`, pamars);
+  }
   // 车位删除
   public  deletePaymentParksplace(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/delete`, pamars);
@@ -84,5 +87,10 @@ export class ChargePaymentService {
   // 车位计算费用
   public  calculateParksplaceFree(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/cash/register/calculate_parking_space_management_fee`, pamars);
+  }
+
+  // 获取拆分时间
+  public  getCostSplitStartTime(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/cash/register/query/start_billing_time`, pamars);
   }
 }

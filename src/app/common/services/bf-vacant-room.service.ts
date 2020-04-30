@@ -14,4 +14,7 @@ export class BfVacantRoomService {
   public  queryVacantRoomPageData(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/vacantRoom/findRoomAllByPage`, pamars);
   }
+  public  queryVacantRoomByRoomCode(pamars): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/vacantRoom/findRoomByRoomCode`, pamars);
+  }
 }

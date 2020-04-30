@@ -41,10 +41,28 @@
     <!--Content-->
        <p-scrollPanel [style]="{width:'100%',height: '45vh'}" styleClass="custombar">
          <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'3vh'}">
-        <div class="ui-g-12" *ngFor="let item of paymentProject; let i = index">
+         <div class="ui-g-12" *ngFor="let item of paymentProject; let i = index">
           <div class="ui-g-6">
             <p-checkbox  [label]="item.chargeName"  [value]="item.chargeName" name="group" (onChange)="projectChange(i)" [(ngModel)]="selectCheckChargeItemList"></p-checkbox>
           </div>
+          <div  class="ui-g-6" [hidden]="!(item.chargeWay === 6)">
+             <div class="ui-g-6">
+               <div class="ui-g-4">
+                 <label for="">度数</label>
+               </div>
+               <div class="ui-g-8" [hidden]="!(item.chargeWay === 6)"  style="text-align: left">
+                 <p-spinner size="30" [(ngModel)]="item.usageAmount" min="0" [max]="1000000"></p-spinner>
+               </div>
+             </div>
+             <div class="ui-g-6">
+               <div class="ui-g-4">
+                 <label for="">倍数</label>
+               </div>
+               <div class="ui-g-8" [hidden]="!(item.chargeWay === 6)"  style="text-align: left">
+                 <p-spinner size="30" [(ngModel)]="item.multiple" min="1" [max]="1000000"></p-spinner>
+               </div>
+             </div>
+           </div>
           <div class="ui-g-2" [hidden]="!(item.chargeWay === 1)" style="text-align: right">
             <label >月数</label>
           </div>
@@ -57,6 +75,7 @@
           <div class="ui-g-4" [hidden]="!(item.chargeWay === 2)"  style="text-align: left">
             <p-spinner size="30" [(ngModel)]="item.datedif" min="1" [max]="1000000"></p-spinner>
           </div>
+
           <div class="ui-g-2" [hidden]="!(item.chargeWay === 3)"   style="text-align: right">
             <label >选择金额</label>
           </div>
@@ -205,8 +224,8 @@
                     </p-cellEditor>
                   </td >
                   <td *ngFor="let col of columns.slice(columns.length -1 , columns.length)" style="word-break: break-word">
-                    <button class="chargeman-payment-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState !== 1 && rowData.startTime !== null">拆分</button>
-                    <button class="chargeman-payment-dialog-Btn" style="background: #DCDCDC;height: 3vh; width: 4vw" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState === 1 || rowData.startTime === null" disabled>拆分</button>
+                    <button class="chargeman-payment-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 3vw" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState !== 1 && rowData.startTime !== null">拆分</button>
+                    <button class="chargeman-payment-dialog-Btn" style="background: #DCDCDC;height: 3vh; width: 3vw" (click)="costSplitClick(rowData, rowIndex)" *ngIf="rowData.splitState === 1 || rowData.startTime === null" disabled>拆分</button>
                   </td>
                 </tr>
               </ng-template>
@@ -395,24 +414,24 @@
           <p-calendar [(ngModel)]="rentalParkSpace.startTime" placeholder="请选择开始计费日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
         </div>
       </div>
-      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh" [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[5]}">
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh" >
         <div class="ui-g-4" style="text-align: right">
-          <label ><span style="color: red">*</span>车主姓名</label>
+          <label >车主姓名</label>
         </div>
         <div class="ui-g-8" >
           <input type="text" pInputText  placeholder="请输入车主姓名" [(ngModel)]="rentalParkSpace.authorizedPersonName"/>
         </div>
       </div>
-      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh"  [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[6]}">
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh" >
         <div class="ui-g-4" style="text-align: right">
-          <label ><span style="color: red">*</span>车主电话</label>
+          <label >车主电话</label>
         </div>
         <div class="ui-g-8">
           <input type="text" pInputText placeholder="请输入车主电话" [(ngModel)]="rentalParkSpace.authorizedPersonPhone"/>
           <p-message  severity="error" text="请输入符合规定的11位手机号(13/17/14/15/18开头的格式)" [hidden]="(rentalParkSpace.authorizedPersonPhone === null || rentalParkSpace.authorizedPersonPhone === undefined || rentalParkSpace.authorizedPersonPhone === '')? !toolSrv.verifyPhone.test( rentalParkSpace.authorizedPersonPhone): toolSrv.verifyPhone.test(rentalParkSpace.authorizedPersonPhone)"></p-message>
         </div>
       </div>
-      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh"  [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[7]}">
+      <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh"  [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[5]}">
         <div class="ui-g-4" style="text-align: right">
           <label ><span style="color: red">*</span>车主身份证号</label>
         </div>

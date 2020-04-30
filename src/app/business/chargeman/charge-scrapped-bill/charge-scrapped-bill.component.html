@@ -1,0 +1,190 @@
+<div class="charge-scrapped">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="charge-scrapped-header">
+<!--    <div class="ui-g-1 charge-scrapped-header-btn charge-scrapped-header-btn-modify" (click)="modifyChargeDetail()" [hidden]="btnHiden[0].hidden">-->
+<!--      <img class="charge-scrapped-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
+<!--      <span>修  改</span>-->
+<!--    </div>-->
+<!--    <div class="ui-g-1 charge-scrapped-header-btn charge-scrapped-header-btn-delete" (click)="deleteChargeDetail()" [hidden]="btnHiden[1].hidden">-->
+<!--      <img class="charge-scrapped-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+<!--      <span>删  除</span>-->
+<!--    </div>-->
+<!--    <div class="ui-g-1 charge-scrapped-header-btn charge-scrapped-header-btn-add" (click)="uploadFileClick()" [hidden]="btnHiden[2].hidden">-->
+<!--      &lt;!&ndash;        <img class="charge-margin-header-img-add" src="assets/images/ic_add.png" alt="">&ndash;&gt;-->
+<!--      <span>导  入</span>-->
+<!--    </div>-->
+    <!--      搜索-->
+    <div class="ui-inputgroup charge-scrapped-header-search" *ngIf="!btnHiden[0].hidden">
+      <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width': '8vw','margin-right':'2vw'}"></p-dropdown>
+      <input type="text" pInputText placeholder="请输入需要搜索的值"  [(ngModel)]="searchData">
+      <button id="disabled-btn" class="charge-scrapped-header-btn-search" type="button"  (click)="detailsSearchClick()"  label="搜索">搜索</button>
+    </div>
+  </div>
+  <!--<button class="charge-scrapped-dialog-Btn charge-scrapped-dialog-Btn-sure" style="position: absolute;top: 18.7vh;right: 5vw;z-index: 10000">搜索</button>-->
+  <!--表格-->
+  <div class="charge-scrapped-table">
+    <rbi-check-table-btn (detail)="detailsDialogClick($event)" [select]="paymentDetailSelect" [option]="optionTable" ></rbi-check-table-btn>
+  </div>
+  <!--详情弹框-->
+  <p-dialog header="费用详情" [(visible)]="detailsDialog" [width]="1100" >
+    <!--Content-->
+    <p-scrollPanel [style]="{width:'100%',height: '70vh'}" styleClass="custombar">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+          <h3>业主信息</h3>
+        </div>
+        <div class="ui-g-12">
+          <div class="ui-g-6" *ngFor="let item of paymentAddTitle">
+            <div class="ui-g-6" style="text-align: right">
+              <label >{{item.name}}：</label>
+            </div>
+            <div class="ui-g-6 span">
+              <span >{{item.value}}<span *ngIf="item.name ==='建筑面积'">平米</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12" *ngIf="deductioContent.length !== 0">
+          <h3>抵扣信息</h3>
+        </div>
+        <div class="ui-g-12"  *ngIf="deductioContent.length !== 0">
+          <p-scrollPanel [style]="liquidatedDamagesStyle" styleClass="custombar">
+            <p-table [columns]="deductioTitle" [value]="deductioContent">
+              <ng-template pTemplate="header" let-columns>
+                <tr >
+                  <th *ngFor="let col of columns" >
+                    {{col.header}}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr [pSelectableRow]="rowData"  [ngStyle]="{'text-align':'center'}">
+                  <td  *ngFor="let col of columns" >
+                    <span style="word-break: break-word">{{rowData[col.field]}}</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-scrollPanel>
+        </div>
+        <div class="ui-g-12" *ngIf="parkSpaceData.length !== 0">
+          <h3>车位管理</h3>
+        </div>
+        <div class="ui-g-12" *ngIf="parkSpaceData.length !== 0">
+          <p-table [columns]="parkspaceTitleDetail" [value]="parkSpaceData"  [scrollable]="true"  scrollHeight="48vh">
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns" >
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData" [ngStyle]="{'text-align':'center'}">
+                <td  *ngFor="let col of columns" style="word-break: break-word">
+                  <span *ngIf="col !== 'rentalRenewalStatus' && col !== 'parkingSpaceType'">{{rowData[col.field]}}</span>
+                  <span *ngIf="col === 'rentalRenewalStatus'">{{rowData[col.field] === 0? '非续租': '续租'}}</span>
+                  <span *ngIf="col === 'parkingSpaceType'">{{toolSrv.setValueToLabel(parkSpaceTypeOption, rowData[col.field])}}</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div class="ui-g-12">
+          <h3>缴费信息</h3>
+        </div>
+        <div class="ui-g-12">
+          <p-table [columns]="paymentDialogTableTitle.slice(0,paymentDialogTableTitle.length-1)" [value]="detailsPaymentProject"  [scrollable]="true">
+            <ng-template pTemplate="colgroup" let-columns>
+              <colgroup>
+                <col *ngFor="let col of columns" style="width:150px">
+              </colgroup>
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+              <tr >
+                <th *ngFor="let col of columns" >
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="rowData"  [ngStyle]="{'text-align':'center'}">
+                <td  *ngFor="let col of columns" >
+                  <span style="word-break: break-word" *ngIf="col.field !== 'stateOfArrears'">{{rowData[col.field]}}</span>
+                  <span style="word-break: break-word" *ngIf="col.field  === 'stateOfArrears'">{{rowData[col.field]===0? '未欠费': '已欠费'}}</span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <!--          </p-scrollPanel>-->
+        </div>
+        <div class="ui-g-12">
+          <h3>收费信息</h3>
+        </div>
+        <div class="ui-g-12" [ngStyle]="{'line-height':'3vh'}">
+          <div class="ui-g-6">
+            <div class="ui-g-6" style="text-align: right">
+              <label>缴费人：</label>
+            </div>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span>{{chargeDetails.payerName}}</span>
+            </div>
+          </div>
+          <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
+              <label >应收账单：</label>
+            </div>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span >￥{{chargeDetails.amountTotalReceivable}}</span>
+            </div>
+          </div>
+          <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
+              <label >实收账单：</label>
+            </div>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span>￥{{chargeDetails.actualTotalMoneyCollection}}</span>
+            </div>
+          </div>
+          <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
+              <label >缴费类型：</label>
+            </div>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span>{{chargeDetails.paymentMethod}}</span>
+            </div>
+          </div>
+          <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
+              <label >修正金额：</label>
+            </div>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span >{{chargeDetails.correctedAmount}}</span>
+            </div>
+          </div>
+          <div class="ui-g-6">
+            <div class="ui-g-6"  style="text-align: right">
+              <label >录单人：</label>
+            </div>
+            <div class="ui-g-6 span" style="line-height: 2vh">
+              <span >{{chargeDetails.tollCollectorName}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-scrollPanel>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="charge-scrapped-dialog-Btn charge-scrapped-dialog-Btn-sure" (click)="detailsSureClick()">打印单据</button>
+        <button class="charge-scrapped-dialog-Btn charge-scrapped-dialog-Btn-false" (click)="detailsFaleseClick()">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+</div>
+

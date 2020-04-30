@@ -17,6 +17,7 @@ const routes: Routes = [
       {path: 'coupon', loadChildren: './bf-coupon/bf-coupon.module#BfCouponModule'},
       {path: 'roomCharge', loadChildren: './bf-roombind-changeitem/bf-roombind-changeitem.module#BfRoombindChangeitemModule'},
       {path: 'house', loadChildren: './bf-house/bf-house.module#BfHouseModule'},
+      {path: 'parktotal', loadChildren: './bf-parking-total/bf-parking-total.module#BfParkingTotalModule'},
     ]
   }
 ];

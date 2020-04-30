@@ -278,7 +278,6 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
   }
   // 确认修改
   public updateApplicationInfo(data): void {
-    console.log(data);
     this.applicationInfoSrv.modifyRefundApplicationInfo({id: data.id, deductionPropertyFee: data.deductionPropertyFee, transferCardAmount: data.transferCardAmount, remarks: data.remarks}).subscribe(
       value => {
         if (value.status === '1000') {

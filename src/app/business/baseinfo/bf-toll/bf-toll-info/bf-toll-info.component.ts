@@ -370,20 +370,21 @@ export class BfTollInfoComponent implements OnInit {
 
   // delete moreTollMore
   public deleteTollMoreClick(index): void {
-    if (index + 1 > this.ids.length) {
-      this.tollMoreInfo.splice(index, 1);
-    } else {
-      this.tollSrv.deleteTollList({id: this.ids[index]}).subscribe(
-        value => {
-          if (value.status === '1000') {
-            this.ids.splice(index, 1);
-            this.tollMoreInfo.splice(index, 1);
-          } else {
-            this.toolSrv.setToast('error', '删除失败', value.message);
-          }
-        }
-      );
-    }
+    this.tollMoreInfo.splice(index, 1);
+    // if (index + 1 > this.ids.length) {
+    //   this.tollMoreInfo.splice(index, 1);
+    // } else {
+    //   // this.tollSrv.deleteTollList({id: this.ids[index]}).subscribe(
+    //   //   value => {
+    //   //     if (value.status === '1000') {
+    //   //       this.ids.splice(index, 1);
+    //   //
+    //   //     } else {
+    //   //       this.toolSrv.setToast('error', '删除失败', value.message);
+    //   //     }
+    //   //   }
+    //   // );
+    // }
   }
 
   // set tollTitledata

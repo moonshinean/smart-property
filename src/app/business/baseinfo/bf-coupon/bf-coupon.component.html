@@ -19,11 +19,11 @@
         <span>删 除</span>
       </div>
     </div>
-    <!--//搜索-->
-<!--    <div class="ui-inputgroup bf-coupon-header-search">-->
-<!--      <input type="text" pInputText placeholder="请输入电话或房间号" style="width: 7vw" [(ngModel)]="couponSeachData">-->
-<!--      <button id="disabled-btn" class="bf-coupon-header-btn-search" type="button"  (click)="couponSearchClick()"  label="搜索">搜索</button>-->
-<!--    </div>-->
+<!--    //搜索-->
+    <div class="ui-inputgroup bf-coupon-header-search" *ngIf="!btnHiden[3].hidden">
+      <input type="text" pInputText placeholder="请输入优惠券名称"  [(ngModel)]="couponSeachData">
+      <button id="disabled-btn" class="bf-coupon-header-btn-search" type="button"  (click)="couponSearchClick()"  label="搜索">搜索</button>
+    </div>
   </div>
   <!--表格-->
   <div class="bf-coupon-table">

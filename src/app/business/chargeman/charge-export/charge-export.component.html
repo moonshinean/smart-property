@@ -14,11 +14,14 @@
           <p-dropdown [options]="exportTypeOption" scrollHeight="100px" placeholder="请选择报表类型..." [(ngModel)]="exportCode" (onChange)="exportTypeChange($event)"></p-dropdown>
         </div>
       </div>
-      <div style="margin-left: 2vw;background: #e8a52b" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableSetClick()" [hidden]="btnHiden[1].hidden">
-        <span>表格设置</span>
+<!--      <div style="margin-left: 2vw;background: #e8a52b" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableSetClick()" [hidden]="btnHiden[1].hidden">-->
+<!--        <span>表格设置</span>-->
+<!--      </div>-->
+      <div style="margin-left: 2vw;background: #449D44" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableClick(1)" [hidden]="btnHiden[2].hidden">
+         <span>收款汇总表</span>
       </div>
-      <div style="margin-left: 2vw;background: #449D44" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableClick()" [hidden]="btnHiden[2].hidden">
-         <span>报表导出</span>
+      <div style="margin-left: 2vw;background: #449D44" class="ui-g-1 charge-export-header-btn charge-export-header-btn-delete" (click)="exportTableClick(2)" [hidden]="btnHiden[2].hidden">
+        <span>费用核销表</span>
       </div>
     </div>
     <!--搜索-->
@@ -132,6 +135,45 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix">
         <button class="charge-export-dialog-Btn charge-export-dialog-Btn-false" (click)="exportDetailDialog = false">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog header="类型选择" [(visible)]="exportTypeDialog" [width]="800"  >
+    <!--Content-->
+    <div class="ui-g ui-fluid">
+      <!--报表显示数据-->
+      <div class="ui-g-6" style="line-height: 3.8vh" [hidden]="exportTableType == 2">
+        <div class="ui-g-5" style="text-align: right">
+          <span>导出类型：</span>
+        </div>
+        <div class="ui-g-7" style="line-height: 2vh">
+          <p-dropdown [options]="exportOption" [(ngModel)]="selType" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择导出类型.." (onChange)="changeExportType()"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-12" [hidden]="hiddenSelTime">
+        <div class="ui-g-6" style="line-height: 3.8vh">
+          <div class="ui-g-5" style="text-align: right">
+            <span>开始时间：</span>
+          </div>
+          <div class="ui-g-7" style="line-height: 2vh">
+            <p-calendar [(ngModel)]="startTime" placeholder="请选择开始时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy/mm/dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          </div>
+        </div>
+        <div class="ui-g-6" style="line-height: 3.8vh">
+          <div class="ui-g-5" style="text-align: right">
+            <span>结束时间：</span>
+          </div>
+          <div class="ui-g-7" style="line-height: 2vh">
+            <p-calendar [(ngModel)]="endTime" placeholder="请选择结束..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy/mm/dd"  yearRange="2017:2030" [locale]="esDate"></p-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="charge-export-dialog-Btn charge-export-dialog-Btn-sure" (click)="exportSureClick()">确认</button>
+        <button class="charge-export-dialog-Btn charge-export-dialog-Btn-false" (click)="exportTypeDialog = false">取 消</button>
       </div>
     </p-footer>
   </p-dialog>

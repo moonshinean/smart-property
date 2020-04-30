@@ -275,7 +275,7 @@ export class BfTollChangeInfoComponent implements OnInit, OnChanges {
       return  this.tollTitle[v] === undefined || this.tollTitle[v] === '' || this.tollTitle[v] === null;
     });
     if (!passlic) {
-      this.tollSrv.updateTollInfo({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
+      this.tollSrv.updateTollChangeInfo({ chargeItem: this.tollTitle, chargeDetail: this.tollMoreInfo}).subscribe(
         value => {
           if (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', value.message);
@@ -333,6 +333,7 @@ export class BfTollChangeInfoComponent implements OnInit, OnChanges {
             val.enable  = this.toolSrv.setValueToLabel(this.enableOption, val.enable);
             val.status  = this.toolSrv.setValueToLabel(this.auditStatusOption, val.status);
             val.refund = this.toolSrv.setValueToLabel(this.refundOption, val.refund);
+            val.chargeType = this.toolSrv.setValueToLabel(this.chargeTypeOption, val.chargeType);
             val.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, val.mustPay);
             return val;
           });

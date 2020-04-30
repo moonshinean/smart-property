@@ -24,10 +24,10 @@
       </div>
     </div>
     <!--//搜索-->
-<!--      <div class="ui-inputgroup bf-vacant-room-header-search">-->
-<!--        <input type="text" pInputText placeholder="请输入房间号" />-->
-<!--        <button id="disabled-btn" class="bf-vacant-room-header-btn-search" type="button"  (click)="vacantRoomSearchClick()"  label="搜索">搜索</button>-->
-<!--      </div>-->
+      <div class="ui-inputgroup bf-vacant-room-header-search" *ngIf="!btnHiden[4].hidden">
+        <input type="text" pInputText placeholder="请输入房间号"  [(ngModel)]="roomCode" />
+        <button id="disabled-btn" class="bf-vacant-room-header-btn-search" type="button"  (click)="vacantRoomSearchClick()"  label="搜索">搜索</button>
+      </div>
   </div>
   <!--表格-->
   <div class="bf-vacant-room-table">

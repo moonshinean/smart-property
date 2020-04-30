@@ -1,0 +1,214 @@
+<div class="bf-parking-total">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw', 'top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="bf-parking-total-header">
+    <div class=" ui-g-12">
+<!--      <div class="ui-g-1 bf-parking-total-header-btn bf-parking-total-header-btn-add" (click)="parkingspaceAddClick()" [hidden]="this.btnHiden[0].hidden">-->
+<!--        <img class="bf-parking-total-header-img" src="assets/images/ic_add.png" alt="">-->
+<!--        <span>增 加</span>-->
+<!--      </div>-->
+      <div class="ui-g-1 bf-parking-total-header-btn bf-parking-total-header-btn-modify" (click)="parkingspaceModifyClick()" [hidden]="this.btnHiden[0].hidden">
+        <img class="bf-parking-total-header-img-modify bf-parking-total-header-img" src="assets/images/ic_modify.png" alt="">
+        <span>更 新</span>
+      </div>
+    </div>
+    <!--//搜索-->
+    <div class="ui-inputgroup bf-parking-total-header-search" *ngIf="!btnHiden[1].hidden">
+      <input type="text" pInputText placeholder="请输入地块名称" [(ngModel)]="searchData">
+      <button id="disabled-btn" class="bf-parking-total-header-btn-search" type="button"  (click)="parkingspaceSearchClick()"  label="搜索">搜索</button>
+    </div>
+  </div>
+  <!--表格-->
+  <div class="bf-parking-total-table">
+    <rbi-check-table-btn [option]="parkingSpaceOption"   (detail)="parkingspaceDetailClick($event)" [select]="parkingspaceSelect" (selectData)="selectData($event)"></rbi-check-table-btn>
+  </div>
+  <!--修改弹窗-->
+  <p-dialog header="信息修改" [(visible)]="parkingspaceModifayDialog" [width]="900">
+    <!--Content-->
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label >小区：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <input type="text" disabled pInputText    [(ngModel)]="parkingspaceModify.villageName" >
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label>地块：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <input type="text" disabled pInputText    [(ngModel)]="parkingspaceModify.regionName" >
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车位楼层：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <input type="text"  pInputText  disabled  [(ngModel)]="parkingspaceModify.floor" >
+        </div>
+      </div>
+      <div class="ui-g-6"  [ngClass]="{InputKeyFilter: keyparkingSpaceList[0]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位编号：</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" disabled pInputText placeholder="请输入车位编号..." [(ngModel)]="parkingspaceModify.parkingSpaceCode" (blur)="changeInput(parkingspaceModify.parkingSpaceCode, 0)">
+        </div>
+      </div>
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyparkingSpaceList[1]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位地点：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="parkSpacePlaceOption" scrollHeight="100px" placeholder="请选择地块..." [(ngModel)]="parkingspaceModify.parkingSpacePlace"  (onChange)="changeInput(parkingspaceModify.parkingSpacePlace, 1)"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyparkingSpaceList[2]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位性质：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="parkSpaceNatureOption" scrollHeight="100px" [(ngModel)]="parkingspaceModify.parkingSpaceNature"  (onChange)="changeInput(parkingspaceModify.parkingSpaceNature, 2)"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车位面积：</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入车位面积..." [(ngModel)]="parkingspaceModify.parkingSpaceArea">
+        </div>
+      </div>
+      <div class="ui-g-6" [ngClass]="{dropdownKeyFilter: keyparkingSpaceList[3]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位类型：</label>
+        </div>
+        <div class="ui-g-8" style="line-height: 2vh">
+          <p-dropdown [options]="parkSpaceTypeOption" scrollHeight="100px"  [(ngModel)]="parkingspaceModify.parkingSpaceType"  (onChange)="changeInput(parkingspaceModify.parkingSpaceType, 3)"></p-dropdown>
+        </div>
+      </div>
+      <div class="ui-g-6" [ngClass]="{InputKeyFilter: keyparkingSpaceList[4]}">
+        <div class="ui-g-4" style="text-align: right">
+          <label ><span style="color: red">*</span>车位容车数量：</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceModify.vehicleCapacity" (blur)="changeInput(parkingspaceModify.vehicleCapacity, 4)">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4" style="text-align: right">
+          <label >车位当前容车数量：</label>
+        </div>
+        <div class="ui-g-8">
+          <input type="text" pInputText placeholder="请输入车位容车数量" [(ngModel)]="parkingspaceModify.currentCapacity">
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="bf-parking-total-dialog-Btn bf-parking-total-dialog-Btn-sure" (click)="parkingspaceModifySureClick()">确认</button>
+        <button class="bf-parking-total-dialog-Btn bf-parking-total-dialog-Btn-false"  (click)="parkingspaceModifayDialog=false;clearData()">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+  <!--详情弹窗-->
+  <!--  <p-dialog header="详情弹窗" [(visible)]="parkingspaceDetailDialog" [width]="900">-->
+  <!--    &lt;!&ndash;Content&ndash;&gt;-->
+  <!--    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">-->
+  <!--      <div class="ui-g-6">-->
+  <!--        <div class="ui-g-4">-->
+  <!--          <label >小区：</label>-->
+  <!--        </div>-->
+  <!--        <div class="ui-g-8" style="line-height: 2vh">-->
+  <!--          <span>{{parkingspaceDetail.organizationName}}</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class="ui-g-6">-->
+  <!--        <div class="ui-g-4">-->
+  <!--          <label >小区：</label>-->
+  <!--        </div>-->
+  <!--        <div class="ui-g-8" style="line-height: 2vh">-->
+  <!--          <span>{{parkingspaceDetail.villageName}}</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class="ui-g-6">-->
+  <!--        <div class="ui-g-4">-->
+  <!--          <label>地块：</label>-->
+  <!--        </div>-->
+  <!--        <div class="ui-g-8" style="line-height: 2vh">-->
+  <!--          <span>{{parkingspaceDetail.regionName}}</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class="ui-g-6">-->
+  <!--        <div class="ui-g-4">-->
+  <!--          <label >车位编号：</label>-->
+  <!--        </div>-->
+  <!--        <div class="ui-g-8">-->
+  <!--          <span>{{parkingspaceDetail.parkingSpaceCode}}</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class="ui-g-6">-->
+  <!--        <div class="ui-g-4">-->
+  <!--          <label >车位性质：</label>-->
+  <!--        </div>-->
+  <!--        <div class="ui-g-8" style="line-height: 2vh">-->
+  <!--          <span>{{parkSpaceNaturemodify}}</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class="ui-g-6">-->
+  <!--        <div class="ui-g-4">-->
+  <!--          <label >车位面积：</label>-->
+  <!--        </div>-->
+  <!--        <div class="ui-g-8">-->
+  <!--          <span>{{parkingspaceDetail.parkingSpaceArea}}</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class="ui-g-6">-->
+  <!--        <div class="ui-g-4">-->
+  <!--          <label >车位类型：</label>-->
+  <!--        </div>-->
+  <!--        <div class="ui-g-8" style="line-height: 2vh">-->
+  <!--         <span>{{parkSpaceTypemodify}}</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class="ui-g-6">-->
+  <!--        <div class="ui-g-4">-->
+  <!--          <label >车位容车数量：</label>-->
+  <!--        </div>-->
+  <!--        <div class="ui-g-8">-->
+  <!--          <span>{{parkingspaceDetail.vehicleCapacity}}</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      <div class="ui-g-6">-->
+  <!--        <div class="ui-g-4">-->
+  <!--          <label >当前可车辆容车量：</label>-->
+  <!--        </div>-->
+  <!--        <div class="ui-g-8">-->
+  <!--          <span>{{parkingspaceDetail.vehicleCapacity}}</span>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--      &lt;!&ndash;<div class="ui-g-6">&ndash;&gt;-->
+  <!--      &lt;!&ndash;<div class="ui-g-4">&ndash;&gt;-->
+  <!--      &lt;!&ndash;<label >当前可车辆容车量：</label>&ndash;&gt;-->
+  <!--      &lt;!&ndash;</div>&ndash;&gt;-->
+  <!--      &lt;!&ndash;<div class="ui-g-8">&ndash;&gt;-->
+  <!--      &lt;!&ndash;<input type="text" pInputText placeholder="请输入当前可车辆容车量" [(ngModel)]="parkingspaceModify.currentCapacity">&ndash;&gt;-->
+  <!--      &lt;!&ndash;</div>&ndash;&gt;-->
+  <!--      &lt;!&ndash;</div>&ndash;&gt;-->
+  <!--    </div>-->
+  <!--    <p-footer>-->
+  <!--      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">-->
+  <!--        <button class="bf-parking-total-dialog-Btn bf-parking-total-dialog-Btn-false"  (click)="parkingspaceDetailDialog=false;clearData()">取消</button>-->
+  <!--      </div>-->
+  <!--    </p-footer>-->
+  <!--  </p-dialog>-->
+  <rbi-detail-pop [dialogOption]="parkingSpaceDetailOption"></rbi-detail-pop>
+  <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+</div>

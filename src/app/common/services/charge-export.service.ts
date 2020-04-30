@@ -23,4 +23,11 @@ export class ChargeExportService {
   public  queryGetReportInfo(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl + `/report/generatingReport`, pamars);
   }
+
+  public exportGeneratingInfo(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/report/generating_collection_summary_report`, pamars);
+  }
+  public exportWriteoffInfo(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/report/generating_expense_verification_form`, pamars);
+  }
 }

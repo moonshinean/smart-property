@@ -7,3 +7,12 @@ export class ApplicationRefund {
   organizationId?: any; // 机构ID
   remark?: any; // 备注
 }
+
+export  class  BudgetClass {
+  roomCode?: any;
+  roomSize?: any;
+  datedif?: any;
+  amoutReceivable?: any;
+  startTime?: any;
+  endTime?: any;
+}

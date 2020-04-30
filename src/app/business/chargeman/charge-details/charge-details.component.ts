@@ -269,7 +269,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     this.SearchData.surname = '';
     this.SearchData.idNumber = '';
   }
- // condition search click
+  // condition search click
   public  detailsSearchClick(): void {
     this.nowPage = this.SearchData.pageNo = 1;
     if (this.searchData !== '') {
@@ -282,7 +282,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   public  selectSearchType(): void {
     switch (this.searchType) {
       case 0: this.reslveSearchData();
-              this.queryData(); break;
+        this.queryData(); break;
       case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryData(); break;
       case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryData(); break;
       case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryData(); break;
@@ -331,9 +331,9 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   }
 
   public  uploadFileClick(): void {
-   this.uploadFileOption.width = '900';
-   this.uploadFileOption.dialog = true;
-   this.uploadFileOption.files = [];
+    this.uploadFileOption.width = '900';
+    this.uploadFileOption.dialog = true;
+    this.uploadFileOption.files = [];
   }
   // set table data （设置列表数据）
   public  setTableOption(data1): void {
@@ -403,30 +403,30 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
 
   // 查找数据
   public  queryDetail(data): void {
-      this.chargeDetailSrv.queryBillDetail({orderId: data}).subscribe(
-        value => {
-          console.log(value);
-          if (value.status === '1000') {
-            // 基本信息
-            this.chargeDetails = value.data.bill;
-            this.detailsPaymentProject = value.data.billDetailedDOS;
-            this.deductioContent = value.data.costDeductionDOS;
-            // 缴费明细
-            this.paymentItemData = value.data.billDetailedDOS.map( v => {
-              return v;
-            });
-            // 抵扣账单
-            this.deductionDamagesData = value.data.costDeductionDOS;
-            this.paymentAddTitle.forEach( v => {
-              v.value = this.chargeDetails[v.label];
-            });
-            this.parkSpaceData = value.data.parkingSpaceCostDetailDOS;
-            // this.chargeDetails.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, this.chargeDetails.paymentMethod);
-          } else {
-            this.toolSrv.setToast('error', '请求错误', value.message);
-          }
+    this.chargeDetailSrv.queryBillDetail({orderId: data}).subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          // 基本信息
+          this.chargeDetails = value.data.bill;
+          this.detailsPaymentProject = value.data.billDetailedDOS;
+          this.deductioContent = value.data.costDeductionDOS;
+          // 缴费明细
+          this.paymentItemData = value.data.billDetailedDOS.map( v => {
+            return v;
+          });
+          // 抵扣账单
+          this.deductionDamagesData = value.data.costDeductionDOS;
+          this.paymentAddTitle.forEach( v => {
+            v.value = this.chargeDetails[v.label];
+          });
+          this.parkSpaceData = value.data.parkingSpaceCostDetailDOS;
+          // this.chargeDetails.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, this.chargeDetails.paymentMethod);
+        } else {
+          this.toolSrv.setToast('error', '请求错误', value.message);
         }
-      );
+      }
+    );
   }
   // 分页查询
   public  queryData(): void {
@@ -477,33 +477,33 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
 
   // 删除详情数据
   public  deleteChargeDetail(): void {
-      if (this.paymentDetailSelect.length === undefined && this.paymentDetailSelect.length === 0) {
-        this.toolSrv.setToast('error', '操作失败', '请选择需要删除的项');
-      } else {
-        this.toolSrv.setConfirmation('删除', `删除这${this.paymentDetailSelect.length}项`, () => {
-          const ids = [];
-          this.paymentDetailSelect.forEach(v => {
-            ids.push(v.id);
-          });
-          console.log(ids.join(','));
-          this.chargeDetailSrv.deleteBillDetail({ids: ids.join(',')}).subscribe(
-            value => {
-              console.log(value);
-              if (value.status === '1000') {
-                this.toolSrv.setToast('success', '请求成功', '删除成功');
-                this.selectSearchType();
-                this.paymentDetailSelect.splice(0);
-              } else {
-                this.toolSrv.setToast('error', '请求失败', value.message);
-              }
-            }
-          );
+    if (this.paymentDetailSelect.length === undefined && this.paymentDetailSelect.length === 0) {
+      this.toolSrv.setToast('error', '操作失败', '请选择需要删除的项');
+    } else {
+      this.toolSrv.setConfirmation('删除', `删除这${this.paymentDetailSelect.length}项`, () => {
+        const ids = [];
+        this.paymentDetailSelect.forEach(v => {
+          ids.push(v.id);
         });
-      }
+        console.log(ids.join(','));
+        this.chargeDetailSrv.deleteBillDetail({ids: ids.join(',')}).subscribe(
+          value => {
+            console.log(value);
+            if (value.status === '1000') {
+              this.toolSrv.setToast('success', '请求成功', '删除成功');
+              this.selectSearchType();
+              this.paymentDetailSelect.splice(0);
+            } else {
+              this.toolSrv.setToast('error', '请求失败', value.message);
+            }
+          }
+        );
+      });
+    }
   }
   // 选择数据
   public  selectData(e): void {
-      this.paymentDetailSelect = e;
+    this.paymentDetailSelect = e;
   }
 
   public  modifyChargeDetail(): void {
@@ -529,33 +529,33 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   // 修改账单
   public  ModifypaymentSureClick(): void {
     this.paymentAddTitle.forEach( v => {
-       this.chargeDetails[v.label] = v.value;
+      this.chargeDetails[v.label] = v.value;
     });
     this.chargeDetails.realGenerationTime = this.datePipe.transform(this.chargeDetails.realGenerationTime, 'yyyy-MM-dd');
     this.toolSrv.setConfirmation('修改', '修改订单', () => {
-        this.chargeDetailSrv.updateChargeBasicInfo(this.chargeDetails).subscribe(
-          value => {
-            if (value.status === '1000') {
-              this.paymentDialog = false;
-              this.paymentDetailSelect = [];
-              this.deductioContent = [];
-              this.deductionDamagesData = [];
-              this.chargeDetails = new ChargeDetail();
-              this.selectSearchType();
-              this.toolSrv.setToast('success', '请求成功', value.message);
-            } else {
-              this.toolSrv.setToast('error', '请求失败', value.message);
-            }
+      this.chargeDetailSrv.updateChargeBasicInfo(this.chargeDetails).subscribe(
+        value => {
+          if (value.status === '1000') {
+            this.paymentDialog = false;
+            this.paymentDetailSelect = [];
+            this.deductioContent = [];
+            this.deductionDamagesData = [];
+            this.chargeDetails = new ChargeDetail();
+            this.selectSearchType();
+            this.toolSrv.setToast('success', '请求成功', value.message);
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
           }
-        );
+        }
+      );
     });
   }
 
   public  ModifypaymentFaleseClick(): void {
-      this.paymentDialog = false;
-      this.paymentDetailSelect = [];
-      this.deductioContent = [];
-      this.deductionDamagesData = [];
+    this.paymentDialog = false;
+    this.paymentDetailSelect = [];
+    this.deductioContent = [];
+    this.deductionDamagesData = [];
   }
 
   // 修改车位信息
@@ -662,21 +662,21 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   }
   // 确认修改
   public  rentalparkSpaceClick(): void {
-      this.rentalParkSpace.startTime = this.datePipe.transform(this.rentalParkSpace.startTime, 'yyyy-MM-dd');
-      this.chargeDetailSrv.updateParkspaceInfo(this.rentalParkSpace).subscribe(
-        value => {
-          console.log(value);
-          if (value.status === '1000') {
-            for (const key in this.rentalParkSpace) {
-               this.parkSpaceData[this.changeIndex][key] = this.rentalParkSpace[key];
-            }
-            this.toolSrv.setToast('success', '请求成功', value.message);
-            // this.recalculateCosts();
-            this.parkSpaceOptionDialog = false;
-          }else {}
-          this.toolSrv.setToast('error', '请求失败', value.message);
-        }
-      );
+    this.rentalParkSpace.startTime = this.datePipe.transform(this.rentalParkSpace.startTime, 'yyyy-MM-dd');
+    this.chargeDetailSrv.updateParkspaceInfo(this.rentalParkSpace).subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          for (const key in this.rentalParkSpace) {
+            this.parkSpaceData[this.changeIndex][key] = this.rentalParkSpace[key];
+          }
+          this.toolSrv.setToast('success', '请求成功', value.message);
+          // this.recalculateCosts();
+          this.parkSpaceOptionDialog = false;
+        }else {}
+        this.toolSrv.setToast('error', '请求失败', value.message);
+      }
+    );
   }
 
   // 车位信息详情
@@ -726,30 +726,30 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   }
   // 缴费明细详情
   public  changeChargeItemDataClick(index): void {
-      this.changeChangeIndex = index;
-      for(const  chargekey in this.paymentItemData[index]){
-        this.changePaymentItem[chargekey] = this.paymentItemData[index][chargekey];
-      }
-      this.chargeItemDialog = true;
+    this.changeChangeIndex = index;
+    for(const  chargekey in this.paymentItemData[index]){
+      this.changePaymentItem[chargekey] = this.paymentItemData[index][chargekey];
+    }
+    this.chargeItemDialog = true;
   }
   // 确认修改
   public  changeChargeItemSureClick(): void {
     this.changePaymentItem.startTime = this.datePipe.transform(this.changePaymentItem.startTime, 'yyyy-MM-dd');
     this.changePaymentItem.dueTime = this.datePipe.transform(this.changePaymentItem.dueTime, 'yyyy-MM-dd');
-      this.toolSrv.setConfirmation('修改', '修改', () => {
-        this.chargeDetailSrv.updateChargeItemInfo(this.changePaymentItem).subscribe(
-          value => {
-            console.log(value);
-            if (value.status === '1000') {
-              for (const  chargekey in this.changePaymentItem) {
-                this.paymentItemData[this.changeChangeIndex][chargekey] = this.changePaymentItem[chargekey];
-              }
-              this.chargeItemDialog = false;
-            } else {
-              this.toolSrv.setToast('error', '请求失败', value.message)
+    this.toolSrv.setConfirmation('修改', '修改', () => {
+      this.chargeDetailSrv.updateChargeItemInfo(this.changePaymentItem).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            for (const  chargekey in this.changePaymentItem) {
+              this.paymentItemData[this.changeChangeIndex][chargekey] = this.changePaymentItem[chargekey];
             }
+            this.chargeItemDialog = false;
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message)
           }
-        );
-      });
+        }
+      );
+    });
   }
 }

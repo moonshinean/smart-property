@@ -234,7 +234,6 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
   public  queryData(): void {
     this.alreadySrv.queryRefundAlreadyPageInfo(this.SearchData).subscribe(
       value => {
-        console.log(value);
         this.loadHidden = true;
         if (value.status === '1000') {
           if (value.data.contents) {
@@ -248,6 +247,7 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
           }
           this.alreadyContents = value.data.contents;
           this.setTableOption(value.data.contents);
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
         } else  {
           this.toolSrv.setToast('error', '查询失败', value.message);
         }

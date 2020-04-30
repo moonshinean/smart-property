@@ -1,0 +1,38 @@
+<div class="charge-empty">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="charge-empty-header">
+    <div class="ui-g-1 charge-empty-header-btn charge-empty-header-btn-add" (click)="exportEmptyCostFile()" [hidden]="true">
+<!--      <img class="charge-empty-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
+      <span>导 出</span>
+    </div>
+<!--    <div class="ui-g-1 charge-empty-header-btn charge-empty-header-btn-delete" (click)="deleteChargeDetail()">-->
+<!--      <img class="charge-empty-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
+<!--      <span>删  除</span>-->
+<!--    </div>-->
+<!--    <div class="ui-g-1 charge-empty-header-btn charge-empty-header-btn-add" (click)="uploadFileClick()" [hidden]="btnHiden[2].hidden">-->
+<!--      &lt;!&ndash;        <img class="charge-margin-header-img-add" src="assets/images/ic_add.png" alt="">&ndash;&gt;-->
+<!--      <span>导  入</span>-->
+<!--    </div>-->
+    <!--      搜索-->
+    <div class="ui-inputgroup charge-empty-header-search" *ngIf="!btnHiden[1].hidden">
+      <input type="text" pInputText placeholder="请输入房间号"  [(ngModel)]="searchData">
+      <button id="disabled-btn" class="charge-empty-header-btn-search" type="button"  (click)="emptySearchClick()"  label="搜索">搜索</button>
+    </div>
+  </div>
+  <!--<button class="charge-empty-dialog-Btn charge-empty-dialog-Btn-sure" style="position: absolute;top: 18.7vh;right: 5vw;z-index: 10000">搜索</button>-->
+  <!--表格-->
+  <div class="charge-empty-table">
+    <rbi-check-table-btn (detail)="detailsDialogClick($event)" [select]="paymentDetailSelect" [option]="optionTable" ></rbi-check-table-btn>
+  </div>
+
+
+  <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
+<!--  <rbi-file-pop [UploadFileOption]="uploadFileOption" (event)="uploadFileSureClick($event)"></rbi-file-pop>-->
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+</div>
+

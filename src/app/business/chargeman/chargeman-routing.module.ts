@@ -18,7 +18,8 @@ const routes: Routes = [
       {path: 'history', loadChildren: './charge-history/charge-history.module#ChargeHistoryModule'},
       {path: 'payparkspace', loadChildren: './charge-pay-parkspace/charge-pay-parkspace.module#ChargePayParkspaceModule'},
       {path: 'parkhistory', loadChildren: './charge-car-history/charge-car-history.module#ChargeCarHistoryModule'},
-      // {path: 'historicalreport', loadChildren: './charge-historicalreport/charge-historicalreport.module#ChargeHistoricalreportModule'},
+      {path: 'emptycost', loadChildren: './charge-empty-cost/charge-empty-cost.module#ChargeEmptyCostModule'},
+      {path: 'scrappedbill', loadChildren: './charge-scrapped-bill/charge-scrapped-bill.module#ChargeScrappedBillModule'},
       // {path: 'parkspace', loadChildren: './charge-parkspace/charge-parkspace.module#ChargeParkspaceModule'},
     ]
   }

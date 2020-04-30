@@ -45,6 +45,9 @@ export class RefundService {
   public applicationRefund(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl  + `/refund/application`, pamars);
   }
+  public budgetRefundFree(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl  + `/refund/refund_budget`, pamars);
+  }
 
   /**
    *  已退款模块

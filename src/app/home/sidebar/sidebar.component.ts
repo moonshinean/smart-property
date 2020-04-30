@@ -117,8 +117,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           {label: '员工档案', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/staff']},
           {label: '优惠券', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/coupon']},
           {label: '车位信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/parkingspace']},
-
-          // {label: '车辆信息', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/vehicle']},
+          {label: '车位数量统计', icon: 'pi pi-fw ', routerLink: ['/home/baseinfo/parktotal']},
         ] },
       { title: '关联设置', item: [] , routingItem: [
           {label: '员工分组', icon: 'pi pi-fw', routerLink: ['/home/assoc/assocstaff']},
@@ -127,7 +126,9 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
       { title: '收费管理', item: [], routingItem:  [
           {label: '物业缴费', icon: 'pi pi-fw ', routerLink: ['/home/charge/payment']},
           {label: '专有车位缴费', icon: 'pi pi-fw ', routerLink: ['/home/charge/payparkspace']},
+          {label: '空置费', icon: 'pi pi-fw ', routerLink: ['/home/charge/emptycost']},
           {label: '缴费记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/details']},
+          {label: '报废单据', icon: 'pi pi-fw ', routerLink: ['/home/charge/scrappedbill']},
           {label: '报表导出', icon: 'pi pi-fw ', routerLink: ['/home/charge/export']},
           // {label: '保证金', icon: 'pi pi-fw ', routerLink: ['/home/charge/margin']},
           // {label: '退款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/record']},

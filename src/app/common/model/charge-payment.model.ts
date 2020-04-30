@@ -29,6 +29,8 @@ export class ChargeItem {
   chargeWay?: any; // 项目类型
   datedif?: any; // 项目类型
   check?: any; // 选中状态
+  usageAmount?: any; // 度数
+  multiple?: any; // 倍数
   minMonth?: any; // 最小月数
   chargeStandards?: any; // 金额下拉框
   chargeStandard?: any; // 金额
@@ -108,6 +110,7 @@ export class ChargeItemDetail {
   payerName?: any;
   customerUserId?: any;
   waterElectricId?: any;
+  payerUserId?: any;
   // endTime?: any;
   // arrearsType?: any;
 }

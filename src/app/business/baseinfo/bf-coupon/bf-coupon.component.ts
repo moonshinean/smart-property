@@ -34,6 +34,8 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   public form: FormValue[] = [];
   public formgroup: FormGroup;
   public formdata: any[];
+  // 搜索相关
+  public couponSeachData = '';
   // public esDate: any;
   // 上传相关
   // public couponUploadFileDialog: boolean;
@@ -65,6 +67,7 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     {label: '新增', hidden: true},
     {label: '修改', hidden: true},
     {label: '删除', hidden: true},
+    {label: '搜索', hidden: true},
     // {label: '搜索', hidden: true},
   ];
   public themeSub: Subscription;
@@ -109,7 +112,6 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     this.loadingHide = false;
     this.couponSrv.queryChargeCode({}).subscribe(
       value => {
-        console.log(value);
         value.data.forEach(v => {
           this.ChargeCodeData.push({label: v.chargeName, value: v.chargeCode});
         });
@@ -117,7 +119,6 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     );
     this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'COUPON_EFFECTIVE_TIME'},
       {settingType: 'COUPON_TYPE'}], (data) => {
-      console.log(data);
       this.optionEnable = this.toolSrv.setListMap(data.ENABLED);
       this.couponTypeData = this.toolSrv.setListMap(data.COUPON_TYPE);
       data.COUPON_EFFECTIVE_TIME.forEach( v => {
@@ -153,11 +154,9 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   }
   // sure add coupon （添加确认请求）
   public  couponAddSureClick(data): void {
-    console.log(data);
     this.toolSrv.setConfirmation('增加', '增加', () => {
       this.couponSrv.addCoupon(data).subscribe(
         value => {
-          console.log(value);
           if  (value.status === '1000') {
             this.toolSrv.setToast('success', '操作成功', value.message);
             this.couponAdd = new AddBfCoupon();
@@ -289,7 +288,11 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   public  nowpageEventHandle(event: any): void {
     this.loadingHide = false;
     this.nowPage = event;
-    this.queryData(this.nowPage);
+    if (this.couponSeachData !== '') {
+      this.searchCounponData();
+    } else {
+      this.queryData(this.nowPage);
+    }
     this.couponSelect = [];
   }
   // clear data (清除数据)
@@ -301,13 +304,14 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     this.couponModify = new ModifyBfCoupon();
     this.couponAdd = new AddBfCoupon();
   }
-  // Determine if it is Chinese （判断是否为中文）
-  public  isChinese(s): any {
-   if (s[0] >= '\u4e00' && s[0] <= '\u9fa5') {
-     return true;
-   } else {
-     return false;
-   }
+  // 搜索
+  public  couponSearchClick(): void {
+     this.nowPage = 1;
+     if (this.couponSeachData !== ''){
+        this.searchCounponData();
+     } else {
+       this.queryData(this.nowPage);
+     }
   }
   // Select data （选择数据）
   public  selectData(e): void {
@@ -341,7 +345,30 @@ export class BfCouponComponent implements OnInit, OnDestroy {
   public  queryData(data): void {
     this.couponSrv.queryCouponPagination({pageNo: data, pageSize: 10 }).subscribe(
       (values) => {
-        console.log(values);
+        this.loadingHide = true;
+        if (values.status === '1000') {
+          values.data.contents.forEach( item => {
+            item.couponType  = this.toolSrv.setValueToLabel(this.couponTypeData, item.couponType);
+            item.chargeCode = this.toolSrv.setValueToLabel(this.ChargeCodeData, item.chargeCode);
+            item.enable = this.toolSrv.setValueToLabel(this.optionEnable, item.enable);
+            // if (item.effectiveTime !== '无限期') {
+            //   item.effectiveTime = item.effectiveTime + '天';
+            item.effectiveTime = this.toolSrv.setValueToLabel(this.EffectiveTime, item.effectiveTime);
+            // }
+          });
+          this.couponTableContent = values.data.contents;
+          this.setTableOption(values.data.contents);
+          this.option = {total: values.data.totalRecord, row: values.data.pageSize, nowpage:  values.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '查询失败', values.message);
+        }
+      }
+    );
+  }
+  // 条件搜索
+  public  searchCounponData(): void {
+    this.couponSrv.searchCouponByCouponName({couponName: this.couponSeachData, pageNo: this.nowPage, pageSize: 10 }).subscribe(
+      (values) => {
         this.loadingHide = true;
         if (values.status === '1000') {
           values.data.contents.forEach( item => {
@@ -377,12 +404,8 @@ export class BfCouponComponent implements OnInit, OnDestroy {
           this.couponAddSureClick(this.couponAdd);
         } else {
           for (const key in e.value.value) {
-
             this.couponModify[key] = e.value.value[key];
-            console.log(this.couponModify[key]);
-
           }
-          console.log(this.couponModify);
           this.couponModifySureClick(this.couponModify);
         }
       } else {
@@ -396,7 +419,6 @@ export class BfCouponComponent implements OnInit, OnDestroy {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '优惠券') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
-          console.log(value);
           value.data.forEach(v => {
             this.btnHiden.forEach( val => {
               if (v.title === val.label) {

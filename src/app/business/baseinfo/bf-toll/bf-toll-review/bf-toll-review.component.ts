@@ -34,6 +34,7 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
   public auditStatusOption: any[] = [];
   public mustPayOption: any[] = [];
   public refundOption: any[] = [];
+  public chargeTypeOption: any[] = [];
   // 详情相关
   public tollTitle: BfTollTitle = new BfTollTitle();
   public tollDetailDialog: boolean;
@@ -126,12 +127,13 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
   }
   // initialization houseinfo
   public  reviewInitialization(): void {
-    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
+    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'CHARGE_TYPE'}, {settingType: 'DATEDIF'},
       {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}, {settingType: 'AUDIT_STATUS'}, {settingType: 'REFUND'},
       {settingType: 'MUST_PAY'}], (data) => {
       this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
       this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
       this.parkingSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
+      this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
       this.enableOption = this.toolSrv.setListMap(data.ENABLED);
       this.refundOption = this.toolSrv.setListMap(data.REFUND);
       this.mustPayOption = this.toolSrv.setListMap(data.MUST_PAY);
@@ -158,6 +160,7 @@ export class BfTollReviewComponent implements OnInit, OnChanges {
             v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
             v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkingSpacePlaceOption, v.parkingSpacePlace);
             v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.parkingSpaceType);
+            v.chargeType = this.toolSrv.setValueToLabel(this.parkingSpaceTypeOption, v.chargeType);
             return v;
           });
           this.tollDetailDialog = true;

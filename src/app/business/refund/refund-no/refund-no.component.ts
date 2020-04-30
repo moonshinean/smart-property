@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ApplicationRefund} from '../../../common/model/refund-no.model';
+import {ApplicationRefund, BudgetClass} from '../../../common/model/refund-no.model';
 import {ModifyRefundInfo} from '../../../common/model/refund-info.model';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {RefundService} from '../../../common/services/refund.service';
@@ -32,11 +32,17 @@ export class RefundNoComponent implements OnInit, OnDestroy {
 
   // 申请退款
   public RefundDialog: any;
+  // 预算弹窗
+  public budgetDialog: any;
   public ApplicationRefund: ApplicationRefund = new ApplicationRefund();
+
+  public budgetClass: BudgetClass = new BudgetClass();
   public refundReason: any;
   public option: any;
   public loadHidden = true;
   public themeSub: Subscription;
+  public selData: any;
+  public esDate: any;
   // 搜索相关
   public SearchData = {
     villageCode: '',
@@ -108,6 +114,7 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.esDate = this.toolSrv.esDate;
     this.setBtnIsHidden();
     if (this.themeSrv.setTheme !== undefined) {
       this.table.tableheader = this.themeSrv.setTheme.table.header;
@@ -173,7 +180,7 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   public  selectSearchType(): void {
     switch (this.searchType) {
       case 0: this.reslveSearchData();
-        this.queryRefundNoInfoPageData(); break;
+              this.queryRefundNoInfoPageData(); break;
       case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryRefundNoInfoPageData(); break;
       case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryRefundNoInfoPageData(); break;
       case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryRefundNoInfoPageData(); break;
@@ -198,6 +205,7 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   }
   // show refund application dialog
   public  InfoRefundClick(e): void {
+    this.selData = e;
     this.ApplicationRefund.refundableAmount = e.refundableAmount;
     this.ApplicationRefund.actualMoneyCollection = e.actualMoneyCollection;
     this.ApplicationRefund.orderId = e.orderId;
@@ -298,7 +306,11 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   // refundNo select
   // Amount calculation
   public  transferCardAmountChange(): void {
-    this.ApplicationRefund.deductionPropertyFee = Number(this.ApplicationRefund.refundableAmount) - Number(this.ApplicationRefund.transferCardAmount);
+    if (Number(this.ApplicationRefund.refundableAmount) !== 0) {
+      this.ApplicationRefund.deductionPropertyFee = Number(this.ApplicationRefund.refundableAmount) - Number(this.ApplicationRefund.transferCardAmount);
+    } else {
+      this.toolSrv.setToast('error', '错误信息', '请检查退还金额数据是否错误');
+    }
   }
   // Reset data
   public clearData(): void {
@@ -308,8 +320,7 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   }
   // paging query
   public nowpageEventHandle(event: any): void {
-    this.loadHidden = false;
-    this.nowPage = event;
+    this.nowPage = this.SearchData.pageNo = event;
     this.selectSearchType();
   }
 
@@ -347,6 +358,34 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   }
 
   public  refundNoonRowSelect(e): void {
+  }
+  // 预算点击
+  public  budgetClick(): void {
+    console.log(this.selData);
+    this.budgetClass.roomCode = this.selData.roomCode;
+    this.budgetClass.roomSize = this.selData.roomSize;
+    this.budgetDialog = true;
+  }
+  // 预算费用
+  public  budgetFree(): void {
+     this.refundNoSrv.budgetRefundFree({roomCode: this.budgetClass.roomCode, roomSize: this.budgetClass.roomSize, datedif: this.budgetClass.datedif}).subscribe(val => {
+       console.log(val);
+       if (val.status === '1000') {
+         this.budgetClass.amoutReceivable = val.data.amountReceivable;
+         this.budgetClass.startTime = val.data.startTime;
+         this.budgetClass.endTime = val.data.dueTime;
+       } else {
+         this.toolSrv.setToast('error', '请求失败', val.message);
+       }
+     });
+  }
+  // 关闭弹窗
+  public  budgetCancle(): void {
+      this.budgetDialog = false;
+      this.budgetClass.endTime = '';
+      this.budgetClass.startTime = '';
+      this.budgetClass.datedif = '';
+      this.budgetClass.amoutReceivable = '';
   }
 
   // 设置按钮显示权限

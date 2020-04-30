@@ -36,6 +36,7 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
   public auditStatusOption: any[] = [];
   public mustPayOption: any[] = [];
   public refundOption: any[] = [];
+  public chargeTypeOption: any[] = [];
 
   public tollTitle: BfTollTitle = new BfTollTitle();
   // 详情相关
@@ -131,12 +132,13 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
   }
   // initialization houseinfo
   public  auditInitialization(): void {
-    this.toolSrv.getAdmStatus([{settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
+    this.toolSrv.getAdmStatus([{settingType: 'CHARGE_TYPE'}, {settingType: 'ENABLED'}, {settingType: 'DATEDIF'},
       {settingType: 'PAEKING_SPACE_PLACE'}, {settingType: 'CWLX'}, {settingType: 'AUDIT_STATUS'}, {settingType: 'REFUND'},
       {settingType: 'MUST_PAY'}], (data) => {
       this.parkingSpaceTypeOption = this.toolSrv.setListMap(data.CWLX);
       this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
       this.datedifOption = this.toolSrv.setListMap(data.DATEDIF);
+      this.chargeTypeOption = this.toolSrv.setListMap(data.CHARGE_TYPE);
       this.refundOption = this.toolSrv.setListMap(data.REFUND);
       this.mustPayOption = this.toolSrv.setListMap(data.MUST_PAY);
       this.parkingSpacePlaceOption = this.toolSrv.setListMap(data.PAEKING_SPACE_PLACE);
@@ -236,12 +238,14 @@ export class BfTollAuditComponent implements OnInit, OnChanges {
   public  queryData(): void {
     this.tollSrv.getTollAuditPageData(this.searchOwerData).subscribe(
       (values) => {
+        console.log(values);
         if (values.status === '1000') {
           values.data.contents.forEach( item => {
             item.enable  = this.toolSrv.setValueToLabel(this.enableOption, item.enable);
             item.status  = this.toolSrv.setValueToLabel(this.auditStatusOption, item.status);
             item.refund = this.toolSrv.setValueToLabel(this.refundOption, item.refund);
             item.mustPay = this.toolSrv.setValueToLabel(this.mustPayOption, item.mustPay);
+            item.chargeType = this.toolSrv.setValueToLabel(this.chargeTypeOption, item.chargeType);
           });
           this.couponTableContent = values.data.contents;
           this.setTableOption(values.data.contents);

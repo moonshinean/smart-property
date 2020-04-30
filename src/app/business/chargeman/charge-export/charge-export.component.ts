@@ -30,6 +30,7 @@ export class ChargeExportComponent implements OnInit {
   public option: any;
   public loadHidden  = true;
   public nowPage = 1;
+  public exportTableType: any;
   // public exportTotle = '￥0';
   // 初始化项目
   public tableSet = [];
@@ -37,8 +38,17 @@ export class ChargeExportComponent implements OnInit {
   public tableFuzzySearch = [];
   public tableTimeSet = [];
   public exportRequestData: exportData = new exportData();
-  public exportDetail: any[] =[];
+  public exportDetail: any[] = [];
   public exportDetailDialog: boolean;
+  public exportTypeDialog: boolean;
+  public startTime: any;
+  public endTime: any;
+  public hiddenSelTime = true;
+  public selType = 1;
+  public exportOption = [
+    {label: '当天', value: 1},
+    {label: '时间段', value: 2},
+  ];
   // 按钮权限相关
   public btnHiden = [
     {label: '报表类型选择', hidden: true},
@@ -125,30 +135,33 @@ export class ChargeExportComponent implements OnInit {
       }
   }
   // download table data
-  public  exportTableClick(): void {
-    if (this.exportTableContent.length !== 0) {
-      this.confirmationService.confirm({
-        message: `数据获取成功，确认要导出表格吗？`,
-        header: '导出提醒',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-          this.exportSrv.queryGetReportInfo(this.exportRequestData).subscribe(
-            value => {
-              if (value.status === '1000') {
-                window.open(value.data);
-              }
-            }
-          );
-
-          // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
-        },
-        reject: () => {
-          // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
-        }
-      });
-    } else {
-      this.toolSrv.setToast('error', '操作失败', '请先设置表格参数');
-    }
+  public  exportTableClick(type): void {
+    this.exportTypeDialog = true;
+    this.exportTableType = type;
+    this.hiddenSelTime = type === 1;
+    // if (this.exportTableContent.length !== 0) {
+    //   this.confirmationService.confirm({
+    //     message: `数据获取成功，确认要导出表格吗？`,
+    //     header: '导出提醒',
+    //     icon: 'pi pi-exclamation-triangle',
+    //     accept: () => {
+    //       this.exportSrv.queryGetReportInfo(this.exportRequestData).subscribe(
+    //         value => {
+    //           if (value.status === '1000') {
+    //             window.open(value.data);
+    //           }
+    //         }
+    //       );
+    //
+    //       // this.msgs = [{severity:'info', summary:'Confirmed', detail:'You have accepted'}];
+    //     },
+    //     reject: () => {
+    //       // this.msgs = [{severity:'info', summary:'Rejected', detail:'You have rejected'}];
+    //     }
+    //   });
+    // } else {
+    //   this.toolSrv.setToast('error', '操作失败', '请先设置表格参数');
+    // }
   }
   // initialization export
   // condition search click
@@ -169,49 +182,92 @@ export class ChargeExportComponent implements OnInit {
   }
   // sure modify export
   public  exportSureClick(): void {
-    this.exportRequestData.queryCriteria = [];
-    this.exportRequestData.displayResults = [];
-    this.tableTimeSet.forEach( v => {
-        if ( v.code === 'startTime') {
-          this.exportRequestData.startTime = this.datePipe.transform( v.time , 'yyyy-MM-dd');
-        } else if ( v.code === 'endTime') {
-          this.exportRequestData.endTime = this.datePipe.transform( v.time , 'yyyy-MM-dd');
+    if (this.exportTableType === 1) {
+      if (this.selType === 2) {
+        console.log(this.startTime);
+        if ((this.startTime !== null && this.startTime !== undefined) && (this.endTime !== null && this.endTime !== undefined)) {
+          this.exportGeneratingInfoExcal();
         } else {
-          const obj = {};
-          obj[v.code] = v.title;
-          this.exportRequestData.queryCriteria.push(obj);
+          this.toolSrv.setToast('error', '操作错误', '请选择时间范围');
         }
-     });
-    this.tableSet.forEach( v => {
-      if (v.check === 1) {
-        const obj = {};
-        obj[v.code] = v.title;
-        this.exportRequestData.displayResults.push(obj);
+      } else {
+        this.exportGeneratingInfoExcal();
+      }
+    } else {
+      if ((this.startTime !== null && this.startTime !== undefined) && (this.endTime !== null && this.endTime !== undefined)) {
+        this.exportWriteoffInfoExcal();
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '请选择时间范围');
+      }
+    }
+
+    // this.exportRequestData.queryCriteria = [];
+    // this.exportRequestData.displayResults = [];
+    // this.tableTimeSet.forEach( v => {
+    //     if ( v.code === 'startTime') {
+    //       this.exportRequestData.startTime = this.datePipe.transform( v.time , 'yyyy-MM-dd');
+    //     } else if ( v.code === 'endTime') {
+    //       this.exportRequestData.endTime = this.datePipe.transform( v.time , 'yyyy-MM-dd');
+    //     } else {
+    //       const obj = {};
+    //       obj[v.code] = v.title;
+    //       this.exportRequestData.queryCriteria.push(obj);
+    //     }
+    //  });
+    // this.tableSet.forEach( v => {
+    //   if (v.check === 1) {
+    //     const obj = {};
+    //     obj[v.code] = v.title;
+    //     this.exportRequestData.displayResults.push(obj);
+    //   }
+    // });
+    // this.tableSearchData.forEach( v => {
+    //   const obj = {};
+    //   obj[v.code] = v.title;
+    //   this.exportRequestData.queryCriteria.push(obj);
+    // });
+    // this.tableFuzzySearch.forEach( v => {
+    //   const obj = {};
+    //   obj[v.code] = v.title;
+    //   this.exportRequestData.queryCriteria.push(obj);
+    // });
+    // this.exportRequestData.pageNo = this.nowPage;
+    // this.exportRequestData.pageSize = 10;
+    // this.exportTableTitle = [];
+    // this.tableSet.forEach( (v) => {
+    //   if (v.check === 1) {
+    //     if (this.exportTableTitle.length <= 4) {
+    //       this.exportTableTitle.push({field: this.toHump(v.code), header: v.title});
+    //     }
+    //  }
+    // });
+    // this.exportTableTitle.push({field: 'operating', header: '操作'});
+    // this.getExportData(this.exportRequestData);
+     // this.table
+  }
+  public  exportGeneratingInfoExcal(): void {
+      this.exportSrv.exportGeneratingInfo({startTime: this.startTime, endTime: this.endTime}).subscribe(val => {
+         if (val.status === '1000') {
+           window.open(val.data);
+           this.exportTypeDialog = false;
+           this.startTime = '';
+           this.endTime = '';
+         } else {
+           this.toolSrv.setToast('error', '请求失败', val.message);
+         }
+      });
+  }
+  public  exportWriteoffInfoExcal(): void {
+    this.exportSrv.exportWriteoffInfo({startTime: this.startTime, endTime: this.endTime}).subscribe(val => {
+      if (val.status === '1000') {
+        window.open(val.data);
+        this.exportTypeDialog = false;
+        this.startTime = '';
+        this.endTime = '';
+      } else {
+        this.toolSrv.setToast('error', '请求失败', val.message);
       }
     });
-    this.tableSearchData.forEach( v => {
-      const obj = {};
-      obj[v.code] = v.title;
-      this.exportRequestData.queryCriteria.push(obj);
-    });
-    this.tableFuzzySearch.forEach( v => {
-      const obj = {};
-      obj[v.code] = v.title;
-      this.exportRequestData.queryCriteria.push(obj);
-    });
-    this.exportRequestData.pageNo = this.nowPage;
-    this.exportRequestData.pageSize = 10;
-    this.exportTableTitle = [];
-    this.tableSet.forEach( (v) => {
-      if (v.check === 1) {
-        if (this.exportTableTitle.length <= 4) {
-          this.exportTableTitle.push({field: this.toHump(v.code), header: v.title});
-        }
-     }
-    });
-    this.exportTableTitle.push({field: 'operating', header: '操作'});
-    this.getExportData(this.exportRequestData);
-     // this.table
   }
   // get data for setting tableTitle
   public getExportData(data): void {
@@ -286,12 +342,16 @@ export class ChargeExportComponent implements OnInit {
       tableList:  [{label: '详情', color: '#6A72A1'}]
     };
   }
+
+  // 设置导出类型
+  public  changeExportType(): void {
+    this.hiddenSelTime = this.selType !== 2;
+  }
   // 设置按钮显示权限
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '报表导出') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
-          console.log(value);
           value.data.forEach( v => {
             this.btnHiden.forEach( val => {
               if (v.title === val.label) {

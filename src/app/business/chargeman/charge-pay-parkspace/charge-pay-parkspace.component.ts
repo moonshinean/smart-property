@@ -44,10 +44,10 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   public paymentParkSpaceSelect: any;
   // 搜索相关
   public searchOption = [
-    {label: '手机号', value: 1},
-    {label: '房间号', value: 2},
-    {label: '姓名', value: 3},
-    {label: '身份证号', value: 4},
+    {label: '全部', value: 0},
+    {label: '车位编号', value: '车位编号'},
+    {label: '业主', value: '业主'},
+    {label: '车主 ', value: '车主'},
   ];
   public nowPage = 1;
   // 查询相关
@@ -199,7 +199,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
       this.queryParrkSpacePaymentPage();
       this.globalSrv.getPayMethods({}).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.paymentMethodOption = this.toolSrv.setListMap(value.data.PAYMENT_METHOD);
           } else {
@@ -238,24 +237,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     };
   }
 
-  // 判断搜索方式
-  // public  searchJudgment(page): void {
-  //   switch (this.searchType) {
-  //     case 0:  this.queryParrkSpacePaymentPage(); break;
-  //     case 1:  this.setCondition('phone', '请输入需要搜索的手机号', page); break;
-  //     case 2:  this.setCondition('roomCode', '请输入需要搜索的房间号', page); break;
-  //     case 3:  this.setCondition('surname', '请输入需要搜索的客户名称', page); break;
-  //     case 4:  this.setCondition('idNumber', '请输入需要搜索的身份证号', page); break;
-  //     default: break;
-  //   }
-  // }
-  // public  setCondition(confition, message, pageNo): void {
-  //   if (this.searchData !== '') {
-  //     this.queryTerantPageByCondition(confition, this.searchData, pageNo);
-  //   } else {
-  //     this.toolSrv.setToast('error', '操作错误', message);
-  //   }
-  // }
   // 重置数据
   public  setSearData(label): void {
     for (const serchKey in this.SearchData) {
@@ -269,7 +250,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   public   queryParrkSpacePaymentPage(): void {
     this.paymentSrv.queryPaymentParkspalceData(this.SearchData).subscribe(
       (val) => {
-        console.log(val);
         if (val.status === '1000') {
           val.data.contents.forEach( t => {
             t.licensePlateType = this.toolSrv.setValueToLabel(this.lincesePlateTypeOption, t.licensePlateType);
@@ -285,11 +265,38 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
       }
     );
   }
-  // 分页查询
+  // 条件搜索
+  public   searchParrkSpacePaymentPage(): void {
+    this.paymentSrv.searcSpalceDataByType({type: this.searchType, value: this.searchData, pageNo: this.nowPage,  pageSize: 10}).subscribe(
+      (val) => {
+        // console.log(val);
+        if (val.status === '1000') {
+          val.data.contents.forEach( t => {
+            t.licensePlateType = this.toolSrv.setValueToLabel(this.lincesePlateTypeOption, t.licensePlateType);
+            t.licensePlateColor = this.toolSrv.setValueToLabel(this.lincesePlateColorOption, t.licensePlateColor);
+            t.vehicleOriginalType = this.toolSrv.setValueToLabel(this.vehicleOriginaTypeOption, t.vehicleOriginalType);
+          });
+          this.paymentParkSpaceTableContnt = val.data.contents;
+          this.setTableOption(val.data.contents);
+          this.option = {total: val.data.totalRecord, row: val.data.pageSize, nowpage: val.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '请求错误', val.message);
+        }
+      }
+    );
+  }
+  // 下一页
   public  nowpageEventHandle(event): void {
     this.nowPage = event;
     this.SearchData.pageNo = event;
-    this.paymentSearchClick();
+
+    if (this.searchType !== 0) {
+      console.log(this.searchType);
+      this.searchParrkSpacePaymentPage();
+    } else {
+      console.log(123);
+      this.queryParrkSpacePaymentPage();
+    }
     this.paymentParkSpaceSelect = [];
   }
   // 车位缴费
@@ -304,13 +311,17 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // condition search 条件搜索）
   public paymentSearchClick(): void {
-    // this.nowPage = this.SearchData.pageNo = 1;
-    this.queryParrkSpacePaymentPage();
-    // if (this.searchData !== '') {
-    //   // this.searchJudgment();
-    // } else {
-    //   this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
-    // }
+    this.nowPage = this.SearchData.pageNo = 1;
+
+    if (this.searchType !== 0) {
+      if (this.searchData !== '') {
+        this.searchParrkSpacePaymentPage();
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+      }
+    } else {
+      this.queryParrkSpacePaymentPage();
+    }
   }
   // select data （选择数据）
   public  selectData(e): void {
@@ -318,7 +329,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // show detail dialog (展示详情弹窗)
   public  detailClick(e): void {
-      console.log(123);
       this.dialogOption = {
         dialog: true,
         tableHidden: false,
@@ -353,6 +363,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
       if (v.label === '专有车位缴费') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
+          console.log(value);
           value.data.forEach(item => {
             this.btnHiden.forEach( val => {
               if (item.title === val.label) {
@@ -456,18 +467,8 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
       this.paymentOrderAdd.parkingSpaceCostDetailDOList = [];
       this.paymentOrderAdd.parkingSpaceCostDetailDOList.push(this.parkSpaceData);
 
-      // console.log(this.parkSpaceData);
-      // this.paymentOrderAdd.parkingSpaceCostDetailDOList = this.paymentParkSpaceSelect.map(v => {
-      //   v.parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, v.parkingSpaceType);
-      //   v.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption, v.vehicleOriginalType);
-      //   v.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, v.licensePlateType);
-      //   v.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, v.licensePlateColor);
-      //   v.parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, v.parkingSpacePlace);
-      //   return v;
-      // });
       this.paymentOrderAdd.costDeduction = [];
       this.paymentOrderAdd.correctedAmount = this.Balance;
-      console.log(this.paymentOrderAdd);
       this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
         (value) => {
           if (value.status === '1000') {
@@ -499,20 +500,10 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // 取消缴费
   public paymentParkSpaceFaleseClick(): void {
-    console.log('取消');
     this.paymentParkSpaceDialog = false;
     this.paymentParkSpaceSelect = [];
     this.addParkSpace = new AddSparkSpace();
   }
-  // // 树结构选择
-  // public dataTreeSureClick(): void {
-  //   this.treeDialog = false;
-  //   const dataList = ['villageCode', 'villageName', 'regionCode', 'regionCode', 'buildingCode', 'buildingName', 'parkingSpaceCode'];
-  //   for (const itemkey of dataList) {
-  //     this.rentalParkSpace[itemkey] = '';
-  //   }
-  //   this.addParkSpace.parkingSpaceCode = this.dataTree.label;
-  // }
   // 删除车位
   public deleteParkSpaceClick(): void {
     if (this.paymentParkSpaceSelect === undefined || this.paymentParkSpaceSelect.length === 0) {
@@ -522,7 +513,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
         const deleteList = this.paymentParkSpaceSelect.map( v => {
           return {id: v.parkingSpaceManagementId};
         });
-        console.log(deleteList);
         this.paymentSrv.deletePaymentParksplace({data: deleteList}).subscribe(
           value => {
             if (value.status === '1000') {
@@ -545,11 +535,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
      for (let key in this.paymentParkSpaceSelect[0]) {
        this.addParkSpace[key] = this.paymentParkSpaceSelect[0][key];
      }
-     // const list = ['parkingSpaceManagementId', 'parkingSpaceCode', 'authorizedPersonName', 'authorizedPersonPhone', 'authorizedPersonIdNumber', 'licensePlateNumber', 'licensePlateColor', 'licensePlateType',
-     //   'vehicleOriginalType', 'startTime'];
-     // list.forEach(value => {
-     //
-     // });
      this.addParkSpace.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption,  this.addParkSpace.licensePlateColor);
      this.addParkSpace.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption,  this.addParkSpace.licensePlateType);
      this.addParkSpace.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption,  this.addParkSpace.vehicleOriginalType);
@@ -560,7 +545,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
  }
   // 确认添加
   public  addParkSpaceSureClick(): void {
-    console.log(this.addParkSpace);
     let passFlag = true;
     const list = ['parkingSpaceCode', 'startTime'];
     list.forEach(v => {
@@ -573,7 +557,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     }
     if (passFlag) {
       this.paymentSrv.setRoomCodeBindParkSpace(this.addParkSpace).subscribe(value => {
-        console.log(value);
         if (value.status === '1000') {
           this.toolSrv.setToast('success', '请求成功', value.message);
           this.addParkSpaceOptionDialog = false;
@@ -601,7 +584,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     if (passFlag) {
       this.toolSrv.setConfirmation('修改', '修改', () => {
           this.paymentSrv.changeParkSpace(this.addParkSpace).subscribe(value => {
-            console.log(value);
             if (value.status === '1000') {
               this.toolSrv.setToast('success', '请求成功', value.message);
               this.modifyParkSpaceOptionDialog = false;
@@ -621,7 +603,6 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   public  calcParkSpaceFree(code, month): void {
       this.paymentSrv.calculateParksplaceFree({parkingSpaceCode: code, datedif: month}).subscribe(
         value => {
-          console.log(value);
           if (value.status === '1000') {
             this.parkSpaceData = value.data;
             value.data.licensePlateColor = this.toolSrv.setValueToLabel(this.lincesePlateColorOption,  value.data.licensePlateColor);
@@ -662,11 +643,9 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     // console.log(123);
     this.paymentSrv.getPayDocument({orderId: orderIdData, organizationId: organizationIdData}).subscribe(
       (data) => {
-        console.log(data);
         if (data.status === '1000') {
           if (data.data !== '' && data.data !== null) {
             this.openListDataPdf.push(data.data);
-            console.log(this.openListDataPdf);
             if (this.openListDataPdf.length === this.openListLength) {
               this.openListDataPdf.forEach( (v, index) => {
                 window.open(v, index.toString());

@@ -65,6 +65,8 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
   public vacantModityDialog: boolean;
   // 删除相关
   public deleteId = [];
+  // 搜索相关
+  public roomCode = '';
   // 全局订阅树结构和主题
   public themeSub: Subscription;
   public table = {
@@ -79,6 +81,7 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
     {label: '修改', hidden: true},
     {label: '删除房间', hidden: true},
     {label: '导出', hidden: true},
+    {label: '搜索', hidden: true},
   ];
   public addroomVerifyStaus: any;
 
@@ -158,6 +161,15 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
       }
     );
     this.esDate = this.toolSrv.esDate;
+  }
+  public  vacantRoomSearchClick(): void {
+    this.nowPage = 1;
+    if (this.roomCode !== '') {
+      this.searchVacantRoomPageData();
+    } else {
+      this.SearchData.pageNo = this.nowPage;
+      this.queryVacantRoomPageData();
+    }
   }
   // 详情
   public  vacantRoomDetailClick(e): void {
@@ -255,11 +267,29 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
         }
       );
   }
+  //  搜索
+  public  searchVacantRoomPageData(): void {
+    this.vantRoomSrv.queryVacantRoomByRoomCode({roomCode: this.roomCode, pageNo: this.nowPage, pageSize: 10}).subscribe(
+      value => {
+        console.log(value);
+        if (value.status === '1000') {
+          this.setQueryDataValueToLabel(value.data.contents);
+          this.option = {total: value.data.totalRecord, row: value.data.pageSize, nowpage: value.data.pageNo};
+        } else {
+          this.toolSrv.setToast('error', '请求失败', '查询数据失败');
+        }
+      }
+    );
+  }
  // 分页事件
   public  nowpageEventHandle(event): void {
       this.nowPage = event;
       this.SearchData.pageNo = this.nowPage;
-      this.queryVacantRoomPageData();
+      if (this.roomCode !== '') {
+        this.searchVacantRoomPageData();
+      } else {
+        this.queryVacantRoomPageData();
+      }
   }
   // 设置值转成名字
   public  setQueryDataValueToLabel(list): void {

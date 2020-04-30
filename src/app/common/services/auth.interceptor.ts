@@ -8,7 +8,7 @@ import {Router} from '@angular/router';
 import {LocalStorageService} from './local-storage.service';
 import { Store } from '@ngrx/store';
 import {AppState} from '../../store/loadstatus.state';
-const DEFAULTTIMEOUT = 3000000;
+const DEFAULTTIMEOUT = 100000000;
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   public clonedRequest: any;
@@ -56,7 +56,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(this.clonedRequest).pipe(
       timeout(DEFAULTTIMEOUT),
       tap((event: any) => {
-        if (event.status === 200) {
+          if (event.status === 200) {
           this.store.dispatch({type: 'true'});
           return of(event);
         }
