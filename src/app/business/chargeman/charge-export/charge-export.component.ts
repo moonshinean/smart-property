@@ -186,6 +186,8 @@ export class ChargeExportComponent implements OnInit {
       if (this.selType === 2) {
         console.log(this.startTime);
         if ((this.startTime !== null && this.startTime !== undefined) && (this.endTime !== null && this.endTime !== undefined)) {
+          this.startTime = this.datePipe.transform(this.startTime, 'yyyy-MM-dd');
+          this.endTime = this.datePipe.transform(this.endTime, 'yyyy-MM-dd');
           this.exportGeneratingInfoExcal();
         } else {
           this.toolSrv.setToast('error', '操作错误', '请选择时间范围');
@@ -195,6 +197,8 @@ export class ChargeExportComponent implements OnInit {
       }
     } else {
       if ((this.startTime !== null && this.startTime !== undefined) && (this.endTime !== null && this.endTime !== undefined)) {
+        this.startTime = this.datePipe.transform(this.startTime, 'yyyy-MM-dd');
+        this.endTime = this.datePipe.transform(this.endTime, 'yyyy-MM-dd');
         this.exportWriteoffInfoExcal();
       } else {
         this.toolSrv.setToast('error', '操作错误', '请选择时间范围');

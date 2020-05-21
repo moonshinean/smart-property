@@ -67,13 +67,13 @@
             <label >月数</label>
           </div>
           <div class="ui-g-4" [hidden]="!(item.chargeWay === 1)" style="text-align: left">
-            <p-spinner size="30" [(ngModel)]="item.datedif" min="1" [max]="36"></p-spinner>
+            <p-spinner size="30" [(ngModel)]="item.datedif" min="1"></p-spinner>
           </div>
           <div class="ui-g-2" [hidden]="!(item.chargeWay === 2)"   style="text-align: right">
             <label >张数</label>
           </div>
           <div class="ui-g-4" [hidden]="!(item.chargeWay === 2)"  style="text-align: left">
-            <p-spinner size="30" [(ngModel)]="item.datedif" min="1" [max]="1000000"></p-spinner>
+            <p-spinner size="30" [(ngModel)]="item.datedif" min="1"></p-spinner>
           </div>
 
           <div class="ui-g-2" [hidden]="!(item.chargeWay === 3)"   style="text-align: right">
@@ -433,7 +433,7 @@
       </div>
       <div class="ui-g-6" [hidden]="rentalHiddenInfo" style="line-height: 4vh"  [ngClass]="{InputKeyFilter: this.keyChargeParkSpaceList[5]}">
         <div class="ui-g-4" style="text-align: right">
-          <label ><span style="color: red">*</span>车主身份证号</label>
+          <label >车主身份证号</label>
         </div>
         <div class="ui-g-8">
           <input type="text" pInputText placeholder="请输入车主身份证号" [(ngModel)]="rentalParkSpace.authorizedPersonIdNumber"/>

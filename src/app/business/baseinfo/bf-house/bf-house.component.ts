@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {AddBfCoupon, ModifyBfCoupon} from '../../../common/model/bf-coupon.model';
 import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
 import {FormGroup} from '@angular/forms';
@@ -18,7 +18,7 @@ import {BfOwnerService} from '../../../common/services/bf-owner.service';
   templateUrl: './bf-house.component.html',
   styleUrls: ['./bf-house.component.less']
 })
-export class BfHouseComponent implements OnInit, OnChanges {
+export class BfHouseComponent implements OnInit, OnDestroy {
   public couponSelect: any[] = [];
   public couponTableContent: any;
   // 查询相关
@@ -128,10 +128,17 @@ export class BfHouseComponent implements OnInit, OnChanges {
       this.table.tableContent = this.themeSrv.setTheme.table.content;
       this.table.detailBtn = this.themeSrv.setTheme.table.detailBtn;
     }
+    if (this.sharedSrv.SearchData !== undefined) {
+      this.searchOwerData.level = this.sharedSrv.SearchData.data.level;
+      this.searchOwerData.code = this.sharedSrv.SearchData.data.code;
+      this.searchOwerData.type = this.sharedSrv.SearchData.data.type;
+
+    }
     this.houseInitialization();
   }
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnDestroy(): void {
     this.themeSub.unsubscribe();
+    this.ownerSub.unsubscribe();
   }
   // initialization houseinfo
   public  houseInitialization(): void {

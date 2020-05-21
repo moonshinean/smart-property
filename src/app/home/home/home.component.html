@@ -38,6 +38,14 @@
                (onNodeSelect)="treeOnNodeSelect($event, 3)">
              </p-tree>
            </div>
+         <div class="ui-g-12">
+           <p-tree
+             [value]="stephouseTrees"
+             [(selection)]="stephouseTree"
+             selectionMode="single"
+             (onNodeSelect)="treeOnNodeSelect($event, 4)">
+           </p-tree>
+         </div>
        </p-scrollPanel>
     </div>
   </p-dialog>

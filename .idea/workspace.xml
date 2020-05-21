@@ -2,69 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06640e83-481b-4887-9be0-06a4f0444ad5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parking-total/bf-parking-total-routing.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parking-total/bf-parking-total.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parking-total/bf-parking-total.component.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parking-total/bf-parking-total.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parking-total/bf-parking-total.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parking-total/bf-parking-total.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-empty-cost/charge-empty-cost-routing.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-empty-cost/charge-empty-cost.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-empty-cost/charge-empty-cost.component.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-empty-cost/charge-empty-cost.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-empty-cost/charge-empty-cost.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-empty-cost/charge-empty-cost.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-scrapped-bill/charge-scrapped-bill-routing.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-scrapped-bill/charge-scrapped-bill.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-scrapped-bill/charge-scrapped-bill.component.less" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-scrapped-bill/charge-scrapped-bill.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-scrapped-bill/charge-scrapped-bill.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-scrapped-bill/charge-scrapped-bill.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/common/services/bf-parking-total.service.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/common/services/bf-parking-total.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/common/services/charge-empty-cost.service.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/common/services/charge-empty-cost.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/common/services/charge-scrapped-bill.service.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/common/services/charge-scrapped-bill.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/baseinfo-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/baseinfo-routing.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-coupon/bf-coupon.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-coupon/bf-coupon.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-coupon/bf-coupon.component.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-coupon/bf-coupon.component.less" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-coupon/bf-coupon.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-coupon/bf-coupon.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-house/bf-house.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-house/bf-house.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parkingspace/bf-parkingspace.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parkingspace/bf-parkingspace.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parkingspace/bf-parkingspace.component.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parkingspace/bf-parkingspace.component.less" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parkingspace/bf-parkingspace.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-parkingspace/bf-parkingspace.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-audit/bf-toll-audit.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-audit/bf-toll-audit.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-audited/bf-toll-audited.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-audited/bf-toll-audited.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-change-info/bf-toll-change-info.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-change-info/bf-toll-change-info.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-info/bf-toll-info.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-info/bf-toll-info.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-review/bf-toll-review.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-toll/bf-toll-review/bf-toll-review.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-vacant-room/bf-vacant-room.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-vacant-room/bf-vacant-room.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-vacant-room/bf-vacant-room.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-vacant-room/bf-vacant-room.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-details/charge-details.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-details/charge-details.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-house/bf-house.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-house/bf-house.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-roombind-changeitem/bf-roombind-changeitem.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-roombind-changeitem/bf-roombind-changeitem.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-roombind-changeitem/bf-roombind-changeitem.component.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-roombind-changeitem/bf-roombind-changeitem.component.less" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-roombind-changeitem/bf-roombind-changeitem.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-roombind-changeitem/bf-roombind-changeitem.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-details/charge-details.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-details/charge-details.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-export/charge-export.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-export/charge-export.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-export/charge-export.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-export/charge-export.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-pay-parkspace/charge-pay-parkspace.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-pay-parkspace/charge-pay-parkspace.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-scrapped-bill/charge-scrapped-bill.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-scrapped-bill/charge-scrapped-bill.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-payment/chargeman-payment.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-payment/chargeman-payment.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-payment/chargeman-payment.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-payment/chargeman-payment.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-routing.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/refund/refund-already/refund-already.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/refund/refund-already/refund-already.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/refund/refund-application-info/refund-application-info.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/refund/refund-application-info/refund-application-info.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/refund/refund-no/refund-no.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/refund/refund-no/refund-no.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/refund/refund-no/refund-no.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/refund/refund-no/refund-no.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/model/charge-payment.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/model/charge-payment.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/model/refund-no.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/model/refund-no.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/auth.interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/auth.interceptor.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/bf-coupon.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/bf-coupon.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/bf-parking-space.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/bf-parking-space.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/bf-toll.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/bf-toll.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/bf-vacant-room.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/bf-vacant-room.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/charge-export.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/charge-export.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/charge-payment.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/charge-payment.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/refund.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/refund.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/home/sidebar/sidebar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/home/sidebar/sidebar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/common/components/basic-dialog/file-pop/file-pop.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/components/basic-dialog/file-pop/file-pop.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/common/services/global.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/global.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/home/footer/footer.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/home/footer/footer.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/home/home/home.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/home/home/home.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/home/home/home.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/home/home/home.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/environments/environment.prod.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/environments/environment.prod.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -97,7 +51,7 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.JavaScript" />
     <property name="ts.external.directory.path" value="D:\rbi_project\angular_project\smart-property\node_modules\typescript\lib" />
   </component>
-  <component name="RunManager" selected="npm.buildHome">
+  <component name="RunManager" selected="npm.Angular CLI Server">
     <configuration name="Tests (smart-property)" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/src/karma.conf.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/@angular/cli" />
@@ -207,7 +161,39 @@
       <workItem from="1587908599381" duration="59000" />
       <workItem from="1587979838526" duration="4969000" />
       <workItem from="1588035898471" duration="2713000" />
-      <workItem from="1588127094062" duration="14424000" />
+      <workItem from="1588127094062" duration="14807000" />
+      <workItem from="1588230095521" duration="2328000" />
+      <workItem from="1588727816177" duration="111000" />
+      <workItem from="1588745953565" duration="3316000" />
+      <workItem from="1588815393661" duration="29000" />
+      <workItem from="1588820946312" duration="3000" />
+      <workItem from="1588835022102" duration="2923000" />
+      <workItem from="1588904243612" duration="59000" />
+      <workItem from="1589014799521" duration="4463000" />
+      <workItem from="1589080981283" duration="5715000" />
+      <workItem from="1589160800653" duration="625000" />
+      <workItem from="1589185085176" duration="3842000" />
+      <workItem from="1589271503818" duration="4784000" />
+      <workItem from="1589336347556" duration="676000" />
+      <workItem from="1589349102699" duration="1280000" />
+      <workItem from="1589420231179" duration="36000" />
+      <workItem from="1589433202218" duration="613000" />
+      <workItem from="1589443573056" duration="1458000" />
+      <workItem from="1589447293488" duration="2005000" />
+      <workItem from="1589507214080" duration="597000" />
+      <workItem from="1589521953992" duration="12000" />
+      <workItem from="1589529197983" duration="1282000" />
+      <workItem from="1589600813319" duration="608000" />
+      <workItem from="1589607812121" duration="2765000" />
+      <workItem from="1589693700628" duration="598000" />
+      <workItem from="1589694700693" duration="11000" />
+      <workItem from="1589702845923" duration="1312000" />
+      <workItem from="1589771264657" duration="1018000" />
+      <workItem from="1589786189948" duration="12000" />
+      <workItem from="1589793939958" duration="2745000" />
+      <workItem from="1589807262364" duration="1586000" />
+      <workItem from="1589851579326" duration="11519000" />
+      <workItem from="1590050188335" duration="1449000" />
     </task>
     <task id="LOCAL-00001" summary="操作日志：&#10;  （1）、收费模块bug修复&#10;  （2）、租赁车位表单验证">
       <created>1584003505351</created>
@@ -251,7 +237,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586843404854</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="操作日志：&#10;  （1）、收费项目模块bug修复&#10;  （2）、车位数量统计模块添加&#10;  （3）、报废单据模块添加&#10;  （4）、报表导出功能添加&#10;  &#10;  &#10;  时间：2020-4-30&#10;  &#10;  -------------云上智舍----------------">
+      <created>1588228676850</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1588228676850</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -264,7 +257,8 @@
     <MESSAGE value="操作日志：&#10;  （1）、收费项目修改审核添加&#10;  （1）、收费项目权限添加" />
     <MESSAGE value="操作日志：&#10;  （1）、收费模块bug修复" />
     <MESSAGE value="操作日志：&#10;  （1）、收费项目模块bug修复&#10;  &#10;  &#10;  时间：2020-4-14&#10;  &#10;  -------------云上智舍----------------" />
-    <option name="LAST_COMMIT_MESSAGE" value="操作日志：&#10;  （1）、收费项目模块bug修复&#10;  &#10;  &#10;  时间：2020-4-14&#10;  &#10;  -------------云上智舍----------------" />
+    <MESSAGE value="操作日志：&#10;  （1）、收费项目模块bug修复&#10;  （2）、车位数量统计模块添加&#10;  （3）、报废单据模块添加&#10;  （4）、报表导出功能添加&#10;  &#10;  &#10;  时间：2020-4-30&#10;  &#10;  -------------云上智舍----------------" />
+    <option name="LAST_COMMIT_MESSAGE" value="操作日志：&#10;  （1）、收费项目模块bug修复&#10;  （2）、车位数量统计模块添加&#10;  （3）、报废单据模块添加&#10;  （4）、报表导出功能添加&#10;  &#10;  &#10;  时间：2020-4-30&#10;  &#10;  -------------云上智舍----------------" />
   </component>
   <component name="WindowStateProjectService">
     <state x="709" y="389" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1583651946793">
@@ -275,43 +269,44 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586309534206" />
-    <state x="560" y="113" key="CommitChangelistDialog2" timestamp="1586843402274">
+    <state x="560" y="28" key="CommitChangelistDialog2" timestamp="1590051699464">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="560" y="113" key="CommitChangelistDialog2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586843402274" />
+    <state x="560" y="28" key="CommitChangelistDialog2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1590051699464" />
     <state x="2480" y="29" key="CommitChangelistDialog2/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1586353678223" />
-    <state x="735" y="261" key="FileChooserDialogImpl" timestamp="1588059357345">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2655" y="177" key="FileChooserDialogImpl" timestamp="1589851669487">
+      <screen x="1920" y="-84" width="1920" height="1040" />
     </state>
-    <state x="735" y="261" key="FileChooserDialogImpl/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588059357345" />
-    <state width="1899" height="250" key="GridCell.Tab.0.bottom" timestamp="1588228348329">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="735" y="261" key="FileChooserDialogImpl/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589694710101" />
+    <state x="2655" y="177" key="FileChooserDialogImpl/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1589851669487" />
+    <state width="1914" height="389" key="GridCell.Tab.0.bottom" timestamp="1590050192598">
+      <screen x="1920" y="-84" width="1920" height="1040" />
     </state>
-    <state width="1899" height="250" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588228348329" />
-    <state width="1899" height="260" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1587720767672" />
-    <state width="1899" height="250" key="GridCell.Tab.0.center" timestamp="1588228348329">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1899" height="383" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589854866736" />
+    <state width="1914" height="389" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
+    <state width="1914" height="389" key="GridCell.Tab.0.center" timestamp="1590050192598">
+      <screen x="1920" y="-84" width="1920" height="1040" />
     </state>
-    <state width="1899" height="250" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588228348329" />
-    <state width="1899" height="260" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1587720767671" />
-    <state width="1899" height="250" key="GridCell.Tab.0.left" timestamp="1588228348329">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1899" height="383" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589854866736" />
+    <state width="1914" height="389" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
+    <state width="1914" height="389" key="GridCell.Tab.0.left" timestamp="1590050192598">
+      <screen x="1920" y="-84" width="1920" height="1040" />
     </state>
-    <state width="1899" height="250" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588228348329" />
-    <state width="1899" height="260" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1587720767671" />
-    <state width="1899" height="250" key="GridCell.Tab.0.right" timestamp="1588228348329">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1899" height="383" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589854866735" />
+    <state width="1914" height="389" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
+    <state width="1914" height="389" key="GridCell.Tab.0.right" timestamp="1590050192598">
+      <screen x="1920" y="-84" width="1920" height="1040" />
     </state>
-    <state width="1899" height="250" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588228348329" />
-    <state width="1899" height="260" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1587720767672" />
+    <state width="1899" height="383" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1589854866736" />
+    <state width="1914" height="389" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
     <state x="546" y="175" key="SettingsEditor" timestamp="1583717313011">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="546" y="175" key="SettingsEditor/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1583717313011" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1586843435823">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1588228700915">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1586843435823" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1588228700915" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1588217378629">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

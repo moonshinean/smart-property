@@ -56,6 +56,9 @@ export class HomeComponent implements OnInit {
 
   public dataParkTrees: DataTree[];
   public dataParkTree: DataTree = new DataTree();
+
+  public stephouseTrees: DataTree[];
+  public stephouseTree: DataTree = new DataTree();
   // 服务传参相关
   public updateSub: Subscription;
   constructor(
@@ -90,6 +93,7 @@ export class HomeComponent implements OnInit {
     this.getTreeData();
     this.getBusinessTreeData();
     this.getParkSpaceTreeData();
+    this.getStephouseTreeData();
   }
   // sidebar Hidden display
   public homeHiddenSidebar(e): void {
@@ -172,6 +176,29 @@ export class HomeComponent implements OnInit {
     }
     return oneChild;
   }
+
+  // 商业树
+  public initializesetTree(data): any {
+    // console.log(oneChild);
+    const oneChild = [];
+    for (let i = 0; i < data.length; i++) {
+      const childnode = new TreeNode();
+      childnode.value = data[i].code;
+      if (data[i].level === '1') {
+        childnode.label = data[i].name + '(步梯房)';
+      } else {
+        childnode.label = data[i].name;
+      }
+      childnode.level = data[i].level;
+      if (data[i].villageChoose2DTO != null && data[i].villageChoose2DTO.length !== 0 ) {
+        childnode.children = this.initializeTree(data[i].villageChoose2DTO);
+      } else {
+        childnode.children = [];
+      }
+      oneChild.push(childnode);
+    }
+    return oneChild;
+  }
   // public initializeTree(data): any {
   //   const oneChild = [];
   //   for (let i = 0; i < data.length; i++) {
@@ -212,10 +239,22 @@ export class HomeComponent implements OnInit {
       this.SearchData.data.type = '商户';
       this.dataTree = new DataTree();
       this.dataParkTree = new DataTree();
-    } else {
+    } else if (index === 3){
       this.SearchData.data.type = '车位';
       this.dataTree = new DataTree();
       this.dataBusTree = new DataTree();
+    }else {
+      this.SearchData.data.type = '步梯房';
+      for (const key in this.SearchData) {
+        if (key !== 'data') {
+          this.SearchData[key] = '';
+        } else {
+          this.SearchData[key].level = '';
+          this.SearchData[key].code = '';
+        }
+      }
+      this.dataBusTree = new DataTree();
+      this.dataParkTree = new DataTree();
     }
     this.SearchData.data.level = e.node.level;
     this.SearchData.data.code = e.node.value;
@@ -317,6 +356,17 @@ export class HomeComponent implements OnInit {
         if (value.status === '1000') {
           this.roomtree = value.data;
           this.dataParkTrees = this.initializeParkTree(this.roomtree);
+        }
+      }
+    );
+  }
+  // 获取步梯房
+  public  getStephouseTreeData(): void {
+    this.globalSrv.queryStephouseTree().subscribe(
+      value => {
+        if (value.status === '1000') {
+          this.roomtree = value.data;
+          this.stephouseTrees = this.initializesetTree(this.roomtree);
         }
       }
     );

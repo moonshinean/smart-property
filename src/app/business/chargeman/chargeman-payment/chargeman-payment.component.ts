@@ -1160,6 +1160,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // 车位信息详情
   public parkSpaceDetailClick(index): void {
+    console.log(this.parkSpaceData[index]);
     this.dialogOption = {
       dialog: true,
       tableHidden: false,

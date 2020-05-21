@@ -71,7 +71,7 @@ export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
     {label: '新增', hidden: true},
     {label: '修改', hidden: true},
     {label: '删除', hidden: true},
-    // {label: '搜索', hidden: true},
+    {label: '搜索', hidden: true},
   ];
   public themeSub: Subscription;
   public roomBindChangeItemSub: Subscription;
@@ -143,34 +143,19 @@ export class BfRoombindChangeitemComponent implements OnInit, OnDestroy {
   }
 
   // condition search click
-  // public  roombindSearchClick(): void {
-  //   if (this.serchData !== '') {
-  //     this.selectSearchType();
-  //   } else {
-  //     this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
-  //   }
-  // }
-  // 判断搜索方式
-  // public  selectSearchType(): void {
-  //   switch (this.searchType) {
-  //     case 0: this.reslveSearchData();
-  //       this.queryRoomBindChargeItemPageData(); break;
-  //     case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.serchData; this.queryRoomBindChargeItemPageData(); break;
-  //     case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.serchData; this.queryRoomBindChargeItemPageData(); break;
-  //     case 3: this.setSearData('surname'); this.SearchData.surname = this.serchData;  this.queryRoomBindChargeItemPageData(); break;
-  //     case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.serchData; this.queryRoomBindChargeItemPageData(); break;
-  //     default:
-  //       break;
-  //   }
-  // }
+  public  roombindSearchClick(): void {
+    this.setSearData('mobilePhone');
+    this.SearchData.roomCode = this.serchData;
+    this.queryRoomBindChargeItemPageData();
+  }
   // 重置数据
-  // public  setSearData(label): void {
-  //   for (const serchKey in this.SearchData) {
-  //     if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
-  //       this.SearchData[serchKey] = '';
-  //     }
-  //   }
-  // }
+  public  setSearData(label): void {
+    for (const serchKey in this.SearchData) {
+      if (serchKey !== label && serchKey !== 'pageSize' && serchKey !== 'pageNo') {
+        this.SearchData[serchKey] = '';
+      }
+    }
+  }
   // 重置搜索条件
   // public  reslveSearchData(): void {
   //   this.SearchData.mobilePhone = '';

@@ -53,6 +53,12 @@ export class GlobalService {
   public  queryParkspaceVillageTree(): Observable<any> {
     return this.http.post(environment.chargeUrl + `/parkingSpaceManagement/findParkingCode`, {});
   }
+
+  // 车位树结构
+  public  queryStephouseTree(): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/villageChooze/findStephouseTree`, {});
+  }
+
   // 更新接口
   // query system status values
   public queryAdminchoose(pamars): Observable<any> {

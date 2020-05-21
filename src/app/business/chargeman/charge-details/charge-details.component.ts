@@ -79,8 +79,9 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
   public searchOption = [
     {label: '手机号', value: 1},
     {label: '房间号', value: 2},
-    {label: '姓名', value: 3},
+    {label: '业主姓名', value: 3},
     {label: '身份证号', value: 4},
+    {label: '工作人员姓名', value: 5},
   ];
   public SearchData = {
     villageCode: '',
@@ -89,6 +90,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     unitCode: '',
     roomCode: '',
     mobilePhone: '',
+    tollCollectorName: '',
     idNumber: '',
     surname: '',
     pageNo: 1,
@@ -275,18 +277,20 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     if (this.searchData !== '') {
       this.selectSearchType();
     } else {
-      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+      this.reslveSearchData();
+      this.queryData();
     }
   }
   // 判断搜索方式
   public  selectSearchType(): void {
     switch (this.searchType) {
       case 0: this.reslveSearchData();
-        this.queryData(); break;
+              this.queryData(); break;
       case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryData(); break;
       case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryData(); break;
       case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryData(); break;
       case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryData(); break;
+      case 5: this.setSearData('tollCollectorName'); this.SearchData.tollCollectorName = this.searchData; this.queryData(); break;
       default:
         break;
     }
