@@ -122,7 +122,6 @@
                   <span *ngIf="col.field === 'stateOfArrears'">{{rowData[col.field]=== 0? '未欠费': '欠费'}}</span>
                 </td>
                 <td *ngFor="let col of columns.slice(columns.length-1, columns.length)" style="word-break: break-word">
-
                   <button class="charge-details-dialog-Btn" style="background: #55AB7F;height: 3vh; width: 4vw;" (click)="changeChargeItemDataClick(rowIndex)">修改</button>
                 </td>
               </tr>
@@ -155,14 +154,14 @@
             <input type="text" pInputText [(ngModel)]="chargeDetails.amountTotalReceivable"/>
           </div>
         </div>
-        <div class="ui-g-6" style="line-height:  3vh">
-          <div class="ui-g-3" style="text-align: right">
-            <label >缴费方式：</label>
-          </div>
-          <div class="ui-g-7" style="line-height: 2vh;text-align: left">
-            <p-dropdown [options]="chargeStatusoption" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择支付方式..." [(ngModel)]="chargeDetails.paymentMethod"></p-dropdown>
-          </div>
-        </div>
+<!--        <div class="ui-g-6" style="line-height:  3vh">-->
+<!--          <div class="ui-g-3" style="text-align: right">-->
+<!--            <label >缴费方式：</label>-->
+<!--          </div>-->
+<!--          <div class="ui-g-7" style="line-height: 2vh;text-align: left">-->
+<!--            <p-dropdown [options]="chargeStatusoption" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择支付方式..." [(ngModel)]="chargeDetails.paymentMethod"></p-dropdown>-->
+<!--          </div>-->
+<!--        </div>-->
         <div class="ui-g-6" style="line-height:  3vh">
           <div class="ui-g-3" style="text-align: right">
             <label >预存金额：</label>
@@ -355,6 +354,24 @@
             </div>
             <div class="ui-g-6 span" style="line-height: 2vh">
               <span >{{chargeDetails.tollCollectorName}}</span>
+            </div>
+          </div>
+          <div class="ui-g-12 ui-md-12" *ngFor="let item of paymentList">
+            <div class="ui-g-6">
+              <div class="ui-g-6"  style="text-align: right">
+                <label >支付方式：</label>
+              </div>
+              <div class="ui-g-6 span" style="line-height: 2vh">
+                <span >{{item.label}}</span>
+              </div>
+            </div>
+            <div class="ui-g-6">
+              <div class="ui-g-6"  style="text-align: right">
+                <label >金额：</label>
+              </div>
+              <div class="ui-g-6 span" style="line-height: 2vh">
+                <span >{{item.value}}</span>
+              </div>
             </div>
           </div>
         </div>

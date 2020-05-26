@@ -1,13 +1,9 @@
-import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {AddBfCoupon, ModifyBfCoupon} from '../../../common/model/bf-coupon.model';
-import {DialogModel, FormValue} from '../../../common/components/basic-dialog/dialog.model';
-import {FormGroup} from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
-import {BfCouponService} from '../../../common/services/bf-coupon.service';
 import {ThemeService} from '../../../common/public/theme.service';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
 import {BfHouseService} from '../../../common/services/bf-house.service';

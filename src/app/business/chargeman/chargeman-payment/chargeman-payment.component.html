@@ -48,7 +48,7 @@
           <div  class="ui-g-6" [hidden]="!(item.chargeWay === 6)">
              <div class="ui-g-6">
                <div class="ui-g-4">
-                 <label for="">度数</label>
+                 <label>度数</label>
                </div>
                <div class="ui-g-8" [hidden]="!(item.chargeWay === 6)"  style="text-align: left">
                  <p-spinner size="30" [(ngModel)]="item.usageAmount" min="0" [max]="1000000"></p-spinner>
@@ -266,14 +266,24 @@
                 <input  type="text" pInputText (input)="getBalance($event)"  [(ngModel)]="this.paymentMoney">
               </div>
           </div>
-        <div class="ui-g-6" style="line-height:  3vh"  [ngClass]="{dropdownKeyFilter: this.keyChargeList}">
-              <div class="ui-g-3" style="text-align: right">
-                <label ><span style="color: red">*</span>缴费方式：</label>
-              </div>
-              <div class="ui-g-7" style="line-height: 2vh;text-align: left">
-                <p-dropdown [options]="paymentMethodOption" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择支付方式..." [(ngModel)]="paymentOrderAdd.paymentMethod" (onChange)="changeInput(paymentOrderAdd.paymentMethod)"></p-dropdown>
-              </div>
+        <div class="ui-g-12" style="line-height:  3vh"  [ngClass]="{dropdownKeyFilter: this.keyChargeList}"  *ngFor="let item of paymentMethodList">
+          <div class="ui-g-6">
+            <div class="ui-g-3" style="text-align: right">
+              <label ><span style="color: red">*</span>缴费方式：</label>
+            </div>
+            <div class="ui-g-7">
+              <p-checkbox name="groupname" [label]="item.label" [value]="item.label" [(ngModel)]="selPaymentList"></p-checkbox>
+            </div>
           </div>
+          <div class="ui-g-6" style="line-height: 2vh;text-align: left">
+            <div class="ui-g-3" style="text-align: right">
+              <label ><span style="color: red">*</span>金额：</label>
+            </div>
+            <div class="ui-g-7" style="line-height: 2vh;text-align: left">
+              <input  type="text" pInputText  [style]="{'width':'7vw'}" [(ngModel)]="item.num">
+            </div>
+          </div>
+        </div>
         <div class="ui-g-6" style="line-height:  3vh">
               <div class="ui-g-3" style="text-align: right">
                   <label >预存金额：</label>
@@ -318,6 +328,8 @@
     </p-scrollPanel>
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" style="background: #3A7ADF" (click)="paymentPreprintClick()">预打印</button>
+
         <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-sure" (click)="paymentSureClick()">确认收款</button>
         <button class="chargeman-payment-dialog-Btn chargeman-payment-dialog-Btn-false" (click)="paymentFaleseClick()">取消收款</button>
       </div>

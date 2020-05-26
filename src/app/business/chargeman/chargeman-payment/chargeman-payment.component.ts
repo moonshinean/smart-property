@@ -28,6 +28,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   public optionTable: any;
   public roomTypeOption: any[] = [];
   public paymentMethodOption: any[] = [];
+  public paymentMethodList: any[] = [];
+  public selPaymentList: any[] =[];
   public sexOption: any[] = [];
   public identityOption: any[] = [];
   public datedifOption: any[] = [];
@@ -276,9 +278,12 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
        this.queryPaymentPage();
        this.globalSrv.getPayMethods({}).subscribe(
          value => {
-           console.log(value);
            if (value.status === '1000') {
              this.paymentMethodOption = this.toolSrv.setListMap(value.data.PAYMENT_METHOD);
+             this.paymentMethodList = this.paymentMethodOption.map(val => {
+                return {label: val.label, value: val.value, num: ''};
+             });
+             console.log(this.paymentMethodList);
            } else {
              this.toolSrv.setToast('error', '支付方式查询错误', value.message);
            }
@@ -393,10 +398,18 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   }
   // sure  payment (缴费确认)
   public paymentSureClick(): void {
-    if (this.paymentOrderAdd.paymentMethod === undefined) {
-        this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
-        this.keyChargeList = true;
-    } else {
+    const PaymentList = [];
+    this.paymentMethodList.forEach(val => {
+       if (this.selPaymentList.includes(val.label)) {
+         PaymentList.push({paymentMethod: val.value, moneyCollection: val.num});
+       }
+    });
+    if (PaymentList.length > 0) {
+      if (PaymentList.some(val => {
+        return val.moneyCollection === '';
+      })) {
+        this.toolSrv.setToast('error', '操作失败', '已选择的支付方式对应该支付的金额未填写');
+      } else {
         const listKey = ['organizationId', 'villageName',
           'villageCode', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode',
           'unitName', 'roomCode', 'roomSize', 'surname', 'mobilePhone', 'idNumber',
@@ -414,16 +427,18 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
           return v;
         });
         this.paymentOrderAdd.parkingSpaceCostDetailDOList = this.parkSpaceData.map(v => {
-              v.rentalRenewalStatus = this.toolSrv.setLabelToValue(this.rentalRenewalStatusOption, v.rentalRenewalStatus);
-              v.parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, v.parkingSpaceType);
-              v.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption, v.vehicleOriginalType);
-              v.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, v.licensePlateType);
-              v.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, v.licensePlateColor);
-              v.parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, v.parkingSpacePlace);
-              return v;
+          v.rentalRenewalStatus = this.toolSrv.setLabelToValue(this.rentalRenewalStatusOption, v.rentalRenewalStatus);
+          v.parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, v.parkingSpaceType);
+          v.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption, v.vehicleOriginalType);
+          v.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, v.licensePlateType);
+          v.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, v.licensePlateColor);
+          v.parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, v.parkingSpacePlace);
+          return v;
         });
         this.paymentOrderAdd.costDeduction = this.deductionDamagesData;
         this.paymentOrderAdd.correctedAmount = this.Balance;
+        this.paymentOrderAdd.paymentMethodDOList = PaymentList;
+        // console.log(this.paymentOrderAdd);
         this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
           (value) => {
             if (value.status === '1000') {
@@ -439,6 +454,11 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
                 },
                 reject: () => {
                   this.paymentDialog = false;
+                  this.selPaymentList = [];
+                  this.paymentMethodList = this.paymentMethodList.map(v => {
+                    v.num = '';
+                    return v;
+                  });
                   this.InitializationAllpayData();
                 }
               });
@@ -462,6 +482,86 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
             }
           }
         );
+      }
+    } else {
+      this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
+    }
+  }
+  // 预打印单据
+  public  paymentPreprintClick(): void {
+    const PaymentList = [];
+    this.paymentMethodList.forEach(val => {
+      if (this.selPaymentList.includes(val.label)) {
+        PaymentList.push({paymentMethod: val.value, moneyCollection: val.num});
+      }
+    });
+    if (PaymentList.length > 0) {
+      if (PaymentList.some(val => {
+        return val.moneyCollection === '';
+      })) {
+        this.toolSrv.setToast('error', '操作失败', '已选择的支付方式对应该支付的金额未填写');
+      } else {
+        const listKey = ['organizationId', 'villageName',
+          'villageCode', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode',
+          'unitName', 'roomCode', 'roomSize', 'surname', 'mobilePhone', 'idNumber',
+          'customerUserId', 'oneMonthPropertyFee'];
+        for (const key of listKey) {
+          this.paymentOrderAdd[key] = this.paymentSelect[0][key];
+        }
+        this.paymentOrderAdd.payerPhone = this.paymentOrderAdd.payerPhone === undefined ? '' : this.paymentOrderAdd.payerPhone;
+        this.paymentOrderAdd.payerName = this.paymentOrderAdd.payerName === undefined ? '' : this.paymentOrderAdd.payerName;
+        this.paymentOrderAdd.remark = this.paymentOrderAdd.remark === undefined ? '' : this.paymentOrderAdd.remark;
+        this.paymentOrderAdd.amountTotalReceivable = this.paymentTotle;
+        this.paymentOrderAdd.actualTotalMoneyCollection = this.paymentMoney;
+        this.paymentOrderAdd.billDetailedDOArrayList = this.paymentItemData.map( v => {
+          v.stateOfArrears = v.stateOfArrears === false ? 0 : 1;
+          return v;
+        });
+        this.paymentOrderAdd.parkingSpaceCostDetailDOList = this.parkSpaceData.map(v => {
+          v.rentalRenewalStatus = this.toolSrv.setLabelToValue(this.rentalRenewalStatusOption, v.rentalRenewalStatus);
+          v.parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, v.parkingSpaceType);
+          v.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption, v.vehicleOriginalType);
+          v.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, v.licensePlateType);
+          v.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, v.licensePlateColor);
+          v.parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, v.parkingSpacePlace);
+          return v;
+        });
+        this.paymentOrderAdd.costDeduction = this.deductionDamagesData;
+        this.paymentOrderAdd.correctedAmount = this.Balance;
+        this.paymentOrderAdd.paymentMethodDOList = PaymentList;
+        // console.log(this.paymentOrderAdd);
+        this.paymentSrv.prePrintPayOrder(this.paymentOrderAdd).subscribe(
+          (value) => {
+            if (value.status === '1000') {
+              // console.log(value);
+              window.open(value.data);
+              // this.openListLength = value.data.length;
+              // value.data.forEach(v => {
+              //   this.printBillDetail(v.orderId, v.organizationId);
+              // });
+            } else {
+              // 请求失败了 数据还原
+              this.paymentItemData.map( v => {
+                v.stateOfArrears = v.stateOfArrears !== 0;
+                return v;
+              });
+              this.parkSpaceData.map(v => {
+                v.rentalRenewalStatus = this.toolSrv.setValueToLabel(this.rentalRenewalStatusOption, v.rentalRenewalStatus);
+                v.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, v.parkingSpaceType);
+                v.vehicleOriginalType = this.toolSrv.setValueToLabel(this.vehicleOriginaTypeOption, v.vehicleOriginalType);
+                v.licensePlateType = this.toolSrv.setValueToLabel(this.lincesePlateTypeOption, v.licensePlateType);
+                v.licensePlateColor = this.toolSrv.setValueToLabel(this.lincesePlateColorOption, v.licensePlateColor);
+                // v.datedif = this.toolSrv.setValueToLabel(this.datedifOption, v.datedif);
+                v.parkingSpacePlace = this.toolSrv.setValueToLabel(this.parkSpacePlaceOption, v.parkingSpacePlace);
+                return v;
+              });
+              this.toolSrv.setToast('error', '请求错误', value.message);
+            }
+          }
+        );
+      }
+    } else {
+      this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
     }
   }
   // 打印单据
@@ -470,17 +570,16 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     // console.log(123);
     this.paymentSrv.getPayDocument({orderId: orderIdData, organizationId: organizationIdData}).subscribe(
       (data) => {
-        console.log(data);
         if (data.status === '1000') {
           if (data.data !== '' && data.data !== null) {
             this.openListDataPdf.push(data.data);
-            console.log(this.openListDataPdf);
             if (this.openListDataPdf.length === this.openListLength) {
               this.openListDataPdf.forEach( (v, index) => {
                 window.open(v, index.toString());
               });
               this.InitializationAllpayData();
               this.paymentDialog = false;
+              this.selPaymentList = [];
             }
           } else {
             this.toolSrv.setToast('error', '操作失败', '数据为空');
@@ -574,6 +673,11 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     this.ownerList = [];
     this.deductionDamagesSelect = [];
     this.dialogHiddenData = [];
+    this.selPaymentList = [];
+    this.paymentMethodList = this.paymentMethodList.map(v => {
+      v.num = '';
+      return v;
+    });
     this.InitializationAllpayData();
 
   }

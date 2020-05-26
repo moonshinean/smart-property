@@ -72,6 +72,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
   };
   public deleteIds = [];
   public searchOption = [
+    {label: '全部', value: 0},
     {label: '手机号', value: 1},
     {label: '房间号', value: 2},
     {label: '姓名', value: 3},
@@ -157,7 +158,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
 
           {field: 'chargeName', header: '项目名称'},
           {field: 'actualMoneyCollection', header: '实收金额'},
-          {field: 'paymentMethod', header: '支付方式'},
+          // {field: 'paymentMethod', header: '支付方式'},
           {field: 'refundStatus', header: '退款状态'},
           {field: 'auditStatus', header: '审核状态'},
 
@@ -224,17 +225,22 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
   // 搜索
   public  applicationInfoSearchClick(): void {
     this.nowPage = this.SearchData.pageNo = 1;
-    if (this.searchData !== '') {
+    if (this.searchType === 0) {
       this.selectSearchType();
     } else {
-      this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+      if (this.searchData !== '') {
+        this.selectSearchType();
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '请填写需要搜索的值');
+      }
     }
+
   }
   // 判断搜索方式
   public  selectSearchType(): void {
     switch (this.searchType) {
       case 0: this.reslveSearchData();
-        this.queryApplicationPageData(); break;
+              this.queryApplicationPageData(); break;
       case 1: this.setSearData('mobilePhone'); this.SearchData.mobilePhone = this.searchData; this.queryApplicationPageData(); break;
       case 2: this.setSearData('roomCode'); this.SearchData.roomCode = this.searchData; this.queryApplicationPageData(); break;
       case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryApplicationPageData(); break;
@@ -345,7 +351,7 @@ export class RefundApplicationInfoComponent implements OnInit, OnDestroy {
           {field: 'deductibledMoney', header: '已抵扣金额'},
           {field: 'surplusDeductibleMoney', header: '剩余可抵扣金额'},
           // {field: 'payerName', header: '缴费人姓名'},
-          {field: 'paymentMethod', header: '支付方式'},
+          // {field: 'paymentMethod', header: '支付方式'},
           {field: 'operating', header: '操作'},
         ],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}

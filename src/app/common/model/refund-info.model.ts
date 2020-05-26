@@ -78,7 +78,7 @@ export class ModifyRefundInfo {
   tollCollectorId?: any; // 收费人编号
   payerName?: any; // 缴费人姓名
   payerPhone?: any; // 缴费人手机号
-  paymentMethod?: any; // 支付方式
+  // paymentMethod?: any; // 支付方式
   paymentType?: any; // 支付类型
   refundStatus?: any; // 退款状态
   invalidState?: any; // 失效状态

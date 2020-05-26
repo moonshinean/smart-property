@@ -113,6 +113,7 @@ export class ChargeScrappedBillComponent implements OnInit, OnDestroy {
   // 缴费相关
   // public projectSelectDialog: boolean;
   public chargeStatusoption: any[] = [];
+  public paymentList: any[] =[];
   public detailsDialog: boolean;
   public nowPage = 1;
   // 初始化项目
@@ -314,7 +315,6 @@ export class ChargeScrappedBillComponent implements OnInit, OnDestroy {
           {field: 'villageName', header: '小区名称'},
           {field: 'roomCode', header: '房间编号'},
           {field: 'costInvolved', header: '涉及费用'},
-          {field: 'paymentMethod', header: '支付方式'},
           {field: 'actualTotalMoneyCollection', header: '缴费金额'},
           {field: 'idt', header: '缴费时间'},
           {field: 'operating', header: '操作'}],
@@ -334,6 +334,7 @@ export class ChargeScrappedBillComponent implements OnInit, OnDestroy {
   public  queryDetail(data): void {
     this.chargeDetailSrv.queryBillDetail({orderId: data}).subscribe(
       value => {
+        console.log(value);
         if (value.status === '1000') {
           // 基本信息
           this.chargeDetails = value.data.bill;
@@ -343,6 +344,11 @@ export class ChargeScrappedBillComponent implements OnInit, OnDestroy {
           this.paymentItemData = value.data.billDetailedDOS.map( v => {
             return v;
           });
+          if (value.data.paymentMethodDOS.length > 0) {
+            value.data.paymentMethodDOS.forEach(val => {
+               this.paymentList.push({label: val.paymentName, value: val.moneyCollection});
+            });
+          }
           // 抵扣账单
           this.deductionDamagesData = value.data.costDeductionDOS;
           this.paymentAddTitle.forEach( v => {
@@ -360,7 +366,6 @@ export class ChargeScrappedBillComponent implements OnInit, OnDestroy {
   public  queryData(): void {
     this.chargeScrappedBillSrv.queryChargeDataPage(this.SearchData).subscribe(
       (value) => {
-        console.log(value);
         if (value.status === '1000') {
           if (value.data.contents.length === 0) {
             if (this.SearchData.pageNo !== 1) {

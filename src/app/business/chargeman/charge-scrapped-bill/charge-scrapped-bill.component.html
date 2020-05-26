@@ -173,6 +173,24 @@
               <span >{{chargeDetails.tollCollectorName}}</span>
             </div>
           </div>
+          <div class="ui-g-12 ui-md-12" *ngFor="let item of paymentList">
+            <div class="ui-g-6">
+              <div class="ui-g-6"  style="text-align: right">
+                <label >支付方式：</label>
+              </div>
+              <div class="ui-g-6 span" style="line-height: 2vh">
+                <span >{{item.label}}</span>
+              </div>
+            </div>
+            <div class="ui-g-6">
+              <div class="ui-g-6"  style="text-align: right">
+                <label >金额：</label>
+              </div>
+              <div class="ui-g-6 span" style="line-height: 2vh">
+                <span >{{item.value}}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </p-scrollPanel>

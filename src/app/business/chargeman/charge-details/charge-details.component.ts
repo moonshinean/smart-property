@@ -82,6 +82,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {label: '业主姓名', value: 3},
     {label: '身份证号', value: 4},
     {label: '工作人员姓名', value: 5},
+    {label: '车牌号搜索', value: 6},
   ];
   public SearchData = {
     villageCode: '',
@@ -91,6 +92,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     roomCode: '',
     mobilePhone: '',
     tollCollectorName: '',
+    licensePlateNumber: '',
     idNumber: '',
     surname: '',
     pageNo: 1,
@@ -145,6 +147,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {field: 'chargeName', header: '项目名称'},
     {field: 'contractNumber', header: '合同编号'},
     {field: 'rentalRenewalStatus', header: '续租状态'},
+    {field: 'licensePlateNumber', header: '车牌号'},
     {field: 'datedif', header: '月数'},
     {field: 'parkingSpaceCode', header: '车位编号'},
     {field: 'parkingSpaceType', header: '车位类型'},
@@ -154,6 +157,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {field: 'dueTime', header: '结束时间'},
   ];
   public parkSpaceData: any[] = [];
+  public paymentList: any[] = [];
   // 车位修改的信息的索引
   public changeIndex: any;
 
@@ -291,6 +295,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
       case 3: this.setSearData('surname'); this.SearchData.surname = this.searchData;  this.queryData(); break;
       case 4: this.setSearData('idNumber'); this.SearchData.idNumber = this.searchData; this.queryData(); break;
       case 5: this.setSearData('tollCollectorName'); this.SearchData.tollCollectorName = this.searchData; this.queryData(); break;
+      case 6: this.setSearData('licensePlateNumber'); this.SearchData.licensePlateNumber = this.searchData; this.queryData(); break;
       default:
         break;
     }
@@ -349,7 +354,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
           {field: 'villageName', header: '小区名称'},
           {field: 'roomCode', header: '房间编号'},
           {field: 'costInvolved', header: '涉及费用'},
-          {field: 'paymentMethod', header: '支付方式'},
+          // {field: 'paymentMethod', header: '支付方式'},
           {field: 'actualTotalMoneyCollection', header: '缴费金额'},
           {field: 'idt', header: '缴费时间'},
           {field: 'operating', header: '操作'}],
@@ -419,12 +424,20 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
           this.paymentItemData = value.data.billDetailedDOS.map( v => {
             return v;
           });
+          if (value.data.paymentMethodDOS.length > 0) {
+            value.data.paymentMethodDOS.forEach(val => {
+              this.paymentList.push({label: val.paymentName, value: val.moneyCollection});
+            });
+          }
           // 抵扣账单
           this.deductionDamagesData = value.data.costDeductionDOS;
           this.paymentAddTitle.forEach( v => {
             v.value = this.chargeDetails[v.label];
           });
-          this.parkSpaceData = value.data.parkingSpaceCostDetailDOS;
+          this.parkSpaceData = value.data.parkingSpaceCostDetailDOS.map(val => {
+               val.parkingSpaceType = this.toolSrv.setValueToLabel(this.parkSpaceTypeOption, val.parkingSpaceType);
+               return val;
+          });
           // this.chargeDetails.paymentMethod = this.toolSrv.setValueToLabel(this.chargeStatusoption, this.chargeDetails.paymentMethod);
         } else {
           this.toolSrv.setToast('error', '请求错误', value.message);

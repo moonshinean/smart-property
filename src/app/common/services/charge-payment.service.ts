@@ -26,6 +26,11 @@ export class ChargePaymentService {
   public  addPayOrder(pamars): Observable<any> {
       return this.http.post(environment.chargeUrl + `/cash/register/addBill`, pamars);
   }
+  // 预打印单据
+  public  prePrintPayOrder(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/cash/register/preprint`, pamars);
+  }
+
   // 打印单据
   public  getPayDocument(pamars): Observable<any> {
      return this.http.post(environment.chargeUrl + `/cash/register/printBilles`, pamars);

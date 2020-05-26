@@ -131,7 +131,7 @@ export class RefundPendReviewComponent implements OnInit {
     this.refundPendReviewTableTitle = [
       {field: 'orderId', header: '订单Id'},
       {field: 'payerName', header: '缴费人姓名'},
-      {field: 'paymentMethod', header: '支付方式'},
+      // {field: 'paymentMethod', header: '支付方式'},
       {field: 'roomCode', header: '房间编号'},
       {field: 'chargeName', header: '项目名称'},
       {field: 'actualMoneyCollection', header: '实收金额'},
@@ -208,7 +208,7 @@ export class RefundPendReviewComponent implements OnInit {
 
           {field: 'chargeName', header: '项目名称'},
           {field: 'actualMoneyCollection', header: '实收金额'},
-          {field: 'paymentMethod', header: '支付方式'},
+          // {field: 'paymentMethod', header: '支付方式'},
           {field: 'refundStatus', header: '退款状态'},
           {field: 'auditStatus', header: '审核状态'},
 

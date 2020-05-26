@@ -87,6 +87,7 @@ export class ChargePaymentAddOrder {
   billDetailedDOArrayList?: ChargeItemDetail[] = []; // 项目收费明细
   costDeduction?: CostDeduction[] = []; // 项目收费明细
   parkingSpaceCostDetailDOList?: any[];
+  paymentMethodDOList?: any[];
 }
 // 项 目 收 费 详 情
 export class ChargeItemDetail {

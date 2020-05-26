@@ -194,7 +194,7 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
 
           {field: 'chargeName', header: '项目名称'},
           {field: 'actualMoneyCollection', header: '实收金额'},
-          {field: 'paymentMethod', header: '支付方式'},
+          // {field: 'paymentMethod', header: '支付方式'},
           {field: 'refundStatus', header: '退款状态'},
           {field: 'auditStatus', header: '审核状态'},
 
@@ -274,7 +274,7 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
           {field: 'deductibledMoney', header: '已抵扣金额'},
           {field: 'surplusDeductibleMoney', header: '剩余可抵扣金额'},
           // {field: 'payerName', header: '缴费人姓名'},
-          {field: 'paymentMethod', header: '支付方式'},
+          // {field: 'paymentMethod', header: '支付方式'},
           {field: 'operating', header: '操作'},
         ],
         style: {background: this.table.tableheader.background, color: this.table.tableheader.color, height: '6vh'}

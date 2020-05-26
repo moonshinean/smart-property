@@ -30,14 +30,6 @@
                 (onNodeSelect)="treeOnNodeSelect($event, 2)">
               </p-tree>
           </div>
-          <div class="ui-g-12">
-             <p-tree
-               [value]="dataParkTrees"
-               [(selection)]="dataParkTree"
-               selectionMode="single"
-               (onNodeSelect)="treeOnNodeSelect($event, 3)">
-             </p-tree>
-           </div>
          <div class="ui-g-12">
            <p-tree
              [value]="stephouseTrees"
@@ -46,6 +38,15 @@
              (onNodeSelect)="treeOnNodeSelect($event, 4)">
            </p-tree>
          </div>
+          <div class="ui-g-12">
+             <p-tree
+               [value]="dataParkTrees"
+               [(selection)]="dataParkTree"
+               selectionMode="single"
+               (onNodeSelect)="treeOnNodeSelect($event, 3)">
+             </p-tree>
+           </div>
+
        </p-scrollPanel>
     </div>
   </p-dialog>
