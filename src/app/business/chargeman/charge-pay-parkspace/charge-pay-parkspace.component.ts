@@ -394,6 +394,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
     if (e.getAll('file').length !== 0) {
       this.paymentSrv.importFilesWithParkSpaceInfo(e).subscribe(
         (value) => {
+          console.log(value);
           if (value.status === '1000') {
             this.UploadFileOption.files = [];
             this.uploadRecordOption = {
@@ -407,8 +408,7 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
                 tableHeader: {
                   data: [
                     {field: 'code', header: '序号'},
-                    {field: 'contractNumber', header: '合同编号'},
-                    {field: 'packingSpaceCode', header: '车位编号'},
+                    {field: 'parkingSpaceCode', header: '车位编号'},
                     {field: 'result', header: '结果'},
                     {field: 'remarks', header: '备注'},
                   ],

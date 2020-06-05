@@ -22,6 +22,7 @@ import {BasicTableModule} from '../../common/components/basic-table/basic-table.
 import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dialog.module';
 import {MenuItem} from 'primeng/components/common/menuitem';
 import { ChargePayParkspaceComponent } from './charge-pay-parkspace/charge-pay-parkspace.component';
+import { ChargeCumulativeVacancyfeeComponent } from './charge-cumulative-vacancyfee/charge-cumulative-vacancyfee.component';
 
 @NgModule({
   declarations: [

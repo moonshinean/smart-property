@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {ChargemanComponent} from './chargeman/chargeman.component';
 import {ChargemanPaymentComponent} from './chargeman-payment/chargeman-payment.component';
+import {ChargeCumulativeVacancyfeeService} from '../../common/services/charge-cumulative-vacancyfee.service';
 
 const routes: Routes = [
   {
@@ -13,6 +14,7 @@ const routes: Routes = [
       {path: 'export', loadChildren: './charge-export/charge-export.module#ChargeExportModule'},
       // {path: 'margin', component: ChargeMarginComponent},
       {path: 'payment', component: ChargemanPaymentComponent,  data: {preload: true}},
+      {path: 'vacancyfee', loadChildren: './charge-cumulative-vacancyfee/charge-cumulative-vacancyfee.module#ChargeCumulativeVacancyfeeModule'},
       // {path: 'arrears', component: ChargeArrearsComponent},
       {path: 'prepayment', loadChildren: './charge-prepayment/charge-prepayment.module#ChargePrepaymentModule'},
       {path: 'history', loadChildren: './charge-history/charge-history.module#ChargeHistoryModule'},

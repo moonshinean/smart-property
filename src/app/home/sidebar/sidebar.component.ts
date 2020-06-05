@@ -130,6 +130,7 @@ export class SidebarComponent implements OnInit , OnChanges, AfterViewInit {
           {label: '缴费记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/details']},
           {label: '报废单据', icon: 'pi pi-fw ', routerLink: ['/home/charge/scrappedbill']},
           {label: '报表导出', icon: 'pi pi-fw ', routerLink: ['/home/charge/export']},
+          {label: '空置费累计', icon: 'pi pi-fw ', routerLink: ['/home/charge/vacancyfee']},
           // {label: '保证金', icon: 'pi pi-fw ', routerLink: ['/home/charge/margin']},
           // {label: '退款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/record']},
           // {label: '欠款记录', icon: 'pi pi-fw ', routerLink: ['/home/charge/arrears']},

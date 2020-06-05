@@ -166,10 +166,6 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
     {name: '建筑面积', value: '', label: 'roomSize'},
     {name: '客户名称', value: '', label: 'surname'},
     {name: '手机号码', value: '', label: 'mobilePhone'},
-    // {name: '物业费到期时间', value: '', label: 'dueTime'},
-    // {name: '预缴余额', value: '', label: 'prepaidAmount'},
-    // {name: '单月物业费', value: '', label: 'oneMonthPropertyFee'},
-    // {name: '欠费月数', value: '', label: 'minMonth'}
   ];
 
   public paymentItemData: ChargeItemDetail[] = [];
@@ -425,6 +421,7 @@ export class ChargeDetailsComponent implements OnInit, OnDestroy {
             return v;
           });
           if (value.data.paymentMethodDOS.length > 0) {
+            this.paymentList = [];
             value.data.paymentMethodDOS.forEach(val => {
               this.paymentList.push({label: val.paymentName, value: val.moneyCollection});
             });

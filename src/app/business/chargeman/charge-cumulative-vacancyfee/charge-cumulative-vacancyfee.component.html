@@ -1,0 +1,88 @@
+<div class="charge-cumulative-vacancyfee">
+  <!--确认弹窗-->
+  <p-confirmDialog acceptLabel="确认" rejectLabel="取消"></p-confirmDialog>
+  <!--消息提示-->
+  <p-messages  [closable]="true" [style]="{'position':'fixed','left': '10vw','top': '0','margin-top': '0','width': '100vw','z-index':'9999'}"></p-messages>
+  <!--顶部按钮-->
+  <div class="charge-cumulative-vacancyfee-header">
+    <div class="ui-g-1 charge-cumulative-vacancyfee-header-btn charge-cumulative-vacancyfee-header-btn-add" (click)="uploadFileClick()" [hidden]="btnHiden[0].hidden">
+
+      <span>导  入</span>
+    </div>
+    <!--      搜索-->
+    <div class="ui-inputgroup charge-cumulative-vacancyfee-header-search" *ngIf="!btnHiden[1].hidden">
+      <input type="text" pInputText placeholder="请输入需要搜索的值"  [(ngModel)]="SearchData.roomCode">
+      <button id="disabled-btn" class="charge-cumulative-vacancyfee-header-btn-search" type="button"  (click)="detailsSearchClick()"  label="搜索">搜索</button>
+    </div>
+  </div>
+
+  <!--表格-->
+  <div class="charge-cumulative-vacancyfee-table">
+    <rbi-check-table-btn (detail)="detailsDialogClick($event)" [select]="paymentDetailSelect" [option]="optionTable" ></rbi-check-table-btn>
+  </div>
+  <!--详情弹框-->
+  <p-dialog header="详情" [(visible)]="detailsDialog" [width]="800" >
+    <!--Content-->
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-6 ui-md-6">
+        <div class="ui-g-4">
+          <label>房间编号：</label>
+        </div>
+        <div class="ui-g-4 span">
+          <span >{{detailData.roomCode}} </span>
+        </div>
+      </div>
+      <div class="ui-g-6 ui-md-6">
+        <div class="ui-g-4">
+          <label>房间面积：</label>
+        </div>
+        <div class="ui-g-4 span">
+          <span >{{detailData.roomSize}} </span>
+        </div>
+      </div>
+      <div class="ui-g-6 ui-md-6">
+        <div class="ui-g-4">
+          <label>空置费：</label>
+        </div>
+        <div class="ui-g-4 span">
+          <span >{{detailData.vacancyCharge}} </span>
+        </div>
+      </div>
+      <div class="ui-g-6 ui-md-6">
+        <div class="ui-g-4">
+          <label>房开交互时间：</label>
+        </div>
+        <div class="ui-g-4 span">
+          <span >{{detailData.deliveryTime}} </span>
+        </div>
+      </div>
+      <div class="ui-g-6 ui-md-6">
+        <div class="ui-g-4">
+          <label>备注：</label>
+        </div>
+        <div class="ui-g-4 span">
+          <span >{{detailData.remarks}} </span>
+        </div>
+      </div>
+      <div class="ui-g-6 ui-md-6">
+        <div class="ui-g-4">
+          <label>上传时间：</label>
+        </div>
+        <div class="ui-g-4 span">
+          <span >{{detailData.idt}} </span>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
+        <button class="charge-cumulative-vacancyfee-dialog-Btn charge-cumulative-vacancyfee-dialog-Btn-false" (click)="this.detailsDialog = false">取 消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
+
+  <rbi-upload-file-record [uploadRecordOption]="uploadRecordOption"></rbi-upload-file-record>
+  <rbi-detail-pop [dialogOption]="dialogOption"></rbi-detail-pop>
+  <rbi-file-pop [UploadFileOption]="uploadFileOption" (event)="uploadFileSureClick($event)"></rbi-file-pop>
+  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+</div>
+

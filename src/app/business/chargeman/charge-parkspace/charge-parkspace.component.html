@@ -19,55 +19,11 @@
         <span>缴费</span>
       </div>
     </div>
-    <!--搜索-->
-<!--    <div class="ui-inputgroup  charge-parkspace-header-search">-->
-<!--      <input type="text" pInputText placeholder="请输入缴费人" #input>-->
-<!--      <button id="disabled-btn" class=" charge-parkspace-header-btn-search" type="button"  (click)="parkspaceSearchClick()"  label="搜索">搜索</button>-->
-<!--    </div>-->
   </div>
   <!--表格-->
   <div class=" charge-parkspace-table">
 
     <rbi-check-table-btn [option]="optionTable" [select]="parkspaceSelect" (selectData)="selectData($event)" (detail)="parkSpaceDetailClick($event)"></rbi-check-table-btn>
- <!--   <p-scrollPanel [style]="{width:'100%',height: '90%'}" styleClass="custombar">
-      <p-table [columns]="parkspaceTableTitle" [value]="parkspaceTableContent"  [(selection)]="parkspaceSelect">
-        <ng-template pTemplate="header" let-columns>
-          <tr >
-            <th style="width: 3em"  [ngStyle]="this.parkspaceTableTitleStyle">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th *ngFor="let col of columns"  [ngStyle]="this.parkspaceTableTitleStyle">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=1" [ngStyle]="{'background':'#33353C','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              {{rowData[col.field]}}
-            </td>
-            <td  *ngFor="let col of columns.slice(columns.length-1,columns.length)" >
-              <button class="charge-parkspace-table-Btn" (click)="parkSpaceDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-          <tr [pSelectableRow]="rowData"  *ngIf="rowIndex%2!=0" [ngStyle]="{'background':'#2E3037','color':'#DEDEDE','text-align': 'center','height':'2vw'}">
-            <td>
-              <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
-            </td>
-            <td  *ngFor="let col of columns.slice(0,columns.length-1)" >
-              {{rowData[col.field]}}
-            </td>
-            <td  *ngFor="let col of columns.slice(columns.length-1,columns.length)" >
-              <button class="charge-parkspace-table-Btn" (click)="parkSpaceDetailClick(rowData)">详情</button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-scrollPanel>
--->
   </div>
   <!--增加弹窗-->
   <p-dialog header="信息添加" [(visible)]="parkspaceAddDialog" [width]="900">

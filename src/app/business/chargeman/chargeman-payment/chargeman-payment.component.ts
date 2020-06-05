@@ -283,7 +283,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
              this.paymentMethodList = this.paymentMethodOption.map(val => {
                 return {label: val.label, value: val.value, num: ''};
              });
-             console.log(this.paymentMethodList);
            } else {
              this.toolSrv.setToast('error', '支付方式查询错误', value.message);
            }
@@ -576,6 +575,10 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
             if (this.openListDataPdf.length === this.openListLength) {
               this.openListDataPdf.forEach( (v, index) => {
                 window.open(v, index.toString());
+              });
+              this.paymentMethodList = this.paymentMethodList.map(v => {
+                v.num = '';
+                return v;
               });
               this.InitializationAllpayData();
               this.paymentDialog = false;
