@@ -44,6 +44,7 @@ export class ChargeItemData {
   surplus?: any; // 用户余额
   roomCode?: any; // 房屋编号
   oneMonthPropertyFee?: any;
+  threeWayFeeCalculationTime?: any;
   chargeItem?: ChargeItems[] = [];
 
 }
@@ -81,6 +82,7 @@ export class ChargePaymentAddOrder {
   amountTotalReceivable?: any; // 总应收金额
   actualTotalMoneyCollection?: any; // 总实收金额
   oneMonthPropertyFee?: any;
+  threeWayFeeCalculationTime?: any;
   surplus?: any; // 修正金额
   correctedAmount?: any; // 修正金额
   remark?: any; // 备注

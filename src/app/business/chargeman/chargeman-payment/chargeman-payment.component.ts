@@ -118,7 +118,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
   };
   public searchType = 0;
   public searchData = '';
-  // public paymentTotle = 0;
+  public threeWayFeeCalculationTime = '';
   // 初始化项目
   public paymentProject: ChargeItem[] = [];
   public paymentItemData: ChargeItemDetail[] = [];
@@ -249,6 +249,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.getLocalTime();
+    console.log(this.threeWayFeeCalculationTime);
     this.paymentInitialization();
   }
   ngOnDestroy(): void {
@@ -336,57 +338,64 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     });
     console.log(list);
     if (list.length > 0 ) {
-      // 组装请求参数
-      const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus', 'identity', 'oneMonthPropertyFee'];
-      for (const key of keyList) {
-        if (key === 'identity') {
-          this.payItemDetail[key] = this.toolSrv.setLabelToValue(this.identityOption, this.paymentSelect[0][key]);
-        } else {
-          this.payItemDetail[key] = this.paymentSelect[0][key];
+      if (list.some(value => {
+        return value.chargeWay === 3;
+      }) && this.threeWayFeeCalculationTime !== '') {
+        // 组装请求参数
+        const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus', 'identity', 'oneMonthPropertyFee'];
+        for (const key of keyList) {
+          if (key === 'identity') {
+            this.payItemDetail[key] = this.toolSrv.setLabelToValue(this.identityOption, this.paymentSelect[0][key]);
+          } else {
+            this.payItemDetail[key] = this.paymentSelect[0][key];
+          }
         }
-      }
-      this.payItemDetail.chargeItem = list.map( v => {
-         if (v.chargeWay !== 6) {
-           return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
-             datedif: v.datedif, chargeStandard: v.chargeStandard};
-         } else {
-           return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
-             datedif: v.datedif, chargeStandard: v.chargeStandard, multiple: v.multiple, usageAmount: v.usageAmount};
-         }
-      });
-      console.log(this.payItemDetail);
+        this.payItemDetail.chargeItem = list.map( v => {
+          if (v.chargeWay !== 6) {
+            return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
+              datedif: v.datedif, chargeStandard: v.chargeStandard};
+          } else {
+            return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
+              datedif: v.datedif, chargeStandard: v.chargeStandard, multiple: v.multiple, usageAmount: v.usageAmount};
+          }
+        });
+        this.payItemDetail.threeWayFeeCalculationTime = this.datePipe.transform(this.threeWayFeeCalculationTime, 'yyyy-MM');
+        console.log(this.payItemDetail);
 
-      // 查询拆分业主
-      this.paymentSrv.getUserInfoByRoomCode({roomCode: this.paymentSelect[0].roomCode}).subscribe(
-        value => {
-          console.log(value);
-          if (value.status === '1000') {
-             this.ownerOption = [];
-             this.ownerList = value.data;
-             value.data.forEach( v => {
-               this.ownerOption.push({label: v.surname, value: v.surname});
-             });
-          } else {
-            this.toolSrv.setToast('error', '查询失败', value.message);
-          }
-        }
-      );
-      // 计费请求
-      this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(value => {
-          if (value.status === '1000') {
+        // 查询拆分业主
+        this.paymentSrv.getUserInfoByRoomCode({roomCode: this.paymentSelect[0].roomCode}).subscribe(
+          value => {
             console.log(value);
-            this.setPaymentList(value);
-            this.paymentTotle = value.data.amountTotalReceivable;
-            this.paymentActualTotal = value.data.actualTotalMoneyCollection;
-            this.paymentReceivableTotle = value.data.actualTotalMoneyCollection;
-            this.paymentMoney = value.data.actualTotalMoneyCollection;
-          } else {
-            this.toolSrv.setToast('error', '请求失败', value.message);
+            if (value.status === '1000') {
+              this.ownerOption = [];
+              this.ownerList = value.data;
+              value.data.forEach( v => {
+                this.ownerOption.push({label: v.surname, value: v.surname});
+              });
+            } else {
+              this.toolSrv.setToast('error', '查询失败', value.message);
+            }
           }
-        }
-      );
-      this.paymentDialog = true;
-      this.projectSelectDialog = false;
+        );
+        // 计费请求
+        this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(value => {
+            if (value.status === '1000') {
+              console.log(value);
+              this.setPaymentList(value);
+              this.paymentTotle = value.data.amountTotalReceivable;
+              this.paymentActualTotal = value.data.actualTotalMoneyCollection;
+              this.paymentReceivableTotle = value.data.actualTotalMoneyCollection;
+              this.paymentMoney = value.data.actualTotalMoneyCollection;
+            } else {
+              this.toolSrv.setToast('error', '请求失败', value.message);
+            }
+          }
+        );
+        this.paymentDialog = true;
+        this.projectSelectDialog = false;
+      } else {
+        this.toolSrv.setToast('error', '操作错误', '请选择时间');
+      }
     } else {
       this.toolSrv.setToast('error', '操作错误', '请选择收费项目');
     }
@@ -416,6 +425,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         for (const key of listKey) {
           this.paymentOrderAdd[key] = this.paymentSelect[0][key];
         }
+        this.paymentOrderAdd.threeWayFeeCalculationTime = this.datePipe.transform(this.threeWayFeeCalculationTime, 'yyyy-MM');
         this.paymentOrderAdd.payerPhone = this.paymentOrderAdd.payerPhone === undefined ? '' : this.paymentOrderAdd.payerPhone;
         this.paymentOrderAdd.payerName = this.paymentOrderAdd.payerName === undefined ? '' : this.paymentOrderAdd.payerName;
         this.paymentOrderAdd.remark = this.paymentOrderAdd.remark === undefined ? '' : this.paymentOrderAdd.remark;
@@ -681,6 +691,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       v.num = '';
       return v;
     });
+    this.getLocalTime();
     this.InitializationAllpayData();
 
   }
@@ -875,7 +886,6 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
       this.paymentItemListIndex = index;
       this.costSplitData = e;
       this.paymentSrv.getCostSplitStartTime({roomCode: this.paymentSelect[0].roomCode}).subscribe(val => {
-        console.log(val);
         if (val.status === '1000') {
           this.costSplitData.firstStartTime = val.data;
           this.costSplitDialog = true;
@@ -950,6 +960,14 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     time.setFullYear(Number(Year));
     time.setMonth(Number(Month) - 1);
     time.setDate(Number(Day));
+  }
+
+  public  getLocalTime(): void {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1)
+      : date.getMonth() + 1;
+    this.threeWayFeeCalculationTime =  year + '-' + month;
   }
   // 拆分列表切换用户设置其电话和id
   public changeSurname(name, index): void {
