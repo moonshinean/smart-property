@@ -305,11 +305,19 @@ export class RefundNoComponent implements OnInit, OnDestroy {
   }
   // refundNo select
   // Amount calculation
-  public  transferCardAmountChange(): void {
-    if (Number(this.ApplicationRefund.refundableAmount) !== 0) {
-      this.ApplicationRefund.deductionPropertyFee = Number(this.ApplicationRefund.refundableAmount) - Number(this.ApplicationRefund.transferCardAmount);
+  public  transferCardAmountChange(label): void {
+    if (label === 'transferCardAmount') {
+      if (Number(this.ApplicationRefund.refundableAmount) !== 0) {
+        this.ApplicationRefund.deductionPropertyFee = Number(this.ApplicationRefund.refundableAmount) - Number(this.ApplicationRefund.transferCardAmount);
+      } else {
+        this.toolSrv.setToast('error', '错误信息', '请检查退还金额数据是否错误');
+      }
     } else {
-      this.toolSrv.setToast('error', '错误信息', '请检查退还金额数据是否错误');
+      if (Number(this.ApplicationRefund.deductionPropertyFee) !== 0) {
+        this.ApplicationRefund.transferCardAmount = Number(this.ApplicationRefund.refundableAmount) - Number(this.ApplicationRefund.deductionPropertyFee);
+      } else {
+        this.toolSrv.setToast('error', '错误信息', '请检查抵扣物业费金额是否错误');
+      }
     }
   }
   // Reset data

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import { CouponTotalComponent } from './coupon-total/coupon-total.component';
 import { CouponReviewComponent } from './coupon-review/coupon-review.component';
 import { CouponPendingReviewComponent } from './coupon-pending-review/coupon-pending-review.component';
@@ -55,7 +55,7 @@ import {BasicDialogModule} from '../../common/components/basic-dialog/basic-dial
     BasicTableModule,
     BasicDialogModule
   ],
-  providers: [MessageService, ConfirmationService, PublicMethedService]
+  providers: [MessageService, ConfirmationService, PublicMethedService, DatePipe]
 
 })
 export class CouponModule { }

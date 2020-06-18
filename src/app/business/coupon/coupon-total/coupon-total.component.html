@@ -10,6 +10,10 @@
         <img class="coupon-total-header-img-add" src="assets/images/ic_add.png" alt="">
         <span>新 增</span>
       </div>
+<!--      <div class="ui-g-1 coupon-total-header-btn coupon-total-header-btn-modify" (click)="couponTotalClick()">-->
+<!--        <img class="coupon-total-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
+<!--        <span>修 改</span>-->
+<!--      </div>-->
       <div class="ui-g-1 coupon-total-header-btn coupon-total-header-btn-delete" (click)="couponTotalDeleteClick()" [hidden]="btnHiden[1].hidden">
         <img class="coupon-total-header-img-delete" src="assets/images/ic_delete.png" alt="">
         <span>删 除</span>
@@ -34,6 +38,7 @@
     [formContrl]="formgroup"
     [treeData]="roomtree">
   </rbi-dialog-pop>
+
   <!--详情弹窗-->
   <rbi-detail-pop [dialogOption]="couponTotalDetailOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>

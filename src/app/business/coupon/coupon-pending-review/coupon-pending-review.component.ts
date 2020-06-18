@@ -124,10 +124,8 @@ export class CouponPendingReviewComponent implements OnInit, OnDestroy {
 
   // initialization houseinfo
   public couponPendingReviewInitialization(): void {
-    this.toolSrv.getNatStatus([{settingType: 'COUPON_TYPE'}], (data) => {
+    this.toolSrv.getAdmStatus([{settingType: 'COUPON_TYPE'}, {settingType: 'USE_STATUS'}, {settingType: 'PAST_DUE'}, {settingType: 'AUDIT_STATUS'}], (data) => {
       this.couponTypeOption = this.toolSrv.setListMap(data.COUPON_TYPE);
-    });
-    this.toolSrv.getAdmStatus([{settingType: 'USE_STATUS'}, {settingType: 'PAST_DUE'}, {settingType: 'AUDIT_STATUS'}], (data) => {
       this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
       this.pastDueOption = this.toolSrv.setListMap(data.PAST_DUE);
       this.userStatusOption = this.toolSrv.setListMap(data.USE_STATUS);

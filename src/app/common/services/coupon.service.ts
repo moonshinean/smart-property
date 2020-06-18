@@ -34,6 +34,10 @@ export class CouponService {
   public queryRoomCode(pamars): Observable<any> {
     return this.http.post(environment.sysetUrl + `/structure/findByUnitCode `, pamars);
   }
+  // 修改审核时间
+  public changeReviewCouponInfo(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/coupon/update_audit_time`, pamars);
+  }
 
 
   /**

@@ -336,66 +336,59 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
     const list  = this.paymentProject.filter( v => {
       return v.check === 1;
     });
-    console.log(list);
     if (list.length > 0 ) {
-      if (list.some(value => {
-        return value.chargeWay === 3;
-      }) && this.threeWayFeeCalculationTime !== '') {
-        // 组装请求参数
-        const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus', 'identity', 'oneMonthPropertyFee'];
-        for (const key of keyList) {
-          if (key === 'identity') {
-            this.payItemDetail[key] = this.toolSrv.setLabelToValue(this.identityOption, this.paymentSelect[0][key]);
+      // 组装请求参数
+      const keyList = ['roomSize', 'roomCode', 'customerUserId', 'dueTime', 'surplus', 'identity', 'oneMonthPropertyFee'];
+      for (const key of keyList) {
+        if (key === 'identity') {
+          this.payItemDetail[key] = this.toolSrv.setLabelToValue(this.identityOption, this.paymentSelect[0][key]);
+        } else {
+          this.payItemDetail[key] = this.paymentSelect[0][key];
+        }
+      }
+      this.payItemDetail.chargeItem = list.map( v => {
+        if (v.chargeWay !== 6) {
+          return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
+            datedif: v.datedif, chargeStandard: v.chargeStandard};
+        } else {
+          return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
+            datedif: v.datedif, chargeStandard: v.chargeStandard, multiple: v.multiple, usageAmount: v.usageAmount};
+        }
+      });
+      this.payItemDetail.threeWayFeeCalculationTime = this.datePipe.transform(this.threeWayFeeCalculationTime, 'yyyy-MM');
+      console.log(this.payItemDetail);
+
+      // 查询拆分业主
+      this.paymentSrv.getUserInfoByRoomCode({roomCode: this.paymentSelect[0].roomCode}).subscribe(
+        value => {
+          console.log(value);
+          if (value.status === '1000') {
+            this.ownerOption = [];
+            this.ownerList = value.data;
+            value.data.forEach( v => {
+              this.ownerOption.push({label: v.surname, value: v.surname});
+            });
           } else {
-            this.payItemDetail[key] = this.paymentSelect[0][key];
+            this.toolSrv.setToast('error', '查询失败', value.message);
           }
         }
-        this.payItemDetail.chargeItem = list.map( v => {
-          if (v.chargeWay !== 6) {
-            return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
-              datedif: v.datedif, chargeStandard: v.chargeStandard};
-          } else {
-            return {chargeCode: v.chargeCode, chargeName: v.chargeName, chargeType: v.chargeType, parkingSpaceCode: v.parkingSpaceCode,
-              datedif: v.datedif, chargeStandard: v.chargeStandard, multiple: v.multiple, usageAmount: v.usageAmount};
-          }
-        });
-        this.payItemDetail.threeWayFeeCalculationTime = this.datePipe.transform(this.threeWayFeeCalculationTime, 'yyyy-MM');
-        console.log(this.payItemDetail);
-
-        // 查询拆分业主
-        this.paymentSrv.getUserInfoByRoomCode({roomCode: this.paymentSelect[0].roomCode}).subscribe(
-          value => {
+      );
+      // 计费请求
+      this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(value => {
+          if (value.status === '1000') {
             console.log(value);
-            if (value.status === '1000') {
-              this.ownerOption = [];
-              this.ownerList = value.data;
-              value.data.forEach( v => {
-                this.ownerOption.push({label: v.surname, value: v.surname});
-              });
-            } else {
-              this.toolSrv.setToast('error', '查询失败', value.message);
-            }
+            this.setPaymentList(value);
+            this.paymentTotle = value.data.amountTotalReceivable;
+            this.paymentActualTotal = value.data.actualTotalMoneyCollection;
+            this.paymentReceivableTotle = value.data.actualTotalMoneyCollection;
+            this.paymentMoney = value.data.actualTotalMoneyCollection;
+          } else {
+            this.toolSrv.setToast('error', '请求失败', value.message);
           }
-        );
-        // 计费请求
-        this.paymentSrv.searchChargeItemDetail(this.payItemDetail).subscribe(value => {
-            if (value.status === '1000') {
-              console.log(value);
-              this.setPaymentList(value);
-              this.paymentTotle = value.data.amountTotalReceivable;
-              this.paymentActualTotal = value.data.actualTotalMoneyCollection;
-              this.paymentReceivableTotle = value.data.actualTotalMoneyCollection;
-              this.paymentMoney = value.data.actualTotalMoneyCollection;
-            } else {
-              this.toolSrv.setToast('error', '请求失败', value.message);
-            }
-          }
-        );
-        this.paymentDialog = true;
-        this.projectSelectDialog = false;
-      } else {
-        this.toolSrv.setToast('error', '操作错误', '请选择时间');
-      }
+        }
+      );
+      this.paymentDialog = true;
+      this.projectSelectDialog = false;
     } else {
       this.toolSrv.setToast('error', '操作错误', '请选择收费项目');
     }

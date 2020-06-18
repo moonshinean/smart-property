@@ -380,24 +380,46 @@ export class BfVacantRoomComponent implements OnInit, OnDestroy {
         this.roomInfo.realRecyclingHomeTime = this.datePipe.transform(this.roomInfo.realRecyclingHomeTime, 'yyyy-MM-dd');
         this.roomInfo.renovationStartTime = this.datePipe.transform(this.roomInfo.renovationStartTime, 'yyyy-MM-dd');
         this.roomInfo.renovationDeadline = this.datePipe.transform(this.roomInfo.renovationDeadline, 'yyyy-MM-dd');
-        this.owerSrv.addVacantRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
-          value => {
-            if (value.status === '1000') {
-              this.queryVacantRoomPageData();
-              this.toolSrv.setToast('success', '操作成功', value.message);
-              this.vacantAddDialog = false;
-              this.vacantModityDialog = false;
-              this.ownerinfo = new OwerList();
-              this.ownerList = [];
-              this.vacantRoomSelect = [];
-              this.roomInfo = new RoomTitle();
-              this.updateTreeSrv.emitChangeTheme('update');
-            } else {
-              this.roomInfo.villageName = this.toolSrv.setLabelToValue(this.villageOption, this.roomInfo.villageName);
-              this.toolSrv.setToast('error', '操作失败', value.message);
+        if (data === '添加'){
+          this.owerSrv.addVacantRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
+            value => {
+              if (value.status === '1000') {
+                this.queryVacantRoomPageData();
+                this.toolSrv.setToast('success', '操作成功', value.message);
+                this.vacantAddDialog = false;
+                this.vacantModityDialog = false;
+                this.ownerinfo = new OwerList();
+                this.ownerList = [];
+                this.vacantRoomSelect = [];
+                this.roomInfo = new RoomTitle();
+                this.updateTreeSrv.emitChangeTheme('update');
+              } else {
+                this.roomInfo.villageName = this.toolSrv.setLabelToValue(this.villageOption, this.roomInfo.villageName);
+                this.toolSrv.setToast('error', '操作失败', value.message);
+              }
             }
-          }
-        );
+          );
+        } else {
+          this.owerSrv.updateVacantRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
+            value => {
+              if (value.status === '1000') {
+                this.queryVacantRoomPageData();
+                this.toolSrv.setToast('success', '操作成功', value.message);
+                this.vacantAddDialog = false;
+                this.vacantModityDialog = false;
+                this.ownerinfo = new OwerList();
+                this.ownerList = [];
+                this.vacantRoomSelect = [];
+                this.roomInfo = new RoomTitle();
+                this.updateTreeSrv.emitChangeTheme('update');
+              } else {
+                this.roomInfo.villageName = this.toolSrv.setLabelToValue(this.villageOption, this.roomInfo.villageName);
+                this.toolSrv.setToast('error', '操作失败', value.message);
+              }
+            }
+          );
+        }
+
       });
     } else {
       this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');

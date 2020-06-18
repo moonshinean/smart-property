@@ -6,6 +6,7 @@ import {Subscription} from 'rxjs';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'rbi-refund-already',
@@ -16,7 +17,7 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
 
 
   public alreadyContents: any;
-  public alreadySelect: any[];
+  public alreadySelect: any[] = [];
   public alreadyOption: any;
 
   // 详情相关
@@ -30,10 +31,11 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
   // 按钮权限相关
   public btnHiden = [
     // {label: '新增', hidden: true},
-    // {label: '修改', hidden: true},
+    {label: '修改', hidden: true},
     // {label: '删除', hidden: true},
     {label: '搜索', hidden: true},
   ];
+  public alreadyModel: boolean = false;
   // public msgs: Message[] = []; // 消息弹窗
   public option: any;
   public loadHidden = true;
@@ -50,6 +52,13 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  public esDate: any;
+  public changeDate = {
+    timePreliminaryExamination: '',
+    reviewTime: '',
+    id: ''
+  };
+  public roomCode: any;
   // 搜索相关
   public SearchData = {
     villageCode: '',
@@ -79,6 +88,7 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
     private localSrv: LocalStorageService,
     private sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
+    private datePipe: DatePipe
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
       value => {
@@ -100,6 +110,7 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
         this.queryData();
       }
     );
+    this.esDate = this.toolSrv.esDate;
   }
 
   ngOnInit() {
@@ -294,10 +305,48 @@ export class RefundAlreadyComponent implements OnInit, OnDestroy {
     this.alreadySelect = e;
   }
 
+  public  alreadyModifyClick(): void {
+    if (this.alreadySelect.length === 0) {
+      this.toolSrv.setToast('error', '操作失败', '请选择需要修改的项');
+    } else if (this.alreadySelect.length === 1) {
+         this.alreadyModel = true;
+         console.log(this.alreadySelect);
+         this.roomCode = this.alreadySelect[0].roomCode;
+         for (const key in this.changeDate) {
+           this.changeDate[key] = this.alreadySelect[0][key];
+         }
+    } else {
+      this.toolSrv.setToast('error', '操作失败', '只能选择一项进行修改');
+    }
+  }
+
+  public  sureChangeDate(): void {
+    if (this.changeDate.reviewTime !== '' && this.changeDate.timePreliminaryExamination !== '') {
+      this.changeDate.timePreliminaryExamination = this.datePipe.transform(this.changeDate.timePreliminaryExamination, 'yyyy-MM-dd');
+      this.changeDate.reviewTime = this.datePipe.transform(this.changeDate.reviewTime, 'yyyy-MM-dd');
+       this.alreadySrv.modifyDateRefundAlreadyInfo(this.changeDate).subscribe(val => {
+         console.log(val);
+          if (val.status === '1000') {
+            this.alreadySelect = [];
+            this.alreadyModel = false;
+            this.roomCode = '';
+            this.queryData();
+            for (const key in this.changeDate) {
+              this.changeDate[key] = '';
+            }
+          } else {
+            this.toolSrv.setToast('error', '修改失败', val.message);
+          }
+       });
+    } else {
+      this.toolSrv.setToast('error', '操作失败', '时间未选择');
+    }
+  }
+
   // 设置按钮显示权限
   public  setBtnIsHidden(): void {
     this.localSrv.getObject('btnParentCodeList').forEach(v => {
-      if (v.label === '未退款') {
+      if (v.label === '已退款') {
         this.globalSrv.getChildrenRouter({parentCode: v.parentCode}).subscribe(value => {
           value.data.forEach(item => {
             this.btnHiden.forEach( val => {

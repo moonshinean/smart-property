@@ -130,7 +130,7 @@
           <span>退还银行卡金额:</span>
         </div>
         <div class="ui-g-6">
-          <input type="text" pInputText placeholder="请输入退款金额" [(ngModel)]="ApplicationRefund.transferCardAmount" (blur)="transferCardAmountChange()">
+          <input type="text" pInputText placeholder="请输入退款金额" [(ngModel)]="ApplicationRefund.transferCardAmount" (blur)="transferCardAmountChange('transferCardAmount')">
         </div>
         <div class="ui-g-2"></div>
       </div>
@@ -140,7 +140,7 @@
           <span>抵扣物业费金额:</span>
         </div>
         <div class="ui-g-6">
-          <input type="text" pInputText placeholder="请输入抵扣物业费金额" [(ngModel)]="ApplicationRefund.deductionPropertyFee">
+          <input type="text" pInputText placeholder="请输入抵扣物业费金额" [(ngModel)]="ApplicationRefund.deductionPropertyFee" (blur)="transferCardAmountChange('deductionPropertyFee')">
         </div>
         <div class="ui-g-2"></div>
       </div>

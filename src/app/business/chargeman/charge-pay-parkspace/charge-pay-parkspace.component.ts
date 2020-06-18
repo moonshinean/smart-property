@@ -123,7 +123,9 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   // 分页
   public option: any;
   public esDate: any;
-
+  public paymentMethodList: any[] = [];
+  public selPaymentList: any[] = [];
+  public keyChargeList = false;
   // 缴费相关
   public paymentParkSpaceDialog: any;
   constructor(
@@ -201,6 +203,9 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
         value => {
           if (value.status === '1000') {
             this.paymentMethodOption = this.toolSrv.setListMap(value.data.PAYMENT_METHOD);
+            this.paymentMethodList = this.paymentMethodOption.map(val => {
+              return {label: val.label, value: val.value, num: ''};
+            });
           } else {
             this.toolSrv.setToast('error', '支付方式查询错误', value.message);
           }
@@ -434,68 +439,81 @@ export class ChargePayParkspaceComponent implements OnInit, OnDestroy {
   }
   // 确认缴费
   public paymentParkSpaceSureClick(): void {
-    if (this.paymentOrderAdd.paymentMethod === undefined) {
+    const PaymentList = [];
+    this.paymentMethodList.forEach(val => {
+      if (this.selPaymentList.includes(val.label)) {
+        PaymentList.push({paymentMethod: val.value, moneyCollection: val.num});
+      }
+    });
+    if (PaymentList.length <= 0) {
       this.toolSrv.setToast('error', '填写错误', '有数据没填写或者选择');
     } else {
-      const listKey = ['organizationId', 'villageName',
-        'villageCode', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode',
-        'unitName', 'roomCode', 'roomSize', 'surname', 'mobilePhone', 'idNumber',
-        'customerUserId'];
-      for (const key of listKey) {
-        if (key === 'roomSize') {
-           this.paymentOrderAdd[key] = 0;
-        } else {
-          this.paymentOrderAdd[key] = this.parkSpaceData[key];
+      if (PaymentList.some(val => {
+        return val.moneyCollection === '';
+      })) {
+        this.toolSrv.setToast('error', '操作失败', '已选择的支付方式对应该支付的金额未填写');
+      } else {
+        const listKey = ['organizationId', 'villageName',
+          'villageCode', 'regionCode', 'regionName', 'buildingCode', 'buildingName', 'unitCode',
+          'unitName', 'roomCode', 'roomSize', 'surname', 'mobilePhone', 'idNumber',
+          'customerUserId'];
+        for (const key of listKey) {
+          if (key === 'roomSize') {
+            this.paymentOrderAdd[key] = 0;
+          } else {
+            this.paymentOrderAdd[key] = this.parkSpaceData[key];
+          }
         }
-      }
-      this.paymentOrderAdd.oneMonthPropertyFee = 0;
-      this.paymentOrderAdd.surname = this.parkSpaceData.authorizedPersonName;
-      this.paymentOrderAdd.mobilePhone = this.parkSpaceData.authorizedPersonPhone;
-      this.paymentOrderAdd.idNumber = this.parkSpaceData.authorizedPersonIdNumber;
-      this.paymentOrderAdd.payerPhone = this.paymentOrderAdd.payerPhone === undefined ? '' : this.paymentOrderAdd.payerPhone;
-      this.paymentOrderAdd.payerName = this.paymentOrderAdd.payerName === undefined ? '' : this.paymentOrderAdd.payerName;
-      this.paymentOrderAdd.remark = this.paymentOrderAdd.remark === undefined ? '' : this.paymentOrderAdd.remark;
-      this.paymentOrderAdd.amountTotalReceivable = this.paymentTotle;
-      this.paymentOrderAdd.actualTotalMoneyCollection = this.paymentMoney;
-      this.paymentOrderAdd.billDetailedDOArrayList = [];
+        this.paymentOrderAdd.oneMonthPropertyFee = 0;
+        this.paymentOrderAdd.surname = this.parkSpaceData.authorizedPersonName;
+        this.paymentOrderAdd.mobilePhone = this.parkSpaceData.authorizedPersonPhone;
+        this.paymentOrderAdd.idNumber = this.parkSpaceData.authorizedPersonIdNumber;
+        this.paymentOrderAdd.payerPhone = this.paymentOrderAdd.payerPhone === undefined ? '' : this.paymentOrderAdd.payerPhone;
+        this.paymentOrderAdd.payerName = this.paymentOrderAdd.payerName === undefined ? '' : this.paymentOrderAdd.payerName;
+        this.paymentOrderAdd.remark = this.paymentOrderAdd.remark === undefined ? '' : this.paymentOrderAdd.remark;
+        this.paymentOrderAdd.amountTotalReceivable = this.paymentTotle;
+        this.paymentOrderAdd.actualTotalMoneyCollection = this.paymentMoney;
+        this.paymentOrderAdd.billDetailedDOArrayList = [];
 
-      this.parkSpaceData.parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, this.parkSpaceData.parkingSpaceType);
-      this.parkSpaceData.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption, this.parkSpaceData.vehicleOriginalType);
-      this.parkSpaceData.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, this.parkSpaceData.licensePlateType);
-      this.parkSpaceData.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, this.parkSpaceData.licensePlateColor);
-      this.parkSpaceData.parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, this.parkSpaceData.parkingSpacePlace);
-      this.paymentOrderAdd.parkingSpaceCostDetailDOList = [];
-      this.paymentOrderAdd.parkingSpaceCostDetailDOList.push(this.parkSpaceData);
-
-      this.paymentOrderAdd.costDeduction = [];
-      this.paymentOrderAdd.correctedAmount = this.Balance;
-      this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
-        (value) => {
-          if (value.status === '1000') {
-            this.confirmationService.confirm({
-              message: `是否打印单据吗？`,
-              header: '缴费成功',
-              icon: 'pi pi-exclamation-triangle',
-              accept: () => {
-                this.openListLength = value.data.length;
-                value.data.forEach(v => {
-                  this.printBillDetail(v.orderId, v.organizationId);
+        this.parkSpaceData.parkingSpaceType = this.toolSrv.setLabelToValue(this.parkSpaceTypeOption, this.parkSpaceData.parkingSpaceType);
+        this.parkSpaceData.vehicleOriginalType = this.toolSrv.setLabelToValue(this.vehicleOriginaTypeOption, this.parkSpaceData.vehicleOriginalType);
+        this.parkSpaceData.licensePlateType = this.toolSrv.setLabelToValue(this.lincesePlateTypeOption, this.parkSpaceData.licensePlateType);
+        this.parkSpaceData.licensePlateColor = this.toolSrv.setLabelToValue(this.lincesePlateColorOption, this.parkSpaceData.licensePlateColor);
+        this.parkSpaceData.parkingSpacePlace = this.toolSrv.setLabelToValue(this.parkSpacePlaceOption, this.parkSpaceData.parkingSpacePlace);
+        this.paymentOrderAdd.parkingSpaceCostDetailDOList = [];
+        this.paymentOrderAdd.parkingSpaceCostDetailDOList.push(this.parkSpaceData);
+        this.paymentOrderAdd.paymentMethodDOList = PaymentList;
+        this.paymentOrderAdd.costDeduction = [];
+        this.paymentOrderAdd.correctedAmount = this.Balance;
+        this.paymentSrv.addPayOrder(this.paymentOrderAdd).subscribe(
+          (value) => {
+            if (value.status === '1000') {
+              this.confirmationService.confirm({
+                message: `是否打印单据吗？`,
+                header: '缴费成功',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                  this.openListLength = value.data.length;
+                  value.data.forEach(v => {
+                    this.printBillDetail(v.orderId, v.organizationId);
+                    this.paymentParkSpaceDialog = false;
+                    this.paymentParkSpaceSelect = [];
+                    this.parkSpacePaymentInit();
+                  });
+                },
+                reject: () => {
                   this.paymentParkSpaceDialog = false;
                   this.paymentParkSpaceSelect = [];
                   this.parkSpacePaymentInit();
-                });
-              },
-              reject: () => {
-                this.paymentParkSpaceDialog = false;
-                this.paymentParkSpaceSelect = [];
-                this.parkSpacePaymentInit();
-              }
-            });
-          } else {
-            this.toolSrv.setToast('error', '请求错误', value.message);
+                }
+              });
+            } else {
+              this.toolSrv.setToast('error', '请求错误', value.message);
+            }
           }
-        }
-      );
+        );
+      }
+
     }
   }
   // 取消缴费

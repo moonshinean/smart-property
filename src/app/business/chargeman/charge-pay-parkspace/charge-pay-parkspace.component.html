@@ -65,7 +65,7 @@
           <h3>收费信息</h3>
         </div>
         <div class="ui-g-6" style="line-height:  3vh">
-          <div class="ui-g-4"  style="text-align: right">
+          <div class="ui-g-3"  style="text-align: right">
             <label >应收账单：</label>
           </div>
           <div class="ui-g-8" style="text-align: left">
@@ -81,23 +81,34 @@
           </div>
         </div>
         <div class="ui-g-6" style="line-height:  3vh">
-          <div class="ui-g-4" style="text-align: right">
+          <div class="ui-g-3" style="text-align: right">
             <label >实收账单：</label>
           </div>
           <div class="ui-g-8" style="text-align: left">
             <input  type="text" pInputText (input)="getBalance($event)"  [(ngModel)]="this.paymentMoney">
           </div>
         </div>
-        <div class="ui-g-6" style="line-height:  3vh">
-          <div class="ui-g-4" style="text-align: right">
-            <label >缴费方式：</label>
+        <div class="ui-g-12" style="line-height:  3vh"  [ngClass]="{dropdownKeyFilter: this.keyChargeList}"  *ngFor="let item of paymentMethodList">
+          <div class="ui-g-6">
+            <div class="ui-g-3" style="text-align: right">
+              <label ><span style="color: red">*</span>缴费方式：</label>
+            </div>
+            <div class="ui-g-7">
+              <p-checkbox name="groupname" [label]="item.label" [value]="item.label" [(ngModel)]="selPaymentList"></p-checkbox>
+            </div>
           </div>
-          <div class="ui-g-8" style="line-height: 2vh;text-align: left">
-            <p-dropdown [options]="paymentMethodOption" [style]="{'width':'7vw'}" scrollHeight="100px" placeholder="请选择支付方式..." [(ngModel)]="this.paymentOrderAdd.paymentMethod"></p-dropdown>
+          <div class="ui-g-6" style="line-height: 2vh;text-align: left">
+            <div class="ui-g-3" style="text-align: right">
+              <label ><span style="color: red">*</span>金额：</label>
+            </div>
+            <div class="ui-g-8" style="line-height: 2vh;text-align: left">
+              <input  type="text" pInputText  [style]="{'width':'7vw'}" [(ngModel)]="item.num">
+            </div>
           </div>
         </div>
         <div class="ui-g-6" style="line-height:  3vh">
-          <div class="ui-g-4" style="text-align: right">
+
+          <div class="ui-g-3" style="text-align: right">
             <label >预存金额：</label>
           </div>
           <div class="ui-g-8" style="text-align: left">
@@ -112,7 +123,7 @@
           </div>
         </div>
         <div class="ui-g-6" style="line-height:  3vh">
-          <div class="ui-g-4" style="text-align: right">
+          <div class="ui-g-3" style="text-align: right">
             <label for="payerName">缴费人：</label>
           </div>
           <div class="ui-g-8" style="text-align: left">
@@ -120,7 +131,7 @@
           </div>
         </div>
         <div class="ui-g-6" style="line-height:  3vh">
-          <div class="ui-g-4" style="text-align: right">
+          <div class="ui-g-3" style="text-align: right">
             <label for="payerPhone">缴费人电话：</label>
           </div>
           <div class="ui-g-8" style="text-align: left">
@@ -128,7 +139,7 @@
           </div>
         </div>
         <div class="ui-g-6" style="line-height:  3vh">
-          <div class="ui-g-4" style="text-align: right">
+          <div class="ui-g-3" style="text-align: right">
             <label for="remark">备注：</label>
           </div>
           <div class="ui-g-8" style="text-align: left">

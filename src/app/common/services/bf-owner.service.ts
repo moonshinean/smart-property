@@ -35,9 +35,17 @@ export class BfOwnerService {
   public  addVacantRoomCodeAndOwnerInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/vacantRoom/addOwner2', body);
   }
+  // 空置房修改
+  public  updateVacantRoomCodeAndOwnerInfo(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/vacantRoom/updateOwner2', body);
+  }
   // 业主添加
   public  addRoomCodeAndOwnerInfo(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/owner/addOwner', body);
+  }
+  // 业主修改
+  public  updateRoomCodeAndOwnerInfo(body): Observable<any> {
+    return  this.http.post(environment.sysetUrl + '/owner/updateOwner', body);
   }
   public  queryUpdateInfoByroomCode(body): Observable<any> {
     return  this.http.post(environment.sysetUrl + '/owner/findToUpdate', body);

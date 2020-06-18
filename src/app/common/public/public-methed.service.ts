@@ -23,7 +23,7 @@ export class PublicMethedService {
     clear: '清除'
   };
   // 判断为手机号码
-  public verifyPhone: RegExp = /^1[37458]\d{9}$/;
+  public verifyPhone: RegExp = /^1[345678]\d{9}$/;
   // 判断不能为空
   public verifyNull: RegExp = /s/;
   // 判断为汉字
@@ -398,20 +398,6 @@ export class PublicMethedService {
     return list.map(v => {
        return {label: v.settingName, value: v.settingCode};
      });
-  }
-  /**
-   * get Native Status
-   * @param parameter (Request parameter)
-   * @param callback
-   */
-  public  getNatStatus(parameter, callback: (...args: any[]) => any): void {
-    this.globalSrv.queryNatchoose({data: parameter}).subscribe(
-      value => {
-        this.setQuestJudgment(value.status, value.message, () => {
-          callback(value.data);
-        });
-      }
-    );
   }
   public  setConfirmation(title, message, callback: (...args: any[]) => any): void {
     this.confirmationService.confirm({

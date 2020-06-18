@@ -138,6 +138,7 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     regionCode: '',
     buildingCode: '',
     unitCode: '',
+    datalabel: '',
   };
   // 详情里的列表按钮
   public pieBtnList = [
@@ -181,18 +182,14 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
         this.searchOwerData.type = value.data.type;
         this.queryOwnerPageData();
         for (const roomKey in this.roomCodeInfo) {
-          if (this.roomCodeInfo[roomKey] !== '') {
-            if (roomKey ===  'villageCode') {
-              this.roomInfo.villageName = this.roomCodeInfo[roomKey];
-            } else if (roomKey ===  'regionCode') {
-              this.roomInfo.regionName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
-            } else if (roomKey ===  'buildingCode') {
-              this.roomInfo.buildingName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
-            } else if (roomKey ===  'unitCode') {
-              this.roomInfo.unitName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
-            } else {
-              this.roomInfo.roomCode = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
-            }
+          if (roomKey ===  'villageCode') {
+            this.roomInfo.villageName = this.roomCodeInfo[roomKey];
+          } else if (roomKey ===  'regionCode') {
+            this.roomInfo.regionName = value.datalabel['regionName'];
+          } else if (roomKey ===  'buildingCode') {
+            this.roomInfo.buildingName = value.datalabel['buildingName'];
+          } else if (roomKey ===  'unitCode') {
+            this.roomInfo.unitName = value.datalabel['unitName'];
           }
         }
       }
@@ -305,13 +302,11 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
         if (roomKey ===  'villageCode') {
           this.roomInfo.villageName = this.roomCodeInfo[roomKey];
         } else if (roomKey ===  'regionCode') {
-          this.roomInfo.regionName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+          this.roomInfo.regionName = this.roomCodeInfo.datalabel['regionName'];
         } else if (roomKey ===  'buildingCode') {
-          this.roomInfo.buildingName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+          this.roomInfo.buildingName = this.roomCodeInfo.datalabel['buildingName'];
         } else if (roomKey ===  'unitCode') {
-          this.roomInfo.unitName = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
-        } else {
-          this.roomInfo.roomCode = this.roomCodeInfo[roomKey].slice(this.roomCodeInfo[roomKey].lastIndexOf('-') + 1, this.roomCodeInfo[roomKey].length);
+          this.roomInfo.unitName = this.roomCodeInfo.datalabel['unitName'];
         }
       }
     }
@@ -336,7 +331,8 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
     });
     if (!addroomVerifyStaus) {
         // console.log(data);
-       this.addQuest(data);
+      this.addQuest(data);
+
     } else {
       this.toolSrv.setToast('error', '操作错误', '带*号的信息未填写完整');
     }
@@ -353,29 +349,47 @@ export class BfOwnerComponent implements OnInit, OnDestroy {
           v.normalPaymentStatus = this.toolSrv.setLabelToValue(this.normalChargeOption, v.normalPaymentStatus);
           return v;
       });
-      if (data === '添加') {
-        this.roomInfo.villageName = this.toolSrv.setValueToLabel(this.villageOption,  this.roomInfo.villageName);
-      }
+
       this.roomInfo.renovationStartTime = this.datePipe.transform(this.roomInfo.renovationStartTime, 'yyyy-MM-dd');
       this.roomInfo.renovationDeadline = this.datePipe.transform(this.roomInfo.renovationDeadline, 'yyyy-MM-dd');
       this.roomInfo.realRecyclingHomeTime = this.datePipe.transform( this.roomInfo.realRecyclingHomeTime , 'yyyy-MM-dd');
       this.roomInfo.startBillingTime = this.datePipe.transform( this.roomInfo.startBillingTime , 'yyyy-MM-dd');
-      // this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, );
-      this.owerSrv.addRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
-            value => {
-              if (value.status === '1000') {
-                this.queryOwnerPageData();
-                this.toolSrv.setToast('success', '操作成功', value.message);
-                this.ownerAddDialog = false;
-                this.ownerModifayDialog = false;
-                this.clearData();
-                this.updateTreeSrv.emitChangeTheme('update');
-              } else {
-                this.roomInfo.villageName = this.toolSrv.setLabelToValue(this.villageOption,  this.roomInfo.villageName);
-                this.toolSrv.setToast('error', '操作失败', value.message);
-              }
+      if (data === '添加') {
+        this.roomInfo.villageName = this.toolSrv.setValueToLabel(this.villageOption,  this.roomInfo.villageName);
+        this.owerSrv.addRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.queryOwnerPageData();
+              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.ownerAddDialog = false;
+              this.ownerModifayDialog = false;
+              this.clearData();
+              this.updateTreeSrv.emitChangeTheme('update');
+            } else {
+              this.roomInfo.villageName = this.toolSrv.setLabelToValue(this.villageOption,  this.roomInfo.villageName);
+              this.toolSrv.setToast('error', '操作失败', value.message);
             }
-      );
+          }
+        );
+      } else {
+        this.owerSrv.updateRoomCodeAndOwnerInfo({roomInfo: this.roomInfo, owner: addOwnerList}).subscribe(
+          value => {
+            if (value.status === '1000') {
+              this.queryOwnerPageData();
+              this.toolSrv.setToast('success', '操作成功', value.message);
+              this.ownerAddDialog = false;
+              this.ownerModifayDialog = false;
+              this.clearData();
+              this.updateTreeSrv.emitChangeTheme('update');
+            } else {
+              this.roomInfo.villageName = this.toolSrv.setLabelToValue(this.villageOption,  this.roomInfo.villageName);
+              this.toolSrv.setToast('error', '操作失败', value.message);
+            }
+          }
+        );
+      }
+      // this.roomInfo.roomCode = this.roomInfo.roomCode.slice(this.roomInfo.roomCode.lastIndexOf('-') + 1, );
+
     });
   }
   // 从业主列表里删除业主信息删除业主信息

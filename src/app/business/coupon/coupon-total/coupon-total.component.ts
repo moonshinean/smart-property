@@ -9,6 +9,7 @@ import {Subscription} from 'rxjs';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
 import {ThemeService} from '../../../common/public/theme.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'rbi-coupon-total',
@@ -31,6 +32,7 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
     {label: '姓名', value: 3},
     {label: '身份证号', value: 4},
   ];
+
   public SearchCoupon = {
     villageCode: '',
     regionCode: '',
@@ -45,6 +47,7 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
   };
   public searchType = 0;
   public searchData =  '';
+  public couponModel: boolean = false;
   // 其他相关
   public esDate: any;
   public deleteIds: any[] = [];
@@ -138,12 +141,11 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
     this.AddcouponTotal.mobilePhone = null;
     this.AddcouponTotal.roomCode = null;
     this.AddcouponTotal.remarks = null;
-    this.toolSrv.getNatStatus([{settingType: 'COUPON_TYPE'}], (data) => {
-      this.couponTypeOption = this.toolSrv.setListMap(data.COUPON_TYPE);
-    });
-    this.toolSrv.getAdmStatus([{settingType: 'USE_STATUS'}, {settingType: 'PAST_DUE'}, {settingType: 'AUDIT_STATUS'}], (data) => {
+    this.toolSrv.getAdmStatus([{settingType: 'COUPON_TYPE'}, {settingType: 'USE_STATUS'}, {settingType: 'PAST_DUE'}, {settingType: 'AUDIT_STATUS'}], (data) => {
       this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
       this.pastDueOption = this.toolSrv.setListMap(data.PAST_DUE);
+      this.couponTypeOption = this.toolSrv.setListMap(data.COUPON_TYPE);
+
       this.userStatusOption = this.toolSrv.setListMap(data.USE_STATUS);
       this.queryCouponDataPage();
     });
@@ -395,6 +397,9 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
     );
   }
 
+
+
+
   public eventClick(e): void {
     if (e === 'false') {
       this.optionDialog.dialog = false;
@@ -416,15 +421,17 @@ export class CouponTotalComponent implements OnInit, OnDestroy {
             this.formgroup.patchValue({effectiveTime: (value.data.effectiveTime === 0 ||
                 value.data.effectiveTime === '0') ? '无期限' : value.data.effectiveTime + '天' , money: value.data.money});
             this.formgroup.patchValue({couponName: value.data.couponName});
-            this.couponTotalSrv.queryCouponType({}).subscribe(
-              val => {
-                val.data.forEach(v => {
-                  if (value.data.couponType === v.settingCode) {
-                    this.formgroup.patchValue({couponType: v.settingName});
-                  }
-                });
-              }
-            );
+            console.log(value);
+            console.log(this.couponTypeOption);
+            // this.couponTotalSrv.queryCouponType({}).subscribe(
+            //   val => {
+              this.couponTypeOption.forEach(v => {
+                if (value.data.couponType === v.value) {
+                  this.formgroup.patchValue({couponType: v.label});
+                }
+              });
+            //   }
+            // );
           }
         );
       }

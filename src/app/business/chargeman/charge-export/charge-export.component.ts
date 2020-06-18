@@ -7,6 +7,8 @@ import {DatePipe} from '@angular/common';
 import {PublicMethedService} from '../../../common/public/public-methed.service';
 import {GlobalService} from '../../../common/services/global.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
+import {Subscription} from 'rxjs';
+import {SharedServiceService} from '../../../common/public/shared-service.service';
 
 @Component({
   selector: 'rbi-charge-export',
@@ -49,6 +51,17 @@ export class ChargeExportComponent implements OnInit {
     {label: '当天', value: 1},
     {label: '时间段', value: 2},
   ];
+  public dataInfo = {
+    villageCode: '',
+    roomCode: '',
+    regionCode: '',
+    buildingCode: '',
+    unitCode: '',
+    startTime: '',
+    endTime: ''
+  };
+  // 服务传参相关
+  public ownerSub: Subscription;
   // 按钮权限相关
   public btnHiden = [
     {label: '报表类型选择', hidden: true},
@@ -64,9 +77,26 @@ export class ChargeExportComponent implements OnInit {
     private toolSrv: PublicMethedService,
     private globalSrv: GlobalService,
     private localSrv: LocalStorageService,
-    private datePipe: DatePipe
-  ) { }
+    private datePipe: DatePipe,
+    private sharedSrv: SharedServiceService,
+  ) {
+    this.ownerSub = this.sharedSrv.changeEmitted$.subscribe(
+      value => {
+        console.log(value);
+        for (const key in this.dataInfo) {
+          if (key !== 'startTime' && key !== 'endTime')
+          this.dataInfo[key] = value[key];
+        }
+      }
+    );
+  }
   ngOnInit() {
+    if (this.sharedSrv.SearchData !== undefined) {
+      for (const key in this.dataInfo) {
+        if (key !== 'startTime' && key !== 'endTime')
+          this.dataInfo[key] = this.sharedSrv.SearchData[key];
+      }
+    }
     this.setBtnIsHidden();
     this.exportInitialization();
   }
@@ -182,12 +212,12 @@ export class ChargeExportComponent implements OnInit {
   }
   // sure modify export
   public  exportSureClick(): void {
+    console.log(123);
     if (this.exportTableType === 1) {
       if (this.selType === 2) {
-        console.log(this.startTime);
-        if ((this.startTime !== null && this.startTime !== undefined) && (this.endTime !== null && this.endTime !== undefined)) {
-          this.startTime = this.datePipe.transform(this.startTime, 'yyyy-MM-dd');
-          this.endTime = this.datePipe.transform(this.endTime, 'yyyy-MM-dd');
+        if (this.dataInfo.startTime !== '' && this.dataInfo.endTime !== '') {
+          this.dataInfo.startTime = this.datePipe.transform(this.dataInfo.startTime, 'yyyy-MM-dd');
+          this.dataInfo.endTime = this.datePipe.transform(this.dataInfo.endTime, 'yyyy-MM-dd');
           this.exportGeneratingInfoExcal();
         } else {
           this.toolSrv.setToast('error', '操作错误', '请选择时间范围');
@@ -196,9 +226,9 @@ export class ChargeExportComponent implements OnInit {
         this.exportGeneratingInfoExcal();
       }
     } else {
-      if ((this.startTime !== null && this.startTime !== undefined) && (this.endTime !== null && this.endTime !== undefined)) {
-        this.startTime = this.datePipe.transform(this.startTime, 'yyyy-MM-dd');
-        this.endTime = this.datePipe.transform(this.endTime, 'yyyy-MM-dd');
+      if (this.dataInfo.startTime !== '' && this.dataInfo.endTime !== '') {
+        this.dataInfo.startTime = this.datePipe.transform(this.dataInfo.startTime, 'yyyy-MM-dd');
+        this.dataInfo.endTime = this.datePipe.transform(this.dataInfo.endTime, 'yyyy-MM-dd');
         this.exportWriteoffInfoExcal();
       } else {
         this.toolSrv.setToast('error', '操作错误', '请选择时间范围');
@@ -250,7 +280,7 @@ export class ChargeExportComponent implements OnInit {
      // this.table
   }
   public  exportGeneratingInfoExcal(): void {
-      this.exportSrv.exportGeneratingInfo({startTime: this.startTime, endTime: this.endTime}).subscribe(val => {
+      this.exportSrv.exportGeneratingInfo(this.dataInfo).subscribe(val => {
          if (val.status === '1000') {
            window.open(val.data);
            this.exportTypeDialog = false;
@@ -262,7 +292,7 @@ export class ChargeExportComponent implements OnInit {
       });
   }
   public  exportWriteoffInfoExcal(): void {
-    this.exportSrv.exportWriteoffInfo({startTime: this.startTime, endTime: this.endTime}).subscribe(val => {
+    this.exportSrv.exportWriteoffInfo(this.dataInfo).subscribe(val => {
       if (val.status === '1000') {
         window.open(val.data);
         this.exportTypeDialog = false;
@@ -350,6 +380,7 @@ export class ChargeExportComponent implements OnInit {
   // 设置导出类型
   public  changeExportType(): void {
     this.hiddenSelTime = this.selType !== 2;
+    this.dataInfo.startTime = this.dataInfo.endTime = '';
   }
   // 设置按钮显示权限
   public  setBtnIsHidden(): void {
@@ -366,5 +397,11 @@ export class ChargeExportComponent implements OnInit {
         });
       }
     });
+  }
+  public  clearData(): void {
+    this.exportTypeDialog = false;
+    for (const key in this.dataInfo) {
+      this.dataInfo[key] = '';
+    }
   }
 }

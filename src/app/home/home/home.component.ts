@@ -41,6 +41,12 @@ export class HomeComponent implements OnInit {
     unitCode: '',
     roomCode: '',
     parkingSpaceCode: '',
+    datalabel: {
+      villageName: '',
+      regionName: '',
+      buildingName: '',
+      unitName: '',
+    },
     data: {
       level: '',
       code: '',
@@ -177,7 +183,7 @@ export class HomeComponent implements OnInit {
     return oneChild;
   }
 
-  // 商业树
+  // 步梯房树
   public initializesetTree(data): any {
     // console.log(oneChild);
     const oneChild = [];
@@ -199,60 +205,37 @@ export class HomeComponent implements OnInit {
     }
     return oneChild;
   }
-  // public initializeTree(data): any {
-  //   const oneChild = [];
-  //   for (let i = 0; i < data.length; i++) {
-  //     const childnode = new TreeNode();
-  //     childnode.value = data[i].code;
-  //     childnode.label = data[i].name;
-  //     childnode.level = data[i].level;
-  //     if (data[i].level === '4') {
-  //       childnode.selectable = true;
-  //     } else {
-  //       childnode.selectable = false;
-  //     }
-  //     if (data[i].SpaceDTO != null && data[i].SpaceDTO.length !== 0 ) {
-  //       childnode.children = this.initializeTree(data[i].SpaceDTO);
-  //     } else {
-  //       childnode.children = [];
-  //     }
-  //     oneChild.push(childnode);
-  //   }
-  //   return oneChild;
-  // }
   // Tree structure is not selected
   public  treeOnNodeSelect(e, index): void {
     // tslint:disable-next-line:forin
+    for (const key in this.SearchData) {
+      if (key !== 'data' && key !== 'datalabel') {
+        this.SearchData[key] = '';
+      } else if (key === 'data') {
+        this.SearchData[key].level = '';
+        this.SearchData[key].code = '';
+      } else if (key === 'datalabel') {
+        this.SearchData[key].villageName = '';
+        this.SearchData[key].regionName = '';
+        this.SearchData[key].buildingName = '';
+        this.SearchData[key].unitName = '';
+      }
+    }
     if (index === 1) {
       this.SearchData.data.type = '住宅';
-      for (const key in this.SearchData) {
-        if (key !== 'data') {
-          this.SearchData[key] = '';
-        } else {
-          this.SearchData[key].level = '';
-          this.SearchData[key].code = '';
-        }
-      }
+
       this.dataBusTree = new DataTree();
       this.dataParkTree = new DataTree();
     } else if (index === 2) {
       this.SearchData.data.type = '商户';
       this.dataTree = new DataTree();
       this.dataParkTree = new DataTree();
-    } else if (index === 3){
+    } else if (index === 3) {
       this.SearchData.data.type = '车位';
       this.dataTree = new DataTree();
       this.dataBusTree = new DataTree();
-    }else {
+    } else {
       this.SearchData.data.type = '步梯房';
-      for (const key in this.SearchData) {
-        if (key !== 'data') {
-          this.SearchData[key] = '';
-        } else {
-          this.SearchData[key].level = '';
-          this.SearchData[key].code = '';
-        }
-      }
       this.dataBusTree = new DataTree();
       this.dataParkTree = new DataTree();
     }
@@ -264,10 +247,10 @@ export class HomeComponent implements OnInit {
   // 设置搜索数据
   public  setSearhData(data): any {
     switch (data.level) {
-      case '1': this.SearchData.villageCode = data.value; break;
-      case '2': this.SearchData.regionCode = data.value; break;
-      case '3': this.SearchData.buildingCode = data.value; break;
-      case '4': this.SearchData.unitCode = data.value; break;
+      case '1': this.SearchData.villageCode = data.value; this.SearchData.datalabel.villageName = data.label; break;
+      case '2': this.SearchData.regionCode = data.value; this.SearchData.datalabel.regionName = data.label; break;
+      case '3': this.SearchData.buildingCode = data.value; this.SearchData.datalabel.buildingName = data.label;break;
+      case '4': this.SearchData.unitCode = data.value; this.SearchData.datalabel.unitName = data.label; break;
       case '5': this.SearchData.roomCode = data.value; break;
       default: break;
     }

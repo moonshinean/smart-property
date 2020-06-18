@@ -139,7 +139,7 @@
     </p-footer>
   </p-dialog>
 
-  <p-dialog header="类型选择" [(visible)]="exportTypeDialog" [width]="800"  >
+  <p-dialog header="类型选择" [(visible)]="exportTypeDialog" [width]="800"  [closable]="false">
     <!--Content-->
     <div class="ui-g ui-fluid">
       <!--报表显示数据-->
@@ -157,7 +157,7 @@
             <span>开始时间：</span>
           </div>
           <div class="ui-g-7" style="line-height: 2vh">
-            <p-calendar [(ngModel)]="startTime" placeholder="请选择开始时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1920:2030" [locale]="esDate"></p-calendar>
+            <p-calendar [(ngModel)]="dataInfo.startTime" placeholder="请选择开始时间..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1920:2030" [locale]="esDate"></p-calendar>
           </div>
         </div>
         <div class="ui-g-6" style="line-height: 3.8vh">
@@ -165,7 +165,7 @@
             <span>结束时间：</span>
           </div>
           <div class="ui-g-7" style="line-height: 2vh">
-            <p-calendar [(ngModel)]="endTime" placeholder="请选择结束..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1920:2030" [locale]="esDate"></p-calendar>
+            <p-calendar [(ngModel)]="dataInfo.endTime" placeholder="请选择结束..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1920:2030" [locale]="esDate"></p-calendar>
           </div>
         </div>
       </div>
@@ -173,10 +173,10 @@
     <p-footer>
       <div class="ui-dialog-buttonpane ui-helper-clearfix" style="text-align: center">
         <button class="charge-export-dialog-Btn charge-export-dialog-Btn-sure" (click)="exportSureClick()">确认</button>
-        <button class="charge-export-dialog-Btn charge-export-dialog-Btn-false" (click)="exportTypeDialog = false">取 消</button>
+        <button class="charge-export-dialog-Btn charge-export-dialog-Btn-false" (click)="clearData()">取 消</button>
       </div>
     </p-footer>
   </p-dialog>
-  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>
+<!--  <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>-->
 </div>
 

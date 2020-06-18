@@ -7,6 +7,7 @@ import {Subscription} from 'rxjs';
 import {ThemeService} from '../../../common/public/theme.service';
 import {LocalStorageService} from '../../../common/services/local-storage.service';
 import {SharedServiceService} from '../../../common/public/shared-service.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'rbi-coupon-audited',
@@ -42,6 +43,13 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
       {background: '', color: ''}],
     detailBtn: ''
   };
+  public changeDate = {
+    timePreliminaryExamination: '',
+    reviewTime: '',
+    id: ''
+  };
+  public roomCode: any;
+  public couponModel: boolean = false;
   // 搜索相关
   public searchOption = [
     {label: '手机号', value: 1},
@@ -49,6 +57,7 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
     {label: '姓名', value: 3},
     {label: '身份证号', value: 4},
   ];
+  public esDate: any;
   public SearchCoupon = {
     villageCode: '',
     regionCode: '',
@@ -72,6 +81,7 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
     private localSrv: LocalStorageService,
     private  sharedSrv: SharedServiceService,
     private themeSrv: ThemeService,
+    private datePipe: DatePipe,
   ) {
     this.themeSub =  this.themeSrv.changeEmitted$.subscribe(
       value => {
@@ -93,6 +103,7 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
         this.queryCouponAuditedPageData();
       }
     );
+    this.esDate = this.toolSrv.esDate;
   }
 
   ngOnInit() {
@@ -118,10 +129,8 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
 
   // initialization houseinfo
   public couponAuditedInitialization(): void {
-    this.toolSrv.getNatStatus([{settingType: 'COUPON_TYPE'}], (data) => {
+    this.toolSrv.getAdmStatus([{settingType: 'COUPON_TYPE'}, {settingType: 'USE_STATUS'}, {settingType: 'PAST_DUE'}, {settingType: 'AUDIT_STATUS'}], (data) => {
       this.couponTypeOption = this.toolSrv.setListMap(data.COUPON_TYPE);
-    });
-    this.toolSrv.getAdmStatus([{settingType: 'USE_STATUS'}, {settingType: 'PAST_DUE'}, {settingType: 'AUDIT_STATUS'}], (data) => {
       this.auditStatusOption = this.toolSrv.setListMap(data.AUDIT_STATUS);
       this.pastDueOption = this.toolSrv.setListMap(data.PAST_DUE);
       this.userStatusOption = this.toolSrv.setListMap(data.USE_STATUS);
@@ -232,7 +241,42 @@ export class CouponAuditedComponent implements OnInit, OnDestroy {
       tableList:  [{label: '详情', color: this.table.detailBtn}]
     };
   }
-
+  public  couponAuditedClick(): void {
+    if (this.couponAuditedSelect.length === 0) {
+      this.toolSrv.setToast('error', '操作失败', '请选择需要修改的项');
+    } else if (this.couponAuditedSelect.length === 1) {
+      this.couponModel = true;
+      console.log(this.couponAuditedSelect);
+      this.roomCode = this.couponAuditedSelect[0].roomCode;
+      for (const key in this.changeDate) {
+        this.changeDate[key] = this.couponAuditedSelect[0][key];
+      }
+    } else {
+      this.toolSrv.setToast('error', '操作失败', '只能选择一项进行修改');
+    }
+  }
+  public  sureChangeDate(): void {
+    if (this.changeDate.reviewTime !== '' && this.changeDate.timePreliminaryExamination !== '') {
+      this.changeDate.timePreliminaryExamination = this.datePipe.transform(this.changeDate.timePreliminaryExamination, 'yyyy-MM-dd');
+      this.changeDate.reviewTime = this.datePipe.transform(this.changeDate.reviewTime, 'yyyy-MM-dd');
+      this.couponAuditedSrv.changeReviewCouponInfo(this.changeDate).subscribe(val => {
+        console.log(val);
+        if (val.status === '1000') {
+          this.couponAuditedSelect = [];
+          this.couponModel = false;
+          this.roomCode = '';
+          this.queryCouponAuditedPageData();
+          for (const key in this.changeDate) {
+            this.changeDate[key] = '';
+          }
+        } else {
+          this.toolSrv.setToast('error', '修改失败', val.message);
+        }
+      });
+    } else {
+      this.toolSrv.setToast('error', '操作失败', '时间未选择');
+    }
+  }
   // 选择数据
   public  selectData(e): void {
     this.couponAuditedSelect = e;

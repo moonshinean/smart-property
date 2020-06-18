@@ -6,21 +6,21 @@
   <!--顶部按钮-->
   <div class="refund-already-header">
     <div class=" ui-g-12">
-      <!--<div class="ui-g-1 refund-already-header-btn refund-already-header-btn-add" (click)="alreadyAddClick()">-->
-        <!--<img class="refund-already-header-img-add" src="assets/images/ic_add.png" alt="">-->
-        <!--<span>增 加</span>-->
-      <!--</div>-->
-      <!--<div class="ui-g-1 refund-already-header-btn refund-already-header-btn-modify" (click)="alreadyModifyClick()">-->
-        <!--<img class="refund-already-header-img-modify" src="assets/images/ic_modify.png" alt="">-->
-        <!--<span>修 改</span>-->
-      <!--</div>-->
+<!--      <div class="ui-g-1 refund-already-header-btn refund-already-header-btn-add" (click)="alreadyAddClick()">-->
+<!--        <img class="refund-already-header-img-add" src="assets/images/ic_add.png" alt="">-->
+<!--        <span>增 加</span>-->
+<!--      </div>-->
+      <div class="ui-g-1 refund-already-header-btn refund-already-header-btn-modify" (click)="alreadyModifyClick()" *ngIf="btnHiden[0].hidden">
+        <img class="refund-already-header-img-modify" src="assets/images/ic_modify.png" alt="">
+        <span>修 改</span>
+      </div>
       <!--<div class="ui-g-1 refund-already-header-btn refund-already-header-btn-delete" (click)="alreadyDeleteClick()">-->
         <!--<img class="refund-already-header-img-delete" src="assets/images/ic_delete.png" alt="">-->
         <!--<span>删 除</span>-->
       <!--</div>-->
     </div>
     <!--//搜索-->
-    <div class="ui-inputgroup refund-already-header-search" *ngIf="!btnHiden[0].hidden">
+    <div class="ui-inputgroup refund-already-header-search" *ngIf="!btnHiden[1].hidden">
       <p-dropdown [options]="searchOption" placeholder="请选择搜索范围.."  scrollHeight="100px"  [(ngModel)]="searchType" [style]="{'width':'10vw','margin-right':'2vw'}"></p-dropdown>
       <input type="text" pInputText placeholder="请输入搜索内容" [(ngModel)]="searchData">
       <button id="disabled-btn" class="refund-already-header-btn-search" type="button"  (click)="alreadySearchClick()"  label="搜索">搜索</button>
@@ -30,7 +30,40 @@
   <div class="refund-already-table">
     <rbi-check-table-btn [select]="alreadySelect" (selectData)="selectData($event)" (detail)="alreadyDetailClick($event)" [option]="alreadyOption"></rbi-check-table-btn>
   </div>
-
+  <p-dialog header="时间修改" [(visible)]="alreadyModel" [width]="800">
+    <div class="ui-g ui-fluid" [ngStyle]="{'line-height':'4vh'}">
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label for="addmobilePhone">房间编号：</label>
+        </div>
+        <div class="ui-g-8">
+          <input id="addmobilePhone" type="text" disabled pInputText placeholder="请输入客户电话.." [(ngModel)]="roomCode">
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >初审时间：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="changeDate.timePreliminaryExamination" placeholder="请选择开始日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2100" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <div class="ui-g-4">
+          <label >复审时间：</label>
+        </div>
+        <div class="ui-g-8">
+          <p-calendar [(ngModel)]="changeDate.reviewTime" placeholder="请选择结束日期..." [monthNavigator]="true" [yearNavigator]="true" dateFormat="yy-mm-dd"  yearRange="1900:2100" [locale]="esDate"></p-calendar>
+        </div>
+      </div>
+    </div>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" style=" text-align: center">
+        <button class="refund-already-dialog-Btn refund-already-dialog-Btn-sure" (click)="sureChangeDate()">确认</button>
+        <button class="refund-already-dialog-Btn refund-already-dialog-Btn-false"  (click)="alreadyModel=false;alreadySelect =[]">取消</button>
+      </div>
+    </p-footer>
+  </p-dialog>
   <!--详情弹窗-->
   <rbi-detail-pop [dialogOption]="alreadyDetailOption"></rbi-detail-pop>
   <rbi-paging [option]="option" (pageClick)="nowpageEventHandle($event)"></rbi-paging>

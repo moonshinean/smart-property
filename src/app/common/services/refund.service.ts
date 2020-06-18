@@ -56,6 +56,10 @@ export class RefundService {
   public queryRefundAlreadyPageInfo(pamars): Observable<any> {
     return this.http.post(environment.chargeUrl +  `/refund/findAlreadyByPage`, pamars);
   }
+  // 修改信息
+  public  modifyDateRefundAlreadyInfo(pamars): Observable<any> {
+    return this.http.post(environment.chargeUrl + `/refund/update_application_review_time`, pamars);
+  }
   /**
    * 退款申请模块
    * @param pamars
