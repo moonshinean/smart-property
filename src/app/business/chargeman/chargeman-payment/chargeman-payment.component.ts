@@ -510,6 +510,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         for (const key of listKey) {
           this.paymentOrderAdd[key] = this.paymentSelect[0][key];
         }
+        this.paymentOrderAdd.threeWayFeeCalculationTime = this.datePipe.transform(this.threeWayFeeCalculationTime, 'yyyy-MM');
         this.paymentOrderAdd.payerPhone = this.paymentOrderAdd.payerPhone === undefined ? '' : this.paymentOrderAdd.payerPhone;
         this.paymentOrderAdd.payerName = this.paymentOrderAdd.payerName === undefined ? '' : this.paymentOrderAdd.payerName;
         this.paymentOrderAdd.remark = this.paymentOrderAdd.remark === undefined ? '' : this.paymentOrderAdd.remark;

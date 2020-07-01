@@ -1,36 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="06640e83-481b-4887-9be0-06a4f0444ad5" name="Default Changelist" comment="">
+    <list default="true" id="06640e83-481b-4887-9be0-06a4f0444ad5" name="Default Changelist" comment="操作日志：&#10;  （1）、已退款修改添加&#10;  （2）、优惠券已审核修改添加&#10;  &#10;  &#10;  时间：2020-6-18 10:33&#10;  &#10;  -------------云上智舍----------------">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-owner/bf-owner.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-owner/bf-owner.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/baseinfo/bf-vacant-room/bf-vacant-room.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/baseinfo/bf-vacant-room/bf-vacant-room.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-export/charge-export.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-export/charge-export.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-export/charge-export.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-export/charge-export.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-pay-parkspace/charge-pay-parkspace.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-pay-parkspace/charge-pay-parkspace.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/charge-pay-parkspace/charge-pay-parkspace.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/charge-pay-parkspace/charge-pay-parkspace.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-payment/chargeman-payment.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-payment/chargeman-payment.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/coupon/coupon-audited/coupon-audited.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/coupon/coupon-audited/coupon-audited.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/coupon/coupon-audited/coupon-audited.component.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/coupon/coupon-audited/coupon-audited.component.less" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/coupon/coupon-audited/coupon-audited.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/coupon/coupon-audited/coupon-audited.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/coupon/coupon-pending-review/coupon-pending-review.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/coupon/coupon-pending-review/coupon-pending-review.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/coupon/coupon-review/coupon-review.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/coupon/coupon-review/coupon-review.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/coupon/coupon-total/coupon-total.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/coupon/coupon-total/coupon-total.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/coupon/coupon-total/coupon-total.component.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/coupon/coupon-total/coupon-total.component.less" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/coupon/coupon-total/coupon-total.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/coupon/coupon-total/coupon-total.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/coupon/coupon.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/coupon/coupon.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/refund/refund-already/refund-already.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/refund/refund-already/refund-already.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/refund/refund-already/refund-already.component.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/refund/refund-already/refund-already.component.less" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/refund/refund-already/refund-already.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/refund/refund-already/refund-already.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/refund/refund-no/refund-no.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/refund/refund-no/refund-no.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/business/refund/refund-no/refund-no.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/refund/refund-no/refund-no.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/public/public-methed.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/public/public-methed.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/bf-owner.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/bf-owner.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/coupon.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/coupon.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/common/services/refund.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/refund.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/home/home/home.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/home/home/home.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/environments/environment.prod.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/environments/environment.prod.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/environments/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/environments/environment.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +27,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../vue_project/rbi-quote" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
@@ -220,7 +194,12 @@
       <workItem from="1591930889413" duration="6811000" />
       <workItem from="1592315564987" duration="3660000" />
       <workItem from="1592358325211" duration="10256000" />
-      <workItem from="1592444521617" duration="1209000" />
+      <workItem from="1592444521617" duration="1777000" />
+      <workItem from="1592460712569" duration="761000" />
+      <workItem from="1593071334727" duration="1520000" />
+      <workItem from="1593397186577" duration="2319000" />
+      <workItem from="1593485464723" duration="1318000" />
+      <workItem from="1593571572510" duration="1537000" />
     </task>
     <task id="LOCAL-00001" summary="操作日志：&#10;  （1）、收费模块bug修复&#10;  （2）、租赁车位表单验证">
       <created>1584003505351</created>
@@ -299,7 +278,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591620827496</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="操作日志：&#10;  （1）、已退款修改添加&#10;  （2）、优惠券已审核修改添加&#10;  &#10;  &#10;  时间：2020-6-18 10:33&#10;  &#10;  -------------云上智舍----------------">
+      <created>1592447635865</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1592447635865</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -316,47 +302,48 @@
     <MESSAGE value="操作日志：&#10;  （1）、缴费模块支付方式修改&#10;  （2）、退款模块支付方式删除&#10;  （2）、退款申请搜索条件添加&#10;  &#10;  &#10;  时间：2020-5-26 14:58&#10;  &#10;  -------------云上智舍----------------" />
     <MESSAGE value="操作日志：&#10;  （1）、空置费累计模块天机&#10;  &#10;  &#10;  时间：2020-6-5 15:43&#10;  &#10;  -------------云上智舍----------------" />
     <MESSAGE value="操作日志：&#10;  （1）、三通费缴费时间添加&#10;  &#10;  &#10;  时间：2020-6-8 20:53&#10;  &#10;  -------------云上智舍----------------" />
-    <option name="LAST_COMMIT_MESSAGE" value="操作日志：&#10;  （1）、三通费缴费时间添加&#10;  &#10;  &#10;  时间：2020-6-8 20:53&#10;  &#10;  -------------云上智舍----------------" />
+    <MESSAGE value="操作日志：&#10;  （1）、已退款修改添加&#10;  （2）、优惠券已审核修改添加&#10;  &#10;  &#10;  时间：2020-6-18 10:33&#10;  &#10;  -------------云上智舍----------------" />
+    <option name="LAST_COMMIT_MESSAGE" value="操作日志：&#10;  （1）、已退款修改添加&#10;  （2）、优惠券已审核修改添加&#10;  &#10;  &#10;  时间：2020-6-18 10:33&#10;  &#10;  -------------云上智舍----------------" />
   </component>
   <component name="WindowStateProjectService">
     <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1591328137502">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1591328137502" />
-    <state x="518" y="28" key="CommitChangelistDialog2" timestamp="1591620817812">
+    <state x="518" y="28" key="CommitChangelistDialog2" timestamp="1593503756366">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="518" y="28" key="CommitChangelistDialog2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1591620817812" />
+    <state x="518" y="28" key="CommitChangelistDialog2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593503756366" />
     <state x="2480" y="29" key="CommitChangelistDialog2/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1586353678223" />
-    <state x="735" y="261" key="FileChooserDialogImpl" timestamp="1592444530429">
+    <state x="735" y="261" key="FileChooserDialogImpl" timestamp="1592462801131">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="735" y="261" key="FileChooserDialogImpl/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592444530429" />
+    <state x="735" y="261" key="FileChooserDialogImpl/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592462801131" />
     <state x="2655" y="177" key="FileChooserDialogImpl/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1589851669487" />
-    <state width="1899" height="232" key="GridCell.Tab.0.bottom" timestamp="1592398332894">
+    <state width="1899" height="204" key="GridCell.Tab.0.bottom" timestamp="1593572465522">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="232" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592398332894" />
+    <state width="1899" height="204" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593572465522" />
     <state width="1914" height="389" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
-    <state width="1899" height="232" key="GridCell.Tab.0.center" timestamp="1592398332893">
+    <state width="1899" height="204" key="GridCell.Tab.0.center" timestamp="1593572465522">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="232" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592398332893" />
+    <state width="1899" height="204" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593572465522" />
     <state width="1914" height="389" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
-    <state width="1899" height="232" key="GridCell.Tab.0.left" timestamp="1592398332893">
+    <state width="1899" height="204" key="GridCell.Tab.0.left" timestamp="1593572465522">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="232" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592398332893" />
+    <state width="1899" height="204" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593572465522" />
     <state width="1914" height="389" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
-    <state width="1899" height="232" key="GridCell.Tab.0.right" timestamp="1592398332893">
+    <state width="1899" height="204" key="GridCell.Tab.0.right" timestamp="1593572465522">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="232" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592398332893" />
+    <state width="1899" height="204" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593572465522" />
     <state width="1914" height="389" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1591620833593">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1592447857646">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1591620833593" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592447857646" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1592372623778">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
