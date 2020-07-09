@@ -58,6 +58,10 @@ export class GlobalService {
   public  queryStephouseTree(): Observable<any> {
     return this.http.post(environment.sysetUrl + `/villageChooze/findStephouseTree`, {});
   }
+  // 车位树结构
+  public  getRoomTree(): Observable<any> {
+    return this.http.post(environment.sysetUrl + `/villageChooze/findAllRoomTree`, {});
+  }
 
   // 更新接口
   // query system status values

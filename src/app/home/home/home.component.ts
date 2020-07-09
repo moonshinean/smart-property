@@ -54,6 +54,8 @@ export class HomeComponent implements OnInit {
     }
   };
 
+  public dataTreesList: any = [];
+
   public dataTrees: DataTree[];
   public dataTree: DataTree = new DataTree();
 
@@ -78,9 +80,8 @@ export class HomeComponent implements OnInit {
   ) {
     this.updateSub = this.updateTreeSrv.changeEmitted$.subscribe(
       value => {
-        this.getTreeData();
-        this.getBusinessTreeData();
         this.getParkSpaceTreeData();
+        this.getTreeData();
       }
     );
   }
@@ -92,14 +93,14 @@ export class HomeComponent implements OnInit {
     // } else {
     //   this.toolSrv.changeTheme('green');
     // }
+
     this.toolSrv.changeTheme('hotblue');
     if (this.route.snapshot.children[0].url[0].path === 'main') {
       this.sidbarHidden = true;
     }
     this.getTreeData();
-    this.getBusinessTreeData();
     this.getParkSpaceTreeData();
-    this.getStephouseTreeData();
+    // this.getStephouseTreeData();
   }
   // sidebar Hidden display
   public homeHiddenSidebar(e): void {
@@ -117,20 +118,20 @@ export class HomeComponent implements OnInit {
     this.mainStyle.nativeElement.style.marginLeft = e + 'vw';
   }
   // 住宅树
-  public initializeTree(data): any {
+  public initializeTree(data, label): any {
     // console.log(oneChild);
     const oneChild = [];
     for (let i = 0; i < data.length; i++) {
       const childnode = new TreeNode();
       childnode.value = data[i].code;
       if (data[i].level === '1') {
-        childnode.label = data[i].name + '(住宅)';
+        childnode.label = data[i].name + `(${label})`;
       } else {
         childnode.label = data[i].name;
       }
       childnode.level = data[i].level;
       if (data[i].villageChoose2DTO != null && data[i].villageChoose2DTO.length !== 0 ) {
-        childnode.children = this.initializeTree(data[i].villageChoose2DTO);
+        childnode.children = this.initializeTree(data[i].villageChoose2DTO, label);
       } else {
         childnode.children = [];
       }
@@ -138,28 +139,28 @@ export class HomeComponent implements OnInit {
     }
     return oneChild;
   }
-  // 商业树
-  public initializeBusTree(data): any {
-    // console.log(oneChild);
-    const oneChild = [];
-    for (let i = 0; i < data.length; i++) {
-      const childnode = new TreeNode();
-      childnode.value = data[i].code;
-      if (data[i].level === '1') {
-        childnode.label = data[i].name + '(商户)';
-      } else {
-        childnode.label = data[i].name;
-      }
-      childnode.level = data[i].level;
-      if (data[i].villageChoose2DTO != null && data[i].villageChoose2DTO.length !== 0 ) {
-        childnode.children = this.initializeTree(data[i].villageChoose2DTO);
-      } else {
-        childnode.children = [];
-      }
-      oneChild.push(childnode);
-    }
-    return oneChild;
-  }
+  // // 商业树
+  // public initializeBusTree(data): any {
+  //   // console.log(oneChild);
+  //   const oneChild = [];
+  //   for (let i = 0; i < data.length; i++) {
+  //     const childnode = new TreeNode();
+  //     childnode.value = data[i].code;
+  //     if (data[i].level === '1') {
+  //       childnode.label = data[i].name + '(商户)';
+  //     } else {
+  //       childnode.label = data[i].name;
+  //     }
+  //     childnode.level = data[i].level;
+  //     if (data[i].villageChoose2DTO != null && data[i].villageChoose2DTO.length !== 0 ) {
+  //       childnode.children = this.initializeTree(data[i].villageChoose2DTO);
+  //     } else {
+  //       childnode.children = [];
+  //     }
+  //     oneChild.push(childnode);
+  //   }
+  //   return oneChild;
+  // }
   // 车位树
   public initializeParkTree(data): any {
     // console.log(oneChild);
@@ -182,31 +183,31 @@ export class HomeComponent implements OnInit {
     }
     return oneChild;
   }
-
-  // 步梯房树
-  public initializesetTree(data): any {
-    // console.log(oneChild);
-    const oneChild = [];
-    for (let i = 0; i < data.length; i++) {
-      const childnode = new TreeNode();
-      childnode.value = data[i].code;
-      if (data[i].level === '1') {
-        childnode.label = data[i].name + '(步梯房)';
-      } else {
-        childnode.label = data[i].name;
-      }
-      childnode.level = data[i].level;
-      if (data[i].villageChoose2DTO != null && data[i].villageChoose2DTO.length !== 0 ) {
-        childnode.children = this.initializeTree(data[i].villageChoose2DTO);
-      } else {
-        childnode.children = [];
-      }
-      oneChild.push(childnode);
-    }
-    return oneChild;
-  }
+  //
+  // // 步梯房树
+  // public initializesetTree(data): any {
+  //   // console.log(oneChild);
+  //   const oneChild = [];
+  //   for (let i = 0; i < data.length; i++) {
+  //     const childnode = new TreeNode();
+  //     childnode.value = data[i].code;
+  //     if (data[i].level === '1') {
+  //       childnode.label = data[i].name + '(步梯房)';
+  //     } else {
+  //       childnode.label = data[i].name;
+  //     }
+  //     childnode.level = data[i].level;
+  //     if (data[i].villageChoose2DTO != null && data[i].villageChoose2DTO.length !== 0 ) {
+  //       childnode.children = this.initializeTree(data[i].villageChoose2DTO);
+  //     } else {
+  //       childnode.children = [];
+  //     }
+  //     oneChild.push(childnode);
+  //   }
+  //   return oneChild;
+  // }
   // Tree structure is not selected
-  public  treeOnNodeSelect(e, index): void {
+  public  treeOnNodeSelect(e, item, type): void {
     // tslint:disable-next-line:forin
     for (const key in this.SearchData) {
       if (key !== 'data' && key !== 'datalabel') {
@@ -221,23 +222,19 @@ export class HomeComponent implements OnInit {
         this.SearchData[key].unitName = '';
       }
     }
-    if (index === 1) {
-      this.SearchData.data.type = '住宅';
-
-      this.dataBusTree = new DataTree();
+    if (type === 1) {
+      this.SearchData.data.type = item.type;
+      this.dataTreesList.forEach(v => {
+        if (v.label !== item.label) {
+          v.data = new DataTree();
+        }
+      });
       this.dataParkTree = new DataTree();
-    } else if (index === 2) {
-      this.SearchData.data.type = '商户';
-      this.dataTree = new DataTree();
-      this.dataParkTree = new DataTree();
-    } else if (index === 3) {
-      this.SearchData.data.type = '车位';
-      this.dataTree = new DataTree();
-      this.dataBusTree = new DataTree();
     } else {
-      this.SearchData.data.type = '步梯房';
-      this.dataBusTree = new DataTree();
-      this.dataParkTree = new DataTree();
+      this.SearchData.data.type = '车位';
+      this.dataTreesList.forEach(v => {
+        v.data = new DataTree();
+      });
     }
     this.SearchData.data.level = e.node.level;
     this.SearchData.data.code = e.node.value;
@@ -310,28 +307,27 @@ export class HomeComponent implements OnInit {
       );
   }
 
-  // 获取树结构的数据
+  // // 获取树结构的数据
   public  getTreeData(): void {
-    this.globalSrv.queryTVillageTree().subscribe(
-      value => {
-        if (value.status === '1000') {
-          this.roomtree = value.data;
-          this.dataTrees = this.initializeTree(this.roomtree);
-        }
+    this.globalSrv.getRoomTree().subscribe(res => {
+      console.log(res);
+      for (const key in res.data) {
+        this.dataTreesList.push({data: this.dataTree, dataTrees: this.initializeTree(res.data[key].roomTree, key), type: res.data[key].roomType, label: key});
       }
-    );
+      console.log(this.dataTreesList);
+    });
   }
-  // 获取商业树的
-  public  getBusinessTreeData(): void {
-    this.globalSrv.queryBusinessVillageTree().subscribe(
-      value => {
-        if (value.status === '1000') {
-          this.roomtree = value.data;
-          this.dataBusTrees = this.initializeBusTree(this.roomtree);
-        }
-      }
-    );
-  }
+  // // 获取商业树的
+  // public  getBusinessTreeData(): void {
+  //   this.globalSrv.queryBusinessVillageTree().subscribe(
+  //     value => {
+  //       if (value.status === '1000') {
+  //         this.roomtree = value.data;
+  //         this.dataBusTrees = this.initializeBusTree(this.roomtree);
+  //       }
+  //     }
+  //   );
+  // }
   // 获取车位树的
   public  getParkSpaceTreeData(): void {
     this.globalSrv.queryParkspaceVillageTree().subscribe(
@@ -344,14 +340,14 @@ export class HomeComponent implements OnInit {
     );
   }
   // 获取步梯房
-  public  getStephouseTreeData(): void {
-    this.globalSrv.queryStephouseTree().subscribe(
-      value => {
-        if (value.status === '1000') {
-          this.roomtree = value.data;
-          this.stephouseTrees = this.initializesetTree(this.roomtree);
-        }
-      }
-    );
-  }
+  // public  getStephouseTreeData(): void {
+  //   this.globalSrv.queryStephouseTree().subscribe(
+  //     value => {
+  //       if (value.status === '1000') {
+  //         this.roomtree = value.data;
+  //         this.stephouseTrees = this.initializesetTree(this.roomtree);
+  //       }
+  //     }
+  //   );
+  // }
 }

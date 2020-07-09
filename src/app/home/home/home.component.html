@@ -14,39 +14,22 @@
   <p-dialog title="树结构" [positionLeft]=42 [positionTop]=150 [(visible)]="treeDialog" [responsive]="true" showEffect="fade" [modal]= false [maximizable]="false"  [baseZIndex]="10000"  [width]="340">
     <div class="ui-g ui-fluid">
        <p-scrollPanel [ngStyle]="{width: '100%', height: '70vh', overflow: 'auto'}">
-          <div class="ui-g-12" >
-              <p-tree
-                [value]="dataTrees"
-                [(selection)]="dataTree"
-                selectionMode="single"
-                (onNodeSelect)="treeOnNodeSelect($event, 1)">
-              </p-tree>
-          </div>
-          <div class="ui-g-12">
-              <p-tree
-                [value]="dataBusTrees"
-                [(selection)]="dataBusTree"
-                selectionMode="single"
-                (onNodeSelect)="treeOnNodeSelect($event, 2)">
-              </p-tree>
-          </div>
          <div class="ui-g-12">
            <p-tree
-             [value]="stephouseTrees"
-             [(selection)]="stephouseTree"
+             [value]="dataParkTrees"
+             [(selection)]="dataParkTree"
              selectionMode="single"
-             (onNodeSelect)="treeOnNodeSelect($event, 4)">
+             (onNodeSelect)="treeOnNodeSelect($event, '',  2)">
            </p-tree>
          </div>
-          <div class="ui-g-12">
-             <p-tree
-               [value]="dataParkTrees"
-               [(selection)]="dataParkTree"
-               selectionMode="single"
-               (onNodeSelect)="treeOnNodeSelect($event, 3)">
-             </p-tree>
-           </div>
-
+          <div class="ui-g-12" *ngFor="let item of dataTreesList">
+              <p-tree
+                [value]="item.dataTrees"
+                [(selection)]="item.data"
+                selectionMode="single"
+                (onNodeSelect)="treeOnNodeSelect($event, item, 1)">
+              </p-tree>
+          </div>
        </p-scrollPanel>
     </div>
   </p-dialog>

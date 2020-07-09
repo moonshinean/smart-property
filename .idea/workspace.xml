@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="06640e83-481b-4887-9be0-06a4f0444ad5" name="Default Changelist" comment="操作日志：&#10;  （1）、已退款修改添加&#10;  （2）、优惠券已审核修改添加&#10;  &#10;  &#10;  时间：2020-6-18 10:33&#10;  &#10;  -------------云上智舍----------------">
+    <list default="true" id="06640e83-481b-4887-9be0-06a4f0444ad5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-payment/chargeman-payment.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/business/chargeman/chargeman-payment/chargeman-payment.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/common/services/global.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/common/services/global.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/home/home/home.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/home/home/home.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/home/home/home.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/home/home/home.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/login/login.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/environments/environment.prod.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/environments/environment.prod.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +40,7 @@
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.JavaScript" />
     <property name="ts.external.directory.path" value="D:\rbi_project\angular_project\smart-property\node_modules\typescript\lib" />
   </component>
-  <component name="RunManager" selected="npm.buildHome">
+  <component name="RunManager" selected="npm.Angular CLI Server">
     <configuration name="Tests (smart-property)" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/src/karma.conf.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/@angular/cli" />
@@ -199,7 +203,13 @@
       <workItem from="1593071334727" duration="1520000" />
       <workItem from="1593397186577" duration="2319000" />
       <workItem from="1593485464723" duration="1318000" />
-      <workItem from="1593571572510" duration="1537000" />
+      <workItem from="1593571572510" duration="2189000" />
+      <workItem from="1593675784644" duration="1663000" />
+      <workItem from="1593765126790" duration="6190000" />
+      <workItem from="1593864886595" duration="4859000" />
+      <workItem from="1594113159508" duration="128000" />
+      <workItem from="1594173992566" duration="1064000" />
+      <workItem from="1594284246724" duration="240000" />
     </task>
     <task id="LOCAL-00001" summary="操作日志：&#10;  （1）、收费模块bug修复&#10;  （2）、租赁车位表单验证">
       <created>1584003505351</created>
@@ -285,7 +295,14 @@
       <option name="project" value="LOCAL" />
       <updated>1592447635865</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="操作日志：&#10;  （1）、预缴费模块字段添加&#10;  &#10;  &#10;  时间：2020-7-1 17:55&#10;  &#10;  -------------云上智舍----------------">
+      <created>1593597370266</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1593597370266</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -303,47 +320,48 @@
     <MESSAGE value="操作日志：&#10;  （1）、空置费累计模块天机&#10;  &#10;  &#10;  时间：2020-6-5 15:43&#10;  &#10;  -------------云上智舍----------------" />
     <MESSAGE value="操作日志：&#10;  （1）、三通费缴费时间添加&#10;  &#10;  &#10;  时间：2020-6-8 20:53&#10;  &#10;  -------------云上智舍----------------" />
     <MESSAGE value="操作日志：&#10;  （1）、已退款修改添加&#10;  （2）、优惠券已审核修改添加&#10;  &#10;  &#10;  时间：2020-6-18 10:33&#10;  &#10;  -------------云上智舍----------------" />
-    <option name="LAST_COMMIT_MESSAGE" value="操作日志：&#10;  （1）、已退款修改添加&#10;  （2）、优惠券已审核修改添加&#10;  &#10;  &#10;  时间：2020-6-18 10:33&#10;  &#10;  -------------云上智舍----------------" />
+    <MESSAGE value="操作日志：&#10;  （1）、预缴费模块字段添加&#10;  &#10;  &#10;  时间：2020-7-1 17:55&#10;  &#10;  -------------云上智舍----------------" />
+    <option name="LAST_COMMIT_MESSAGE" value="操作日志：&#10;  （1）、预缴费模块字段添加&#10;  &#10;  &#10;  时间：2020-7-1 17:55&#10;  &#10;  -------------云上智舍----------------" />
   </component>
   <component name="WindowStateProjectService">
     <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1591328137502">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1591328137502" />
-    <state x="518" y="28" key="CommitChangelistDialog2" timestamp="1593503756366">
+    <state x="518" y="28" key="CommitChangelistDialog2" timestamp="1593597365545">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="518" y="28" key="CommitChangelistDialog2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593503756366" />
+    <state x="518" y="28" key="CommitChangelistDialog2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593597365545" />
     <state x="2480" y="29" key="CommitChangelistDialog2/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1586353678223" />
-    <state x="735" y="261" key="FileChooserDialogImpl" timestamp="1592462801131">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2655" y="177" key="FileChooserDialogImpl" timestamp="1594113287188">
+      <screen x="1920" y="-84" width="1920" height="1040" />
     </state>
     <state x="735" y="261" key="FileChooserDialogImpl/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592462801131" />
-    <state x="2655" y="177" key="FileChooserDialogImpl/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1589851669487" />
-    <state width="1899" height="204" key="GridCell.Tab.0.bottom" timestamp="1593572465522">
+    <state x="2655" y="177" key="FileChooserDialogImpl/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1594113287188" />
+    <state width="1899" height="241" key="GridCell.Tab.0.bottom" timestamp="1594113288178">
+      <screen x="1920" y="-84" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="182" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593774258461" />
+    <state width="1899" height="241" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1594113288178" />
+    <state width="1899" height="241" key="GridCell.Tab.0.center" timestamp="1594113288178">
+      <screen x="1920" y="-84" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="182" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593774258461" />
+    <state width="1899" height="241" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1594113288178" />
+    <state width="1899" height="241" key="GridCell.Tab.0.left" timestamp="1594113288178">
+      <screen x="1920" y="-84" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="182" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593774258461" />
+    <state width="1899" height="241" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1594113288178" />
+    <state width="1899" height="241" key="GridCell.Tab.0.right" timestamp="1594113288178">
+      <screen x="1920" y="-84" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="182" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593774258461" />
+    <state width="1899" height="241" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1594113288178" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1593597378609">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="204" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593572465522" />
-    <state width="1914" height="389" key="GridCell.Tab.0.bottom/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
-    <state width="1899" height="204" key="GridCell.Tab.0.center" timestamp="1593572465522">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="204" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593572465522" />
-    <state width="1914" height="389" key="GridCell.Tab.0.center/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
-    <state width="1899" height="204" key="GridCell.Tab.0.left" timestamp="1593572465522">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="204" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593572465522" />
-    <state width="1914" height="389" key="GridCell.Tab.0.left/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
-    <state width="1899" height="204" key="GridCell.Tab.0.right" timestamp="1593572465522">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="204" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593572465522" />
-    <state width="1914" height="389" key="GridCell.Tab.0.right/1920.-84.1920.1040/0.0.1920.1040@1920.-84.1920.1040" timestamp="1590050192598" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1592447857646">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1592447857646" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/1920.-84.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1593597378609" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1592372623778">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

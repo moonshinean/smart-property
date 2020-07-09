@@ -424,7 +424,8 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         this.paymentOrderAdd.remark = this.paymentOrderAdd.remark === undefined ? '' : this.paymentOrderAdd.remark;
         this.paymentOrderAdd.amountTotalReceivable = this.paymentTotle;
         this.paymentOrderAdd.actualTotalMoneyCollection = this.paymentMoney;
-        this.paymentOrderAdd.billDetailedDOArrayList = this.paymentItemData.map( v => {
+        const paymentItemDataList = JSON.parse(JSON.stringify(this.paymentItemData));
+        this.paymentOrderAdd.billDetailedDOArrayList = paymentItemDataList.map( v => {
           v.stateOfArrears = v.stateOfArrears === false ? 0 : 1;
           return v;
         });
@@ -516,7 +517,9 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         this.paymentOrderAdd.remark = this.paymentOrderAdd.remark === undefined ? '' : this.paymentOrderAdd.remark;
         this.paymentOrderAdd.amountTotalReceivable = this.paymentTotle;
         this.paymentOrderAdd.actualTotalMoneyCollection = this.paymentMoney;
-        this.paymentOrderAdd.billDetailedDOArrayList = this.paymentItemData.map( v => {
+        console.log(this.paymentItemData);
+        const paymentItemDataList = JSON.parse(JSON.stringify(this.paymentItemData));
+        this.paymentOrderAdd.billDetailedDOArrayList = paymentItemDataList.map( v => {
           v.stateOfArrears = v.stateOfArrears === false ? 0 : 1;
           return v;
         });
@@ -536,12 +539,7 @@ export class ChargemanPaymentComponent implements OnInit, OnDestroy {
         this.paymentSrv.prePrintPayOrder(this.paymentOrderAdd).subscribe(
           (value) => {
             if (value.status === '1000') {
-              // console.log(value);
               window.open(value.data);
-              // this.openListLength = value.data.length;
-              // value.data.forEach(v => {
-              //   this.printBillDetail(v.orderId, v.organizationId);
-              // });
             } else {
               // 请求失败了 数据还原
               this.paymentItemData.map( v => {
